@@ -1,0 +1,203 @@
+.h-63 {
+    height: 63px;
+}
+
+
+
+.jHTnHg {
+    padding: 3rem 0.5rem;
+    background: url("/public/assets/frontend/img/AngelMotorsInc-interior-header.webp") center center / cover no-repeat;
+}
+
+
+.cContainer:not(.sticky-top) {
+    z-index: 1;
+    position: relative;
+}
+
+.kdvwXJ {
+    height: 10px;
+}
+
+.rounded-12 {
+    border-radius: 12px;
+}
+
+.h-500 {
+    min-height: 500px
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #777;
+    border-radius: 4px !important;
+    flex-shrink: 0;
+}
+
+
+
+
+
+.form-check-input:checked {
+    background-color: #777 !important;
+    border-color: #777 !important;
+}
+
+.form-check-input {
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    border: 1px solid rgba(24, 28, 33, .5) !important;
+    margin-right: 5px;
+    appearance: none;
+
+}
+
+
+.custom-control {
+    position: relative;
+    z-index: 1;
+    display: block;
+    min-height: 1.31418rem;
+    padding-left: 1.563rem;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+}
+
+.custom-control {
+    min-height: 1.125rem;
+    margin-bottom: .5rem;
+}
+
+.border-bottom,
+.border-end,
+.border-start,
+.border-top {
+    border-color: rgba(24, 28, 33, .1) !important;
+}
+
+.text-small {
+    font-size: .8rem !important;
+}
+
+.custom-select,
+.form-control {
+    background-color: #fbfbfb !important;
+    border: 1px solid rgba(24, 28, 33, .15);
+    border-radius: 6px;
+    padding: .45rem .75rem;
+}
+
+.rounded,
+.btn,
+input,
+.form-control,
+#home-search-wrapper,
+.custom-select {
+    border-radius: 12px !important;
+}
+
+.custom-select,
+.form-control {
+    background-color: #fbfbfb !important;
+    border: 1px solid rgba(24, 28, 33, .15);
+    border-radius: 6px;
+    padding: .45rem .75rem;
+}
+
+.custom-select {
+    display: inline-block;
+    width: 100%;
+    height: calc(1.54em + .876rem + 2px);
+    padding: .438rem 2.75rem .438rem .875rem;
+    font-size: .894rem;
+    font-weight: 400;
+    line-height: 1.54;
+    color: #4E5155;
+    vertical-align: middle;
+    background: #fff url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAYCAYAAACfpi8JAAAABGdBTUEAALGPC/xhBQAAAKBJREFUSA3t1kEKgCAQBVCTDtciulJ2pWjRiapTaPwokUEjRW0zgaHSOI9PQWLbD4Mhfr7kz/1te4bYKO4JJ8KJ0ATouqUbqeuuH5TRekypb6Scsr2s6zIrHBgLQQ1qs0EAiMU8CNRmhcRgXEQRyBcMRRSDvGF8iKIQHyaEwLOixm8APm2Mq2HoVgMS6u3uZ/9q3MNj5gyhaXEinAhNgK5PpzhEO/hSMK4AAAAASUVORK5CYII=") right .875rem center/17px 12px no-repeat;
+    border: 1px solid rgba(24, 28, 33, .1);
+    border-radius: .25rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.btn-group {
+    border-radius: 6px;
+}
+
+.btn-group,
+.btn-group-vertical {
+    position: relative;
+    display: inline-flex;
+    vertical-align: middle;
+}
+
+.btn-group .btn.active {
+    border-color: #166B87 !important;
+}
+
+.btn-group .btn:first-child {
+    border-radius: 12px 0 0 12px !important;
+}
+
+.h-100 {
+    height: 100px !important;
+}
+
+.kduiyY {
+    height: 60px;
+}
+
+.cjNa-Do {
+    background-color: rgb(245, 245, 245);
+}
+
+.btn-primary {
+    color: white !important;
+}
+
+.kdtJAz {
+    height: 40px;
+}
+
+.dbDRLt {
+    background-color: rgb(255, 255, 255);
+}
+
+.hAgfhi {
+    padding-left: 5% !important;
+    padding-right: 5% !important;
+}
+
+.kdvwXJ {
+    height: 10px;
+}
+
+.kdvVWg {
+    height: 30px;
+}
+
+section {
+    padding: 3rem 0;
+}
+
+.bg-light {
+    background-color: rgba(24, 28, 33, .06) !important;
+}
+
+.kduvPm {
+    height: 50px;
+}
+
+.h-100 {
+    height: 100px;
+}
+
+@media (max-width: 1024px) {
+    .edIJuL {
+        height: 20px;
+    }
+}

@@ -1,0 +1,481 @@
+/* ── Overall Layout ── */
+.fs-wrapper {
+    display: flex;
+    min-height: calc(100vh - 60px);
+    background: #f2f2f2;
+    font-size: 13px;
+}
+
+/* ── Left Sidebar ── */
+.fs-sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: #fff;
+    border-right: 1px solid #e0e0e0;
+    padding-top: 8px;
+}
+.fs-sidebar .menu-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #aaa;
+    letter-spacing: 1px;
+    padding: 10px 16px 4px;
+    text-transform: uppercase;
+}
+.fs-sidebar .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    font-size: 13px;
+    color: #444;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+.fs-sidebar .menu-item:hover { background: #f8f8f8; }
+.fs-sidebar .menu-item.active {
+    border-left-color: #c0392b;
+    color: #c0392b;
+    font-weight: 600;
+    background: #fdf5f5;
+}
+.fs-sidebar .menu-item .icon {
+    font-size: 14px;
+    width: 18px;
+    text-align: center;
+}
+.fs-sidebar .badge-new {
+    background: #27ae60;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* ── Right Content ── */
+.fs-content {
+    flex: 1;
+    padding: 16px 20px;
+    overflow-x: auto;
+}
+
+/* Note bar */
+.fs-note {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 14px;
+    line-height: 1.5;
+}
+.fs-note strong { font-weight: 600; color: #333; }
+
+/* Toolbar */
+.fs-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.fs-toolbar .toolbar-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-right: 10px;
+    white-space: nowrap;
+}
+.fs-btn-group {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.fs-btn-group button {
+    padding: 6px 14px;
+    font-size: 12px;
+    border: none;
+    border-right: 1px solid #ccc;
+    background: #fff;
+    color: #555;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.fs-btn-group button:last-child { border-right: none; }
+.fs-btn-group button.active {
+    background: #c0392b;
+    color: #fff;
+    font-weight: 600;
+}
+.fs-btn-group button:hover:not(.active) { background: #f5f5f5; }
+
+.fs-term-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #555;
+}
+.fs-term-wrap input {
+    width: 48px;
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.fs-btn-add-rate {
+    margin-left: auto;
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+.fs-btn-add-rate:hover { background: #a93226; }
+
+/* Condition header */
+.fs-condition-header {
+    background: #e8f4fd;
+    font-size: 12px;
+    font-weight: 600;
+    color: #2c6e9e;
+    padding: 6px 12px;
+    border-radius: 3px 3px 0 0;
+    border: 1px solid #c8e0f0;
+    border-bottom: none;
+    margin-top: 16px;
+}
+
+/* Table */
+.fs-table-wrap {
+    border: 1px solid #ddd;
+    border-radius: 0 0 4px 4px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+.fs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+.fs-table thead tr {
+    background: #f9f9f9;
+    border-bottom: 1px solid #e0e0e0;
+}
+.fs-table thead th {
+    padding: 8px 10px;
+    font-weight: 600;
+    color: #666;
+    white-space: nowrap;
+    text-align: left;
+    line-height: 1.3;
+    vertical-align: top;
+}
+.fs-table thead th .th-sub {
+    font-weight: 400;
+    color: #999;
+    font-size: 11px;
+    display: block;
+}
+
+/* Group header row */
+.fs-group-row td {
+    background: #f5f5f5;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #777;
+    border-top: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
+}
+.fs-group-row .btn-add-group {
+    float: right;
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+/* Data rows */
+.fs-table tbody tr.data-row {
+    border-bottom: 1px solid #f0f0f0;
+}
+.fs-table tbody tr.data-row:hover { background: #fafafa; }
+.fs-table tbody tr.data-row td {
+    padding: 4px 6px;
+    vertical-align: middle;
+}
+
+/* Inline selects / inputs */
+.fs-inline-select, .fs-inline-input {
+    width: 100%;
+    padding: 4px 6px;
+    font-size: 12px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #fff;
+    color: #444;
+    box-sizing: border-box;
+}
+.fs-inline-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23888'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 8px;
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 20px;
+}
+.fs-inline-input[type="number"] { text-align: center; }
+
+/* Action icons */
+.fs-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+.fs-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    font-size: 13px;
+    padding: 2px;
+    transition: color 0.15s;
+}
+.fs-actions button:hover { color: #c0392b; }
+
+/* Save button */
+.fs-btn-save {
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    transition: background 0.2s;
+}
+.fs-btn-save:hover { background: #a93226; }
+
+/* ══════════════════════════════
+   ADD RATE MODAL
+══════════════════════════════ */
+.ar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(30, 20, 40, 0.55);
+    z-index: 1050;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px;
+    overflow-y: auto;
+}
+.ar-overlay.active { display: flex; }
+
+.ar-modal {
+    background: #fff;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+    font-size: 13px;
+}
+
+.ar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid #eee;
+}
+.ar-header h5 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #222;
+}
+.ar-header .btn-close-ar {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #888;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 2px;
+}
+.ar-header .btn-close-ar:hover { color: #333; }
+
+.ar-body {
+    padding: 18px;
+}
+
+.ar-form-row {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+.ar-form-col { flex: 1; min-width: 0; }
+
+.ar-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 5px;
+}
+.ar-label .req { color: #c0392b; }
+
+.ar-control {
+    width: 100%;
+    padding: 7px 10px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    color: #333;
+    box-sizing: border-box;
+}
+.ar-control:focus {
+    outline: none;
+    border-color: #aaa;
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.06);
+}
+
+.ar-select {
+    width: 100%;
+    padding: 7px 10px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E") no-repeat right 10px center;
+    background-size: 9px;
+    appearance: none;
+    -webkit-appearance: none;
+    color: #333;
+    box-sizing: border-box;
+}
+
+/* Interest rate with % suffix */
+.ar-rate-wrap {
+    position: relative;
+}
+.ar-rate-wrap .ar-control { padding-right: 30px; }
+.ar-rate-wrap .pct {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 13px;
+    pointer-events: none;
+}
+
+/* Helper box */
+.ar-helper {
+    margin-top: 16px;
+}
+.ar-helper-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+}
+.ar-helper ul {
+    margin: 0 0 0 16px;
+    padding: 0;
+    font-size: 12px;
+    color: #555;
+    line-height: 1.8;
+}
+
+/* Warning box */
+.ar-warning {
+    margin-top: 12px;
+    border: 1px solid #e8b4b4;
+    border-radius: 4px;
+    padding: 12px 14px;
+    font-size: 12px;
+    color: #555;
+    line-height: 1.6;
+}
+.ar-warning strong { color: #222; }
+
+.ar-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 18px;
+    border-top: 1px solid #f0f0f0;
+}
+.ar-btn-add {
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 9px 22px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+.ar-btn-add:hover { background: #a93226; }
+/* Rate cell with % suffix */
+.fs-rate-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.fs-rate-wrap .fs-inline-input {
+    padding-right: 22px;
+}
+.fs-rate-pct {
+    position: absolute;
+    right: 7px;
+    font-size: 11px;
+    color: #888;
+    pointer-events: none;
+    user-select: none;
+}
+/* Unsaved changes banner */
+.fs-unsaved-banner {
+    background: #fef9c3;
+    border-bottom: 1px solid #f6e05e;
+    color: #713f12;
+    font-size: 13px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+}

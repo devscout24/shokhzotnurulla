@@ -1,0 +1,404 @@
+/* ── Hero Section ──────────────────────────────────────────────────────── */
+.hero-video {
+    height: 550px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-video video {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.hero-caption {
+    position: absolute;
+    left: 15%;
+    right: 15%;
+    z-index: 2;
+}
+
+.carousel-caption,
+.hero-caption {
+    padding: 0 2% !important;
+    background: rgb(0, 0, 0);
+    background: radial-gradient(circle, rgba(0, 0, 0, .75) 0, rgba(255, 255, 255, 0) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, .35);
+    border-top: 1px solid rgba(255, 255, 255, .35);
+    top: 50%;
+    transform: translateY(-50%);
+    bottom: auto;
+}
+
+.hero-video-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    background: radial-gradient(circle, rgba(0, 0, 0, .75) 0, rgba(255, 255, 255, 0) 100%);
+}
+
+/* ── Home page blocks ──────────────────────────────────────────────────── */
+.cContainer:not(.sticky-top) {
+    z-index: 1;
+    position: relative;
+}
+
+.erNtBH {
+    color: rgb(255, 255, 255);
+    background-image: linear-gradient(90deg, rgb(51, 51, 51), rgb(51, 51, 51) 50%, rgb(22, 107, 135) 0px, rgb(22, 107, 135));
+}
+
+.hAgfhi {
+    padding-left: 5% !important;
+    padding-right: 5% !important;
+}
+
+.cColorOverlay {
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.gradient .cColorOverlay {
+    background: linear-gradient(180deg, rgba(17, 17, 17, 0) 0%, rgba(17, 17, 17, 1) 100%) !important;
+}
+
+.bwwxTl {
+    background-image: url("/public/assets/frontend/img/car-finance.webp");
+    background-repeat: repeat;
+    background-size: cover;
+    background-position: center center;
+}
+
+.cbWkvM {
+    background-image: url("/public/assets/frontend/img/car-service.webp");
+    background-repeat: repeat;
+    background-size: cover;
+    background-position: center center;
+}
+
+.evgXRR {
+    height: 280px;
+}
+
+.eyebrow {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.row-bordered {
+    overflow: hidden;
+}
+
+.card-section .row {
+    display: flex;
+    align-items: stretch !important;
+    flex-wrap: wrap;
+}
+
+.card2 {
+    background-color: #ffff;
+    padding: 10% !important;
+    border-radius: 30px;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    flex-direction: column;
+}
+
+.QeHlJ {
+    position: absolute;
+    color: white;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 3;
+    padding-top: 30%;
+    text-align: center;
+}
+
+/* ── Spacer classes ────────────────────────────────────────────────────── */
+.kduiyY  { height: 60px; }
+.kdvjHq  { height: 20px; }
+.kdvwXJ  { height: 10px; }
+.kdvwXG  { height: 10px; }
+.kdvVWg  { height: 30px; }
+.kdvVWh  { height: 30px; }
+.kdtJAz  { height: 40px; }
+.kdvjHt  { height: 20px; }
+.kdwMZF  { height: 80px; }
+
+/* ── Vehicle / SRP cards ───────────────────────────────────────────────── */
+section {
+    padding: 3rem 0;
+}
+
+.bg-light {
+    background-color: rgba(24, 28, 33, .06) !important;
+}
+
+.searchbox {
+    font-size: 16px !important;
+}
+
+.vc-featured,
+.vc-hold,
+.vc-popular {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index: 1;
+}
+
+.small,
+small {
+    font-size: .8rem !important;
+}
+
+.bg-danger {
+    background-color: #dc3545;
+}
+
+.img-srp-container {
+    min-height: 200px;
+    display: block;
+    overflow: hidden;
+    position: relative;
+    background-color: #f4f5f7;
+}
+
+.img-srp-container:before {
+    display: block;
+    content: "";
+    width: 100%;
+    padding-top: 75%;
+}
+
+.deAfgc {
+    position: absolute;
+    top: 5px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.deAfgc .left-toggle {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.6);
+    top: 35%;
+    left: 0;
+    transform: translateX(-100%);
+    padding: 0.5rem;
+}
+
+.deAfgc .right-toggle {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.6);
+    top: 35%;
+    right: 0;
+    transform: translateX(100%);
+    padding: 0.5rem;
+}
+
+.img-srp-container:hover .left-toggle {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.img-srp-container:hover .right-toggle {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.jcwltT {
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    fill: rgba(255, 255, 255, 0.75);
+    z-index: 2;
+    text-align: center;
+}
+
+.circle-dot-icon i {
+    fill: currentColor;
+    font-size: 16px;
+    color: #a3a4a6;
+}
+
+.circle-dot-icon.active i {
+    color: rgb(255, 255, 255);
+}
+
+.img-srp,
+.ribbon {
+    position: absolute;
+}
+
+.img-srp {
+    width: 100%;
+    height: 100%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+}
+
+/* ── Media Queries ─────────────────────────────────────────────────────── */
+@media (min-width: 992px) {
+    .container,
+    .container-fluid {
+        padding-right: 2rem;
+        padding-left: 2rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container,
+    .container-lg,
+    .container-md,
+    .container-sm,
+    .container-xl {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container,
+    .container-lg,
+    .container-md,
+    .container-sm {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container,
+    .container-md,
+    .container-sm {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 576px) {
+    .container,
+    .container-sm {
+        max-width: 540px;
+    }
+
+    .jcwltT {
+        display: none;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 1440px) {
+    .hero-video {
+        height: 500px;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 1024px) {
+    .carousel-caption,
+    .hero-caption {
+        left: 0 !important;
+        right: 0 !important;
+    }
+
+    .kduiyY { height: 30px; }
+    .kdvjHq { height: 10px; }
+    .kdvwXJ { height: 10px; }
+    .kdwMZF { height: 40px; }
+    .kdtJAz { height: 20px; }
+}
+
+@media (max-width: 575px) {
+    .hero-caption h1 {
+        font-size: 30px;
+    }
+
+    .carousel h1,
+    .carousel h2,
+    .hero-caption h1 {
+        font-weight: 600 !important;
+        margin-bottom: 0;
+        padding: 4px !important;
+    }
+
+    .hero-caption {
+        background: none;
+    }
+
+    .carousel-caption,
+    .hero-caption {
+        padding: 0;
+        right: 1%;
+        left: 1%;
+        border: none;
+    }
+
+    .hero-caption h2 {
+        font-size: 22px;
+        font-weight: 600 !important;
+        margin-bottom: 0;
+        padding: 4px !important;
+    }
+
+    .hero-video {
+        height: 320px;
+        overflow: hidden;
+    }
+
+    .erNtBH {
+        background-image: linear-gradient(rgb(51, 51, 51), rgb(51, 51, 51) 50%, rgb(22, 107, 135) 0px, rgb(22, 107, 135));
+    }
+
+    .hero-video-overlay {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 2;
+        background: radial-gradient(circle, rgba(0, 0, 0, .75) 0, rgba(255, 255, 255, 0) 100%);
+    }
+
+    .bottomBorder {
+        border-bottom: 1px solid rgba(24, 28, 33, .06);
+    }
+
+    .carss {
+        height: 44px !important;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .deAfgc .left-toggle {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .deAfgc .right-toggle {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

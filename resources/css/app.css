@@ -1,0 +1,6 @@
+/* Global CSS */
+
+/* Notyf width fix */
+.notyf__toast {
+    min-width: 300px !important;
+}

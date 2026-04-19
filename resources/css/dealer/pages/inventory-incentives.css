@@ -1,0 +1,40 @@
+/* ── Incentives Page ─────────────────────────────── */
+
+.incentives-filter-bar {
+    border-bottom: 1px solid rgba(0, 0, 0, .08);
+}
+
+/* Type badges */
+.inc-type-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.inc-type-cash           { background: #d1e7dd; color: #0a6640; }
+.inc-type-finance        { background: #cfe2ff; color: #0a3678; }
+.inc-type-ivc_dvc        { background: #e2d9f3; color: #4a1d8a; }
+.inc-type-lease          { background: #fff3cd; color: #856404; }
+.inc-type-percentage_off { background: #f8d7da; color: #842029; }
+
+/* Table row hover */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, .02);
+}
+
+/* Modal form labels */
+#incentiveModal .form-label {
+    margin-bottom: 4px;
+}
+
+/* Pagination override */
+.pagination .page-item.active .page-link {
+    background-color: #c0392b;
+    border-color:     #c0392b;
+}
+
+.pagination .page-link {
+    color: #c0392b;
+    font-size: 13px;
+}
