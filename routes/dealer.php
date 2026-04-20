@@ -13,6 +13,7 @@ use App\Http\Controllers\Dealer\SettingController;
 use App\Http\Controllers\Dealer\IncentiveController;
 use App\Http\Controllers\Dealer\PrintableController;
 use App\Http\Controllers\Dealer\PricingSpecialController;
+use App\Http\Controllers\Dealer\WebsitePageController;
 
 Route::prefix('dealer')->name('dealer.')
     ->middleware(['auth', 'verified', 'all.active', 'isDealer'])
@@ -41,6 +42,17 @@ Route::prefix('dealer')->name('dealer.')
         Route::patch('/menus/{menu}',  [WebsiteMenuController::class, 'update'])->name('menus.update');
         Route::delete('/menus/{menu}', [WebsiteMenuController::class, 'destroy'])->name('menus.destroy');
         Route::post('/menus/reorder',  [WebsiteMenuController::class, 'reorder'])->name('menus.reorder');
+
+        // ── Pages (CMS) ────────────────────────────────────────────────────────
+        Route::prefix('pages')->name('pages.')->group(function () {
+            Route::get('/', [WebsitePageController::class, 'index'])->name('index');
+            Route::get('/create', [WebsitePageController::class, 'create'])->name('create');
+            Route::post('/', [WebsitePageController::class, 'store'])->name('store');
+            Route::get('/{page}/edit', [WebsitePageController::class, 'edit'])->name('edit');
+            Route::patch('/{page}', [WebsitePageController::class, 'update'])->name('update');
+            Route::delete('/{page}', [WebsitePageController::class, 'destroy'])->name('destroy');
+            Route::get('/by-tag/{tag}', [WebsitePageController::class, 'getByTag'])->name('by-tag');
+        });
 
         // ── Form Entries ──────────────────────────────────────────────────────────────
         Route::prefix('form-entries')->name('form-entries.')->group(function () {

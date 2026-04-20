@@ -23,6 +23,12 @@
             <span>{{ __('Menus') }}</span>
         </div>
     </a>
+    <a class="sidebar-item-link" href="{{ route('dealer.website.pages.index') }}">
+        <div class="sidebar-item {{ request()->routeIs('dealer.website.pages.*') ? 'active' : '' }}">
+            <i class="bi bi-file-text"></i>
+            <span>{{ __('Pages') }}</span>
+        </div>
+    </a>
     <a class="sidebar-item-link" href="{{ route('dealer.website.settings.general') }}">
         <div class="sidebar-item {{ request()->routeIs('dealer.website.settings.*') ? 'active' : '' }}">
             <i class="bi bi-gear"></i>
