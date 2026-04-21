@@ -14,6 +14,8 @@ use App\Http\Controllers\Dealer\IncentiveController;
 use App\Http\Controllers\Dealer\PrintableController;
 use App\Http\Controllers\Dealer\PricingSpecialController;
 use App\Http\Controllers\Dealer\WebsitePageController;
+use App\Http\Controllers\Dealer\WebsiteFaqController;
+use App\Http\Controllers\Dealer\WebsiteSrpContentController;
 
 Route::prefix('dealer')->name('dealer.')
     ->middleware(['auth', 'verified', 'all.active', 'isDealer'])
@@ -52,6 +54,27 @@ Route::prefix('dealer')->name('dealer.')
             Route::patch('/{page}', [WebsitePageController::class, 'update'])->name('update');
             Route::delete('/{page}', [WebsitePageController::class, 'destroy'])->name('destroy');
             Route::get('/by-tag/{tag}', [WebsitePageController::class, 'getByTag'])->name('by-tag');
+        });
+
+        // ── FAQs (Reusable Content) ──────────────────────────────────────────────────
+        Route::prefix('faqs')->name('faqs.')->group(function () {
+            Route::get('/',                          [WebsiteFaqController::class, 'index'])->name('index');
+            Route::post('/',                         [WebsiteFaqController::class, 'storeFaq'])->name('store');
+            Route::patch('/{faq}',                   [WebsiteFaqController::class, 'updateFaq'])->name('update');
+            Route::delete('/{faq}',                  [WebsiteFaqController::class, 'destroyFaq'])->name('destroy');
+            Route::post('/categories',               [WebsiteFaqController::class, 'storeCategory'])->name('categories.store');
+            Route::patch('/categories/{faqCategory}', [WebsiteFaqController::class, 'updateCategory'])->name('categories.update');
+            Route::delete('/categories/{faqCategory}',[WebsiteFaqController::class, 'destroyCategory'])->name('categories.destroy');
+            Route::post('/bulk-update',               [WebsiteFaqController::class, 'bulkUpdate'])->name('bulk-update');
+        });
+
+        // ── SRP Content (Reusable Content) ───────────────────────────────────────────
+        Route::prefix('srp-content')->name('srp-content.')->group(function () {
+            Route::get('/',              [WebsiteSrpContentController::class, 'index'])->name('index');
+            Route::post('/',             [WebsiteSrpContentController::class, 'store'])->name('store');
+            Route::patch('/{srpContent}', [WebsiteSrpContentController::class, 'update'])->name('update');
+            Route::delete('/{srpContent}', [WebsiteSrpContentController::class, 'destroy'])->name('destroy');
+            Route::post('/bulk-update',   [WebsiteSrpContentController::class, 'bulkUpdate'])->name('bulk-update');
         });
 
         // ── Form Entries ──────────────────────────────────────────────────────────────

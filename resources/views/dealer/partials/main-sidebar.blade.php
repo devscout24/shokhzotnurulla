@@ -29,6 +29,12 @@
             <span>{{ __('Pages') }}</span>
         </div>
     </a>
+    <a class="sidebar-item-link" href="{{ route('dealer.website.faqs.index') }}">
+        <div class="sidebar-item {{ request()->routeIs('dealer.website.faqs.*') ? 'active' : '' }}">
+            <i class="bi bi-collection"></i>
+            <span>{{ __('Reusable Content') }}</span>
+        </div>
+    </a>
     <a class="sidebar-item-link" href="{{ route('dealer.website.settings.general') }}">
         <div class="sidebar-item {{ request()->routeIs('dealer.website.settings.*') ? 'active' : '' }}">
             <i class="bi bi-gear"></i>
