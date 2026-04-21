@@ -62,7 +62,7 @@
         .rte-btn i { font-size: 15px !important; line-height: 1 !important; }
         .rte-select-wrap { display: flex !important; align-items: center !important; gap: 6px !important; cursor: pointer !important; }
         .rte-select { border: none !important; background: transparent !important; font-size: 13px !important; font-weight: 500 !important; color: #444 !important; outline: none !important; cursor: pointer !important; appearance: none !important; padding: 0 !important; margin: 0 !important; }
-        .rte-textarea { width: 100% !important; border: none !important; outline: none !important; font-size: 15px !important; color: #333 !important; min-height: 600px !important; padding: 30px 40px !important; line-height: 1.7 !important; background: #fff !important; resize: none !important; box-shadow: none !important; }
+        .rte-textarea { width: 100% !important; border: none !important; outline: none !important; font-size: 15px !important; color: #333 !important; min-height: 250px !important; padding: 30px 40px !important; line-height: 1.7 !important; background: #fff !important; resize: none !important; box-shadow: none !important; }
 
         /* Field Hint */
         .field-hint { padding: 12px 15px; background: #f9f9f9; border: 1px solid #eee; border-top: none; font-size: 12px; color: #666; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; line-height: 1.5; }
@@ -380,10 +380,10 @@
 
         // Auto-resize
         contentInput.style.height = 'auto';
-        contentInput.style.height = (contentInput.scrollHeight > 600 ? contentInput.scrollHeight : 600) + 'px';
+        contentInput.style.height = (contentInput.scrollHeight > 250 ? contentInput.scrollHeight : 250) + 'px';
         contentInput.addEventListener('input', function(){
             this.style.height = 'auto';
-            this.style.height = (this.scrollHeight > 600 ? this.scrollHeight : 600) + 'px';
+            this.style.height = (this.scrollHeight > 250 ? this.scrollHeight : 250) + 'px';
         });
     }
 

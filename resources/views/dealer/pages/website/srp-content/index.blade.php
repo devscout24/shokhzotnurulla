@@ -369,10 +369,10 @@
 
         // Auto-resize textarea
         contentInput.style.height = 'auto';
-        contentInput.style.height = (contentInput.scrollHeight > 600 ? contentInput.scrollHeight : 600) + 'px';
+        contentInput.style.height = (contentInput.scrollHeight > 250 ? contentInput.scrollHeight : 250) + 'px';
         contentInput.addEventListener('input', function(){
             this.style.height = 'auto';
-            this.style.height = (this.scrollHeight > 600 ? this.scrollHeight : 600) + 'px';
+            this.style.height = (this.scrollHeight > 250 ? this.scrollHeight : 250) + 'px';
         });
     }
 
