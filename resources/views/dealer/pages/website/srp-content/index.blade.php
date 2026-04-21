@@ -12,7 +12,7 @@
 .rc-sidebar-item { display: flex; align-items: center; gap: 12px; padding: 15px; font-size: 14px; color: #666; cursor: pointer; transition: all .2s; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
 .rc-sidebar-item:last-child { border-bottom: none; }
 .rc-sidebar-item:hover { background: #f8f8f8; color: #333; }
-.rc-sidebar-item.active { color: #000 !important; font-weight: 800; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.rc-sidebar-item.active { color: #000; font-weight: 650; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .rc-sidebar-item i { font-size: 18px !important; width: 24px; text-align: center; color: #999; }
 .rc-sidebar-item.active i { color: #c0392b !important; }
 
@@ -88,32 +88,26 @@
 .faq-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 2000; display: none; backdrop-filter: blur(2px); }
 .faq-modal-overlay.open { display: flex !important; align-items: center; justify-content: center; }
 .faq-modal { background: #fff; border-radius: 14px; width: 550px; max-width: 95vw; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-#bulkModalOverlay .faq-modal { width: 1200px; max-width: 98vw; height: 92vh; border-radius: 4px; }
 
-/* Bulk Edit Styles (adapted) */
-.bulk-modal-content { display: flex; flex-direction: column; height: 100%; background: #fff; }
-.bulk-header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 1px solid #eee; }
-.bulk-header-top h3 { font-size: 16px; font-weight: 600; color: #333; margin: 0; }
-.bulk-header-actions { padding: 12px 25px; display: flex; justify-content: flex-end; }
-.bulk-body { flex: 1; overflow-y: auto; padding: 0 25px; }
-.bulk-row { display: grid; grid-template-columns: 180px 180px 1fr 50px; gap: 0; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 25px; background: #fff; }
-.bulk-col { padding: 15px; border-right: 1px solid #f0f0f0; background: #f9f9f9; }
-.bulk-col:nth-child(3) { background: #fff; border-right: none; padding: 0; }
-.bulk-col:last-child { background: #fff; border-right: none; display: flex; align-items: flex-start; justify-content: center; padding-top: 25px; }
-.bulk-col-label { font-size: 11px; font-weight: 700; color: #333; margin-bottom: 10px; display: block; }
-.bulk-col-label span { color: #c0392b; margin-left: 2px; }
-.bulk-input { width: 100%; padding: 8px 10px; border: 1px solid #dcdcdc; border-radius: 3px; font-size: 13px; color: #444; background: #fff; }
-/* RTE Precision Pass */
-.bulk-rte { border: 1px solid #e0e0e0 !important; border-radius: 8px !important; background: #fff !important; overflow: hidden !important; margin-top: 10px !important; }
-.rte-toolbar { background: #fcfcfc !important; border-bottom: 1px solid #f0f0f0 !important; padding: 10px 20px !important; display: flex !important; flex-direction: row !important; align-items: center !important; gap: 20px !important; flex-wrap: nowrap !important; }
-.rte-tool-group { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 12px !important; border-right: 1px solid #f0f0f0 !important; padding-right: 20px !important; flex-wrap: nowrap !important; }
-.rte-tool-group:last-child { border-right: none !important; padding-right: 0 !important; }
-.rte-btn { background: none !important; border: none !important; padding: 4px !important; cursor: pointer !important; color: #666 !important; display: flex !important; align-items: center !important; justify-content: center !important; transition: all .2s !important; box-shadow: none !important; outline: none !important; }
-.rte-btn:hover { color: #c0392b !important; background: #f8f8f8 !important; border-radius: 4px !important; }
-.rte-btn i { font-size: 16px !important; line-height: 1 !important; }
-.rte-select-wrap { display: flex !important; align-items: center !important; gap: 6px !important; cursor: pointer !important; }
-.rte-select { border: none !important; background: transparent !important; font-size: 13px !important; font-weight: 500 !important; color: #444 !important; outline: none !important; cursor: pointer !important; appearance: none !important; padding: 0 !important; margin: 0 !important; }
-.rte-textarea { width: 100% !important; border: none !important; outline: none !important; font-size: 14px !important; color: #444 !important; min-height: 200px !important; padding: 25px !important; line-height: 1.6 !important; background: #fff !important; resize: vertical !important; box-shadow: none !important; }
+/* Bulk Edit Modal Redesign */
+#bulkModalOverlay .faq-modal { width: 95vw; max-width: 1600px; height: 90vh; border-radius: 8px; }
+.bulk-modal-content { display: flex; flex-direction: column; height: 100%; background: #fdfdfd; }
+.bulk-header-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 25px; border-bottom: 1px solid #eee; background: #fff; }
+.bulk-header-actions { padding: 15px 25px; display: flex; justify-content: flex-end; background: #fff; }
+.bulk-body { flex: 1; overflow: auto; padding: 0 25px 25px 25px; }
+.bulk-table-header { display: grid; grid-template-columns: 160px 150px 180px 180px 200px 140px 300px 110px 40px; gap: 12px; padding: 12px 15px; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; margin-bottom: 10px; width: max-content; min-width: 100%; }
+.bulk-header-label { font-size: 11px; font-weight: 700; color: #444; }
+.bulk-header-label span { color: #c0392b; margin-left: 2px; }
+.bulk-row { display: grid; grid-template-columns: 160px 150px 180px 180px 200px 140px 300px 110px 40px; gap: 12px; padding: 15px; border: 1px solid #eef0f2; border-radius: 6px; margin-bottom: 10px; background: #fff; align-items: flex-start; transition: all .2s; width: max-content; min-width: 100%; }
+.bulk-row:hover { border-color: #d1d5db; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+.bulk-input { width: 100%; padding: 8px 12px; border: 1px solid #dcdcdc; border-radius: 4px; font-size: 13px; color: #333; background: #fff; }
+.bulk-textarea { width: 100%; padding: 8px 12px; border: 1px solid #dcdcdc; border-radius: 4px; font-size: 13px; color: #333; background: #fff; min-height: 38px; height: 38px; resize: vertical; }
+.bulk-select { width: 100%; padding: 8px 12px; border: 1px solid #dcdcdc; border-radius: 4px; font-size: 13px; color: #333; background: #fff; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%23999' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+.bulk-action-del { color: #9ca3af; cursor: pointer; font-size: 18px; padding-top: 8px; transition: color .2s; }
+.bulk-action-del:hover { color: #c0392b; }
+.bulk-footer { padding: 15px 25px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 12px; background: #fff; }
+.btn-cancel-outline { padding: 8px 24px; border: 1px solid #e5e7eb; background: #fff; color: #4b5563; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; }
+.btn-cancel-outline:hover { background: #f9fafb; border-color: #d1d5db; }
 
 /* Status Dot Fix */
 .faq-status-dot.published { background: #28a745 !important; }
@@ -140,7 +134,7 @@
             <a href="{{ route('dealer.website.faqs.index') }}" class="rc-sidebar-item"><i class="bi bi-question-circle"></i> FAQs</a>
             <a href="#" class="rc-sidebar-item"><i class="bi bi-megaphone"></i> OEM Promo Banners</a>
             <a href="{{ route('dealer.website.srp-content.index') }}" class="rc-sidebar-item active"><i class="bi bi-file-earmark-text"></i> Content: Search Results (SRP)</a>
-            <a href="#" class="rc-sidebar-item"><i class="bi bi-file-text"></i> Static Page Content</a>
+            <a href="{{ route('dealer.website.static-page-content.index') }}" class="rc-sidebar-item"><i class="bi bi-file-text"></i> Static Page Content</a>
             <a href="#" class="rc-sidebar-item"><i class="bi bi-star"></i> Customer Reviews</a>
             <a href="#" class="rc-sidebar-item"><i class="bi bi-person"></i> Staff Members</a>
             <a href="#" class="rc-sidebar-item"><i class="bi bi-briefcase"></i> Job Posts</a>
@@ -245,7 +239,7 @@
                                         <button class="rte-btn" type="button"><i class="bi bi-link-45deg"></i></button>
                                     </div>
                                 </div>
-                                <textarea id="srpContentInput" class="rte-textarea" placeholder="Enter page content..."></textarea>
+                                <textarea id="srpContentInput" class="rte-textarea" placeholder="Used cars for sale in Smyrna, TN..."></textarea>
                             </div>
                         </div>
 
@@ -264,13 +258,26 @@
     <div class="faq-modal">
         <div class="bulk-modal-content">
             <div class="bulk-header-top">
-                <h3>Bulk Edit SRP Contents</h3>
-                <button class="faq-modal-close" id="bulkModalClose">&times;</button>
+                <h3 class="faq-modal-title" style="font-size: 14px; font-weight: 600;">Bulk Edit Content: Search Results (SRP)</h3>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="rc-btn-outline" id="bulkAddRowBtn" style="padding: 7px 15px; background: #fff; height: 34px;"><i class="bi bi-plus-lg"></i> Add Row</button>
+                    <button class="faq-modal-close" id="bulkModalClose" style="font-size: 20px;">&times;</button>
+                </div>
             </div>
-            <div class="bulk-header-actions">
-                <button class="rc-btn-outline" id="bulkAddRowBtn"><i class="bi bi-plus-lg"></i> Add Row</button>
+            <div class="bulk-body">
+                <div class="bulk-table-header">
+                    <div class="bulk-header-label">Nickname <span>*</span></div>
+                    <div class="bulk-header-label">SRP Slug <span>*</span></div>
+                    <div class="bulk-header-label">H1 Override</div>
+                    <div class="bulk-header-label">Meta Title</div>
+                    <div class="bulk-header-label">Meta Description</div>
+                    <div class="bulk-header-label">Placement</div>
+                    <div class="bulk-header-label">Page Content</div>
+                    <div class="bulk-header-label">Status</div>
+                    <div></div>
+                </div>
+                <div id="bulkRowsContainer"></div>
             </div>
-            <div class="bulk-body" id="bulkRowsContainer"></div>
             <div class="bulk-footer">
                 <button class="btn-cancel-outline" id="bulkCancelBtn">Cancel</button>
                 <button class="btn-save-red" id="bulkSaveBtn"><i class="bi bi-check-lg"></i> Save</button>
@@ -353,10 +360,20 @@
         document.getElementById('srpMetaTitleInput').value = item ? (item.meta_title||'') : '';
         document.getElementById('srpMetaDescInput').value = item ? (item.meta_description||'') : '';
         document.getElementById('srpPlacementInput').value = item ? item.placement : 'bottom';
-        document.getElementById('srpContentInput').value = item ? (item.content||'') : '';
+        
+        var contentInput = document.getElementById('srpContentInput');
+        contentInput.value = item ? (item.content||'') : '';
         
         listView.style.display = 'none';
         formView.style.display = 'block';
+
+        // Auto-resize textarea
+        contentInput.style.height = 'auto';
+        contentInput.style.height = (contentInput.scrollHeight > 600 ? contentInput.scrollHeight : 600) + 'px';
+        contentInput.addEventListener('input', function(){
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight > 600 ? this.scrollHeight : 600) + 'px';
+        });
     }
 
     document.getElementById('srpSaveBtn').addEventListener('click', function(){
@@ -398,11 +415,10 @@
         });
     };
 
-    // Bulk Edit (simplified for nickname)
     var bulkOverlay = document.getElementById('bulkModalOverlay');
-    var bulkRows = document.getElementById('bulkRowsContainer');
+    var bulkRowsContainer = document.getElementById('bulkRowsContainer');
     document.getElementById('bulkEditBtn').addEventListener('click', function(){
-        bulkRows.innerHTML = '';
+        bulkRowsContainer.innerHTML = '';
         contents.forEach(function(c){ addBulkRow(c); });
         bulkOverlay.classList.add('open');
     });
@@ -415,27 +431,44 @@
         div.className = 'bulk-row';
         div.dataset.id = item ? item.id : '';
         div.innerHTML = 
-            '<div class="bulk-col"><label class="bulk-col-label">Nickname <span>*</span></label><input type="text" class="bulk-input bulk-n" value="'+(item ? item.nickname : '')+'"></div>' +
-            '<div class="bulk-col"><label class="bulk-col-label">Slug <span>*</span></label><input type="text" class="bulk-input bulk-s" value="'+(item ? item.slug : '')+'"></div>' +
-            '<div class="bulk-col"><div class="bulk-rte-wrap"><label class="bulk-col-label">Content <span>*</span></label><div class="bulk-rte"><textarea class="rte-textarea bulk-c">'+(item ? (item.content||'') : '')+'</textarea></div></div></div>' +
-            '<div class="bulk-col"><div class="bulk-action-del"><i class="bi bi-trash"></i></div></div>';
+            '<input type="text" class="bulk-input bulk-n" value="'+(item ? item.nickname : '')+'" placeholder="Nickname">' +
+            '<input type="text" class="bulk-input bulk-s" value="'+(item ? item.slug : '')+'" placeholder="/trucks">' +
+            '<input type="text" class="bulk-input bulk-h1" value="'+(item ? (item.h1_override||'') : '')+'" placeholder="H1 Override">' +
+            '<input type="text" class="bulk-input bulk-mt" value="'+(item ? (item.meta_title||'') : '')+'" placeholder="Meta Title">' +
+            '<textarea class="bulk-textarea bulk-md" placeholder="Meta Description">'+(item ? (item.meta_description||'') : '')+'</textarea>' +
+            '<select class="bulk-select bulk-p">' +
+                '<option value="bottom" '+(item && item.placement==='bottom'?'selected':'')+'>Bottom</option>' +
+                '<option value="top" '+(item && item.placement==='top'?'selected':'')+'>Top</option>' +
+            '</select>' +
+            '<textarea class="bulk-textarea bulk-c" style="height: 100px; min-height: 100px;" placeholder="Page Content">'+(item ? (item.content||'') : '')+'</textarea>' +
+            '<select class="bulk-select bulk-status">' +
+                '<option value="Published" '+(item && item.status==='Published'?'selected':'')+'>Published</option>' +
+                '<option value="Draft" '+(item && item.status==='Draft'?'selected':'')+'>Draft</option>' +
+            '</select>' +
+            '<div class="bulk-action-del"><i class="bi bi-trash"></i></div>';
+        
         div.querySelector('.bulk-action-del').addEventListener('click', function(){
             if(confirm('Remove row?')){
                 if(div.dataset.id) div.dataset.deleted = 'true';
                 div.style.display = 'none';
             }
         });
-        bulkRows.appendChild(div);
+        bulkRowsContainer.appendChild(div);
     }
 
     document.getElementById('bulkSaveBtn').addEventListener('click', function(){
         var data = [];
-        bulkRows.querySelectorAll('.bulk-row').forEach(function(row){
+        bulkRowsContainer.querySelectorAll('.bulk-row').forEach(function(row){
             data.push({
                 id: row.dataset.id ? parseInt(row.dataset.id) : null,
                 nickname: row.querySelector('.bulk-n').value.trim(),
                 slug: row.querySelector('.bulk-s').value.trim(),
+                h1_override: row.querySelector('.bulk-h1').value.trim(),
+                meta_title: row.querySelector('.bulk-mt').value.trim(),
+                meta_description: row.querySelector('.bulk-md').value.trim(),
+                placement: row.querySelector('.bulk-p').value,
                 content: row.querySelector('.bulk-c').value.trim(),
+                status: row.querySelector('.bulk-status').value,
                 is_deleted: row.dataset.deleted === 'true'
             });
         });

@@ -16,6 +16,7 @@ use App\Http\Controllers\Dealer\PricingSpecialController;
 use App\Http\Controllers\Dealer\WebsitePageController;
 use App\Http\Controllers\Dealer\WebsiteFaqController;
 use App\Http\Controllers\Dealer\WebsiteSrpContentController;
+use App\Http\Controllers\Dealer\WebsiteStaticPageContentController;
 
 Route::prefix('dealer')->name('dealer.')
     ->middleware(['auth', 'verified', 'all.active', 'isDealer'])
@@ -75,6 +76,18 @@ Route::prefix('dealer')->name('dealer.')
             Route::patch('/{srpContent}', [WebsiteSrpContentController::class, 'update'])->name('update');
             Route::delete('/{srpContent}', [WebsiteSrpContentController::class, 'destroy'])->name('destroy');
             Route::post('/bulk-update',   [WebsiteSrpContentController::class, 'bulkUpdate'])->name('bulk-update');
+        });
+
+        // ── Static Page Content (Reusable Content) ───────────────────────────────────
+        Route::prefix('static-page-content')->name('static-page-content.')->group(function () {
+            Route::get('/',                                 [WebsiteStaticPageContentController::class, 'index'])->name('index');
+            Route::post('/',                                [WebsiteStaticPageContentController::class, 'store'])->name('store');
+            Route::patch('/{staticPageContent}',            [WebsiteStaticPageContentController::class, 'update'])->name('update');
+            Route::delete('/{staticPageContent}',           [WebsiteStaticPageContentController::class, 'destroy'])->name('destroy');
+            Route::post('/categories',                      [WebsiteStaticPageContentController::class, 'storeCategory'])->name('categories.store');
+            Route::patch('/categories/{staticPageCategory}', [WebsiteStaticPageContentController::class, 'updateCategory'])->name('categories.update');
+            Route::delete('/categories/{staticPageCategory}',[WebsiteStaticPageContentController::class, 'destroyCategory'])->name('categories.destroy');
+            Route::post('/bulk-update',                      [WebsiteStaticPageContentController::class, 'bulkUpdate'])->name('bulk-update');
         });
 
         // ── Form Entries ──────────────────────────────────────────────────────────────

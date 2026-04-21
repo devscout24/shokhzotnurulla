@@ -76,16 +76,20 @@ class WebsiteSrpContentController extends Controller
                 }
 
                 $payload = [
-                    'nickname' => $item['nickname'] ?? '',
-                    'slug'     => $item['slug'] ?? '',
-                    'content'  => $item['content'] ?? '',
+                    'nickname'         => $item['nickname'],
+                    'slug'             => $item['slug'],
+                    'h1_override'      => $item['h1_override'] ?? null,
+                    'meta_title'       => $item['meta_title'] ?? null,
+                    'meta_description' => $item['meta_description'] ?? null,
+                    'placement'        => $item['placement'] ?? 'bottom',
+                    'content'          => $item['content'] ?? null,
+                    'status'           => $item['status'] ?? 'Published',
+                    'author'           => $item['author'] ?? $author,
                 ];
 
                 if ($id) {
                     SrpContent::where('id', $id)->update($payload);
                 } else {
-                    $payload['author'] = $author;
-                    $payload['status'] = 'Published';
                     SrpContent::create($payload);
                 }
             }
