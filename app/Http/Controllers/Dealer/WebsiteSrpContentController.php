@@ -68,26 +68,24 @@ class WebsiteSrpContentController extends Controller
 
         DB::transaction(function () use ($data, $author) {
             foreach ($data as $item) {
-                if (! empty($item['is_deleted']) && ! empty($item['id'])) {
-                    SrpContent::where('id', $item['id'])->delete();
+                $id = $item['id'] ?? null;
+
+                if (! empty($item['is_deleted']) && $id) {
+                    SrpContent::where('id', $id)->delete();
                     continue;
                 }
 
                 $payload = [
-                    'nickname'         => $item['nickname'] ?? '',
-                    'slug'             => $item['slug'] ?? '',
-                    'h1_override'      => $item['h1_override'] ?? '',
-                    'meta_title'       => $item['meta_title'] ?? '',
-                    'meta_description' => $item['meta_description'] ?? '',
-                    'placement'        => $item['placement'] ?? 'bottom',
-                    'content'          => $item['content'] ?? '',
-                    'status'           => $item['status'] ?? 'Published',
-                    'author'           => $item['author'] ?? $author,
+                    'nickname' => $item['nickname'] ?? '',
+                    'slug'     => $item['slug'] ?? '',
+                    'content'  => $item['content'] ?? '',
                 ];
 
-                if (! empty($item['id'])) {
-                    SrpContent::where('id', $item['id'])->update($payload);
+                if ($id) {
+                    SrpContent::where('id', $id)->update($payload);
                 } else {
+                    $payload['author'] = $author;
+                    $payload['status'] = 'Published';
                     SrpContent::create($payload);
                 }
             }

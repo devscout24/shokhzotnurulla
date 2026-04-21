@@ -27,14 +27,14 @@ class SrpContent extends Model
     protected static function booted()
     {
         static::addGlobalScope('dealer', function (Builder $builder) {
-            if (auth()->check() && auth()->user()->dealer_id) {
-                $builder->where('dealer_id', auth()->user()->dealer_id);
+            if (auth()->check() && auth()->user()->current_dealer_id) {
+                $builder->where('dealer_id', auth()->user()->current_dealer_id);
             }
         });
 
         static::creating(function ($model) {
-            if (auth()->check() && auth()->user()->dealer_id) {
-                $model->dealer_id = auth()->user()->dealer_id;
+            if (auth()->check() && auth()->user()->current_dealer_id) {
+                $model->dealer_id = auth()->user()->current_dealer_id;
             }
         });
     }
