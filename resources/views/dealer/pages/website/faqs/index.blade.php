@@ -651,18 +651,26 @@
             font-weight: 500;
         }
 
-        .cat-list-count {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 26px;
-            height: 26px;
-            background: #f0f0f0;
-            color: #666;
-            font-size: 12px;
-            font-weight: 700;
-            border-radius: 6px;
-        }
+        .cat-list-count { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 26px; background: #f0f0f0; color: #666; font-size: 12px; font-weight: 700; border-radius: 6px; }
+
+        /* Custom Confirmation Modal */
+        .confirm-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 3000; display: none; backdrop-filter: blur(2px); align-items: center; justify-content: center; }
+        .confirm-modal-overlay.open { display: flex !important; }
+        .confirm-modal { background: #fff; border-radius: 8px; width: 450px; max-width: 90vw; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        .confirm-modal-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .confirm-modal-title { font-size: 14px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 10px; }
+        .confirm-modal-close { background: none; border: none; font-size: 20px; color: #aaa; cursor: pointer; }
+        .confirm-modal-body { padding: 30px 20px; font-size: 14px; color: #444; border-bottom: 1px solid #eee; }
+        .confirm-modal-footer { padding: 12px 20px; display: flex; justify-content: flex-end; gap: 10px; background: #fff; }
+
+        /* Success Toaster */
+        .toaster-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toaster { background: #28a745; color: #fff; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 12px; min-width: 250px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .toaster.show { transform: translateX(0); }
+        .toaster i { font-size: 18px; }
+        .toaster span { font-size: 13px; font-weight: 500; flex: 1; }
+        .toaster-close { background: none; border: none; color: rgba(255,255,255,0.7); font-size: 18px; cursor: pointer; padding: 0; line-height: 1; }
+        .toaster-close:hover { color: #fff; }
     </style>
 @endpush
 
@@ -826,7 +834,26 @@
                 </div>
             </div>
         </div>
+        </div>
     </div>
+
+    {{-- Custom Confirm Modal --}}
+    <div class="confirm-modal-overlay" id="confirmModalOverlay">
+        <div class="confirm-modal">
+            <div class="confirm-modal-header">
+                <div class="confirm-modal-title"><i class="bi bi-info-circle-fill" style="color: #f39c12; font-size: 18px;"></i> Are you sure?</div>
+                <button class="confirm-modal-close" id="confirmModalClose">&times;</button>
+            </div>
+            <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure you want to delete this post?</div>
+            <div class="confirm-modal-footer">
+                <button class="btn-cancel-outline" id="confirmCancelBtn" style="padding: 7px 20px;">Cancel</button>
+                <button class="btn-save-red" id="confirmContinueBtn" style="padding: 7px 20px;">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Toaster Container --}}
+    <div class="toaster-container" id="toasterContainer"></div>
 @endsection
 
 @push('page-scripts')
@@ -860,17 +887,50 @@
                         cb(null, JSON.parse(xhr.responseText || '{}'));
                     } else {
                         var msg = 'Error';
-                        try {
-                            msg = JSON.parse(xhr.responseText).message || msg;
-                        } catch (e) {}
+                        try { msg = JSON.parse(xhr.responseText).message || msg; } catch (e) {}
                         cb(msg);
                     }
                 };
-                xhr.onerror = function() {
-                    cb('Network error');
-                };
+                xhr.onerror = function() { cb('Network error'); };
                 xhr.send(data ? JSON.stringify(data) : null);
             }
+
+            function showToaster(message) {
+                var container = document.getElementById('toasterContainer');
+                var t = document.createElement('div');
+                t.className = 'toaster';
+                t.innerHTML = '<i class="bi bi-check-circle-fill"></i> <span>' + message + '</span><button class="toaster-close">&times;</button>';
+                container.appendChild(t);
+                setTimeout(function() { t.classList.add('show'); }, 10);
+                var remove = function() {
+                    t.classList.remove('show');
+                    setTimeout(function() { t.remove(); }, 400);
+                };
+                var timer = setTimeout(remove, 3000);
+                t.querySelector('.toaster-close').onclick = function() { clearTimeout(timer); remove(); };
+            }
+
+            var confirmOverlay = document.getElementById('confirmModalOverlay');
+            var confirmBtn = document.getElementById('confirmContinueBtn');
+            var confirmCancel = document.getElementById('confirmCancelBtn');
+            var confirmClose = document.getElementById('confirmModalClose');
+            var confirmText = document.getElementById('confirmModalBodyText');
+            var confirmCallback = null;
+
+            function customConfirm(text, cb) {
+                confirmText.textContent = text;
+                confirmCallback = cb;
+                confirmOverlay.classList.add('open');
+            }
+            confirmCancel.onclick = confirmClose.onclick = function() {
+                confirmOverlay.classList.remove('open');
+                confirmCallback = null;
+            };
+            confirmBtn.onclick = function() {
+                if (confirmCallback) confirmCallback();
+                confirmOverlay.classList.remove('open');
+                confirmCallback = null;
+            };
 
             function renderFaqs() {
                 var tbody = document.getElementById('faqTableBody');
@@ -1022,6 +1082,7 @@
                             categories.push(res);
                             renderCatFilter();
                             showCatList();
+                            showToaster('Category added.');
                         });
                     } else {
                         ajax('PATCH', ROUTES.catUpdate.replace('__ID__', cat.id), {
@@ -1039,28 +1100,31 @@
                             renderCatFilter();
                             renderFaqs();
                             showCatList();
+                            showToaster('Category updated.');
                         });
                     }
                 });
 
                 var delBtn = document.getElementById('catDeleteBtn');
                 if (delBtn) delBtn.addEventListener('click', function() {
-                    if (!confirm('Delete category "' + cat.name + '"?')) return;
-                    ajax('DELETE', ROUTES.catDestroy.replace('__ID__', cat.id), null, function(err) {
-                        if (err) return alert(err);
-                        categories = categories.filter(function(c) {
-                            return c.id !== cat.id;
+                    customConfirm('Delete category "' + cat.name + '"?', function() {
+                        ajax('DELETE', ROUTES.catDestroy.replace('__ID__', cat.id), null, function(err) {
+                            if (err) return alert(err);
+                            categories = categories.filter(function(c) {
+                                return c.id !== cat.id;
+                            });
+                            faqs.forEach(function(f) {
+                                if (f.faq_category_id === cat.id) {
+                                    f.faq_category_id = null;
+                                    f.category = null;
+                                }
+                            });
+                            if (activeCatFilter === cat.id) activeCatFilter = 'all';
+                            renderCatFilter();
+                            renderFaqs();
+                            showCatList();
+                            showToaster('Category deleted.');
                         });
-                        faqs.forEach(function(f) {
-                            if (f.faq_category_id === cat.id) {
-                                f.faq_category_id = null;
-                                f.category = null;
-                            }
-                        });
-                        if (activeCatFilter === cat.id) activeCatFilter = 'all';
-                        renderCatFilter();
-                        renderFaqs();
-                        showCatList();
                     });
                 });
             }
@@ -1125,6 +1189,7 @@
                         closeFaqForm();
                         renderFaqs();
                         renderCatFilter();
+                        showToaster('Post saved.');
                     });
                 } else {
                     ajax('POST', ROUTES.faqStore, payload, function(err, res) {
@@ -1133,6 +1198,7 @@
                         closeFaqForm();
                         renderFaqs();
                         renderCatFilter();
+                        showToaster('Post saved.');
                     });
                 }
             });
@@ -1141,14 +1207,16 @@
                 openFaqForm(id);
             };
             window._faqTrash = function(id) {
-                if (!confirm('Move this FAQ to trash?')) return;
-                ajax('DELETE', ROUTES.faqDestroy.replace('__ID__', id), null, function(err) {
-                    if (err) return alert(err);
-                    faqs = faqs.filter(function(f) {
-                        return f.id !== id;
+                customConfirm('Are you sure you want to delete this post?', function() {
+                    ajax('DELETE', ROUTES.faqDestroy.replace('__ID__', id), null, function(err) {
+                        if (err) return alert(err);
+                        faqs = faqs.filter(function(f) {
+                            return f.id !== id;
+                        });
+                        renderFaqs();
+                        renderCatFilter();
+                        showToaster('Post deleted.');
                     });
-                    renderFaqs();
-                    renderCatFilter();
                 });
             };
 
@@ -1222,10 +1290,10 @@
                     '<div class="bulk-col"><div class="bulk-action-del"><i class="bi bi-trash"></i></div></div>';
 
                 div.querySelector('.bulk-action-del').addEventListener('click', function() {
-                    if (confirm('Remove this row?')) {
+                    customConfirm('Remove row?', function() {
                         if (div.dataset.id) div.dataset.deleted = 'true';
                         div.style.display = 'none';
-                    }
+                    });
                 });
                 bulkRowsContainer.appendChild(div);
             }
@@ -1252,6 +1320,7 @@
                     bulkOverlay.classList.remove('open');
                     renderFaqs();
                     renderCatFilter();
+                    showToaster('Bulk update successful.');
                 });
             });
 

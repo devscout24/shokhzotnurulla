@@ -116,6 +116,38 @@
 .field-input { border: 1px solid #e0e0e0 !important; padding: 8px 12px !important; font-size: 13px !important; }
 .field-input::placeholder { color: #ccc !important; }
 .field-select { border: 1px solid #e0e0e0 !important; padding: 8px 12px !important; font-size: 13px !important; color: #444 !important; }
+.field-select { border: 1px solid #e0e0e0 !important; padding: 8px 12px !important; font-size: 13px !important; color: #444 !important; }
+
+/* Custom Confirmation Modal */
+.confirm-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 3000; display: none; backdrop-filter: blur(2px); align-items: center; justify-content: center; }
+.confirm-modal-overlay.open { display: flex !important; }
+.confirm-modal { background: #fff; border-radius: 8px; width: 450px; max-width: 90vw; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
+.confirm-modal-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+.confirm-modal-title { font-size: 14px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 10px; }
+.confirm-modal-close { background: none; border: none; font-size: 20px; color: #aaa; cursor: pointer; }
+.confirm-modal-body { padding: 30px 20px; font-size: 14px; color: #444; border-bottom: 1px solid #eee; }
+.confirm-modal-footer { padding: 12px 20px; display: flex; justify-content: flex-end; gap: 10px; background: #fff; }
+
+/* Success Toaster */
+.toaster-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+.toaster { background: #28a745; color: #fff; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 12px; min-width: 250px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+.toaster.show { transform: translateX(0); }
+.toaster i { font-size: 18px; }
+.toaster span { font-size: 13px; font-weight: 500; flex: 1; }
+.toaster-close { background: none; border: none; color: rgba(255,255,255,0.7); font-size: 18px; cursor: pointer; padding: 0; line-height: 1; }
+.toaster-close:hover { color: #fff; }
+
+/* RTE Styling */
+.bulk-rte { border: 1px solid #e0e0e0; border-radius: 4px; background: #fff; overflow: hidden; margin-top: 10px; }
+.rte-toolbar { background: #fff; border-bottom: 1px solid #eee; padding: 8px 15px; display: flex; flex-direction: row; align-items: center; gap: 15px; flex-wrap: nowrap; }
+.rte-tool-group { display: flex; flex-direction: row; align-items: center; gap: 12px; border-right: 1px solid #eee; padding-right: 15px; flex-wrap: nowrap; }
+.rte-tool-group:last-child { border-right: none; padding-right: 0; }
+.rte-btn { background: none; border: none; padding: 5px; cursor: pointer; color: #777; display: flex; align-items: center; justify-content: center; transition: all .2s; outline: none; }
+.rte-btn:hover { color: #000; background: #f5f5f5; border-radius: 3px; }
+.rte-btn i { font-size: 15px; line-height: 1; }
+.rte-select-wrap { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.rte-select { border: none; background: transparent; font-size: 13px; font-weight: 500; color: #444; outline: none; cursor: pointer; appearance: none; padding: 0; margin: 0; }
+.rte-textarea { width: 100% !important; border: none !important; outline: none !important; font-size: 15px !important; color: #333 !important; min-height: 250px !important; padding: 30px 40px !important; line-height: 1.7 !important; background: #fff !important; resize: none !important; }
 </style>
 @endpush
 
@@ -285,6 +317,24 @@
         </div>
     </div>
 </div>
+
+{{-- Custom Confirm Modal --}}
+<div class="confirm-modal-overlay" id="confirmModalOverlay">
+    <div class="confirm-modal">
+        <div class="confirm-modal-header">
+            <div class="confirm-modal-title"><i class="bi bi-info-circle-fill" style="color: #f39c12; font-size: 18px;"></i> Are you sure?</div>
+            <button class="confirm-modal-close" id="confirmModalClose">&times;</button>
+        </div>
+        <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure you want to delete this post?</div>
+        <div class="confirm-modal-footer">
+            <button class="btn-cancel-outline" id="confirmCancelBtn" style="padding: 7px 20px;">Cancel</button>
+            <button class="btn-save-red" id="confirmContinueBtn" style="padding: 7px 20px;">Continue</button>
+        </div>
+    </div>
+</div>
+
+{{-- Toaster Container --}}
+<div class="toaster-container" id="toasterContainer"></div>
 @endsection
 
 @push('page-scripts')
@@ -308,11 +358,51 @@
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('Accept', 'application/json');
         xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300) cb(null, JSON.parse(xhr.responseText || '{}'));
-            else cb('Error');
+            if (xhr.status >= 200 && xhr.status < 300) {
+                cb(null, JSON.parse(xhr.responseText || '{}'));
+            } else {
+                var msg = 'Error';
+                try { msg = JSON.parse(xhr.responseText).message || msg; } catch(e){}
+                cb(msg);
+            }
         };
+        xhr.onerror = function(){ cb('Network error'); };
         xhr.send(data ? JSON.stringify(data) : null);
     }
+
+    function showToaster(message) {
+        var container = document.getElementById('toasterContainer');
+        var t = document.createElement('div');
+        t.className = 'toaster';
+        t.innerHTML = '<i class="bi bi-check-circle-fill"></i> <span>' + message + '</span><button class="toaster-close">&times;</button>';
+        container.appendChild(t);
+        setTimeout(function(){ t.classList.add('show'); }, 10);
+        var remove = function(){
+            t.classList.remove('show');
+            setTimeout(function(){ t.remove(); }, 400);
+        };
+        var timer = setTimeout(remove, 3000);
+        t.querySelector('.toaster-close').onclick = function(){ clearTimeout(timer); remove(); };
+    }
+
+    var confirmOverlay = document.getElementById('confirmModalOverlay');
+    var confirmBtn = document.getElementById('confirmContinueBtn');
+    var confirmCancel = document.getElementById('confirmCancelBtn');
+    var confirmClose = document.getElementById('confirmModalClose');
+    var confirmText = document.getElementById('confirmModalBodyText');
+    var confirmCallback = null;
+
+    function customConfirm(text, cb) {
+        confirmText.textContent = text;
+        confirmCallback = cb;
+        confirmOverlay.classList.add('open');
+    }
+    confirmCancel.onclick = confirmClose.onclick = function(){ confirmOverlay.classList.remove('open'); confirmCallback = null; };
+    confirmBtn.onclick = function(){
+        if(confirmCallback) confirmCallback();
+        confirmOverlay.classList.remove('open');
+        confirmCallback = null;
+    };
 
     function renderTable(){
         var tbody = document.getElementById('srpTableBody');
@@ -395,23 +485,27 @@
                 var idx = contents.findIndex(function(c){ return c.id===editingId; });
                 contents[idx] = res;
                 document.getElementById('srpBackBtn').click(); renderTable();
+                showToaster('Post saved.');
             });
         } else {
             ajax('POST', ROUTES.store, payload, function(err, res){
                 if(err) return alert(err);
                 contents.push(res);
                 document.getElementById('srpBackBtn').click(); renderTable();
+                showToaster('Post saved.');
             });
         }
     });
 
     window._srpEdit = function(id){ openForm(id); };
     window._srpTrash = function(id){
-        if(!confirm('Delete this item?')) return;
-        ajax('DELETE', ROUTES.destroy.replace('__ID__', id), null, function(err){
-            if(err) return alert(err);
-            contents = contents.filter(function(c){ return c.id!==id; });
-            renderTable();
+        customConfirm('Are you sure you want to delete this post?', function(){
+            ajax('DELETE', ROUTES.destroy.replace('__ID__', id), null, function(err){
+                if(err) return alert(err);
+                contents = contents.filter(function(c){ return c.id!==id; });
+                renderTable();
+                showToaster('Post deleted.');
+            });
         });
     };
 
@@ -448,10 +542,10 @@
             '<div class="bulk-action-del"><i class="bi bi-trash"></i></div>';
         
         div.querySelector('.bulk-action-del').addEventListener('click', function(){
-            if(confirm('Remove row?')){
+            customConfirm('Remove row?', function(){
                 if(div.dataset.id) div.dataset.deleted = 'true';
                 div.style.display = 'none';
-            }
+            });
         });
         bulkRowsContainer.appendChild(div);
     }
@@ -477,6 +571,7 @@
             contents = res;
             bulkOverlay.classList.remove('open');
             renderTable();
+            showToaster('Bulk update successful.');
         });
     });
 
