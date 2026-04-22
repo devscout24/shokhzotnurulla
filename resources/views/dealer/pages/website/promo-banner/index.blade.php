@@ -1,5 +1,5 @@
 @extends('layouts.dealer.app')
-@section('title', __('Reusable Content: Static Page Content') . ' | ' . __(config('app.name')))
+@section('title', __('Reusable Content: Promo') . ' | ' . __(config('app.name')))
 
 @push('page-styles')
     <style>
@@ -22,6 +22,10 @@
         .rc-btn-add { display: inline-flex; align-items: center; gap: 8px; background: #c0392b; color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
         .rc-btn-add:hover { background: #a93226; }
 
+        /* Filter Row */
+        .rc-filter-row { padding: 20px 25px; border-bottom: 1px solid #f0f0f0; background: #fff; }
+        .rc-filter-label { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 8px; display: block; }
+
         /* Table Styling */
         .rc-table { width: 100%; border-collapse: collapse; }
         .rc-table th { padding: 18px 20px; font-weight: 700; color: #333; text-align: left; font-size: 12px; border-bottom: 1px solid #f0f0f0; background: #fff; }
@@ -39,10 +43,11 @@
         .rc-row-btn.trash-btn:hover { background: #fff0f0; border-color: #f5c6cb; }
 
         /* Status Dot */
-        .faq-status-wrap { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #444; }
-        .faq-status-dot { width: 8px; height: 8px; border-radius: 50%; }
-        .faq-status-dot.published { background: #28a745 !important; }
-        .faq-status-dot.draft { background: #ffc107 !important; }
+        .status-wrap { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #444; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-dot.active { background: #28a745 !important; }
+        .status-dot.expired { background: #c0392b !important; }
+        .status-dot.draft { background: #ffc107 !important; }
 
         /* Form Controls */
         .bulk-col-label { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 8px; display: block; }
@@ -52,7 +57,7 @@
         .bulk-select { width: 100%; padding: 8px 12px; border: 1px solid #dcdcdc; border-radius: 4px; font-size: 13px; color: #333; background: #fff; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%23999' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
         .bulk-textarea { width: 100%; padding: 12px; border: 1px solid #dcdcdc; border-radius: 4px; font-size: 13px; color: #333; background: #fff; min-height: 38px; resize: vertical; }
 
-        /* RTE Precision Pass */
+        /* RTE */
         .bulk-rte { border: 1px solid #e0e0e0 !important; border-radius: 4px !important; background: #fff !important; overflow: hidden !important; margin-top: 10px !important; }
         .rte-toolbar { background: #fff !important; border-bottom: 1px solid #eee !important; padding: 8px 15px !important; display: flex !important; flex-direction: row !important; align-items: center !important; gap: 15px !important; flex-wrap: nowrap !important; }
         .rte-tool-group { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 12px !important; border-right: 1px solid #eee !important; padding-right: 15px !important; flex-wrap: nowrap !important; }
@@ -60,28 +65,22 @@
         .rte-btn { background: none !important; border: none !important; padding: 5px !important; cursor: pointer !important; color: #777 !important; display: flex !important; align-items: center !important; justify-content: center !important; transition: all .2s !important; box-shadow: none !important; outline: none !important; }
         .rte-btn:hover { color: #000 !important; background: #f5f5f5 !important; border-radius: 3px !important; }
         .rte-btn i { font-size: 15px !important; line-height: 1 !important; }
-        .rte-select-wrap { display: flex !important; align-items: center !important; gap: 6px !important; cursor: pointer !important; }
-        .rte-select { border: none !important; background: transparent !important; font-size: 13px !important; font-weight: 500 !important; color: #444 !important; outline: none !important; cursor: pointer !important; appearance: none !important; padding: 0 !important; margin: 0 !important; }
         .rte-textarea { width: 100% !important; border: none !important; outline: none !important; font-size: 15px !important; color: #333 !important; min-height: 250px !important; padding: 30px 40px !important; line-height: 1.7 !important; background: #fff !important; resize: none !important; box-shadow: none !important; }
-
-        /* Field Hint */
-        .field-hint { padding: 12px 15px; background: #f9f9f9; border: 1px solid #eee; border-top: none; font-size: 12px; color: #666; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; line-height: 1.5; }
-        .slug-input-wrap .bulk-input { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
 
         /* Modals */
         .faq-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 2000; display: none; backdrop-filter: blur(2px); }
         .faq-modal-overlay.open { display: flex !important; align-items: center; justify-content: center; }
         .faq-modal { background: #fff; border-radius: 14px; width: 550px; max-width: 95vw; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
 
-        /* Bulk Edit Modal Redesign */
+        /* Bulk Edit Modal */
         #bulkModalOverlay .faq-modal { width: 95vw; max-width: 1600px; height: 90vh; border-radius: 8px; }
         .bulk-modal-content { display: flex; flex-direction: column; height: 100%; background: #fdfdfd; }
         .bulk-header-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 25px; border-bottom: 1px solid #eee; background: #fff; }
         .bulk-body { flex: 1; overflow: auto; padding: 0 25px 25px 25px; }
-        .bulk-table-header { display: grid; grid-template-columns: 160px 150px 180px 180px 200px 140px 180px 300px 110px 40px; gap: 12px; padding: 12px 15px; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; margin-bottom: 10px; width: max-content; min-width: 100%; }
+        .bulk-table-header { display: grid; grid-template-columns: 200px 180px 150px 150px 180px 200px 300px 120px 40px; gap: 12px; padding: 12px 15px; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; margin-bottom: 10px; width: max-content; min-width: 100%; }
         .bulk-header-label { font-size: 11px; font-weight: 700; color: #444; }
         .bulk-header-label span { color: #c0392b; margin-left: 2px; }
-        .bulk-row { display: grid; grid-template-columns: 160px 150px 180px 180px 200px 140px 180px 300px 110px 40px; gap: 12px; padding: 15px; border: 1px solid #eef0f2; border-radius: 6px; margin-bottom: 10px; background: #fff; align-items: flex-start; transition: all .2s; width: max-content; min-width: 100%; }
+        .bulk-row { display: grid; grid-template-columns: 200px 180px 150px 150px 180px 200px 300px 120px 40px; gap: 12px; padding: 15px; border: 1px solid #eef0f2; border-radius: 6px; margin-bottom: 10px; background: #fff; align-items: flex-start; transition: all .2s; width: max-content; min-width: 100%; }
         .bulk-row:hover { border-color: #d1d5db; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
         .bulk-footer { padding: 15px 25px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 12px; background: #fff; }
 
@@ -120,20 +119,20 @@
 <main class="main-content" id="mainContent" style="padding:0; background: #fafbfc; min-height: 100vh;">
     <div style="padding: 30px 45px 0 45px;">
         <div class="page-header" style="margin-bottom: 20px; border: none;">
-            <h2 class="view-title" style="font-size: 24px; font-weight: 700; color: #222;">{{ __('Reusable Content: Static Page Content') }}</h2>
+            <h2 class="view-title" style="font-size: 24px; font-weight: 700; color: #222;">{{ __('Reusable Content: Promo') }}</h2>
             <div class="rc-header-actions">
                 <button class="rc-btn-outline" type="button" id="manageCatBtn"><i class="bi bi-folder2-open"></i> {{ __('Manage Categories') }}</button>
                 <button class="rc-btn-outline" type="button" id="bulkEditBtn"><i class="bi bi-pencil-square"></i> {{ __('Bulk Edit') }}</button>
-                <button class="rc-btn-add" type="button" id="addSpcBtn"><i class="bi bi-plus-lg"></i> {{ __('Add New Static Page Content') }}</button>
+                <button class="rc-btn-add" type="button" id="addBtn"><i class="bi bi-plus-lg"></i> {{ __('Add New Promo') }}</button>
             </div>
         </div>
 
         <div class="rc-wrapper">
             <div class="rc-sidebar">
                 <a href="{{ route('dealer.website.faqs.index') }}" class="rc-sidebar-item"><i class="bi bi-question-circle"></i> FAQs</a>
-                <a href="{{ route('dealer.website.promo-banners.index') }}" class="rc-sidebar-item"><i class="bi bi-megaphone"></i> OEM Promo Banners</a>
+                <a href="{{ route('dealer.website.promo-banners.index') }}" class="rc-sidebar-item active"><i class="bi bi-megaphone"></i> OEM Promo Banners</a>
                 <a href="{{ route('dealer.website.srp-content.index') }}" class="rc-sidebar-item"><i class="bi bi-file-earmark-text"></i> Content: Search Results (SRP)</a>
-                <a href="{{ route('dealer.website.static-page-content.index') }}" class="rc-sidebar-item active"><i class="bi bi-file-text"></i> Static Page Content</a>
+                <a href="{{ route('dealer.website.static-page-content.index') }}" class="rc-sidebar-item"><i class="bi bi-file-text"></i> Static Page Content</a>
                 <a href="#" class="rc-sidebar-item"><i class="bi bi-star"></i> Customer Reviews</a>
                 <a href="#" class="rc-sidebar-item"><i class="bi bi-person"></i> Staff Members</a>
                 <a href="#" class="rc-sidebar-item"><i class="bi bi-briefcase"></i> Job Posts</a>
@@ -143,9 +142,17 @@
             
             <div style="flex: 1; display: flex; flex-direction: column;">
                 {{-- List View --}}
-                <div id="spcListView">
+                <div id="listView">
                     <div class="rc-main-container">
-                        <table class="rc-table" id="spcTable">
+                        <div class="rc-filter-row">
+                            <label class="rc-filter-label">Filter Status</label>
+                            <select id="statusFilter" class="bulk-select" style="width: 250px;">
+                                <option value="Active">Currently Active</option>
+                                <option value="Expired">Expired</option>
+                                <option value="All">All Items</option>
+                            </select>
+                        </div>
+                        <table class="rc-table" id="promoTable">
                             <thead>
                                 <tr>
                                     <th style="width: 50%;">Title</th>
@@ -154,88 +161,75 @@
                                     <th style="width: 15%;">Status</th>
                                 </tr>
                             </thead>
-                            <tbody id="spcTableBody"></tbody>
+                            <tbody id="promoTableBody"></tbody>
                         </table>
                     </div>
                 </div>
 
                 {{-- Add/Edit Form View --}}
-                <div id="spcFormView" style="display: none;">
+                <div id="formView" style="display: none;">
                     <div style="margin-bottom: 20px;">
-                        <button class="rc-btn-outline" id="spcBackBtn" style="height: 38px;"><i class="bi bi-chevron-left"></i> Go Back</button>
+                        <button class="rc-btn-outline" id="backBtn" style="height: 38px;"><i class="bi bi-chevron-left"></i> Go Back</button>
                     </div>
                     <div class="rc-main-container" style="padding: 0;">
                         <div style="padding: 20px 30px; border-bottom: 1px solid #f0f0f0;">
-                            <h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 0;" id="formViewTitle">Add Static Page Content</h3>
+                            <h3 style="font-size: 15px; font-weight: 600; color: #333; margin: 0;" id="formViewTitle">Add New Promo</h3>
                         </div>
                         <div style="padding: 30px;">
                             <div style="margin-bottom: 25px;">
-                                <label class="bulk-col-label">H1 Override <span>*</span></label>
-                                <input type="text" id="spcH1Input" class="bulk-input" placeholder="Main header of the page">
+                                <label class="bulk-col-label">Title <span>*</span></label>
+                                <input type="text" id="titleInput" class="bulk-input" placeholder="Promo title">
                             </div>
 
-                            <div style="margin-bottom: 25px;">
-                                <label class="bulk-col-label">Meta Title / Title Tag Override (optional)</label>
-                                <input type="text" id="spcMetaTitleInput" class="bulk-input" placeholder="Meta title">
+                            <div style="display: flex; gap: 20px; margin-bottom: 25px;">
+                                <div style="flex: 1;">
+                                    <label class="bulk-col-label">Category</label>
+                                    <select id="categorySelect" class="bulk-select"></select>
+                                </div>
+                                <div style="flex: 1;">
+                                    <label class="bulk-col-label">Status</label>
+                                    <select id="statusInput" class="bulk-select">
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div style="margin-bottom: 25px;">
-                                <label class="bulk-col-label">Meta Description (optional override - ideally 160 characters or less)</label>
-                                <textarea id="spcMetaDescInput" class="bulk-textarea" placeholder="Enter meta description"></textarea>
-                            </div>
-
-                            <div style="margin-bottom: 25px;" class="slug-input-wrap">
-                                <label class="bulk-col-label">Slug to map content to <span>*</span></label>
-                                <input type="text" id="spcSlugInput" class="bulk-input" placeholder="/incentives">
-                                <div class="field-hint">
-                                    Exact match: <strong>/incentives</strong> or <strong>/incentives?make[]=Chevrolet</strong>. Add '*' for wildcard: <strong>/incentives*</strong> matches any params. Use | for OR: <strong>/incentives?make[]=Chrysler|Dodge|Jeep|Ram</strong> matches any of those makes.
+                            <div style="display: flex; gap: 20px; margin-bottom: 25px;">
+                                <div style="flex: 1;">
+                                    <label class="bulk-col-label">Start Date</label>
+                                    <input type="datetime-local" id="startDateInput" class="bulk-input">
+                                </div>
+                                <div style="flex: 1;">
+                                    <label class="bulk-col-label">End Date</label>
+                                    <input type="datetime-local" id="endDateInput" class="bulk-input">
                                 </div>
                             </div>
 
                             <div style="margin-bottom: 25px;">
-                                <label class="bulk-col-label">Content Placement (defaults to top of page)</label>
-                                <select id="spcPlacementInput" class="bulk-select">
-                                    <option value="top">Top of Page</option>
-                                    <option value="bottom">Bottom of Page</option>
-                                </select>
-                            </div>
-
-                            <div style="margin-bottom: 25px;">
-                                <label class="bulk-col-label">Category</label>
-                                <select id="spcCategorySelect" class="bulk-select"></select>
+                                <label class="bulk-col-label">Link URL (optional)</label>
+                                <input type="text" id="linkUrlInput" class="bulk-input" placeholder="https://...">
                             </div>
 
                             <div style="margin-bottom: 30px;">
-                                <label class="bulk-col-label">Page Content</label>
+                                <label class="bulk-col-label">Content / Description</label>
                                 <div class="bulk-rte">
                                     <div class="rte-toolbar">
-                                        <div class="rte-tool-group">
-                                            <div class="rte-select-wrap"><select class="rte-select"><option>Normal</option></select><i class="bi bi-chevron-expand" style="font-size:10px;color:#999;"></i></div>
-                                        </div>
                                         <div class="rte-tool-group">
                                             <button class="rte-btn" type="button"><i class="bi bi-type-bold"></i></button>
                                             <button class="rte-btn" type="button"><i class="bi bi-type-italic"></i></button>
                                             <button class="rte-btn" type="button"><i class="bi bi-type-underline"></i></button>
                                         </div>
                                         <div class="rte-tool-group">
-                                            <button class="rte-btn" type="button"><i class="bi bi-text-left"></i></button>
-                                        </div>
-                                        <div class="rte-tool-group">
-                                            <button class="rte-btn" type="button"><i class="bi bi-list-task"></i></button>
-                                            <button class="rte-btn" type="button"><i class="bi bi-list-ol"></i></button>
-                                            <button class="rte-btn" type="button"><i class="bi bi-text-indent-left"></i></button>
-                                            <button class="rte-btn" type="button"><i class="bi bi-text-indent-right"></i></button>
-                                        </div>
-                                        <div class="rte-tool-group">
                                             <button class="rte-btn" type="button"><i class="bi bi-link-45deg"></i></button>
                                         </div>
                                     </div>
-                                    <textarea id="spcContentInput" class="rte-textarea" placeholder="Start typing your content..."></textarea>
+                                    <textarea id="contentInput" class="rte-textarea" placeholder="Enter promo details..."></textarea>
                                 </div>
                             </div>
 
                             <div style="display: flex; justify-content: flex-start;">
-                                <button class="btn-save-red" id="spcSaveBtn"><i class="bi bi-check-lg"></i> Save</button>
+                                <button class="btn-save-red" id="saveBtn"><i class="bi bi-check-lg"></i> Save</button>
                             </div>
                         </div>
                     </div>
@@ -261,7 +255,7 @@
     <div class="faq-modal">
         <div class="bulk-modal-content">
             <div class="bulk-header-top">
-                <h3 class="faq-modal-title" style="font-size: 14px; font-weight: 600;">Bulk Edit Content: Static Page Content</h3>
+                <h3 class="faq-modal-title" style="font-size: 14px; font-weight: 600;">Bulk Edit: OEM Promo Banners</h3>
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <button class="rc-btn-outline" id="bulkAddRowBtn" style="padding: 7px 15px; background: #fff; height: 34px;"><i class="bi bi-plus-lg"></i> Add Row</button>
                     <button class="faq-modal-close" id="bulkModalClose" style="font-size: 20px;">&times;</button>
@@ -269,15 +263,14 @@
             </div>
             <div class="bulk-body">
                 <div class="bulk-table-header">
-                    <div class="bulk-header-label">Nickname <span>*</span></div>
-                    <div class="bulk-header-label">Slug <span>*</span></div>
-                    <div class="bulk-header-label">H1 Override</div>
-                    <div class="bulk-header-label">Meta Title</div>
-                    <div class="bulk-header-label">Meta Description</div>
-                    <div class="bulk-header-label">Placement</div>
+                    <div class="bulk-header-label">Title <span>*</span></div>
                     <div class="bulk-header-label">Category</div>
-                    <div class="bulk-header-label">Page Content</div>
                     <div class="bulk-header-label">Status</div>
+                    <div class="bulk-header-label">Start Date</div>
+                    <div class="bulk-header-label">End Date</div>
+                    <div class="bulk-header-label">Link URL</div>
+                    <div class="bulk-header-label">Content</div>
+                    <div class="bulk-header-label">Sort Order</div>
                     <div></div>
                 </div>
                 <div id="bulkRowsContainer"></div>
@@ -297,7 +290,7 @@
             <div class="confirm-modal-title"><i class="bi bi-info-circle-fill" style="color: #f39c12; font-size: 18px;"></i> Are you sure?</div>
             <button class="confirm-modal-close" id="confirmModalClose">&times;</button>
         </div>
-        <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure you want to delete this post?</div>
+        <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure?</div>
         <div class="confirm-modal-footer">
             <button class="btn-cancel-outline" id="confirmCancelBtn" style="padding: 7px 20px;">Cancel</button>
             <button class="btn-save-red" id="confirmContinueBtn" style="padding: 7px 20px;">Continue</button>
@@ -314,16 +307,16 @@
 (function(){
     var csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     var ROUTES = {
-        store:          '{{ route("dealer.website.static-page-content.store") }}',
-        update:         '{{ route("dealer.website.static-page-content.update", ["staticPageContent" => "__ID__"]) }}',
-        destroy:        '{{ route("dealer.website.static-page-content.destroy", ["staticPageContent" => "__ID__"]) }}',
-        catStore:       '{{ route("dealer.website.static-page-content.categories.store") }}',
-        catUpdate:      '{{ route("dealer.website.static-page-content.categories.update", ["staticPageCategory" => "__ID__"]) }}',
-        catDestroy:     '{{ route("dealer.website.static-page-content.categories.destroy", ["staticPageCategory" => "__ID__"]) }}',
-        bulkUpdate:     '{{ route("dealer.website.static-page-content.bulk-update") }}',
+        store:          '{{ route("dealer.website.promo-banners.store") }}',
+        update:         '{{ route("dealer.website.promo-banners.update", ["promoBanner" => "__ID__"]) }}',
+        destroy:        '{{ route("dealer.website.promo-banners.destroy", ["promoBanner" => "__ID__"]) }}',
+        catStore:       '{{ route("dealer.website.promo-banners.categories.store") }}',
+        catUpdate:      '{{ route("dealer.website.promo-banners.categories.update", ["promoCategory" => "__ID__"]) }}',
+        catDestroy:     '{{ route("dealer.website.promo-banners.categories.destroy", ["promoCategory" => "__ID__"]) }}',
+        bulkUpdate:     '{{ route("dealer.website.promo-banners.bulk-update") }}',
     };
 
-    var contents = @json($contents);
+    var banners = @json($banners);
     var categories = @json($categories);
     var editingId = null;
 
@@ -380,31 +373,52 @@
         confirmCallback = null;
     };
 
+    function getDisplayStatus(b) {
+        var now = new Date();
+        var start = b.start_date ? new Date(b.start_date) : null;
+        var end = b.end_date ? new Date(b.end_date) : null;
+        
+        if (b.status === 'Inactive') return 'Draft';
+        if (start && now < start) return 'Scheduled';
+        if (end && now > end) return 'Expired';
+        return 'Active';
+    }
+
     function renderTable(){
-        var tbody = document.getElementById('spcTableBody');
+        var filter = document.getElementById('statusFilter').value;
+        var tbody = document.getElementById('promoTableBody');
         var html = '';
-        contents.forEach(function(c){
-            var catName = c.category ? c.category.name : 'Uncategorized';
-            var dotClass = c.status === 'Published' ? 'published' : 'draft';
+        var filtered = banners.filter(function(b){
+            var status = getDisplayStatus(b);
+            if (filter === 'Active') return status === 'Active';
+            if (filter === 'Expired') return status === 'Expired';
+            return true;
+        });
+
+        filtered.forEach(function(b){
+            var catName = b.category ? b.category.name : 'Uncategorized';
+            var status = getDisplayStatus(b);
+            var dotClass = status.toLowerCase();
+            
             html += '<tr>' +
                 '<td>' +
                     '<div class="rc-title-cell">' +
                         '<span class="rc-drag"><i class="bi bi-list"></i></span>' +
                         '<div class="rc-content-wrap">' +
-                            '<div class="rc-nickname">'+(c.nickname || c.slug)+'</div>' +
+                            '<div class="rc-nickname">'+b.title+'</div>' +
                             '<div class="rc-row-actions">' +
-                                '<a href="#" class="rc-row-btn" onclick="window._spcEdit('+c.id+');return false;"><i class="bi bi-pencil-square"></i> Edit</a>' +
-                                '<button class="rc-row-btn trash-btn" onclick="window._spcTrash('+c.id+')"><i class="bi bi-trash"></i> Trash</button>' +
+                                '<a href="#" class="rc-row-btn" onclick="window._edit('+b.id+');return false;"><i class="bi bi-pencil-square"></i> Edit</a>' +
+                                '<button class="rc-row-btn trash-btn" onclick="window._trash('+b.id+')"><i class="bi bi-trash"></i> Trash</button>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
                 '</td>' +
                 '<td><span style="color:#666; font-size:14px;">'+catName+'</span></td>' +
-                '<td><span style="color:#666; font-size:14px;">'+(c.author||'System')+'</span></td>' +
+                '<td><span style="color:#666; font-size:14px;">'+(b.author||'System')+'</span></td>' +
                 '<td>' +
-                    '<div class="faq-status-wrap">' +
-                        '<span class="faq-status-dot '+dotClass+'"></span>' +
-                        '<span style="font-size:14px;color:#444;">'+c.status+'</span>' +
+                    '<div class="status-wrap">' +
+                        '<span class="status-dot '+dotClass+'"></span>' +
+                        '<span style="font-size:14px;color:#444;">'+(status === 'Active' ? 'Currently Active' : status)+'</span>' +
                     '</div>' +
                 '</td>' +
                 '</tr>';
@@ -412,18 +426,20 @@
         tbody.innerHTML = html || '<tr><td colspan="4" style="text-align:center;padding:50px;color:#999;">No results found.</td></tr>';
     }
 
-    var listView = document.getElementById('spcListView');
-    var formView = document.getElementById('spcFormView');
+    document.getElementById('statusFilter').onchange = renderTable;
 
-    document.getElementById('addSpcBtn').addEventListener('click', function(){ openForm(null); });
-    document.getElementById('spcBackBtn').addEventListener('click', function(){
+    var listView = document.getElementById('listView');
+    var formView = document.getElementById('formView');
+
+    document.getElementById('addBtn').addEventListener('click', function(){ openForm(null); });
+    document.getElementById('backBtn').addEventListener('click', function(){
         formView.style.display = 'none';
         listView.style.display = 'block';
         editingId = null;
     });
 
     function populateCategorySelect(selectedId){
-        var sel = document.getElementById('spcCategorySelect');
+        var sel = document.getElementById('categorySelect');
         var html = '<option value="">-- Uncategorized --</option>';
         categories.forEach(function(cat){
             html += '<option value="'+cat.id+'"'+(cat.id == selectedId ? ' selected' : '')+'>'+cat.name+'</option>';
@@ -433,73 +449,63 @@
 
     function openForm(id){
         editingId = id;
-        var item = id ? contents.find(function(c){ return c.id===id; }) : null;
-        document.getElementById('formViewTitle').textContent = item ? 'Edit Static Page Content' : 'Add Static Page Content';
+        var item = id ? banners.find(function(b){ return b.id===id; }) : null;
+        document.getElementById('formViewTitle').textContent = item ? 'Edit Promo' : 'Add New Promo';
         
-        document.getElementById('spcH1Input').value = item ? (item.h1_override||'') : '';
-        document.getElementById('spcMetaTitleInput').value = item ? (item.meta_title||'') : '';
-        document.getElementById('spcMetaDescInput').value = item ? (item.meta_description||'') : '';
-        document.getElementById('spcSlugInput').value = item ? item.slug : '';
-        document.getElementById('spcPlacementInput').value = item ? item.placement : 'top';
-        populateCategorySelect(item ? item.static_page_category_id : '');
+        document.getElementById('titleInput').value = item ? item.title : '';
+        document.getElementById('statusInput').value = item ? item.status : 'Active';
+        document.getElementById('startDateInput').value = item && item.start_date ? item.start_date.substring(0,16) : '';
+        document.getElementById('endDateInput').value = item && item.end_date ? item.end_date.substring(0,16) : '';
+        document.getElementById('linkUrlInput').value = item ? (item.link_url||'') : '';
+        populateCategorySelect(item ? item.promo_category_id : '');
         
-        var contentInput = document.getElementById('spcContentInput');
-        contentInput.value = item ? (item.content||'') : '';
+        document.getElementById('contentInput').value = item ? (item.content||'') : '';
         
         listView.style.display = 'none';
         formView.style.display = 'block';
-
-        // Auto-resize
-        contentInput.style.height = 'auto';
-        contentInput.style.height = (contentInput.scrollHeight > 250 ? contentInput.scrollHeight : 250) + 'px';
-        contentInput.addEventListener('input', function(){
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight > 250 ? this.scrollHeight : 250) + 'px';
-        });
     }
 
-    document.getElementById('spcSaveBtn').addEventListener('click', function(){
+    document.getElementById('saveBtn').addEventListener('click', function(){
         var payload = {
-            nickname:         document.getElementById('spcH1Input').value,
-            h1_override:      document.getElementById('spcH1Input').value,
-            meta_title:       document.getElementById('spcMetaTitleInput').value,
-            meta_description: document.getElementById('spcMetaDescInput').value,
-            slug:             document.getElementById('spcSlugInput').value.trim(),
-            placement:        document.getElementById('spcPlacementInput').value,
-            static_page_category_id: document.getElementById('spcCategorySelect').value || null,
-            content:          document.getElementById('spcContentInput').value,
-            status:           'Published'
+            title:             document.getElementById('titleInput').value.trim(),
+            promo_category_id: document.getElementById('categorySelect').value || null,
+            status:            document.getElementById('statusInput').value,
+            start_date:        document.getElementById('startDateInput').value || null,
+            end_date:          document.getElementById('endDateInput').value || null,
+            link_url:          document.getElementById('linkUrlInput').value.trim(),
+            content:           document.getElementById('contentInput').value.trim()
         };
 
-        if(!payload.slug || !payload.h1_override) return alert('H1 and Slug are required');
+        if(!payload.title) return alert('Title is required');
+        
         if(editingId){
             ajax('PATCH', ROUTES.update.replace('__ID__', editingId), payload, function(err, res){
                 if(err) return alert(err);
-                var idx = contents.findIndex(function(c){ return c.id===editingId; });
-                if(idx>-1) contents[idx] = res;
-                document.getElementById('spcBackBtn').click(); 
+                var idx = banners.findIndex(function(b){ return b.id===editingId; });
+                if(idx>-1) banners[idx] = res;
+                document.getElementById('backBtn').click(); 
                 renderTable();
-                showToaster('Post saved.');
+                showToaster('Promo saved.');
             });
         } else {
             ajax('POST', ROUTES.store, payload, function(err, res){
                 if(err) return alert(err);
-                contents.push(res);
-                document.getElementById('spcBackBtn').click(); 
+                banners.push(res);
+                document.getElementById('backBtn').click(); 
                 renderTable();
-                showToaster('Post saved.');
+                showToaster('Promo saved.');
             });
         }
     });
 
-    window._spcEdit = function(id){ openForm(id); };
-    window._spcTrash = function(id){
-        customConfirm('Are you sure you want to delete this post?', function(){
+    window._edit = function(id){ openForm(id); };
+    window._trash = function(id){
+        customConfirm('Are you sure you want to delete this promo?', function(){
             ajax('DELETE', ROUTES.destroy.replace('__ID__', id), null, function(err){
                 if(err) return alert(err);
-                contents = contents.filter(function(c){ return c.id!==id; });
+                banners = banners.filter(function(b){ return b.id!==id; });
                 renderTable();
-                showToaster('Post deleted.');
+                showToaster('Promo deleted.');
             });
         });
     };
@@ -514,7 +520,7 @@
         var body = document.getElementById('catModalBody');
         var html = '';
         categories.forEach(function(c){
-            var count = c.contents_count || 0;
+            var count = c.banners_count || 0;
             html += '<div class="cat-list-item" data-id="'+c.id+'"><div class="cat-list-left"><span class="cat-list-name">'+c.name+'</span> <span class="cat-list-count">'+count+'</span></div><span class="cat-list-arrow"><i class="bi bi-chevron-right"></i></span></div>';
         });
         html += '<div style="padding:25px; text-align:center;"><button class="rc-btn-add" id="catAddNewBtn"><i class="bi bi-plus-lg"></i> Add Category</button></div>';
@@ -581,7 +587,7 @@
     
     document.getElementById('bulkEditBtn').addEventListener('click', function(){
         bulkRowsContainer.innerHTML = '';
-        contents.forEach(function(c){ addBulkRow(c); });
+        banners.forEach(function(b){ addBulkRow(b); });
         bulkOverlay.classList.add('open');
     });
 
@@ -596,26 +602,22 @@
         
         var catOpts = '<option value="">-- Uncategorized --</option>';
         categories.forEach(function(cat){
-            catOpts += '<option value="'+cat.id+'"'+(item && item.static_page_category_id == cat.id ? ' selected' : '')+'>'+cat.name+'</option>';
+            catOpts += '<option value="'+cat.id+'"'+(item && item.promo_category_id == cat.id ? ' selected' : '')+'>'+cat.name+'</option>';
         });
 
         div.innerHTML = 
-            '<input type="text" class="bulk-input bulk-n" value="'+(item ? (item.nickname||'') : '')+'" placeholder="Nickname">' +
-            '<input type="text" class="bulk-input bulk-s" value="'+(item ? item.slug : '')+'" placeholder="/slug">' +
-            '<input type="text" class="bulk-input bulk-h1" value="'+(item ? (item.h1_override||'') : '')+'" placeholder="H1">' +
-            '<input type="text" class="bulk-input bulk-mt" value="'+(item ? (item.meta_title||'') : '')+'" placeholder="Meta Title">' +
-            '<textarea class="bulk-textarea bulk-md" placeholder="Meta Desc">'+(item ? (item.meta_description||'') : '')+'</textarea>' +
-            '<select class="bulk-select bulk-p">' +
-                '<option value="top" '+(item && item.placement==='top'?'selected':'')+'>Top</option>' +
-                '<option value="bottom" '+(item && item.placement==='bottom'?'selected':'')+'>Bottom</option>' +
-            '</select>' +
+            '<input type="text" class="bulk-input bulk-t" value="'+(item ? item.title : '')+'" placeholder="Title">' +
             '<select class="bulk-select bulk-cat">'+catOpts+'</select>' +
-            '<textarea class="bulk-textarea bulk-c" style="height: 100px; min-height: 100px;" placeholder="Content">'+(item ? (item.content||'') : '')+'</textarea>' +
             '<select class="bulk-select bulk-status">' +
-                '<option value="Published" '+(item && item.status==='Published'?'selected':'')+'>Published</option>' +
-                '<option value="Draft" '+(item && item.status==='Draft'?'selected':'')+'>Draft</option>' +
+                '<option value="Active" '+(item && item.status==='Active'?'selected':'')+'>Active</option>' +
+                '<option value="Inactive" '+(item && item.status==='Inactive'?'selected':'')+'>Inactive</option>' +
             '</select>' +
-            '<div class="bulk-action-del"><i class="bi bi-trash"></i></div>';
+            '<input type="datetime-local" class="bulk-input bulk-start" value="'+(item && item.start_date ? item.start_date.substring(0,16) : '')+'">' +
+            '<input type="datetime-local" class="bulk-input bulk-end" value="'+(item && item.end_date ? item.end_date.substring(0,16) : '')+'">' +
+            '<input type="text" class="bulk-input bulk-url" value="'+(item ? (item.link_url||'') : '')+'" placeholder="Link URL">' +
+            '<textarea class="bulk-textarea bulk-c" style="height: 60px;">'+(item ? (item.content||'') : '')+'</textarea>' +
+            '<input type="number" class="bulk-input bulk-sort" value="'+(item ? item.sort_order : 0)+'">' +
+            '<div class="bulk-action-del" style="cursor:pointer;color:#c0392b;text-align:center;padding-top:10px;"><i class="bi bi-trash"></i></div>';
         
         div.querySelector('.bulk-action-del').addEventListener('click', function(){
             customConfirm('Remove row?', function(){
@@ -631,22 +633,21 @@
         bulkRowsContainer.querySelectorAll('.bulk-row').forEach(function(row){
             data.push({
                 id: row.dataset.id ? parseInt(row.dataset.id) : null,
-                nickname: row.querySelector('.bulk-n').value.trim(),
-                slug: row.querySelector('.bulk-s').value.trim(),
-                h1_override: row.querySelector('.bulk-h1').value.trim(),
-                meta_title: row.querySelector('.bulk-mt').value.trim(),
-                meta_description: row.querySelector('.bulk-md').value.trim(),
-                placement: row.querySelector('.bulk-p').value,
-                static_page_category_id: row.querySelector('.bulk-cat').value || null,
-                content: row.querySelector('.bulk-c').value.trim(),
+                title: row.querySelector('.bulk-t').value.trim(),
+                promo_category_id: row.querySelector('.bulk-cat').value || null,
                 status: row.querySelector('.bulk-status').value,
+                start_date: row.querySelector('.bulk-start').value || null,
+                end_date: row.querySelector('.bulk-end').value || null,
+                link_url: row.querySelector('.bulk-url').value.trim(),
+                content: row.querySelector('.bulk-c').value.trim(),
+                sort_order: parseInt(row.querySelector('.bulk-sort').value) || 0,
                 is_deleted: row.dataset.deleted === 'true'
             });
         });
 
-        ajax('POST', ROUTES.bulkUpdate, {contents: data}, function(err, res){
+        ajax('POST', ROUTES.bulkUpdate, {banners: data}, function(err, res){
             if(err) return alert(err);
-            contents = res; 
+            banners = res; 
             bulkOverlay.classList.remove('open'); 
             renderTable();
             showToaster('Bulk update successful.');

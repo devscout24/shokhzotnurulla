@@ -17,6 +17,7 @@ use App\Http\Controllers\Dealer\WebsitePageController;
 use App\Http\Controllers\Dealer\WebsiteFaqController;
 use App\Http\Controllers\Dealer\WebsiteSrpContentController;
 use App\Http\Controllers\Dealer\WebsiteStaticPageContentController;
+use App\Http\Controllers\Dealer\WebsitePromoBannerController;
 
 Route::prefix('dealer')->name('dealer.')
     ->middleware(['auth', 'verified', 'all.active', 'isDealer'])
@@ -88,6 +89,18 @@ Route::prefix('dealer')->name('dealer.')
             Route::patch('/categories/{staticPageCategory}', [WebsiteStaticPageContentController::class, 'updateCategory'])->name('categories.update');
             Route::delete('/categories/{staticPageCategory}',[WebsiteStaticPageContentController::class, 'destroyCategory'])->name('categories.destroy');
             Route::post('/bulk-update',                      [WebsiteStaticPageContentController::class, 'bulkUpdate'])->name('bulk-update');
+        });
+
+        // ── OEM Promo Banners (Reusable Content) ─────────────────────────────────────
+        Route::prefix('promo-banners')->name('promo-banners.')->group(function () {
+            Route::get('/',                           [WebsitePromoBannerController::class, 'index'])->name('index');
+            Route::post('/',                          [WebsitePromoBannerController::class, 'store'])->name('store');
+            Route::patch('/{promoBanner}',            [WebsitePromoBannerController::class, 'update'])->name('update');
+            Route::delete('/{promoBanner}',           [WebsitePromoBannerController::class, 'destroy'])->name('destroy');
+            Route::post('/categories',                [WebsitePromoBannerController::class, 'storeCategory'])->name('categories.store');
+            Route::patch('/categories/{promoCategory}', [WebsitePromoBannerController::class, 'updateCategory'])->name('categories.update');
+            Route::delete('/categories/{promoCategory}',[WebsitePromoBannerController::class, 'destroyCategory'])->name('categories.destroy');
+            Route::post('/bulk-update',                [WebsitePromoBannerController::class, 'bulkUpdate'])->name('bulk-update');
         });
 
         // ── Form Entries ──────────────────────────────────────────────────────────────
