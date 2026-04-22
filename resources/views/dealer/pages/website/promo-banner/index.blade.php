@@ -74,9 +74,10 @@
         .media-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .media-btn-select { color: #c0392b; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; }
         .media-btn-select:hover { text-decoration: underline; }
-        .media-preview-wrap { margin-top: 15px; border: 1px solid #eee; border-radius: 8px; overflow: hidden; display: none; position: relative; width: fit-content; max-width: 100%; }
-        .media-preview-wrap img { max-height: 200px; display: block; }
-        .media-preview-remove { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.5); color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
+        .media-preview-wrap { margin-top: 15px; border: 1px solid #eee; border-radius: 8px; overflow: hidden; display: none; position: relative; width: fit-content; max-width: 100%; background: #fff; padding: 15px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02); }
+        .media-preview-wrap img { max-height: 120px; display: block; border-radius: 4px; }
+        .media-preview-remove { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.4); color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; transition: all .2s; opacity: 0; }
+        .media-preview-wrap:hover .media-preview-remove { opacity: 1; }
 
         /* Colors */
         .color-picker-wrap { position: relative; display: flex; align-items: center; gap: 10px; }
@@ -92,12 +93,45 @@
         .faq-modal-overlay.open { display: flex !important; }
         .faq-modal { background: #fff; border-radius: 14px; width: 550px; max-width: 95vw; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
         
-        /* Media Grid */
-        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; padding: 25px; flex: 1; overflow-y: auto; }
-        .media-item { aspect-ratio: 1; border: 2px solid transparent; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all .2s; }
-        .media-item:hover { transform: scale(1.02); }
-        .media-item.selected { border-color: #c0392b; box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1); }
-        .media-item img { width: 100%; height: 100%; object-fit: cover; }
+        /* Media Grid & Cards */
+        .media-grid { display: grid; gap: 20px; padding: 25px; flex: 1; overflow-y: auto; background: #fff; align-content: start; }
+        .media-grid.expanded { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+        .media-grid.comfortable { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        .media-grid.compact { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+
+        .media-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all .2s; background: #fff; display: flex; flex-direction: column; }
+        .media-card:hover { border-color: #c0392b; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .media-card.selected { border-color: #c0392b; border-width: 2px; box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1); }
+        .media-thumb { aspect-ratio: 4/3; width: 100%; object-fit: cover; border-bottom: 1px solid #f5f5f5; }
+        
+        .media-info { padding: 12px; font-size: 11px; color: #666; line-height: 1.5; font-family: 'Inter', -apple-system, sans-serif; }
+        .media-info b { color: #333; font-weight: 700; }
+        .media-info div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Mode-based visibility */
+        .media-grid.comfortable .media-info-author, 
+        .media-grid.comfortable .media-info-size, 
+        .media-grid.comfortable .media-info-title { display: none; }
+        .media-grid.comfortable .media-info { text-align: center; padding: 8px; }
+        .media-grid.compact .media-info { display: none; }
+        .media-grid.compact .media-thumb { border-bottom: none; }
+
+        /* Display Filter */
+        .media-display-filter { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 10px 25px; background: #fcfcfc; border-bottom: 1px solid #eee; font-family: 'Inter', -apple-system, sans-serif; }
+        .display-label { font-size: 12px; color: #777; font-weight: 500; }
+        .display-select-wrap { position: relative; width: 140px; }
+        .display-select { height: 32px !important; font-size: 13px !important; border-radius: 4px !important; padding: 0 12px !important; font-family: 'Inter', -apple-system, sans-serif !important; border-color: #e0e0e0 !important; cursor: pointer; }
+
+        /* Pagination */
+        .pagination-wrap { padding: 25px; border-top: 1px solid #eee; position: relative; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .pagination-list { display: flex; align-items: center; gap: 5px; }
+        .pag-btn { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border: 1px solid #e0e0e0; border-radius: 4px; background: #fff; color: #666; font-size: 13px; cursor: pointer; transition: all .2s; }
+        .pag-btn:hover { background: #f8f9fa; border-color: #ccc; }
+        .pag-btn.active { background: #c0392b; color: #fff; border-color: #c0392b; }
+        .pag-btn.disabled { opacity: 0.5; pointer-events: none; }
+        .pag-dots { color: #999; padding: 0 5px; font-size: 18px; line-height: 1; }
+        .pag-info { font-size: 13px; color: #777; margin-top: 5px; }
+        .media-modal-footer-btn-wrap { position: absolute; right: 25px; top: 25px; }
 
         /* Toaster */
         .toaster-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
@@ -330,22 +364,35 @@
 </div>
 
 <div class="faq-modal-overlay" id="mediaModalOverlay">
-    <div class="faq-modal" style="width: 900px; max-width: 95vw; height: 85vh;">
+    <div class="faq-modal" style="width: 1000px; max-width: 95vw; height: 90vh;">
         <div style="padding: 20px 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Select Media</h3>
-            <button style="background:none; border:none; font-size:24px; cursor:pointer;" id="mediaModalClose">&times;</button>
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #333;">Select Media</h3>
+            <button style="background:none; border:none; font-size:24px; cursor:pointer; color: #999;" id="mediaModalClose">&times;</button>
         </div>
-        <div style="padding: 15px 25px; border-bottom: 1px solid #f9f9f9; display: flex; align-items: center; justify-content: space-between;">
-            <div style="flex: 1; max-width: 300px;"><input type="text" id="mediaSearchInput" class="bulk-input" placeholder="Search media..."></div>
-            <button class="btn-save-red" style="padding: 7px 15px; font-size: 12px;"><i class="bi bi-plus-lg"></i> Add Media</button>
-        </div>
-        <div class="media-grid" id="mediaGrid"></div>
-        <div style="padding: 15px 25px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
-            <div id="mediaPaginationInfo" style="font-size: 12px; color: #777;"></div>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <div id="mediaPagination"></div>
-                <button class="btn-save-red" id="confirmMediaBtn" style="opacity: 0.5; pointer-events: none;"><i class="bi bi-check-lg"></i> Select Media</button>
+        <div style="padding: 25px; border-bottom: 1px solid #f9f9f9; display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 14px; font-weight: 600; color: #333;">Select image:</div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <div style="width: 280px;"><input type="text" id="mediaSearchInput" class="bulk-input" placeholder="Search media..."></div>
+                <button class="btn-save-red" style="height: 42px;"><i class="bi bi-plus-lg"></i> Add Media</button>
             </div>
+        </div>
+        <div class="media-display-filter">
+            <span class="display-label">Display</span>
+            <div class="display-select-wrap">
+                <select class="bulk-select display-select" id="mediaDisplaySelect">
+                    <option value="Expanded">Expanded</option>
+                    <option value="Comfortable">Comfortable</option>
+                    <option value="Compact">Compact</option>
+                </select>
+            </div>
+        </div>
+        <div class="media-grid expanded" id="mediaGrid"></div>
+        <div class="pagination-wrap">
+            <div class="media-modal-footer-btn-wrap">
+                <button class="btn-save-red" id="confirmMediaBtn" style="opacity: 0.5; pointer-events: none; background: #ea9b93;"><i class="bi bi-check-lg"></i> Select Media</button>
+            </div>
+            <div id="mediaPagination" class="pagination-list"></div>
+            <div id="mediaPaginationInfo" class="pag-info"></div>
         </div>
     </div>
 </div>
@@ -529,30 +576,89 @@
     };
 
     // [Media Selection]
-    var currentMediaField = null, selectedMediaUrl = null;
+    var currentMediaField = null, selectedMediaUrl = null, mediaPage = 1;
     document.querySelectorAll('.media-btn-select').forEach(function(btn){
         btn.onclick = function(){ currentMediaField = this.dataset.field; document.getElementById('mediaModalOverlay').classList.add('open'); loadMedia(1); };
     });
     document.getElementById('mediaModalClose').onclick = function(){ document.getElementById('mediaModalOverlay').classList.remove('open'); };
 
+    var mediaSearchTimer = null;
+    document.getElementById('mediaSearchInput').oninput = function(){
+        var val = this.value;
+        clearTimeout(mediaSearchTimer);
+        mediaSearchTimer = setTimeout(function(){ loadMedia(1, val); }, 300);
+    };
+
+    document.getElementById('mediaDisplaySelect').onchange = function(){
+        var g = document.getElementById('mediaGrid');
+        g.className = 'media-grid ' + this.value.toLowerCase();
+    };
+
     function loadMedia(page, search = ''){
-        ajax('GET', ROUTES.mediaList + '?page='+page+'&search='+search+'&type=image', null, function(err, res){
+        mediaPage = page;
+        var s = search || document.getElementById('mediaSearchInput').value;
+        ajax('GET', ROUTES.mediaList + '?page='+page+'&search='+s+'&type=image', null, function(err, res){
             if(err) return alert(err);
-            var html = '';
-            res.data.forEach(function(item){ html += '<div class="media-item" data-url="'+item.url+'"><img src="'+item.url+'"></div>'; });
-            document.getElementById('mediaGrid').innerHTML = html;
-            document.getElementById('mediaPaginationInfo').textContent = 'Showing ' + res.from + ' to ' + res.to + ' of ' + res.total;
-            
-            document.querySelectorAll('.media-item').forEach(function(item){
-                item.onclick = function(){
-                    document.querySelectorAll('.media-item').forEach(function(i){ i.classList.remove('selected'); });
-                    this.classList.add('selected');
-                    selectedMediaUrl = this.dataset.url;
-                    document.getElementById('confirmMediaBtn').style.opacity = '1';
-                    document.getElementById('confirmMediaBtn').style.pointerEvents = 'auto';
-                };
-            });
+            renderMediaGrid(res.data);
+            renderMediaPagination(res);
         });
+    }
+
+    function renderMediaGrid(items){
+        var html = '';
+        items.forEach(function(item){
+            var dims = item.width && item.height ? item.width + ' x ' + item.height : 'Unknown';
+            var size = item.size ? (item.size / 1024).toFixed(2) + ' KB' : 'Unknown';
+            var author = item.author_name || 'System';
+            var title = item.filename || item.url.split('/').pop();
+
+            html += '<div class="media-card" data-url="'+item.url+'">' +
+                '<img src="'+item.url+'" class="media-thumb">' +
+                '<div class="media-info">' +
+                    '<div class="media-info-author"><b>By:</b> '+author+'</div>' +
+                    '<div class="media-info-dims"><b>Dimensions:</b> '+dims+'</div>' +
+                    '<div class="media-info-size"><b>Size:</b> '+size+'</div>' +
+                    '<div class="media-info-title"><b>Title:</b> '+title+'</div>' +
+                '</div>' +
+            '</div>';
+        });
+        document.getElementById('mediaGrid').innerHTML = html || '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #999;">No media found.</div>';
+        
+        document.querySelectorAll('.media-card').forEach(function(card){
+            card.onclick = function(){
+                document.querySelectorAll('.media-card').forEach(function(c){ c.classList.remove('selected'); });
+                this.classList.add('selected');
+                selectedMediaUrl = this.dataset.url;
+                var btn = document.getElementById('confirmMediaBtn');
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+                btn.style.background = '#c0392b';
+            };
+        });
+    }
+
+    function renderMediaPagination(res){
+        var html = '';
+        var cur = res.current_page;
+        var last = res.last_page;
+
+        // Prev
+        html += '<button class="pag-btn '+(cur===1?'disabled':'')+'" onclick="loadMedia('+(cur-1)+')"><i class="bi bi-chevron-left"></i></button>';
+
+        // Pages (Simplified logic)
+        for(var i=1; i<=last; i++){
+            if(i === 1 || i === last || (i >= cur - 1 && i <= cur + 1)){
+                html += '<button class="pag-btn '+(i===cur?'active':'')+'" onclick="loadMedia('+i+')">'+i+'</button>';
+            } else if (i === cur - 2 || i === cur + 2) {
+                html += '<span class="pag-dots">...</span>';
+            }
+        }
+
+        // Next
+        html += '<button class="pag-btn '+(cur===last?'disabled':'')+'" onclick="loadMedia('+(cur+1)+')"><i class="bi bi-chevron-right"></i></button>';
+
+        document.getElementById('mediaPagination').innerHTML = html;
+        document.getElementById('mediaPaginationInfo').textContent = 'Showing ' + res.from + ' to ' + res.to + ' of ' + res.total;
     }
 
     document.getElementById('confirmMediaBtn').onclick = function(){
