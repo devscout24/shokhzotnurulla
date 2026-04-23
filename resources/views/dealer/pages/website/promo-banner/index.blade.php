@@ -149,6 +149,35 @@
         .btn-save-red { background: #c0392b; color: #fff; border: none; border-radius: 4px; padding: 10px 25px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
         .btn-save-red:hover { background: #a93226; }
         .btn-cancel-outline { padding: 8px 24px; border: 1px solid #e0e0e0; background: #fff; color: #666; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; }
+
+        /* Bulk Edit Modal Styles */
+        .bulk-edit-modal-content { width: 96vw; height: 92vh; max-width: none; margin: 2vh auto; }
+        .bulk-edit-container { flex: 1; overflow-x: auto; padding: 0; background: #fff; }
+        .bulk-edit-table { width: 100%; border-collapse: collapse; min-width: 3200px; }
+        .bulk-edit-table th { position: sticky; top: 0; background: #fff; z-index: 10; padding: 12px 15px; border-bottom: 2px solid #eee; font-size: 11px; font-weight: 700; color: #333; text-transform: none; text-align: left; white-space: nowrap; }
+        .bulk-edit-table td { padding: 10px 15px; border-bottom: 1px solid #eee; vertical-align: top; background: #fff; }
+        .bulk-edit-input { width: 100%; border: 1px solid #e0e0e0; border-radius: 4px; padding: 8px 10px; font-size: 12px; height: 38px; }
+        .bulk-edit-input:focus { border-color: #c0392b; outline: none; }
+        .bulk-edit-rte { min-height: 80px; border: 1px solid #e0e0e0; border-radius: 4px; padding: 8px; font-size: 12px; background: #fff; overflow-y: auto; width: 100%; }
+
+        /* Custom Bar Slider (Scrollbar) */
+        .bulk-edit-container::-webkit-scrollbar { height: 10px; }
+        .bulk-edit-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .bulk-edit-container::-webkit-scrollbar-thumb { background: #bbb; border-radius: 10px; border: 2px solid #f1f1f1; }
+        .bulk-edit-container::-webkit-scrollbar-thumb:hover { background: #999; }
+        
+        #statusFilter { font-family: 'Inter', sans-serif !important; font-size: 13px !important; border-radius: 6px !important; padding: 8px 12px !important; }
+
+        /* Z-Index Fixes */
+        #mediaModalOverlay, #confirmModalOverlay, .toaster-container { z-index: 9999 !important; }
+        #bulkEditModalOverlay { z-index: 5000 !important; }
+        
+        /* Bulk Color Swatch Fix */
+        .bulk-color-picker-wrap { position: relative; display: flex; align-items: center; gap: 5px; width: 100%; }
+        .bulk-color-popup { position: absolute; bottom: calc(100% + 5px); left: 0; background: #fff; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 10px; z-index: 10000; display: none; width: 180px; }
+        .bulk-color-popup.open { display: block; }
+        .bulk-color-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+        .bulk-color-swatch { width: 20px; height: 20px; border-radius: 3px; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); }
     </style>
 @endpush
 
@@ -174,12 +203,12 @@
             
             <div style="flex: 1; display: flex; flex-direction: column;">
                 {{-- List View --}}
-                <div id="listView">
+                        <div id="listView">
                     <div class="rc-main-container">
                         <div style="padding: 20px 25px; border-bottom: 1px solid #f0f0f0;">
                             <label style="font-size: 12px; font-weight: 700; color: #333; margin-bottom: 8px; display: block;">Filter Status</label>
                             <select id="statusFilter" class="bulk-select" style="width: 250px;">
-                                <option value="Active">Currently Active</option>
+                                <option value="Active" selected>Currently Active</option>
                                 <option value="Expired">Expired</option>
                                 <option value="All">All Items</option>
                             </select>
@@ -397,6 +426,46 @@
     </div>
 </div>
 
+<div class="faq-modal-overlay" id="bulkEditModalOverlay">
+    <div class="faq-modal bulk-edit-modal-content">
+        <div style="padding: 20px 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700;">Bulk Edit OEM Promo Banners</h3>
+            <button style="background:none; border:none; font-size:24px; cursor:pointer;" id="bulkEditModalClose">&times;</button>
+        </div>
+        <div style="padding: 15px 25px; border-bottom: 1px solid #eee; display: flex; justify-content: flex-end;">
+            <button class="rc-btn-outline" id="addBulkRowBtn" style="font-size: 12px;"><i class="bi bi-plus-lg"></i> Add Row</button>
+        </div>
+        <div class="bulk-edit-container">
+            <table class="bulk-edit-table">
+                <thead>
+                    <tr>
+                        <th style="width: 250px;">Promo Title / Image Alt Text *</th>
+                        <th style="width: 400px;">Disclaimer *</th>
+                        <th style="width: 200px;">Category</th>
+                        <th style="width: 150px;">Start Date</th>
+                        <th style="width: 150px;">End Date</th>
+                        <th style="width: 150px;">Condition</th>
+                        <th style="width: 150px;">Certified</th>
+                        <th style="width: 250px;">Link URL</th>
+                        <th style="width: 250px;">Desktop Image (Carousel / List)</th>
+                        <th style="width: 250px;">Mobile Version (Carousel / List)</th>
+                        <th style="width: 250px;">SRP: Top Banner (Desktop)</th>
+                        <th style="width: 250px;">SRP: Top Banner (Mobile)</th>
+                        <th style="width: 180px;">SRP: Primary background color</th>
+                        <th style="width: 180px;">SRP: Secondary background color</th>
+                        <th style="width: 80px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bulkEditTableBody"></tbody>
+            </table>
+        </div>
+        <div style="padding: 20px 25px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 12px; background: #fff;">
+            <button class="btn-cancel-outline" id="bulkEditCancelBtn">Cancel</button>
+            <button class="btn-save-red" id="bulkEditSaveBtn"><i class="bi bi-check-lg"></i> Save</button>
+        </div>
+    </div>
+</div>
+
 <div class="confirm-modal-overlay" id="confirmModalOverlay">
     <div class="confirm-modal">
         <div class="confirm-modal-header">
@@ -607,10 +676,10 @@
     function renderMediaGrid(items){
         var html = '';
         items.forEach(function(item){
-            var dims = item.width && item.height ? item.width + ' x ' + item.height : 'Unknown';
-            var size = item.size ? (item.size / 1024).toFixed(2) + ' KB' : 'Unknown';
-            var author = item.author_name || 'System';
-            var title = item.filename || item.url.split('/').pop();
+            var dims = item.dimensions !== '—' ? item.dimensions : 'Unknown';
+            var size = item.size || 'Unknown';
+            var author = item.uploaded_by || 'System';
+            var title = item.title || item.original_name || 'Untitled';
 
             html += '<div class="media-card" data-url="'+item.url+'">' +
                 '<img src="'+item.url+'" class="media-thumb">' +
@@ -807,7 +876,219 @@
     document.onclick = function(){ document.querySelectorAll('.color-popup').forEach(function(p){ p.classList.remove('open'); }); };
 
     renderTable();
-    navigate();
+    // [Date Validation]
+    var startInp = document.getElementById('startDateInput');
+    var endInp = document.getElementById('endDateInput');
+    startInp.onchange = function(){ if(this.value) endInp.min = this.value; };
+    endInp.onchange = function(){ if(this.value) startInp.max = this.value; };
+
+    document.getElementById('saveBtn').onclick = function(){
+        var title = document.getElementById('titleInput').value.trim();
+        var disclaimer = document.getElementById('disclaimerInput').value.trim();
+        var start = startInp.value;
+        var end = endInp.value;
+
+        if(!title || !disclaimer) return alert('Title and Disclaimer are required');
+        if(start && end && start > end) return alert('End date cannot be earlier than start date');
+
+        var data = {
+            title: title,
+            disclaimer: disclaimer,
+            promo_category_id: document.getElementById('categorySelect').value || null,
+            start_date: start || null,
+            end_date: end || null,
+            condition: document.getElementById('conditionInput').value || null,
+            certified: document.getElementById('certifiedInput').value || null,
+            link_url: document.getElementById('linkUrlInput').value || null,
+            desktop_image_url: document.getElementById('desktop_image_url').value || null,
+            mobile_image_url: document.getElementById('mobile_image_url').value || null,
+            srp_desktop_banner_url: document.getElementById('srp_desktop_banner_url').value || null,
+            srp_mobile_banner_url: document.getElementById('srp_mobile_banner_url').value || null,
+            primary_color: document.getElementById('primary_color').value || null,
+            secondary_color: document.getElementById('secondary_color').value || null,
+        };
+
+        var url = editingId ? ROUTES.update.replace('__ID__', editingId) : ROUTES.store;
+        ajax(editingId ? 'PATCH' : 'POST', url, data, function(err, res){
+            if(err) return alert(err);
+            if(editingId) { var idx = banners.findIndex(x => x.id == editingId); banners[idx] = res; }
+            else { banners.push(res); }
+            editingId = null; navigate('list'); renderTable(); showToaster('Banner saved successfully.');
+        });
+    };
+
+    // [Bulk Edit]
+    var bulkOverlay = document.getElementById('bulkEditModalOverlay');
+    var bulkTableBody = document.getElementById('bulkEditTableBody');
+    document.getElementById('bulkEditBtn').onclick = openBulkEdit;
+    document.getElementById('bulkEditModalClose').onclick = function(){ bulkOverlay.classList.remove('open'); };
+    document.getElementById('bulkEditCancelBtn').onclick = function(){ bulkOverlay.classList.remove('open'); };
+    document.getElementById('addBulkRowBtn').onclick = function(){ addBulkRow(null); };
+
+    function openBulkEdit(){
+        bulkTableBody.innerHTML = '';
+        if(banners.length > 0) banners.forEach(function(b){ addBulkRow(b); });
+        else addBulkRow(null);
+        bulkOverlay.classList.add('open');
+    }
+
+    function addBulkRow(item){
+        var row = document.createElement('tr');
+        
+        var colorHtml = function(f, val){
+            var id = f.replace('_','-');
+            var hex = val || '';
+            return `
+                <div class="bulk-color-picker-wrap">
+                    <div class="bulk-color-preview bulk-${id}-preview" style="width:28px; height:28px; border-radius:4px; border:1px solid #ddd; background:${hex || '#fff'}; cursor:pointer;"></div>
+                    <div class="bulk-color-popup">
+                        <div class="bulk-color-grid">
+                            ${swatchColors.map(c => `<div class="bulk-color-swatch" style="background:${c}" data-color="${c}"></div>`).join('')}
+                        </div>
+                    </div>
+                    <input type="text" class="bulk-edit-input bulk-${id}" value="${hex}" placeholder="#000000" style="flex:1;">
+                </div>
+            `;
+        };
+
+        row.innerHTML = `
+            <td><input type="text" class="bulk-edit-input bulk-title" value="${item ? item.title : ''}"></td>
+            <td>
+                <div class="bulk-edit-rte-wrap">
+                    <div class="bulk-edit-rte-toolbar" style="display:flex; gap:5px; padding:5px; background:#f0f0f0; border:1px solid #ddd; border-bottom:none; border-radius:4px 4px 0 0;">
+                        <button type="button" onclick="document.execCommand('bold', false, null)" style="border:none; background:none; cursor:pointer;"><i class="bi bi-type-bold"></i></button>
+                        <button type="button" onclick="document.execCommand('italic', false, null)" style="border:none; background:none; cursor:pointer;"><i class="bi bi-type-italic"></i></button>
+                        <button type="button" onclick="document.execCommand('underline', false, null)" style="border:none; background:none; cursor:pointer;"><i class="bi bi-type-underline"></i></button>
+                    </div>
+                    <div contenteditable="true" class="bulk-edit-rte bulk-disclaimer" style="border-top-left-radius:0; border-top-right-radius:0;">${item ? item.disclaimer : ''}</div>
+                </div>
+            </td>
+            <td>
+                <select class="bulk-edit-input bulk-category">
+                    <option value="">[Select]</option>
+                    ${categories.map(c => `<option value="${c.id}" ${item && item.promo_category_id == c.id ? 'selected' : ''}>${c.name}</option>`).join('')}
+                </select>
+            </td>
+            <td><input type="date" class="bulk-edit-input bulk-start" value="${item && item.start_date ? item.start_date.substring(0,10) : ''}"></td>
+            <td><input type="date" class="bulk-edit-input bulk-end" value="${item && item.end_date ? item.end_date.substring(0,10) : ''}"></td>
+            <td>
+                <select class="bulk-edit-input bulk-condition">
+                    <option value="">[Select]</option>
+                    <option value="New" ${item && item.condition == 'New' ? 'selected' : ''}>New</option>
+                    <option value="Pre-owned" ${item && item.condition == 'Pre-owned' ? 'selected' : ''}>Pre-owned</option>
+                </select>
+            </td>
+            <td>
+                <select class="bulk-edit-input bulk-certified">
+                    <option value="">[Select]</option>
+                    <option value="VPO" ${item && item.certified == 'VPO' ? 'selected' : ''}>VPO</option>
+                    <option value="CPO" ${item && item.certified == 'CPO' ? 'selected' : ''}>CPO</option>
+                </select>
+            </td>
+            <td><input type="text" class="bulk-edit-input bulk-url" value="${item ? item.link_url || '' : ''}"></td>
+            ${['desktop_image_url', 'mobile_image_url', 'srp_desktop_banner_url', 'srp_mobile_banner_url'].map(f => `
+                <td>
+                    <input type="text" class="bulk-edit-input bulk-${f.replace(/_/g, '-')}" value="${item ? item[f] || '' : ''}">
+                    <button type="button" class="rc-btn-outline bulk-media-btn" style="margin-top:5px; width:100%; font-size:10px; padding:4px;" data-field="${f.replace(/_/g, '-')}"><i class="bi bi-image"></i> Select Media</button>
+                </td>
+            `).join('')}
+            <td>${colorHtml('primary_color', item ? item.primary_color : '')}</td>
+            <td>${colorHtml('secondary_color', item ? item.secondary_color : '')}</td>
+            <td style="text-align:center;"><button type="button" class="rc-row-btn trash-btn bulk-del-btn"><i class="bi bi-trash"></i></button></td>
+        `;
+        
+        var sDate = row.querySelector('.bulk-start'), eDate = row.querySelector('.bulk-end');
+        sDate.onchange = function(){ if(this.value) eDate.min = this.value; };
+        eDate.onchange = function(){ if(this.value) sDate.max = this.value; };
+
+        row.querySelectorAll('.bulk-media-btn').forEach(btn => {
+            btn.onclick = function(){
+                currentMediaField = null; 
+                window._bulkActiveField = { row: row, field: this.dataset.field };
+                document.getElementById('mediaModalOverlay').classList.add('open'); loadMedia(1);
+            };
+        });
+
+        // Color Logic for Row
+        row.querySelectorAll('.bulk-color-picker-wrap').forEach(wrap => {
+            var pre = wrap.querySelector('.bulk-color-preview');
+            var pop = wrap.querySelector('.bulk-color-popup');
+            var inp = wrap.querySelector('input');
+            
+            pre.onclick = function(e){ e.stopPropagation(); document.querySelectorAll('.bulk-color-popup').forEach(p => p !== pop && p.classList.remove('open')); pop.classList.toggle('open'); };
+            inp.oninput = function(){ var c = this.value; if(/^#[0-9A-F]{6}$/i.test(c)) pre.style.background = c; };
+            
+            wrap.querySelectorAll('.bulk-color-swatch').forEach(sw => {
+                sw.onclick = function(){
+                    var c = this.dataset.color;
+                    inp.value = c; pre.style.background = c; pop.classList.remove('open');
+                };
+            });
+        });
+
+        row.querySelector('.bulk-del-btn').onclick = function(){ row.remove(); };
+
+        bulkTableBody.appendChild(row);
+    }
+
+    // Global click listener for bulk color popups
+    document.addEventListener('click', function(){ document.querySelectorAll('.bulk-color-popup').forEach(p => p.classList.remove('open')); });
+
+    // Override setMediaValue to handle bulk rows
+    var originalSetMediaValue = window.setMediaValue;
+    window.setMediaValue = function(field, url){
+        if(window._bulkActiveField){
+            var row = window._bulkActiveField.row;
+            row.querySelector('.bulk-'+window._bulkActiveField.field).value = url;
+            window._bulkActiveField = null;
+            document.getElementById('mediaModalOverlay').classList.remove('open');
+            return;
+        }
+        originalSetMediaValue(field, url);
+    };
+
+    document.getElementById('bulkEditSaveBtn').onclick = function(){
+        var rows = bulkTableBody.querySelectorAll('tr');
+        var data = [];
+        var dateError = false;
+
+        rows.forEach(function(row){
+            var title = row.querySelector('.bulk-title').value.trim();
+            var disclaimer = row.querySelector('.bulk-disclaimer').innerHTML.trim();
+            var start = row.querySelector('.bulk-start').value;
+            var end = row.querySelector('.bulk-end').value;
+
+            if(!title) return;
+            if(start && end && start > end) { dateError = true; return; }
+
+            data.push({
+                title: title,
+                disclaimer: disclaimer,
+                promo_category_id: row.querySelector('.bulk-category').value || null,
+                start_date: start || null,
+                end_date: end || null,
+                condition: row.querySelector('.bulk-condition').value || null,
+                certified: row.querySelector('.bulk-certified').value || null,
+                link_url: row.querySelector('.bulk-url').value || null,
+                desktop_image_url: row.querySelector('.bulk-desktop-image-url').value || null,
+                mobile_image_url: row.querySelector('.bulk-mobile-image-url').value || null,
+                srp_desktop_banner_url: row.querySelector('.bulk-srp-desktop-banner-url').value || null,
+                srp_mobile_banner_url: row.querySelector('.bulk-srp-mobile-banner-url').value || null,
+                primary_color: row.querySelector('.bulk-primary-color').value || null,
+                secondary_color: row.querySelector('.bulk-secondary-color').value || null
+            });
+        });
+
+        if(dateError) return alert('One or more rows have an End Date earlier than the Start Date.');
+        if(data.length === 0) return alert('No data to save');
+
+        ajax('POST', ROUTES.bulkUpdate, {items: data}, function(err, res){
+            if(err) return alert(err);
+            banners = res; renderTable(); bulkOverlay.classList.remove('open'); showToaster('Bulk data saved.');
+        });
+    };
+
+    renderTable();
 })();
 </script>
 @endpush
