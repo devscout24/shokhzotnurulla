@@ -14,7 +14,7 @@
     <a href="{{ route('dealer.website.customer-reviews.index') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.customer-reviews.*') ? 'active' : '' }}">
         <i class="bi bi-star"></i> Customer Reviews
     </a>
-    <a href="#" class="rc-sidebar-item">
+    <a href="{{ route('dealer.website.staff-members.index') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.staff-members.*') ? 'active' : '' }}">
         <i class="bi bi-person"></i> Staff Members
     </a>
     <a href="#" class="rc-sidebar-item">

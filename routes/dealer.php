@@ -20,6 +20,8 @@ use App\Http\Controllers\Dealer\WebsiteStaticPageContentController;
 use App\Http\Controllers\Dealer\WebsitePromoBannerController;
 use App\Http\Controllers\Dealer\CustomerReviewController;
 
+use App\Http\Controllers\Dealer\WebsiteStaffMemberController;
+
 Route::prefix('dealer')->name('dealer.')
     ->middleware(['auth', 'verified', 'all.active', 'isDealer'])
     ->group(function () {
@@ -117,6 +119,18 @@ Route::prefix('dealer')->name('dealer.')
             Route::post('/categories',               [CustomerReviewController::class, 'storeCategory'])->name('categories.store');
             Route::patch('/categories/{customerReviewCategory}', [CustomerReviewController::class, 'updateCategory'])->name('categories.update');
             Route::delete('/categories/{customerReviewCategory}',[CustomerReviewController::class, 'destroyCategory'])->name('categories.destroy');
+        });
+
+        // ── Staff Members (Reusable Content) ──────────────────────────────────────
+        Route::prefix('staff-members')->name('staff-members.')->group(function () {
+            Route::get('/',                          [WebsiteStaffMemberController::class, 'index'])->name('index');
+            Route::post('/',                         [WebsiteStaffMemberController::class, 'store'])->name('store');
+            Route::patch('/{staffMember}',           [WebsiteStaffMemberController::class, 'update'])->name('update');
+            Route::delete('/{staffMember}',          [WebsiteStaffMemberController::class, 'destroy'])->name('destroy');
+            Route::post('/bulk-update',              [WebsiteStaffMemberController::class, 'bulkUpdate'])->name('bulk-update');
+            Route::post('/categories',               [WebsiteStaffMemberController::class, 'storeCategory'])->name('categories.store');
+            Route::patch('/categories/{staffMemberCategory}', [WebsiteStaffMemberController::class, 'updateCategory'])->name('categories.update');
+            Route::delete('/categories/{staffMemberCategory}',[WebsiteStaffMemberController::class, 'destroyCategory'])->name('categories.destroy');
         });
 
         // ── Form Entries ──────────────────────────────────────────────────────────────
