@@ -1,15 +1,16 @@
-@extends('dealer.layout.app')
+@extends('layouts.dealer.app')
 
-@section('title', 'Reusable Content: Review')
+@section('title', __('Reusable Content: Review') . ' | ' . __(config('app.name')))
 
-@push('css')
+@push('page-styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
         /* Shared Dashboard Styles */
         .rc-sidebar { width: 280px; background: #fff; border-right: 1px solid #eee; padding: 20px 0; min-height: calc(100vh - 150px); }
         .rc-sidebar-item { display: flex; align-items: center; gap: 12px; padding: 14px 25px; color: #666; text-decoration: none; font-size: 14px; transition: all .2s; border-left: 3px solid transparent; }
         .rc-sidebar-item:hover { background: #f9f9f9; color: #333; }
-        .rc-sidebar-item.active { background: #fff5f5; color: #d0021b; border-left-color: #d0021b; font-weight: 600; }
+        .rc-sidebar-item.active { background: #fff; color: #333; font-weight: 600; }
+        .rc-sidebar-item.active i { color: #d0021b; }
         .rc-sidebar-item i { font-size: 18px; }
 
         .rc-wrapper { display: flex; gap: 0; background: #fff; border: 1px solid #eee; border-radius: 8px; overflow: hidden; margin-bottom: 50px; }
@@ -330,7 +331,7 @@
 
 @endsection
 
-@push('js')
+@push('page-scripts')
 <script>
 (function(){
     var reviews = @json($reviews);

@@ -12,7 +12,7 @@
         <i class="bi bi-file-text"></i> Static Page Content
     </a>
     <a href="{{ route('dealer.website.customer-reviews.index') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.customer-reviews.*') ? 'active' : '' }}">
-        <i class="bi bi-star"></i> Customer Review
+        <i class="bi bi-star"></i> Customer Reviews
     </a>
     <a href="#" class="rc-sidebar-item">
         <i class="bi bi-person"></i> Staff Members
