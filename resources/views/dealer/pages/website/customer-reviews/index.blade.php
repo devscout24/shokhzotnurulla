@@ -39,7 +39,7 @@
         .rc-drag { color: #ddd; cursor: grab; font-size: 16px; padding-top: 2px; }
         .rc-nickname { font-size: 15px; font-weight: 500; color: #333; line-height: 1.4; margin-bottom: 8px; }
         .rc-row-actions { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
-        .rc-row-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid #eef0f2; border-radius: 6px; font-size: 12px; color: #444; background: #fff; cursor: pointer; text-decoration: none; transition: all .2s; font-weight: 500; }
+        .rc-row-btn { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border: 1px solid #eef0f2; border-radius: 4px; font-size: 11px; color: #444; background: #fff; cursor: pointer; text-decoration: none; transition: all .2s; font-weight: 500; }
         .rc-row-btn:hover { background: #f8f9fa; color: #000; border-color: #d0d0d0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .rc-row-btn i { font-size: 14px; }
         .rc-row-btn.trash-btn { color: #d0021b; }
