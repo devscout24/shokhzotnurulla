@@ -13,40 +13,44 @@
         .rc-sidebar-item.active i { color: #d0021b; }
         .rc-sidebar-item i { font-size: 18px; }
 
-        .rc-wrapper { display: flex; gap: 0; background: #fff; border: 1px solid #eee; border-radius: 8px; overflow: hidden; margin-bottom: 50px; }
-        .rc-main-container { flex: 1; background: #fff; }
+        .rc-wrapper { display: flex; gap: 40px; min-height: calc(100vh - 160px); padding: 20px 0; }
+        .rc-sidebar { width: 260px; min-width: 260px; }
+        .rc-sidebar-item { display: flex; align-items: center; gap: 12px; padding: 15px; font-size: 14px; color: #666; cursor: pointer; transition: all .2s; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+        .rc-sidebar-item:last-child { border-bottom: none; }
+        .rc-sidebar-item:hover { background: #f8f8f8; color: #333; }
+        .rc-sidebar-item.active { background: #fff; color: #333; font-weight: 600; }
+        .rc-sidebar-item i { font-size: 18px !important; width: 24px; text-align: center; color: #999; }
+        .rc-sidebar-item.active i { color: #d0021b !important; }
+
+        .rc-main-container { flex: 1; background: #fff; border: 1px solid #eef0f2; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); display: flex; flex-direction: column; overflow: hidden; height: fit-content; }
         
         .rc-header-actions { display: flex; gap: 12px; align-items: center; }
-        .rc-btn-add { background: #d0021b; color: #fff; border: none; padding: 10px 22px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background .2s; }
+        .rc-btn-add { display: inline-flex; align-items: center; gap: 8px; background: #d0021b; color: #fff; border: none; padding: 10px 22px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background .2s; }
         .rc-btn-add:hover { background: #b00217; }
-        .rc-btn-outline { background: #fff; border: 1px solid #e0e0e0; color: #444; padding: 9px 18px; border-radius: 6px; font-weight: 500; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all .2s; }
-        .rc-btn-outline:hover { background: #f9f9f9; border-color: #ccc; }
+        .rc-btn-outline { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #e0e0e0; background: #fff; font-size: 13px; color: #555; cursor: pointer; padding: 8px 18px; border-radius: 8px; white-space: nowrap; transition: all .15s; font-weight: 500; }
+        .rc-btn-outline:hover { background: #f8f9fa; border-color: #d0d0d0; }
 
         .rc-table { width: 100%; border-collapse: collapse; }
-        .rc-table th { text-align: left; padding: 15px 25px; border-bottom: 2px solid #f5f5f5; color: #333; font-size: 13px; font-weight: 700; background: #fff; }
-        .rc-table td { padding: 18px 25px; border-bottom: 1px solid #f9f9f9; vertical-align: middle; }
+        .rc-table th { padding: 18px 20px; font-weight: 700; color: #333; text-align: left; font-size: 12px; border-bottom: 1px solid #f0f0f0; background: #fff; }
+        .rc-table td { padding: 25px 20px; vertical-align: middle; border-bottom: 1px solid #f8f9fa; background: #fff; }
         .rc-table tr:hover { background: #fafafa; }
 
-        .rc-title-cell { display: flex; align-items: center; gap: 15px; }
-        .rc-drag { color: #ccc; cursor: grab; font-size: 18px; }
-        .rc-nickname { font-weight: 600; color: #333; font-size: 14px; margin-bottom: 4px; }
-        .rc-row-actions { display: flex; gap: 15px; opacity: 0; transition: opacity .2s; }
+        .rc-title-cell { display: flex; align-items: flex-start; gap: 15px; }
+        .rc-drag { color: #ddd; cursor: grab; font-size: 16px; padding-top: 2px; }
+        .rc-nickname { font-size: 15px; font-weight: 500; color: #333; line-height: 1.4; margin-bottom: 8px; }
+        .rc-row-actions { display: flex; align-items: center; gap: 10px; opacity: 0; transition: opacity .2s; }
         .rc-table tr:hover .rc-row-actions { opacity: 1; }
-        .rc-row-btn { background: none; border: none; color: #d0021b; font-size: 12px; font-weight: 600; cursor: pointer; padding: 0; display: flex; align-items: center; gap: 4px; text-decoration: none; }
-        .rc-row-btn.trash-btn { color: #999; }
-        .rc-row-btn.trash-btn:hover { color: #d0021b; }
-
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
-        .status-dot.active { background: #28a745; }
-        .status-dot.expired { background: #ffc107; }
-        .status-dot.draft { background: #ccc; }
-        .status-dot.scheduled { background: #007bff; }
-        .status-wrap { display: flex; align-items: center; color: #666; font-size: 13px; }
+        .rc-row-btn { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 12px; color: #666; background: #fff; cursor: pointer; text-decoration: none; transition: all .2s; }
+        .rc-row-btn:hover { background: #f8f8f8; color: #333; border-color: #ccc; }
+        .rc-row-btn.trash-btn { color: #d0021b; }
+        .rc-row-btn.trash-btn:hover { background: #fff0f0; border-color: #f5c6cb; }
 
         /* Form Styles */
-        .bulk-col-label { display: block; font-size: 13px; font-weight: 700; color: #333; margin-bottom: 8px; }
+        .bulk-col-label { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 8px; display: block; }
         .bulk-col-label span { color: #d0021b; }
-        .bulk-input, .bulk-select { width: 100%; padding: 11px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; color: #333; transition: border .2s; background: #fff; }
+        .bulk-input, .bulk-select { width: 100%; padding: 12px 15px; border: 1px solid #eef0f2; border-radius: 8px; font-size: 14px; color: #333; transition: all .2s; background: #fcfdfe; }
+        .bulk-input:focus, .bulk-select:focus { border-color: #d0021b; outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(208, 2, 27, 0.05); }
+        .bulk-input::placeholder { color: #9da3a8; }
         .bulk-input:focus, .bulk-select:focus { border-color: #d0021b; outline: none; }
         .bulk-input::placeholder { color: #bbb; }
         .hint-box { font-size: 12px; color: #888; margin-top: 6px; line-height: 1.4; }
@@ -106,13 +110,21 @@
         
         .toaster { position: fixed; bottom: 30px; right: 30px; background: #333; color: #fff; padding: 12px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 3000; display: flex; align-items: center; gap: 10px; transform: translateY(100px); opacity: 0; transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .toaster.show { transform: translateY(0); opacity: 1; }
+        #mediaModalOverlay .btn-save-red:disabled { background: #f59e9e; cursor: not-allowed; }
+        #mediaModalOverlay .btn-save-red { border-radius: 8px; padding: 10px 25px; }
+        
+        .media-pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 30px; }
+        .pag-btn { width: 35px; height: 35px; border: 1px solid #eef0f2; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #fff; color: #666; cursor: pointer; transition: all .2s; }
+        .pag-btn:hover { border-color: #d0021b; color: #d0021b; }
+        .pag-btn.active { background: #d0021b; border-color: #d0021b; color: #fff; }
+        .pag-btn.disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 @endpush
 
 @section('page-content')
-<main class="main-content" id="mainContent" style="padding:0; background: #f9f9f9; min-height: 100vh;">
+<main class="main-content" id="mainContent" style="padding:0; background: #f0f2f5; min-height: 100vh;">
     <div style="padding: 30px 45px;">
-        <div class="page-header" style="margin-bottom: 25px; border: none;">
+        <div class="page-header" style="margin-bottom: 25px; border: none; background: transparent; padding: 0;">
             <h2 class="view-title" style="font-size: 24px; font-weight: 700; color: #222;">{{ __('Reusable Content: Review') }}</h2>
             <div class="rc-header-actions">
                 <div class="rc-dropdown-wrap">
@@ -134,16 +146,6 @@
                 {{-- List View --}}
                 <div id="listView">
                     <div class="rc-main-container">
-                        <div style="padding: 20px 25px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between;">
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <label style="font-size: 12px; font-weight: 700; color: #333; margin: 0;">Status:</label>
-                                <select id="statusFilter" class="bulk-select" style="width: 180px; border-radius: 6px; padding: 6px 12px;">
-                                    <option value="Active" selected>Currently Active</option>
-                                    <option value="Expired">Expired</option>
-                                    <option value="All">All Items</option>
-                                </select>
-                            </div>
-                        </div>
                         <table class="rc-table" id="reviewTable">
                             <thead>
                                 <tr>
@@ -180,7 +182,7 @@
 
                             <div style="margin-bottom: 30px;">
                                 <label class="bulk-col-label">Review Date</label>
-                                <input type="date" id="reviewDateInput" class="bulk-input">
+                                <input type="date" id="reviewDateInput" class="bulk-input" placeholder="Sep. 9, 2025">
                             </div>
 
                             <div style="margin-bottom: 30px;">
@@ -207,7 +209,7 @@
                             <div class="media-row">
                                 <div class="media-header">
                                     <label class="bulk-col-label" style="margin: 0;">Review Photo URL</label>
-                                    <span class="media-btn-select" id="selectMediaBtn"><i class="bi bi-images"></i> Select Media</span>
+                                    <span class="media-btn-select" id="selectMediaBtn" style="color: #d0021b;"><i class="bi bi-images"></i> Select Media</span>
                                 </div>
                                 <input type="text" id="photoUrlInput" class="bulk-input" placeholder="https://path.to.image/photo.jpg">
                                 <div class="media-preview-wrap" id="photoPreviewWrap">
@@ -219,8 +221,8 @@
                             <div style="margin-bottom: 40px;">
                                 <label class="bulk-col-label">Review Content <span>*</span></label>
                                 <div class="bulk-rte">
-                                    <div class="rte-toolbar">
-                                        <select class="rte-dropdown"><option>Normal</option></select>
+                                    <div class="rte-toolbar" style="background: #fff; padding: 10px 15px;">
+                                        <select class="rte-dropdown" style="border:none; font-weight:600; color:#444;"><option>Normal</option></select>
                                         <div class="rte-tool-group">
                                             <button class="rte-btn" type="button" data-cmd="bold"><i class="bi bi-type-bold"></i></button>
                                             <button class="rte-btn" type="button" data-cmd="italic"><i class="bi bi-type-italic"></i></button>
@@ -238,11 +240,11 @@
                                             <button class="rte-btn" type="button" data-cmd="createLink"><i class="bi bi-link-45deg"></i></button>
                                         </div>
                                     </div>
-                                    <textarea id="contentInput" class="rte-textarea" placeholder=""></textarea>
+                                    <div contenteditable="true" id="contentInput" class="rte-textarea" style="background: #fcfdfe; border-top: 1px solid #eef0f2;"></div>
                                 </div>
                             </div>
 
-                            <button class="btn-save-red" id="saveBtn"><i class="bi bi-check-lg"></i> Save</button>
+                            <button class="btn-save-red" id="saveBtn" style="border-radius: 8px; padding: 12px 40px;"><i class="bi bi-check-lg"></i> Save</button>
                         </div>
                     </div>
                 </div>
@@ -263,20 +265,32 @@
 </div>
 
 <div class="faq-modal-overlay" id="mediaModalOverlay">
-    <div class="faq-modal" style="width: 1000px; max-width: 95vw; height: 90vh;">
-        <div style="padding: 20px 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #333;">Select Media</h3>
+    <div class="faq-modal" style="width: 1100px; max-width: 95vw; height: 90vh;">
+        <div style="padding: 20px 30px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #333;">Select Media</h3>
             <button style="background:none; border:none; font-size:24px; cursor:pointer; color: #999;" id="mediaModalClose">&times;</button>
         </div>
-        <div style="padding: 25px; border-bottom: 1px solid #f9f9f9; display: flex; align-items: center; justify-content: space-between;">
-            <div style="font-size: 14px; font-weight: 600; color: #333;">Select image:</div>
-            <div style="display: flex; gap: 12px; align-items: center;">
-                <div style="width: 280px;"><input type="text" id="mediaSearchInput" class="bulk-input" placeholder="Search media..."></div>
+        <div style="padding: 25px 30px; border-bottom: 1px solid #f9f9f9; display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 14px; font-weight: 700; color: #333;">Select image:</div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div style="width: 320px;"><input type="text" id="mediaSearchInput" class="bulk-input" placeholder="Search media..."></div>
+                <button class="btn-save-red" style="padding: 10px 22px; font-size: 13px;"><i class="bi bi-plus-lg"></i> Add Media</button>
             </div>
         </div>
-        <div class="media-grid" id="mediaGrid"></div>
-        <div style="padding: 20px 25px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; background: #fff;">
-            <button class="btn-save-red" id="mediaSelectBtn" disabled>Select Media</button>
+        <div style="padding: 15px 30px; display: flex; justify-content: flex-end; align-items: center; gap: 10px; border-bottom: 1px solid #f9f9f9;">
+            <div style="font-size: 12px; color: #666; background: #f8f9fa; padding: 8px 15px; border: 1px solid #eef0f2; border-radius: 4px 0 0 4px; border-right: none;">Display</div>
+            <select class="bulk-select" style="width: 150px; padding: 7px 10px; font-size: 12px; border-radius: 0 4px 4px 0;">
+                <option>Compact</option>
+                <option>Large</option>
+            </select>
+        </div>
+        <div class="media-grid" id="mediaGrid" style="padding: 30px; border-bottom: 1px solid #f9f9f9;"></div>
+        <div style="padding: 20px 30px; background: #fff; display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 100%; display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                <button class="btn-save-red" id="mediaSelectBtn" disabled style="padding: 12px 35px;"><i class="bi bi-check-lg"></i> Select Media</button>
+            </div>
+            <div class="media-pagination" id="mediaPagination"></div>
+            <div style="margin-top: 15px; font-size: 13px; color: #888;" id="mediaShowingText"></div>
         </div>
     </div>
 </div>
@@ -391,15 +405,12 @@
     }
 
     function renderTable(){
-        var filter = document.getElementById('statusFilter').value;
         var catFilter = selectedCategoryId;
         var tbody = document.getElementById('reviewTableBody');
         var html = '';
         var filtered = reviews.filter(function(b){
-            var s = getDisplayStatus(b);
-            var statusMatch = (filter === 'All' || (filter === 'Active' && s === 'Active') || (filter === 'Expired' && s === 'Expired'));
             var catMatch = (catFilter === 'All' || b.customer_review_category_id == catFilter);
-            return statusMatch && catMatch;
+            return catMatch;
         });
 
         filtered.forEach(function(b){
@@ -416,8 +427,6 @@
         });
         tbody.innerHTML = html || '<tr><td colspan="4" style="text-align:center;padding:50px;color:#999;">No results found.</td></tr>';
     }
-
-    document.getElementById('statusFilter').onchange = renderTable;
 
     var selectedCategoryId = 'All';
     document.getElementById('filterBtn').onclick = function(e){ e.stopPropagation(); document.getElementById('filterMenu').classList.toggle('open'); };
@@ -466,7 +475,7 @@
         document.getElementById('reviewSourceInput').value = item ? (item.review_source||'') : '';
         document.getElementById('starCountInput').value = item ? item.star_count : 5;
         document.getElementById('photoUrlInput').value = item ? (item.photo_url||'') : '';
-        document.getElementById('contentInput').value = item ? (item.content||'') : '';
+        document.getElementById('contentInput').innerHTML = item ? (item.content||'') : '';
         
         updatePhotoPreview(item ? (item.photo_url||'') : '');
 
@@ -499,7 +508,7 @@
             star_count: document.getElementById('starCountInput').value,
             customer_review_category_id: document.getElementById('categorySelect').value,
             photo_url: document.getElementById('photoUrlInput').value.trim(),
-            content: document.getElementById('contentInput').value.trim(),
+            content: document.getElementById('contentInput').innerHTML.trim(),
             status: 'Active'
         };
 
@@ -589,16 +598,24 @@
     document.getElementById('selectMediaBtn').onclick = function(){ openMediaModal('photoUrlInput'); };
     document.getElementById('mediaModalClose').onclick = function(){ mediaOverlay.classList.remove('open'); };
 
+    var mediaCurrentPage = 1;
+    var mediaTotalPages = 1;
+
     function openMediaModal(field){
         activeMediaField = field;
         mediaOverlay.classList.add('open');
-        if(media.length === 0) loadMedia(); else renderMedia();
+        loadMedia(1);
     }
 
-    function loadMedia(){
-        ajax('GET', ROUTES.mediaList, null, function(err, res){
+    function loadMedia(page){
+        mediaCurrentPage = page || 1;
+        var url = ROUTES.mediaList + '?page=' + mediaCurrentPage;
+        ajax('GET', url, null, function(err, res){
             if(err) return alert(err);
-            media = res; renderMedia();
+            media = res.data;
+            mediaTotalPages = res.last_page;
+            renderMedia();
+            renderMediaPagination(res);
         });
     }
 
@@ -619,6 +636,26 @@
                 mediaSelectBtn.disabled = false;
             };
         });
+    }
+
+    function renderMediaPagination(res){
+        var pag = document.getElementById('mediaPagination');
+        var text = document.getElementById('mediaShowingText');
+        text.textContent = 'Showing ' + res.from + ' to ' + res.to + ' of ' + res.total;
+
+        var html = '';
+        html += '<button class="pag-btn '+(res.current_page === 1 ? 'disabled' : '')+'" onclick="if(mediaCurrentPage>1) loadMedia(mediaCurrentPage-1)"><i class="bi bi-chevron-left"></i></button>';
+        
+        for(var i=1; i<=res.last_page; i++){
+            if(i === 1 || i === res.last_page || (i >= res.current_page - 1 && i <= res.current_page + 1)){
+                html += '<button class="pag-btn '+(i === res.current_page ? 'active' : '')+'" onclick="loadMedia('+i+')">'+i+'</button>';
+            } else if(i === 2 || i === res.last_page - 1){
+                html += '<span style="color:#ccc;">...</span>';
+            }
+        }
+
+        html += '<button class="pag-btn '+(res.current_page === res.last_page ? 'disabled' : '')+'" onclick="if(mediaCurrentPage<mediaTotalPages) loadMedia(mediaCurrentPage+1)"><i class="bi bi-chevron-right"></i></button>';
+        pag.innerHTML = html;
     }
 
     mediaSelectBtn.onclick = function(){
