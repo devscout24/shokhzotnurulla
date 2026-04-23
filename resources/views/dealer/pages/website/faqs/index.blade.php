@@ -18,7 +18,7 @@
             color: #333;
         }
 
-        .rc-sidebar-item.active { background: #fff; color: #333; font-weight: 700; }
+        .rc-sidebar-item.active { background: #fff; color: #333; font-weight: 600; }
         .rc-sidebar-item i { font-size: 18px !important; width: 24px; text-align: center; color: #999; }
         .rc-sidebar-item.active i { color: #d0021b !important; }
 

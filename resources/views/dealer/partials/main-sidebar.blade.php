@@ -30,8 +30,8 @@
         </div>
     </a>
     <a class="sidebar-item-link" href="{{ route('dealer.website.faqs.index') }}">
-        <div class="sidebar-item {{ request()->routeIs('dealer.website.faqs.*', 'dealer.website.srp-content.*', 'dealer.website.static-page-content.*', 'dealer.website.promo-banners.*') ? 'active' : '' }}">
-            <i class="bi bi-collection"></i>
+        <div class="sidebar-item {{ request()->routeIs('dealer.website.faqs.*', 'dealer.website.srp-content.*', 'dealer.website.static-page-content.*', 'dealer.website.promo-banners.*', 'dealer.website.customer-reviews.*') ? 'active' : '' }}">
+            <i class="bi bi-layers"></i>
             <span>{{ __('Reusable Content') }}</span>
         </div>
     </a>

@@ -12,7 +12,7 @@
 .rc-sidebar-item { display: flex; align-items: center; gap: 12px; padding: 15px 25px; font-size: 14px; color: #666; cursor: pointer; transition: all .2s; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
 .rc-sidebar-item:last-child { border-bottom: none; }
 .rc-sidebar-item:hover { background: #f8f8f8; color: #333; }
-.rc-sidebar-item.active { background: #fff; color: #333; font-weight: 700; }
+.rc-sidebar-item.active { background: #fff; color: #333; font-weight: 600; }
 .rc-sidebar-item i { font-size: 18px !important; width: 24px; text-align: center; color: #999; }
 .rc-sidebar-item.active i { color: #d0021b !important; }
 

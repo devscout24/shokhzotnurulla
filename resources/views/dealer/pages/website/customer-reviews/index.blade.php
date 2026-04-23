@@ -18,7 +18,7 @@
         .rc-sidebar-item { display: flex; align-items: center; gap: 12px; padding: 15px 25px; font-size: 14px; color: #666; cursor: pointer; transition: all .2s; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
         .rc-sidebar-item:last-child { border-bottom: none; }
         .rc-sidebar-item:hover { background: #f8f8f8; color: #333; }
-        .rc-sidebar-item.active { background: #fff; color: #333; font-weight: 700; }
+        .rc-sidebar-item.active { background: #fff; color: #333; font-weight: 600; }
         .rc-sidebar-item i { font-size: 18px !important; width: 24px; text-align: center; color: #999; }
         .rc-sidebar-item.active i { color: #d0021b !important; }
 
@@ -113,6 +113,17 @@
         #mediaModalOverlay .btn-save-red:disabled { background: #f59e9e; cursor: not-allowed; }
         #mediaModalOverlay .btn-save-red { border-radius: 8px; padding: 10px 25px; }
         
+        .media-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); max-height: 50vh; overflow-y: auto; }
+        .media-grid.comfortable { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
+        .media-grid.expanded { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        
+        .media-item { aspect-ratio: 1; border: 2px solid transparent; border-radius: 8px; overflow: hidden; cursor: pointer; position: relative; background: #f9f9f9; }
+        .media-item:hover { border-color: #eee; }
+        .media-item.selected { border-color: #d0021b; }
+        .media-item img { width: 100%; height: 100%; object-fit: cover; }
+        .media-item-check { position: absolute; top: 5px; right: 5px; background: #d0021b; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 12px; }
+        .media-item.selected .media-item-check { display: flex; }
+
         .media-pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 30px; }
         .pag-btn { width: 35px; height: 35px; border: 1px solid #eef0f2; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #fff; color: #666; cursor: pointer; transition: all .2s; }
         .pag-btn:hover { border-color: #d0021b; color: #d0021b; }
@@ -279,9 +290,10 @@
         </div>
         <div style="padding: 15px 30px; display: flex; justify-content: flex-end; align-items: center; gap: 10px; border-bottom: 1px solid #f9f9f9;">
             <div style="font-size: 12px; color: #666; background: #f8f9fa; padding: 8px 15px; border: 1px solid #eef0f2; border-radius: 4px 0 0 4px; border-right: none;">Display</div>
-            <select class="bulk-select" style="width: 150px; padding: 7px 10px; font-size: 12px; border-radius: 0 4px 4px 0;">
-                <option>Compact</option>
-                <option>Large</option>
+            <select class="bulk-select" id="mediaDisplaySelect" style="width: 150px; padding: 7px 10px; font-size: 12px; border-radius: 0 4px 4px 0;">
+                <option value="compact">Compact</option>
+                <option value="comfortable">Comfortable</option>
+                <option value="expanded">Expanded</option>
             </select>
         </div>
         <div class="media-grid" id="mediaGrid" style="padding: 30px; border-bottom: 1px solid #f9f9f9;"></div>
@@ -609,7 +621,7 @@
 
     function loadMedia(page){
         mediaCurrentPage = page || 1;
-        var url = ROUTES.mediaList + '?page=' + mediaCurrentPage;
+        var url = ROUTES.mediaList + '?page=' + mediaCurrentPage + '&type=image';
         ajax('GET', url, null, function(err, res){
             if(err) return alert(err);
             media = res.data;
@@ -637,6 +649,11 @@
             };
         });
     }
+
+    document.getElementById('mediaDisplaySelect').onchange = function(){
+        mediaGrid.classList.remove('comfortable', 'expanded');
+        if(this.value !== 'compact') mediaGrid.classList.add(this.value);
+    };
 
     function renderMediaPagination(res){
         var pag = document.getElementById('mediaPagination');
