@@ -583,10 +583,11 @@
     document.getElementById('addBtn').onclick = function(){ window.location.hash = '#add'; };
     document.getElementById('backBtn').onclick = function(){ window.location.hash = '#list'; };
     window.onhashchange = navigate;
+    navigate();
 
     function openForm(id){
         editingId = id;
-        var item = id ? banners.find(function(b){ return b.id===id; }) : null;
+        var item = id ? banners.find(function(b){ return b.id == id; }) : null;
         document.getElementById('formViewTitle').textContent = item ? 'Edit Promo' : 'Add Promo';
         document.getElementById('titleInput').value = item ? item.title : '';
         document.getElementById('disclaimerInput').value = item ? (item.disclaimer||'') : '';
@@ -619,9 +620,17 @@
     }
 
     function setMediaValue(f, url){
-        document.getElementById(f + 'Input').value = url;
+        if(window._bulkActiveField){
+            var row = window._bulkActiveField.row;
+            var input = row.querySelector('.bulk-'+window._bulkActiveField.field);
+            if(input) input.value = url;
+            window._bulkActiveField = null;
+            return;
+        }
+        var input = document.getElementById(f + 'Input');
+        if(input) input.value = url;
         var p = document.getElementById(f + 'Preview'), w = document.getElementById(f + 'PreviewWrap');
-        if(url){ p.src = url; w.style.display = 'block'; } else { w.style.display = 'none'; }
+        if(url){ if(p) p.src = url; if(w) w.style.display = 'block'; } else { if(w) w.style.display = 'none'; }
     }
 
     function setColorValue(f, c){
@@ -752,7 +761,7 @@
         if(!p.title) return alert('Title is required');
         ajax(editingId?'PATCH':'POST', editingId?ROUTES.update.replace('__ID__', editingId):ROUTES.store, p, function(err, res){
             if(err) return alert(err);
-            if(editingId){ var idx = banners.findIndex(function(b){ return b.id===editingId; }); if(idx>-1) banners[idx] = res; }
+            if(editingId){ var idx = banners.findIndex(function(b){ return b.id == editingId; }); if(idx>-1) banners[idx] = res; }
             else banners.push(res);
             window.location.hash = '#list'; renderTable(); showToaster('Promo saved.');
         });
@@ -762,7 +771,7 @@
         customConfirm('Are you sure you want to delete this promo?', function(){
             ajax('DELETE', ROUTES.destroy.replace('__ID__', id), null, function(err){
                 if(err) return alert(err);
-                banners = banners.filter(function(b){ return b.id!==id; }); renderTable(); showToaster('Promo deleted.');
+                banners = banners.filter(function(b){ return b.id != id; }); renderTable(); showToaster('Promo deleted.');
             });
         });
     };
@@ -895,12 +904,13 @@
             condition: document.getElementById('conditionInput').value || null,
             certified: document.getElementById('certifiedInput').value || null,
             link_url: document.getElementById('linkUrlInput').value || null,
-            desktop_image_url: document.getElementById('desktop_image_url').value || null,
-            mobile_image_url: document.getElementById('mobile_image_url').value || null,
-            srp_desktop_banner_url: document.getElementById('srp_desktop_banner_url').value || null,
-            srp_mobile_banner_url: document.getElementById('srp_mobile_banner_url').value || null,
-            primary_color: document.getElementById('primary_color').value || null,
-            secondary_color: document.getElementById('secondary_color').value || null,
+            desktop_image_url: document.getElementById('desktop_image_urlInput').value || null,
+            mobile_image_url: document.getElementById('mobile_image_urlInput').value || null,
+            srp_desktop_banner_url: document.getElementById('srp_desktop_banner_urlInput').value || null,
+            srp_mobile_banner_url: document.getElementById('srp_mobile_banner_urlInput').value || null,
+            primary_color: document.getElementById('primary_colorInput').value || null,
+            secondary_color: document.getElementById('secondary_colorInput').value || null,
+            status: 'Active',
         };
 
         var url = editingId ? ROUTES.update.replace('__ID__', editingId) : ROUTES.store;
@@ -908,7 +918,7 @@
             if(err) return alert(err);
             if(editingId) { var idx = banners.findIndex(x => x.id == editingId); banners[idx] = res; }
             else { banners.push(res); }
-            editingId = null; navigate('list'); renderTable(); showToaster('Banner saved successfully.');
+            editingId = null; window.location.hash = '#list'; renderTable(); showToaster('Banner saved successfully.');
         });
     };
 
@@ -929,6 +939,7 @@
 
     function addBulkRow(item){
         var row = document.createElement('tr');
+        row.dataset.id = item ? item.id : '';
         
         var colorHtml = function(f, val){
             var id = f.replace('_','-');
@@ -1029,18 +1040,7 @@
     // Global click listener for bulk color popups
     document.addEventListener('click', function(){ document.querySelectorAll('.bulk-color-popup').forEach(p => p.classList.remove('open')); });
 
-    // Override setMediaValue to handle bulk rows
-    var originalSetMediaValue = window.setMediaValue;
-    window.setMediaValue = function(field, url){
-        if(window._bulkActiveField){
-            var row = window._bulkActiveField.row;
-            row.querySelector('.bulk-'+window._bulkActiveField.field).value = url;
-            window._bulkActiveField = null;
-            document.getElementById('mediaModalOverlay').classList.remove('open');
-            return;
-        }
-        originalSetMediaValue(field, url);
-    };
+
 
     document.getElementById('bulkEditSaveBtn').onclick = function(){
         var rows = bulkTableBody.querySelectorAll('tr');
@@ -1057,6 +1057,7 @@
             if(start && end && start > end) { dateError = true; return; }
 
             data.push({
+                id: row.dataset.id || null,
                 title: title,
                 disclaimer: disclaimer,
                 promo_category_id: row.querySelector('.bulk-category').value || null,
@@ -1077,7 +1078,7 @@
         if(dateError) return alert('One or more rows have an End Date earlier than the Start Date.');
         if(data.length === 0) return alert('No data to save');
 
-        ajax('POST', ROUTES.bulkUpdate, {items: data}, function(err, res){
+        ajax('POST', ROUTES.bulkUpdate, {banners: data}, function(err, res){
             if(err) return alert(err);
             banners = res; renderTable(); bulkOverlay.classList.remove('open'); showToaster('Bulk data saved.');
         });
