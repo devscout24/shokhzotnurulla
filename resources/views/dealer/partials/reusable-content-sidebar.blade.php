@@ -11,7 +11,7 @@
     <a href="{{ route('dealer.website.static-page-content.index') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.static-page-content.*') ? 'active' : '' }}">
         <i class="bi bi-file-text"></i> Static Page Content
     </a>
-    <a href="#" class="rc-sidebar-item">
+    <a href="{{ route('dealer.website.customer-reviews.index') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.customer-reviews.*') ? 'active' : '' }}">
         <i class="bi bi-star"></i> Customer Review
     </a>
     <a href="#" class="rc-sidebar-item">

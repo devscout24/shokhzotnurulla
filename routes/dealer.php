@@ -18,6 +18,7 @@ use App\Http\Controllers\Dealer\WebsiteFaqController;
 use App\Http\Controllers\Dealer\WebsiteSrpContentController;
 use App\Http\Controllers\Dealer\WebsiteStaticPageContentController;
 use App\Http\Controllers\Dealer\WebsitePromoBannerController;
+use App\Http\Controllers\Dealer\CustomerReviewController;
 
 Route::prefix('dealer')->name('dealer.')
     ->middleware(['auth', 'verified', 'all.active', 'isDealer'])
@@ -104,6 +105,18 @@ Route::prefix('dealer')->name('dealer.')
             Route::post('/categories', [WebsitePromoBannerController::class, 'storeCategory'])->name('categories.store');
             Route::patch('/categories/{promoCategory}', [WebsitePromoBannerController::class, 'updateCategory'])->name('categories.update');
             Route::delete('/categories/{promoCategory}', [WebsitePromoBannerController::class, 'destroyCategory'])->name('categories.destroy');
+        });
+
+        // ── Customer Reviews (Reusable Content) ──────────────────────────────────────
+        Route::prefix('customer-reviews')->name('customer-reviews.')->group(function () {
+            Route::get('/',                          [CustomerReviewController::class, 'index'])->name('index');
+            Route::post('/',                         [CustomerReviewController::class, 'store'])->name('store');
+            Route::patch('/{customerReview}',        [CustomerReviewController::class, 'update'])->name('update');
+            Route::delete('/{customerReview}',       [CustomerReviewController::class, 'destroy'])->name('destroy');
+            Route::post('/bulk-update',              [CustomerReviewController::class, 'bulkUpdate'])->name('bulk-update');
+            Route::post('/categories',               [CustomerReviewController::class, 'storeCategory'])->name('categories.store');
+            Route::patch('/categories/{customerReviewCategory}', [CustomerReviewController::class, 'updateCategory'])->name('categories.update');
+            Route::delete('/categories/{customerReviewCategory}',[CustomerReviewController::class, 'destroyCategory'])->name('categories.destroy');
         });
 
         // ── Form Entries ──────────────────────────────────────────────────────────────
