@@ -178,6 +178,14 @@
         .bulk-color-popup.open { display: block; }
         .bulk-color-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
         .bulk-color-swatch { width: 20px; height: 20px; border-radius: 3px; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); }
+
+        /* Custom Dropdown for Filter */
+        .rc-dropdown-wrap { position: relative; }
+        .rc-dropdown-menu { position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; z-index: 100; min-width: 200px; margin-top: 8px; overflow: hidden; }
+        .rc-dropdown-menu.open { display: block; }
+        .rc-dropdown-item { padding: 12px 20px; font-size: 13px; color: #555; cursor: pointer; transition: all .15s; }
+        .rc-dropdown-item:hover { background: #f8f9fa; color: #333; }
+        .rc-dropdown-item.active { background: #f0f2f5; color: #000; font-weight: 600; }
     </style>
 @endpush
 
@@ -187,6 +195,12 @@
         <div class="page-header" style="margin-bottom: 25px; border: none;">
             <h2 class="view-title" style="font-size: 24px; font-weight: 700; color: #222;">{{ __('Reusable Content: Promo') }}</h2>
             <div class="rc-header-actions">
+                <div class="rc-dropdown-wrap">
+                    <button class="rc-btn-outline" type="button" id="filterBtn"><i class="bi bi-funnel"></i> Filter by Category <i class="bi bi-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></button>
+                    <div class="rc-dropdown-menu" id="filterMenu">
+                        <div class="rc-dropdown-item active" data-id="All">All Categories</div>
+                    </div>
+                </div>
                 <button class="rc-btn-outline" type="button" id="manageCatBtn"><i class="bi bi-folder2-open"></i> {{ __('Manage Categories') }}</button>
                 <button class="rc-btn-outline" type="button" id="bulkEditBtn"><i class="bi bi-pencil-square"></i> {{ __('Bulk Edit') }}</button>
                 <button class="rc-btn-add" type="button" id="addBtn"><i class="bi bi-plus-lg"></i> {{ __('Add New Promo') }}</button>
@@ -200,13 +214,15 @@
                 {{-- List View --}}
                         <div id="listView">
                     <div class="rc-main-container">
-                        <div style="padding: 20px 25px; border-bottom: 1px solid #f0f0f0;">
-                            <label style="font-size: 12px; font-weight: 700; color: #333; margin-bottom: 8px; display: block;">Filter Status</label>
-                            <select id="statusFilter" class="bulk-select" style="width: 250px;">
-                                <option value="Active" selected>Currently Active</option>
-                                <option value="Expired">Expired</option>
-                                <option value="All">All Items</option>
-                            </select>
+                        <div style="padding: 20px 25px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <label style="font-size: 12px; font-weight: 700; color: #333; margin: 0;">Status:</label>
+                                <select id="statusFilter" class="bulk-select" style="width: 180px; border-radius: 6px; padding: 6px 12px;">
+                                    <option value="Active" selected>Currently Active</option>
+                                    <option value="Expired">Expired</option>
+                                    <option value="All">All Items</option>
+                                </select>
+                            </div>
                         </div>
                         <table class="rc-table" id="promoTable">
                             <thead>
@@ -541,15 +557,39 @@
         return 'Active';
     }
 
+    document.getElementById('statusFilter').onchange = renderTable;
+
+    var selectedCategoryId = 'All';
+    document.getElementById('filterBtn').onclick = function(e){ e.stopPropagation(); document.getElementById('filterMenu').classList.toggle('open'); };
+    document.addEventListener('click', function(){ document.getElementById('filterMenu').classList.remove('open'); });
+
+    function populateFilters(){
+        var menu = document.getElementById('filterMenu');
+        var html = '<div class="rc-dropdown-item '+(selectedCategoryId === 'All' ? 'active' : '')+'" data-id="All">All Categories</div>';
+        categories.forEach(function(c){ 
+            html += '<div class="rc-dropdown-item '+(selectedCategoryId == c.id ? 'active' : '')+'" data-id="'+c.id+'">'+c.name+'</div>'; 
+        });
+        menu.innerHTML = html;
+        
+        menu.querySelectorAll('.rc-dropdown-item').forEach(function(item){
+            item.onclick = function(){
+                selectedCategoryId = this.dataset.id;
+                document.getElementById('filterBtn').innerHTML = '<i class="bi bi-funnel"></i> ' + (selectedCategoryId === 'All' ? 'Filter by Category' : this.textContent) + ' <i class="bi bi-chevron-down" style="font-size: 10px; margin-left: 5px;"></i>';
+                populateFilters();
+                renderTable();
+            };
+        });
+    }
+
     function renderTable(){
         var filter = document.getElementById('statusFilter').value;
         var tbody = document.getElementById('promoTableBody');
         var html = '';
         var filtered = banners.filter(function(b){
             var s = getDisplayStatus(b);
-            if (filter === 'Active') return s === 'Active';
-            if (filter === 'Expired') return s === 'Expired';
-            return true;
+            var statusMatch = (filter === 'All' || (filter === 'Active' && s === 'Active') || (filter === 'Expired' && s === 'Expired'));
+            var catMatch = (selectedCategoryId === 'All' || b.promo_category_id == selectedCategoryId);
+            return statusMatch && catMatch;
         });
 
         filtered.forEach(function(b){
@@ -566,8 +606,6 @@
         });
         tbody.innerHTML = html || '<tr><td colspan="4" style="text-align:center;padding:50px;color:#999;">No results found.</td></tr>';
     }
-
-    document.getElementById('statusFilter').onchange = renderTable;
 
     function navigate() {
         var h = window.location.hash;
@@ -803,7 +841,10 @@
         customConfirm('Delete category?', function(){
             ajax('DELETE', ROUTES.catDestroy.replace('__ID__', id), null, function(err){
                 if(err) return alert(err);
-                categories = categories.filter(function(x){ return x.id !== id; }); showCatList(); showToaster('Category deleted.');
+                categories = categories.filter(function(x){ return x.id !== id; }); 
+                showCatList(); 
+                populateFilters();
+                showToaster('Category deleted.');
             });
         });
     };
@@ -824,7 +865,7 @@
             ajax(isNew?'POST':'PATCH', isNew?ROUTES.catStore:ROUTES.catUpdate.replace('__ID__', cat.id), {name:val}, function(err, res){
                 if(err) return alert(err);
                 if(isNew) categories.push(res); else { var idx = categories.findIndex(function(x){ return x.id == cat.id; }); categories[idx] = res; }
-                showCatList(); showToaster('Category saved.');
+                showCatList(); populateFilters(); showToaster('Category saved.');
             });
         };
     }
@@ -1084,6 +1125,7 @@
         });
     };
 
+    populateFilters();
     renderTable();
 })();
 </script>
