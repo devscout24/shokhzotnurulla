@@ -595,7 +595,7 @@
     document.getElementById('manageCatBtn').onclick = showCatList;
     document.getElementById('catModalClose').onclick = function(){ catOverlay.classList.remove('open'); };
 
-    function showCatList(){
+    window.showCatList = function showCatList(){
         var body = document.getElementById('catModalBody');
         var html = '<div style="padding:10px;">';
         categories.forEach(function(c){
