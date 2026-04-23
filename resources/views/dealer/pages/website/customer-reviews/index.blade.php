@@ -38,12 +38,12 @@
         .rc-title-cell { display: flex; align-items: flex-start; gap: 15px; }
         .rc-drag { color: #ddd; cursor: grab; font-size: 16px; padding-top: 2px; }
         .rc-nickname { font-size: 15px; font-weight: 500; color: #333; line-height: 1.4; margin-bottom: 8px; }
-        .rc-row-actions { display: flex; align-items: center; gap: 10px; opacity: 0; transition: opacity .2s; }
-        .rc-table tr:hover .rc-row-actions { opacity: 1; }
-        .rc-row-btn { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 12px; color: #666; background: #fff; cursor: pointer; text-decoration: none; transition: all .2s; }
-        .rc-row-btn:hover { background: #f8f8f8; color: #333; border-color: #ccc; }
+        .rc-row-actions { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+        .rc-row-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid #eef0f2; border-radius: 6px; font-size: 12px; color: #444; background: #fff; cursor: pointer; text-decoration: none; transition: all .2s; font-weight: 500; }
+        .rc-row-btn:hover { background: #f8f9fa; color: #000; border-color: #d0d0d0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .rc-row-btn i { font-size: 14px; }
         .rc-row-btn.trash-btn { color: #d0021b; }
-        .rc-row-btn.trash-btn:hover { background: #fff0f0; border-color: #f5c6cb; }
+        .rc-row-btn.trash-btn:hover { background: #fff5f5; border-color: #f5c6cb; }
 
         /* Form Styles */
         .bulk-col-label { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 8px; display: block; }
@@ -76,9 +76,15 @@
         .btn-save-red:hover { background: #b00217; }
 
         /* Modals */
-        .faq-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .faq-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .faq-modal-overlay.open { display: flex; }
-        .faq-modal { background: #fff; border-radius: 12px; width: 500px; max-width: 90%; box-shadow: 0 15px 40px rgba(0,0,0,0.2); overflow: hidden; }
+        .faq-modal { background: #fff; border-radius: 12px; width: 500px; max-width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); overflow: hidden; }
+        
+        .confirm-modal-header { padding: 15px 25px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+        .confirm-modal-title { font-size: 14px; font-weight: 700; color: #333; display: flex; align-items: center; gap: 10px; }
+        .confirm-modal-title i { color: #f39c12; font-size: 18px; }
+        .confirm-modal-body { padding: 30px 25px; font-size: 14px; color: #555; line-height: 1.5; }
+        .confirm-modal-footer { padding: 15px 25px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 12px; background: #fff; }
         
         /* Media Library Modal */
         .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 25px; max-height: 60vh; overflow-y: auto; }
@@ -96,20 +102,38 @@
         .rc-dropdown-item:hover { background: #f8f9fa; color: #333; }
         .rc-dropdown-item.active { background: #f0f2f5; color: #000; font-weight: 600; }
 
-        /* Bulk Edit Styles */
-        .bulk-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 2000; display: none; flex-direction: column; }
+        /* Bulk Edit Styles - Modal Style */
+        .bulk-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .bulk-overlay.open { display: flex; }
-        .bulk-header { padding: 15px 30px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #fff; }
-        .bulk-body { flex: 1; overflow: auto; padding: 0; }
-        .bulk-footer { padding: 15px 30px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 15px; background: #fff; }
-        .bulk-table { width: 100%; border-collapse: collapse; min-width: 1500px; }
-        .bulk-table th { position: sticky; top: 0; background: #f9f9f9; z-index: 10; padding: 12px 15px; text-align: left; font-size: 12px; font-weight: 700; color: #333; border-bottom: 1px solid #eee; }
-        .bulk-table td { padding: 10px 15px; border-bottom: 1px solid #f0f0f0; }
-        .bulk-edit-input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
-        .bulk-edit-rte { width: 100%; min-height: 80px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; background: #fff; overflow-y: auto; }
+        .bulk-modal { background: #f0f2f5; width: 95%; max-width: 1400px; height: 90vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
         
-        .toaster { position: fixed; bottom: 30px; right: 30px; background: #333; color: #fff; padding: 12px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 3000; display: flex; align-items: center; gap: 10px; transform: translateY(100px); opacity: 0; transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .toaster.show { transform: translateY(0); opacity: 1; }
+        .bulk-header { padding: 20px 30px; border-bottom: 1px solid #eef0f2; display: flex; justify-content: space-between; align-items: center; background: #fff; }
+        .bulk-body { flex: 1; overflow: auto; padding: 30px; }
+        .bulk-footer { padding: 15px 30px; border-top: 1px solid #eef0f2; display: flex; justify-content: flex-end; gap: 15px; background: #fff; }
+        
+        .bulk-container { background: #fff; border-radius: 12px; border: 1px solid #eef0f2; box-shadow: 0 4px 20px rgba(0,0,0,0.04); overflow-x: auto; }
+        .bulk-table { width: 100%; border-collapse: collapse; min-width: 1800px; }
+        .bulk-table th { background: #fff; padding: 18px 15px; text-align: left; font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #f0f0f0; }
+        .bulk-table td { padding: 15px; border-bottom: 1px solid #f8f9fa; vertical-align: top; }
+        
+        .bulk-edit-input { width: 100%; padding: 10px 12px; border: 1px solid #eef0f2; border-radius: 6px; font-size: 13px; color: #333; background: #fcfdfe; transition: all .2s; }
+        .bulk-edit-input:focus { border-color: #d0021b; outline: none; background: #fff; }
+        
+        .bulk-media-cell { display: flex; flex-direction: column; gap: 8px; width: 250px; }
+        .bulk-media-preview { width: 100%; height: 80px; border-radius: 6px; border: 1px solid #eee; object-fit: cover; background: #f9f9f9; cursor: pointer; }
+        
+        .bulk-rte-wrap { width: 350px; border: 1px solid #eef0f2; border-radius: 6px; overflow: hidden; background: #fff; }
+        .bulk-rte-toolbar { display: flex; gap: 5px; padding: 8px; background: #f9f9f9; border-bottom: 1px solid #eef0f2; }
+        .bulk-rte-content { padding: 12px; min-height: 80px; font-size: 13px; line-height: 1.5; color: #444; outline: none; }
+        
+        .toaster-container { position: fixed; top: 30px; right: 30px; z-index: 5000; display: flex; flex-direction: column; gap: 10px; }
+        .toaster { background: #00b612; color: #fff; padding: 16px 40px 16px 20px; border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; transform: translateX(120%); transition: transform .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: none; position: relative; font-weight: 500; font-size: 14px; min-width: 250px; }
+        .toaster.show { transform: translateX(0); }
+        .toaster i { font-size: 20px; color: #fff; }
+        .toaster-close { background: none; border: none; font-size: 18px; cursor: pointer; color: #fff; position: absolute; top: 14px; right: 15px; opacity: 0.8; padding: 0; line-height: 1; }
+        .toaster-close:hover { opacity: 1; }
+        
+        #mediaModalOverlay { z-index: 4000 !important; }
         #mediaModalOverlay .btn-save-red:disabled { background: #f59e9e; cursor: not-allowed; }
         #mediaModalOverlay .btn-save-red { border-radius: 8px; padding: 10px 25px; }
         
@@ -125,6 +149,11 @@
         .media-item.selected .media-item-check { display: flex; }
 
         .media-pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 30px; }
+        .status-wrap { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #666; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; }
+        .status-dot.active { background: #28a745; }
+        .status-dot.inactive { background: #9da3a8; }
+        
         .pag-btn { width: 35px; height: 35px; border: 1px solid #eef0f2; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #fff; color: #666; cursor: pointer; transition: all .2s; }
         .pag-btn:hover { border-color: #d0021b; color: #d0021b; }
         .pag-btn.active { background: #d0021b; border-color: #d0021b; color: #fff; }
@@ -291,12 +320,12 @@
         <div style="padding: 15px 30px; display: flex; justify-content: flex-end; align-items: center; gap: 10px; border-bottom: 1px solid #f9f9f9;">
             <div style="font-size: 12px; color: #666; background: #f8f9fa; padding: 8px 15px; border: 1px solid #eef0f2; border-radius: 4px 0 0 4px; border-right: none;">Display</div>
             <select class="bulk-select" id="mediaDisplaySelect" style="width: 150px; padding: 7px 10px; font-size: 12px; border-radius: 0 4px 4px 0;">
-                <option value="compact">Compact</option>
-                <option value="comfortable">Comfortable</option>
                 <option value="expanded">Expanded</option>
+                <option value="comfortable">Comfortable</option>
+                <option value="compact">Compact</option>
             </select>
         </div>
-        <div class="media-grid" id="mediaGrid" style="padding: 30px; border-bottom: 1px solid #f9f9f9;"></div>
+        <div class="media-grid expanded" id="mediaGrid" style="padding: 30px; border-bottom: 1px solid #f9f9f9;"></div>
         <div style="padding: 20px 30px; background: #fff; display: flex; flex-direction: column; align-items: center;">
             <div style="width: 100%; display: flex; justify-content: flex-end; margin-bottom: 20px;">
                 <button class="btn-save-red" id="mediaSelectBtn" disabled style="padding: 12px 35px;"><i class="bi bi-check-lg"></i> Select Media</button>
@@ -309,51 +338,57 @@
 
 {{-- Confirm Modal --}}
 <div class="faq-modal-overlay" id="confirmModalOverlay">
-    <div class="faq-modal" style="width: 400px;">
-        <div style="padding: 30px; text-align: center;">
-            <div style="width: 60px; height: 60px; background: #fff5f5; color: #d0021b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px;">
-                <i class="bi bi-exclamation-triangle"></i>
-            </div>
-            <h3 style="margin: 0 0 10px; font-size: 18px; font-weight: 700; color: #333;">Are you sure?</h3>
-            <p style="margin: 0 0 25px; color: #666; font-size: 14px;" id="confirmModalBodyText">This action cannot be undone.</p>
-            <div style="display: flex; gap: 10px;">
-                <button class="rc-btn-outline" style="flex: 1; justify-content: center;" id="confirmCancelBtn">Cancel</button>
-                <button class="btn-save-red" style="flex: 1; justify-content: center; background: #d0021b;" id="confirmContinueBtn">Continue</button>
-            </div>
+    <div class="faq-modal" style="width: 450px;">
+        <div class="confirm-modal-header">
+            <div class="confirm-modal-title"><i class="bi bi-exclamation-triangle-fill"></i> Are you sure?</div>
+            <button style="background:none; border:none; font-size:20px; cursor:pointer; color:#999;" id="confirmModalCloseBtn">&times;</button>
+        </div>
+        <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure you want to delete this post?</div>
+        <div class="confirm-modal-footer">
+            <button class="rc-btn-outline" style="padding: 8px 20px;" id="confirmCancelBtn">Cancel</button>
+            <button class="btn-save-red" style="padding: 8px 20px; background: #d0021b;" id="confirmContinueBtn">Continue</button>
         </div>
     </div>
 </div>
 
 {{-- Bulk Edit Overlay --}}
 <div class="bulk-overlay" id="bulkOverlay">
-    <div class="bulk-header">
-        <h2 style="font-size: 18px; font-weight: 700; margin: 0; color: #333;">Bulk Edit Reviews</h2>
-        <button class="rc-btn-outline" id="bulkEditCancelBtn">Cancel</button>
-    </div>
-    <div class="bulk-body">
-        <table class="bulk-table">
-            <thead>
-                <tr>
-                    <th style="width: 200px;">Reviewer Name</th>
-                    <th style="width: 200px;">Headline</th>
-                    <th style="width: 150px;">Date</th>
-                    <th style="width: 150px;">Source</th>
-                    <th style="width: 100px;">Stars</th>
-                    <th style="width: 150px;">Category</th>
-                    <th style="width: 300px;">Photo URL</th>
-                    <th style="width: 400px;">Content</th>
-                </tr>
-            </thead>
-            <tbody id="bulkTableBody"></tbody>
-        </table>
-        <div style="padding: 20px; text-align: center;">
-            <button class="rc-btn-outline" style="margin: 0 auto;" id="addBulkRowBtn"><i class="bi bi-plus-lg"></i> Add Another Row</button>
+    <div class="bulk-modal">
+        <div class="bulk-header">
+            <h2 style="font-size: 18px; font-weight: 700; margin: 0; color: #333;">Bulk Edit Customer Reviews</h2>
+            <button style="background:none; border:none; font-size:24px; cursor:pointer; color:#999;" id="bulkEditCloseBtn">&times;</button>
+        </div>
+        <div class="bulk-body">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                <button class="rc-btn-outline" id="addBulkRowBtn"><i class="bi bi-plus-lg"></i> Add Row</button>
+            </div>
+            <div class="bulk-container">
+                <table class="bulk-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 200px;">Reviewer Name *</th>
+                            <th style="width: 200px;">Review Headline</th>
+                            <th style="width: 150px;">Review Date</th>
+                            <th style="width: 180px;">Review Source</th>
+                            <th style="width: 100px;">Star Count</th>
+                            <th style="width: 180px;">Category *</th>
+                            <th style="width: 300px;">Review Photo URL</th>
+                            <th style="width: 400px;">Review Content *</th>
+                            <th style="width: 80px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="bulkTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="bulk-footer">
+            <button class="rc-btn-outline" style="border:none; color:#666;" id="bulkEditCancelBtn">Cancel</button>
+            <button class="btn-save-red" id="bulkEditSaveBtn" style="padding: 10px 30px;">Save</button>
         </div>
     </div>
-    <div class="bulk-footer">
-        <button class="btn-save-red" id="bulkEditSaveBtn">Save Changes</button>
-    </div>
 </div>
+
+<div class="toaster-container" id="toasterContainer"></div>
 
 @endsection
 
@@ -392,13 +427,15 @@
     }
 
     function showToaster(text) {
-        var container = document.getElementById('mainContent');
+        var container = document.getElementById('toasterContainer');
         var t = document.createElement('div');
         t.className = 'toaster';
-        t.innerHTML = '<i class="bi bi-check-circle-fill" style="color:#28a745;"></i> ' + text;
+        t.innerHTML = '<i class="bi bi-check-circle-fill"></i> <span>' + text + '</span><button class="toaster-close">&times;</button>';
         container.appendChild(t);
-        setTimeout(function(){ t.classList.add('show'); }, 10);
-        setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 400); }, 3000);
+        setTimeout(() => t.classList.add('show'), 10);
+        var remove = () => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); };
+        var timer = setTimeout(remove, 3000);
+        t.querySelector('.toaster-close').onclick = () => { clearTimeout(timer); remove(); };
     }
 
     var confirmOverlay = document.getElementById('confirmModalOverlay');
@@ -408,34 +445,42 @@
         confirmCallback = cb;
         confirmOverlay.classList.add('open');
     }
-    document.getElementById('confirmCancelBtn').onclick = function(){ confirmOverlay.classList.remove('open'); };
-    document.getElementById('confirmContinueBtn').onclick = function(){ if(confirmCallback) confirmCallback(); confirmOverlay.classList.remove('open'); };
+    document.getElementById('confirmCancelBtn').onclick = () => confirmOverlay.classList.remove('open');
+    document.getElementById('confirmModalCloseBtn').onclick = () => confirmOverlay.classList.remove('open');
+    document.getElementById('confirmContinueBtn').onclick = () => { if(confirmCallback) confirmCallback(); confirmOverlay.classList.remove('open'); };
 
     function getDisplayStatus(b) {
-        if (b.status === 'Inactive') return 'Draft';
-        return 'Active';
+        return b.status === 'Inactive' ? 'Draft' : 'Active';
     }
+
+    window._trash = function(id){
+        customConfirm('Are you sure you want to delete this review?', function(){
+            ajax('DELETE', ROUTES.destroy.replace('__ID__', id), null, function(err){
+                if(err) return alert(err);
+                reviews = reviews.filter(r => r.id != id); renderTable(); showToaster('Review deleted successfully.');
+            });
+        });
+    };
 
     function renderTable(){
         var catFilter = selectedCategoryId;
         var tbody = document.getElementById('reviewTableBody');
         var html = '';
-        var filtered = reviews.filter(function(b){
-            var catMatch = (catFilter === 'All' || b.customer_review_category_id == catFilter);
-            return catMatch;
-        });
+        var filtered = reviews.filter(b => (catFilter === 'All' || b.customer_review_category_id == catFilter));
 
-        filtered.forEach(function(b){
+        filtered.forEach(b => {
             var status = getDisplayStatus(b);
-            html += '<tr>' +
-                '<td><div class="rc-title-cell"><span class="rc-drag"><i class="bi bi-list"></i></span>' +
-                '<div class="rc-content-wrap"><div class="rc-nickname">'+b.reviewer_name+'</div>' +
-                '<div class="rc-row-actions"><a href="#edit/'+b.id+'" class="rc-row-btn"><i class="bi bi-pencil-square"></i> Edit</a>' +
-                '<button class="rc-row-btn trash-btn" onclick="window._trash('+b.id+')"><i class="bi bi-trash"></i> Trash</button></div></div></div></td>' +
-                '<td><span style="color:#666; font-size:14px;">'+(b.category?b.category.name:'Uncategorized')+'</span></td>' +
-                '<td><span style="color:#666; font-size:14px;">'+(b.author||'System')+'</span></td>' +
-                '<td><div class="status-wrap"><span class="status-dot '+status.toLowerCase()+'"></span><span style="font-size:14px;">'+(status==='Active'?'Currently Active':status)+'</span></div></td>' +
-                '</tr>';
+            html += `<tr>
+                <td><div class="rc-title-cell"><span class="rc-drag"><i class="bi bi-list"></i></span>
+                <div class="rc-content-wrap"><div class="rc-nickname">${b.reviewer_name}</div>
+                <div class="rc-row-actions">
+                    <a href="#edit/${b.id}" class="rc-row-btn" onclick="openForm(${b.id})"><i class="bi bi-pencil-square"></i> Edit</a>
+                    <button class="rc-row-btn trash-btn" onclick="window._trash(${b.id})"><i class="bi bi-trash"></i> Trash</button>
+                </div></div></div></td>
+                <td><span style="color:#666; font-size:14px;">${b.category?b.category.name:'Uncategorized'}</span></td>
+                <td><span style="color:#666; font-size:14px;">${b.author||'System'}</span></td>
+                <td><div class="status-wrap"><span class="status-dot ${status === 'Active' ? 'active' : 'inactive'}"></span><span style="font-size:14px;">${status === 'Active' ? 'Published' : status}</span></div></td>
+            </tr>`;
         });
         tbody.innerHTML = html || '<tr><td colspan="4" style="text-align:center;padding:50px;color:#999;">No results found.</td></tr>';
     }
@@ -477,7 +522,7 @@
     document.getElementById('backBtn').onclick = function(){ window.location.hash = '#list'; };
     window.onhashchange = navigate;
 
-    function openForm(id){
+    window.openForm = function(id){
         editingId = id;
         var item = id ? reviews.find(function(b){ return b.id == id; }) : null;
         document.getElementById('formViewTitle').textContent = item ? 'Edit Review' : 'Add Review';
@@ -651,8 +696,8 @@
     }
 
     document.getElementById('mediaDisplaySelect').onchange = function(){
-        mediaGrid.classList.remove('comfortable', 'expanded');
-        if(this.value !== 'compact') mediaGrid.classList.add(this.value);
+        mediaGrid.classList.remove('compact', 'comfortable', 'expanded');
+        mediaGrid.classList.add(this.value);
     };
 
     function renderMediaPagination(res){
@@ -690,6 +735,8 @@
     var bulkTableBody = document.getElementById('bulkTableBody');
     document.getElementById('bulkEditBtn').onclick = openBulkEdit;
     document.getElementById('bulkEditCancelBtn').onclick = function(){ bulkOverlay.classList.remove('open'); };
+    document.getElementById('bulkEditCloseBtn').onclick = function(){ bulkOverlay.classList.remove('open'); };
+    bulkOverlay.onclick = function(e){ if(e.target === bulkOverlay) bulkOverlay.classList.remove('open'); };
     document.getElementById('addBulkRowBtn').onclick = function(){ addBulkRow(null); };
 
     function openBulkEdit(){
@@ -724,19 +771,34 @@
                 </select>
             </td>
             <td>
-                <div style="display:flex; gap:5px;">
+                <div class="bulk-media-cell">
                     <input type="text" class="bulk-edit-input bulk-photo-url" value="${item ? item.photo_url || '' : ''}">
-                    <button class="rc-btn-outline" style="padding: 5px 10px;" onclick="window._bulkMedia(this)"><i class="bi bi-images"></i></button>
+                    <button class="rc-row-btn" onclick="window._bulkMedia(this)"><i class="bi bi-images"></i> Select Media</button>
+                    <img class="bulk-media-preview" src="${item && item.photo_url ? item.photo_url : ''}" style="display: ${item && item.photo_url ? 'block' : 'none'};">
                 </div>
             </td>
-            <td><div contenteditable="true" class="bulk-edit-rte bulk-content">${item ? item.content : ''}</div></td>
+            <td>
+                <div class="bulk-rte-wrap">
+                    <div class="bulk-rte-toolbar">
+                        <button class="rte-btn" type="button" onclick="document.execCommand('bold', false, null)"><i class="bi bi-type-bold"></i></button>
+                        <button class="rte-btn" type="button" onclick="document.execCommand('italic', false, null)"><i class="bi bi-type-italic"></i></button>
+                        <button class="rte-btn" type="button" onclick="document.execCommand('insertUnorderedList', false, null)"><i class="bi bi-list-ul"></i></button>
+                        <button class="rte-btn" type="button" onclick="document.execCommand('createLink', false, prompt('URL:'))"><i class="bi bi-link-45deg"></i></button>
+                    </div>
+                    <div contenteditable="true" class="bulk-rte-content bulk-content">${item ? item.content : ''}</div>
+                </div>
+            </td>
+            <td><button class="rc-row-btn trash-btn" onclick="this.closest('tr').remove()"><i class="bi bi-trash"></i></button></td>
         `;
         bulkTableBody.appendChild(row);
     }
 
     window._bulkMedia = function(btn){
-        var input = btn.previousElementSibling;
+        var container = btn.closest('.bulk-media-cell');
+        var input = container.querySelector('.bulk-photo-url');
+        var preview = container.querySelector('.bulk-media-preview');
         window._activeBulkInput = input;
+        window._activeBulkPreview = preview;
         openMediaModal('__BULK__');
     };
 
@@ -744,7 +806,13 @@
     var originalMediaSelect = mediaSelectBtn.onclick;
     mediaSelectBtn.onclick = function(){
         if(activeMediaField === '__BULK__'){
-            if(window._activeBulkInput) window._activeBulkInput.value = selectedMediaUrl;
+            if(window._activeBulkInput) {
+                window._activeBulkInput.value = selectedMediaUrl;
+                if(window._activeBulkPreview) {
+                    window._activeBulkPreview.src = selectedMediaUrl;
+                    window._activeBulkPreview.style.display = 'block';
+                }
+            }
             mediaOverlay.classList.remove('open');
         } else {
             originalMediaSelect();
