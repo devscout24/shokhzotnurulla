@@ -20,7 +20,7 @@
     <a href="{{ route('dealer.website.job-posts.index') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.job-posts.*') ? 'active' : '' }}">
         <i class="bi bi-briefcase"></i> Job Posts
     </a>
-    <a href="#" class="rc-sidebar-item">
+    <a href="{{ route('dealer.website.service-offers.index') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.service-offers.*') ? 'active' : '' }}">
         <i class="bi bi-tags"></i> Service Offers
     </a>
     <a href="#" class="rc-sidebar-item">
