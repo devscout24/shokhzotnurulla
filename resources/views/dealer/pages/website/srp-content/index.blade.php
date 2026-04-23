@@ -8,15 +8,15 @@
 
 /* Main Layout */
 .rc-wrapper { display: flex; gap: 40px; align-items: flex-start; }
-.rc-sidebar { width: 260px; min-width: 260px; background: transparent; }
-.rc-sidebar-item { display: flex; align-items: center; gap: 12px; padding: 15px; font-size: 14px; color: #666; cursor: pointer; transition: all .2s; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+.rc-sidebar { width: 260px; min-width: 260px; background: #fff; border: 1px solid #eef0f2; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); overflow: hidden; }
+.rc-sidebar-item { display: flex; align-items: center; gap: 12px; padding: 15px 25px; font-size: 14px; color: #666; cursor: pointer; transition: all .2s; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
 .rc-sidebar-item:last-child { border-bottom: none; }
 .rc-sidebar-item:hover { background: #f8f8f8; color: #333; }
-.rc-sidebar-item.active { background: #fff; color: #333; font-weight: 600; }
+.rc-sidebar-item.active { background: #fff; color: #333; font-weight: 700; }
 .rc-sidebar-item i { font-size: 18px !important; width: 24px; text-align: center; color: #999; }
-.rc-sidebar-item.active i { color: #c0392b !important; }
+.rc-sidebar-item.active i { color: #d0021b !important; }
 
-.rc-main-container { flex: 1; background: #fff; border: 1px solid #eef0f2; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); display: flex; flex-direction: column; overflow: hidden; height: fit-content; }
+.rc-main-container { flex: 1; background: #fff; border: 1px solid #eef0f2; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); display: flex; flex-direction: column; overflow: hidden; }
 
 /* Header Actions */
 .rc-header-actions { display: flex; align-items: center; gap: 12px; }
@@ -152,7 +152,8 @@
 @endpush
 
 @section('page-content')
-<div class="main-content">
+<main class="main-content" id="mainContent" style="padding:0; background: #f0f2f5; min-height: 100vh;">
+    <div style="padding: 30px 45px;">
     <div class="page-header" style="margin-bottom: 30px; border: none; justify-content: space-between;">
         <h2 class="view-title" style="font-size: 24px; font-weight: 700; color: #222; margin: 0;">{{ __('Reusable Content: SRP Content') }}</h2>
         <div class="rc-header-actions">
@@ -273,7 +274,8 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
+</main>
 
 {{-- Bulk Edit Modal --}}
 <div class="faq-modal-overlay" id="bulkModalOverlay">

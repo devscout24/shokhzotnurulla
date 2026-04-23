@@ -4,30 +4,10 @@
 @push('page-styles')
     <style>
         /* Main Layout */
-        .rc-wrapper {
-            display: flex;
-            gap: 40px;
-            min-height: calc(100vh - 160px);
-            padding: 20px 0;
-        }
+        .rc-wrapper { display: flex; gap: 40px; min-height: calc(100vh - 160px); padding: 20px 0; align-items: flex-start; }
+        .rc-sidebar { width: 260px; min-width: 260px; background: #fff; border: 1px solid #eef0f2; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); overflow: hidden; }
 
-        .rc-sidebar {
-            width: 260px;
-            min-width: 260px;
-        }
-
-        .rc-sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 15px;
-            font-size: 14px;
-            color: #666;
-            cursor: pointer;
-            transition: all .2s;
-            text-decoration: none;
-            border-bottom: 1px solid #f0f0f0;
-        }
+        .rc-sidebar-item { display: flex; align-items: center; gap: 12px; padding: 15px 25px; font-size: 14px; color: #666; cursor: pointer; transition: all .2s; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
 
         .rc-sidebar-item:last-child {
             border-bottom: none;
@@ -38,32 +18,11 @@
             color: #333;
         }
 
-        .rc-sidebar-item.active {
-background: #fff; color: #333; font-weight: 600;
-        }
+        .rc-sidebar-item.active { background: #fff; color: #333; font-weight: 700; }
+        .rc-sidebar-item i { font-size: 18px !important; width: 24px; text-align: center; color: #999; }
+        .rc-sidebar-item.active i { color: #d0021b !important; }
 
-        .rc-sidebar-item i {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-            color: #999;
-        }
-
-        .rc-sidebar-item.active i {
-            color: #c0392b;
-        }
-
-        .rc-main-container {
-            flex: 1;
-            background: #fff;
-            border: 1px solid #eef0f2;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            height: fit-content;
-        }
+        .rc-main-container { flex: 1; background: #fff; border: 1px solid #eef0f2; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); display: flex; flex-direction: column; overflow: hidden; }
 
         /* Header Actions */
         .rc-header-actions {
@@ -673,7 +632,7 @@ background: #fff; color: #333; font-weight: 600;
 @endpush
 
 @section('page-content')
-    <main class="main-content" id="mainContent" style="padding:0; background: #fafbfc; min-height: 100vh;">
+    <main class="main-content" id="mainContent" style="padding:0; background: #f0f2f5; min-height: 100vh;">
         <div style="padding: 30px 45px 0 45px;">
             <div class="page-header" style="margin-bottom: 20px; border: none;">
                 <h2 class="view-title" style="font-size: 24px; font-weight: 700; color: #222;">
