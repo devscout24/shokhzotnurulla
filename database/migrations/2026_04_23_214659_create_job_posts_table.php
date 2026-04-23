@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('job_post_categories', function (Blueprint $table) {
+        Schema::create('job_posts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('job_post_category_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('job_title');
+            $table->text('job_description');
+            $table->string('status')->default('Published');
+            $table->string('author')->nullable();
             $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('job_post_categories');
+        Schema::dropIfExists('job_posts');
     }
 };

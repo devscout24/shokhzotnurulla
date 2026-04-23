@@ -21,6 +21,7 @@ use App\Http\Controllers\Dealer\WebsitePromoBannerController;
 use App\Http\Controllers\Dealer\CustomerReviewController;
 
 use App\Http\Controllers\Dealer\WebsiteStaffMemberController;
+use App\Http\Controllers\Dealer\WebsiteJobPostController;
 
 Route::prefix('dealer')->name('dealer.')
     ->middleware(['auth', 'verified', 'all.active', 'isDealer'])
@@ -131,6 +132,18 @@ Route::prefix('dealer')->name('dealer.')
             Route::post('/categories',               [WebsiteStaffMemberController::class, 'storeCategory'])->name('categories.store');
             Route::patch('/categories/{staffMemberCategory}', [WebsiteStaffMemberController::class, 'updateCategory'])->name('categories.update');
             Route::delete('/categories/{staffMemberCategory}',[WebsiteStaffMemberController::class, 'destroyCategory'])->name('categories.destroy');
+        });
+
+        // ── Job Posts (Reusable Content) ──────────────────────────────────────────
+        Route::prefix('job-posts')->name('job-posts.')->group(function () {
+            Route::get('/',                          [WebsiteJobPostController::class, 'index'])->name('index');
+            Route::post('/',                         [WebsiteJobPostController::class, 'store'])->name('store');
+            Route::patch('/{jobPost}',               [WebsiteJobPostController::class, 'update'])->name('update');
+            Route::delete('/{jobPost}',              [WebsiteJobPostController::class, 'destroy'])->name('destroy');
+            Route::post('/bulk-update',              [WebsiteJobPostController::class, 'bulkUpdate'])->name('bulk-update');
+            Route::post('/categories',               [WebsiteJobPostController::class, 'storeCategory'])->name('categories.store');
+            Route::patch('/categories/{jobPostCategory}', [WebsiteJobPostController::class, 'updateCategory'])->name('categories.update');
+            Route::delete('/categories/{jobPostCategory}',[WebsiteJobPostController::class, 'destroyCategory'])->name('categories.destroy');
         });
 
         // ── Form Entries ──────────────────────────────────────────────────────────────

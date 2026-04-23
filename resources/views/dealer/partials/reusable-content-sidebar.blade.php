@@ -17,8 +17,8 @@
     <a href="{{ route('dealer.website.staff-members.index') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.staff-members.*') ? 'active' : '' }}">
         <i class="bi bi-person"></i> Staff Members
     </a>
-    <a href="#" class="rc-sidebar-item">
-        <i class="bi bi-briefcase"></i> Jobs Portal
+    <a href="{{ route('dealer.website.job-posts.index') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.job-posts.*') ? 'active' : '' }}">
+        <i class="bi bi-briefcase"></i> Job Posts
     </a>
     <a href="#" class="rc-sidebar-item">
         <i class="bi bi-tags"></i> Service Offers
