@@ -12,13 +12,15 @@ use App\Support\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Storage;
 
 class WebsiteMediaController extends Controller
 {
     public function __construct(
         private readonly UploadMediaAction $uploadMedia,
         private readonly DeleteMediaAction $deleteMedia,
-    ) {}
+    ) {
+    }
 
     // ── Page ─────────────────────────────────────────────────────────────────
 
@@ -42,21 +44,21 @@ class WebsiteMediaController extends Controller
         if ($request->filled('type') && in_array($request->type, ['image', 'video', 'file'])) {
             $query->where('type', $request->type);
         }
-
-        $media = $query->paginate(50)->through(fn ($m) => [
-            'id'             => $m->id,
-            'original_name'  => $m->original_name,
-            'url'            => $m->url,
-            'type'           => $m->type,
-            'mime_type'      => $m->mime_type,
-            'size'           => $m->formatted_size,
-            'dimensions'     => $m->dimensions,
-            'width'          => $m->width,
-            'height'         => $m->height,
-            'title'          => $m->title,
-            'alt_text'       => $m->alt_text,
-            'uploaded_by'    => $m->uploader?->full_name ?? '—',
-            'created_at'     => $m->created_at->format('M d, Y'),
+        $media = $query->paginate(50)->through(fn($m) => [
+            'id' => $m->id,
+            'original_name' => $m->original_name,
+            'url' => $m->url,
+            'path' => $m->path,
+            'type' => $m->type,
+            'mime_type' => $m->mime_type,
+            'size' => $m->formatted_size,
+            'dimensions' => $m->dimensions,
+            'width' => $m->width,
+            'height' => $m->height,
+            'title' => $m->title,
+            'alt_text' => $m->alt_text,
+            'uploaded_by' => $m->uploader?->full_name ?? '—',
+            'created_at' => $m->created_at->format('M d, Y'),
         ]);
 
         return response()->json($media);
@@ -72,20 +74,20 @@ class WebsiteMediaController extends Controller
 
         AuditLogger::info($request, 'Media uploaded', [
             'dealer_id' => $dealerId,
-            'count'     => count($uploaded),
+            'count' => count($uploaded),
         ]);
 
         return response()->json([
             'success' => true,
             'message' => count($uploaded) . ' file(s) uploaded successfully.',
-            'media'   => collect($uploaded)->map(fn ($m) => [
-                'id'            => $m->id,
+            'media' => collect($uploaded)->map(fn($m) => [
+                'id' => $m->id,
                 'original_name' => $m->original_name,
-                'url'           => $m->url,
-                'type'          => $m->type,
-                'size'          => $m->formatted_size,
-                'dimensions'    => $m->dimensions,
-                'created_at'    => $m->created_at->format('M d, Y'),
+                'url' => $m->url,
+                'type' => $m->type,
+                'size' => $m->formatted_size,
+                'dimensions' => $m->dimensions,
+                'created_at' => $m->created_at->format('M d, Y'),
             ]),
         ]);
     }
@@ -94,12 +96,12 @@ class WebsiteMediaController extends Controller
     public function update(Request $request, Media $media): JsonResponse
     {
         $request->validate([
-            'title'    => ['nullable', 'string', 'max:255'],
+            'title' => ['nullable', 'string', 'max:255'],
             'alt_text' => ['nullable', 'string', 'max:255'],
         ]);
 
         $media->update([
-            'title'    => $request->input('title'),
+            'title' => $request->input('title'),
             'alt_text' => $request->input('alt_text'),
         ]);
 
@@ -116,8 +118,8 @@ class WebsiteMediaController extends Controller
 
         AuditLogger::warning($request, 'Media deleted', [
             'dealer_id' => $request->user()->current_dealer_id,
-            'media_id'  => $media->id,
-            'name'      => $media->original_name,
+            'media_id' => $media->id,
+            'name' => $media->original_name,
         ]);
 
         return response()->json([

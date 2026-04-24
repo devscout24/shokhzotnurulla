@@ -67,17 +67,19 @@
                             @endforeach
                         </div>
 
-                        @forelse($displayPhotos as $photo)
-                            <img src="{{ $photo->url }}"
-                                 class="img-srp {{ $loop->first ? 'd-block' : 'd-none' }}"
-                                 alt="{{ $vehicle->display_title }}"
-                                 loading="{{ $loop->first ? 'eager' : 'lazy' }}">
-                        @empty
-                            <img src="{{ asset('assets/frontend/img/no-photo.webp') }}"
-                                 class="img-srp d-block"
-                                 alt="{{ $vehicle->display_title }}"
-                                 loading="lazy">
-                        @endforelse
+                        <a href="{{ route('frontend.inventory.show', $vehicle->slug) }}">
+                            @forelse($displayPhotos as $photo)
+                                <img src="{{ $photo->url }}"
+                                     class="img-srp {{ $loop->first ? 'd-block' : 'd-none' }}"
+                                     alt="{{ $vehicle->display_title }}"
+                                     loading="{{ $loop->first ? 'eager' : 'lazy' }}">
+                            @empty
+                                <img src="{{ asset('assets/frontend/img/no-photo.webp') }}"
+                                     class="img-srp d-block"
+                                     alt="{{ $vehicle->display_title }}"
+                                     loading="lazy">
+                            @endforelse
+                        </a>
 
                         <div id="has-more-photos" class="sc-dba2d435-0 QeHlJ" bis_skin_checked="1">
                             <div class="w-75 mx-auto mt-n4" bis_skin_checked="1">

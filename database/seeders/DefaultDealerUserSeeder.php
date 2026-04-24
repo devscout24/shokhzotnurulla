@@ -20,7 +20,7 @@ class DefaultDealerUserSeeder extends Seeder
             ['slug' => 'dealer-1'],
             [
                 'name' => 'Dealer 1',
-                'email' => 'irfanulhaq6312@gmail.com',
+                'email' => 'admin@admin.com',
                 'phone' => '+923280287525',
                 'is_active' => true
             ]
@@ -28,12 +28,12 @@ class DefaultDealerUserSeeder extends Seeder
 
         // Dealer Owner User
         $dealerOwner = User::firstOrCreate(
-            ['email' => 'irfanulhaq6312@gmail.com'],
+            ['email' => 'admin@admin.com'],
             [
                 'first_name' => 'Dealer',
                 'last_name' => 'Owner',
                 'email_verified_at' => now(),
-                'password' => Hash::make('Ir_f2026UKsa$deal'), // change in prod
+                'password' => Hash::make('12345678'), // change in prod
                 'is_active' => true,
                 'is_system_user' => false,
                 'current_dealer_id' => $dealer->id,

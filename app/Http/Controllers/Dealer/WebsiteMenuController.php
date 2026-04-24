@@ -161,6 +161,10 @@ class WebsiteMenuController extends Controller
             }
         }
 
+        // Clear cache
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealerId}_main_menu");
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealerId}_footer_menu");
+
         return response()->json(['success' => true, 'message' => 'Order saved.']);
     }
 
