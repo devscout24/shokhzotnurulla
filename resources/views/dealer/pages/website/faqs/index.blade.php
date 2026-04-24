@@ -4,10 +4,36 @@
 @push('page-styles')
     <style>
         /* Main Layout */
-        .rc-wrapper { display: flex; gap: 40px; min-height: calc(100vh - 160px); padding: 20px 0; align-items: flex-start; }
-        .rc-sidebar { width: 260px; min-width: 260px; background: #fff; border: 1px solid #eef0f2; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); overflow: hidden; }
+        .rc-wrapper {
+            display: flex;
+            gap: 40px;
+            min-height: calc(100vh - 160px);
+            padding: 20px 0;
+            align-items: flex-start;
+        }
 
-        .rc-sidebar-item { display: flex; align-items: center; gap: 12px; padding: 15px 25px; font-size: 14px; color: #666; cursor: pointer; transition: all .2s; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+        .rc-sidebar {
+            width: 260px;
+            min-width: 260px;
+            background: #fff;
+            border: 1px solid #eef0f2;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+
+        .rc-sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 25px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            transition: all .2s;
+            text-decoration: none;
+            border-bottom: 1px solid #f0f0f0;
+        }
 
         .rc-sidebar-item:last-child {
             border-bottom: none;
@@ -18,11 +44,33 @@
             color: #333;
         }
 
-        .rc-sidebar-item.active { background: #fff; color: #333; font-weight: 600; }
-        .rc-sidebar-item i { font-size: 18px !important; width: 24px; text-align: center; color: #999; }
-        .rc-sidebar-item.active i { color: #d0021b !important; }
+        .rc-sidebar-item.active {
+            background: #fff;
+            color: #333;
+            font-weight: 600;
+        }
 
-        .rc-main-container { flex: 1; background: #fff; border: 1px solid #eef0f2; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); display: flex; flex-direction: column; overflow: hidden; }
+        .rc-sidebar-item i {
+            font-size: 18px !important;
+            width: 24px;
+            text-align: center;
+            color: #999;
+        }
+
+        .rc-sidebar-item.active i {
+            color: #d0021b !important;
+        }
+
+        .rc-main-container {
+            flex: 1;
+            background: #fff;
+            border: 1px solid #eef0f2;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
         /* Header Actions */
         .rc-header-actions {
@@ -608,26 +656,136 @@
             font-weight: 500;
         }
 
-        .cat-list-count { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 26px; background: #f0f0f0; color: #666; font-size: 12px; font-weight: 700; border-radius: 6px; }
+        .cat-list-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 26px;
+            height: 26px;
+            background: #f0f0f0;
+            color: #666;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px;
+        }
 
         /* Custom Confirmation Modal */
-        .confirm-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 3000; display: none; backdrop-filter: blur(2px); align-items: center; justify-content: center; }
-        .confirm-modal-overlay.open { display: flex !important; }
-        .confirm-modal { background: #fff; border-radius: 8px; width: 450px; max-width: 90vw; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden; }
-        .confirm-modal-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .confirm-modal-title { font-size: 14px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 10px; }
-        .confirm-modal-close { background: none; border: none; font-size: 20px; color: #aaa; cursor: pointer; }
-        .confirm-modal-body { padding: 30px 20px; font-size: 14px; color: #444; border-bottom: 1px solid #eee; }
-        .confirm-modal-footer { padding: 12px 20px; display: flex; justify-content: flex-end; gap: 10px; background: #fff; }
+        .confirm-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            z-index: 3000;
+            display: none;
+            backdrop-filter: blur(2px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirm-modal-overlay.open {
+            display: flex !important;
+        }
+
+        .confirm-modal {
+            background: #fff;
+            border-radius: 8px;
+            width: 450px;
+            max-width: 90vw;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .confirm-modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .confirm-modal-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .confirm-modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .confirm-modal-body {
+            padding: 30px 20px;
+            font-size: 14px;
+            color: #444;
+            border-bottom: 1px solid #eee;
+        }
+
+        .confirm-modal-footer {
+            padding: 12px 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #fff;
+        }
 
         /* Success Toaster */
-        .toaster-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toaster { background: #28a745; color: #fff; padding: 12px 20px; border-radius: 6px; display: flex; align-items: center; gap: 12px; min-width: 250px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
-        .toaster.show { transform: translateX(0); }
-        .toaster i { font-size: 18px; }
-        .toaster span { font-size: 13px; font-weight: 500; flex: 1; }
-        .toaster-close { background: none; border: none; color: rgba(255,255,255,0.7); font-size: 18px; cursor: pointer; padding: 0; line-height: 1; }
-        .toaster-close:hover { color: #fff; }
+        .toaster-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toaster {
+            background: #28a745;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 250px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toaster.show {
+            transform: translateX(0);
+        }
+
+        .toaster i {
+            font-size: 18px;
+        }
+
+        .toaster span {
+            font-size: 13px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .toaster-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .toaster-close:hover {
+            color: #fff;
+        }
     </style>
 @endpush
 
@@ -779,14 +937,15 @@
                 </div>
             </div>
         </div>
-        </div>
+    </div>
     </div>
 
     {{-- Custom Confirm Modal --}}
     <div class="confirm-modal-overlay" id="confirmModalOverlay">
         <div class="confirm-modal">
             <div class="confirm-modal-header">
-                <div class="confirm-modal-title"><i class="bi bi-info-circle-fill" style="color: #f39c12; font-size: 18px;"></i> Are you sure?</div>
+                <div class="confirm-modal-title"><i class="bi bi-info-circle-fill"
+                        style="color: #f39c12; font-size: 18px;"></i> Are you sure?</div>
                 <button class="confirm-modal-close" id="confirmModalClose">&times;</button>
             </div>
             <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure you want to delete this post?</div>
@@ -832,11 +991,15 @@
                         cb(null, JSON.parse(xhr.responseText || '{}'));
                     } else {
                         var msg = 'Error';
-                        try { msg = JSON.parse(xhr.responseText).message || msg; } catch (e) {}
+                        try {
+                            msg = JSON.parse(xhr.responseText).message || msg;
+                        } catch (e) {}
                         cb(msg);
                     }
                 };
-                xhr.onerror = function() { cb('Network error'); };
+                xhr.onerror = function() {
+                    cb('Network error');
+                };
                 xhr.send(data ? JSON.stringify(data) : null);
             }
 
@@ -844,15 +1007,23 @@
                 var container = document.getElementById('toasterContainer');
                 var t = document.createElement('div');
                 t.className = 'toaster';
-                t.innerHTML = '<i class="bi bi-check-circle-fill"></i> <span>' + message + '</span><button class="toaster-close">&times;</button>';
+                t.innerHTML = '<i class="bi bi-check-circle-fill"></i> <span>' + message +
+                    '</span><button class="toaster-close">&times;</button>';
                 container.appendChild(t);
-                setTimeout(function() { t.classList.add('show'); }, 10);
+                setTimeout(function() {
+                    t.classList.add('show');
+                }, 10);
                 var remove = function() {
                     t.classList.remove('show');
-                    setTimeout(function() { t.remove(); }, 400);
+                    setTimeout(function() {
+                        t.remove();
+                    }, 400);
                 };
                 var timer = setTimeout(remove, 3000);
-                t.querySelector('.toaster-close').onclick = function() { clearTimeout(timer); remove(); };
+                t.querySelector('.toaster-close').onclick = function() {
+                    clearTimeout(timer);
+                    remove();
+                };
             }
 
             var confirmOverlay = document.getElementById('confirmModalOverlay');
@@ -1011,7 +1182,7 @@
                     '<button class="btn-cancel-outline" id="catBackBtn" style="padding: 9px 25px;">Back</button>' +
                     (isNew ? '' :
                         '<button class="faq-row-btn trash-btn" id="catDeleteBtn" style="margin-left:auto; padding: 9px 15px;">Delete</button>'
-                        ) +
+                    ) +
                     '</div></div>';
 
                 document.getElementById('catBackBtn').addEventListener('click', showCatList);
@@ -1053,7 +1224,8 @@
                 var delBtn = document.getElementById('catDeleteBtn');
                 if (delBtn) delBtn.addEventListener('click', function() {
                     customConfirm('Delete category "' + cat.name + '"?', function() {
-                        ajax('DELETE', ROUTES.catDestroy.replace('__ID__', cat.id), null, function(err) {
+                        ajax('DELETE', ROUTES.catDestroy.replace('__ID__', cat.id), null, function(
+                        err) {
                             if (err) return alert(err);
                             categories = categories.filter(function(c) {
                                 return c.id !== cat.id;
@@ -1125,7 +1297,7 @@
 
                 if (editingFaqId) {
                     ajax('PATCH', ROUTES.faqUpdate.replace('__ID__', editingFaqId), payload, function(err,
-                    res) {
+                        res) {
                         if (err) return alert(err);
                         var idx = faqs.findIndex(function(f) {
                             return f.id === editingFaqId;
