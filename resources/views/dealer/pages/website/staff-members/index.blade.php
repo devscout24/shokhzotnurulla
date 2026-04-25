@@ -60,7 +60,7 @@
         }
 
         .rc-sidebar-item.active i {
-            color: #d0021b !important;
+            color: #ce4f4b !important;
         }
 
         .rc-main-container {
@@ -84,7 +84,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #d0021b;
+            background: #ce4f4b;
             color: #fff;
             border: none;
             padding: 10px 22px;
@@ -97,7 +97,7 @@
         }
 
         .rc-btn-add:hover {
-            background: #b00217;
+            background: #b33e3a;
         }
 
         .rc-btn-outline {
@@ -203,7 +203,7 @@
         }
 
         .rc-row-btn.trash-btn {
-            color: #d0021b;
+            color: #ce4f4b;
         }
 
         .rc-row-btn.trash-btn:hover {
@@ -221,7 +221,7 @@
         }
 
         .bulk-col-label span {
-            color: #d0021b;
+            color: #ce4f4b;
         }
 
         .bulk-input,
@@ -238,7 +238,7 @@
 
         .bulk-input:focus,
         .bulk-select:focus {
-            border-color: #d0021b;
+            border-color: #ce4f4b;
             outline: none;
             background: #fff;
             box-shadow: 0 0 0 4px rgba(208, 2, 27, 0.05);
@@ -270,7 +270,7 @@
         .media-btn-select {
             font-size: 12px;
             font-weight: 600;
-            color: #d0021b;
+            color: #ce4f4b;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -295,7 +295,7 @@
             position: absolute;
             top: -8px;
             right: -8px;
-            background: #d0021b;
+            background: #ce4f4b;
             color: #fff;
             width: 20px;
             height: 20px;
@@ -318,7 +318,7 @@
         }
 
         .bulk-rte:focus-within {
-            border-color: #d0021b;
+            border-color: #ce4f4b;
         }
 
         .rte-toolbar {
@@ -360,13 +360,13 @@
 
         .rte-btn:hover {
             background: #f8f9fa;
-            color: #d0021b;
+            color: #ce4f4b;
             border-color: #eee;
         }
 
         .rte-btn.active {
             background: #fff5f5;
-            color: #d0021b;
+            color: #ce4f4b;
             border-color: #f5c6cb;
         }
 
@@ -490,7 +490,7 @@
         }
 
         .btn-save-red {
-            background: #d0021b;
+            background: #ce4f4b;
             color: #fff;
             border: none;
             padding: 12px 35px;
@@ -505,7 +505,7 @@
         }
 
         .btn-save-red:hover {
-            background: #b00217;
+            background: #b33e3a;
         }
 
         /* Modals */
@@ -609,7 +609,7 @@
         }
 
         .media-item.selected {
-            border-color: #d0021b;
+            border-color: #ce4f4b;
         }
 
         .media-item img {
@@ -622,7 +622,7 @@
             position: absolute;
             top: 5px;
             right: 5px;
-            background: #d0021b;
+            background: #ce4f4b;
             color: #fff;
             width: 20px;
             height: 20px;
@@ -779,7 +779,7 @@
         }
 
         .bulk-edit-input:focus {
-            border-color: #d0021b;
+            border-color: #ce4f4b;
             outline: none;
             background: #fff;
         }
@@ -941,13 +941,13 @@
         }
 
         .pag-btn:hover {
-            border-color: #d0021b;
-            color: #d0021b;
+            border-color: #ce4f4b;
+            color: #ce4f4b;
         }
 
         .pag-btn.active {
-            background: #d0021b;
-            border-color: #d0021b;
+            background: #ce4f4b;
+            border-color: #ce4f4b;
             color: #fff;
         }
 
@@ -1035,7 +1035,7 @@
                                 <div class="media-row">
                                     <div class="media-header">
                                         <label class="bulk-col-label" style="margin: 0;">Photo URL</label>
-                                        <span class="media-btn-select" id="selectMediaBtn" style="color: #d0021b;"><i
+                                        <span class="media-btn-select" id="selectMediaBtn" style="color: #ce4f4b;"><i
                                                 class="bi bi-images"></i> Select Media</span>
                                     </div>
                                     <input type="text" id="photoUrlInput" class="bulk-input"
@@ -1174,7 +1174,7 @@
             <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure you want to delete this post?</div>
             <div class="confirm-modal-footer">
                 <button class="rc-btn-outline" style="padding: 8px 20px;" id="confirmCancelBtn">Cancel</button>
-                <button class="btn-save-red" style="padding: 8px 20px; background: #d0021b;"
+                <button class="btn-save-red" style="padding: 8px 20px; background: #ce4f4b;"
                     id="confirmContinueBtn">Continue</button>
             </div>
         </div>
@@ -1193,7 +1193,7 @@
                     <label
                         style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #333; cursor: pointer;">
                         <input type="checkbox" id="bulkToggleCols" checked
-                            style="accent-color: #d0021b; width: 16px; height: 16px;">
+                            style="accent-color: #ce4f4b; width: 16px; height: 16px;">
                         Show Email Address, Phone Number, Short Bio
                     </label>
                     <button class="rc-btn-outline" id="addBulkRowBtn"><i class="bi bi-plus-lg"></i> Add Row</button>

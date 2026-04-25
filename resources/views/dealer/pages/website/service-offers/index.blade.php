@@ -60,7 +60,7 @@
         }
 
         .rc-sidebar-item.active i {
-            color: #d0021b !important;
+            color: #ce4f4b !important;
         }
 
         .rc-main-container {
@@ -84,7 +84,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #d0021b;
+            background: #ce4f4b;
             color: #fff;
             border: none;
             padding: 10px 22px;
@@ -97,7 +97,7 @@
         }
 
         .rc-btn-add:hover {
-            background: #b00217;
+            background: #b33e3a;
         }
 
         .rc-btn-outline {
@@ -203,7 +203,7 @@
         }
 
         .rc-row-btn.trash-btn {
-            color: #d0021b;
+            color: #ce4f4b;
         }
 
         .rc-row-btn.trash-btn:hover {
@@ -222,7 +222,7 @@
         }
 
         .bulk-col-label span {
-            color: #d0021b;
+            color: #ce4f4b;
             margin-left: 2px;
         }
 
@@ -241,7 +241,7 @@
 
         .bulk-input:focus,
         .bulk-select:focus {
-            border-color: #d0021b;
+            border-color: #ce4f4b;
             outline: none;
             background: #fff;
             box-shadow: none;
@@ -261,7 +261,7 @@
         }
 
         .bulk-rte:focus-within {
-            border-color: #d0021b;
+            border-color: #ce4f4b;
         }
 
         .rte-toolbar {
@@ -303,13 +303,13 @@
 
         .rte-btn:hover {
             background: #f8f9fa;
-            color: #d0021b;
+            color: #ce4f4b;
             border-color: #eee;
         }
 
         .rte-btn.active {
             background: #fff5f5;
-            color: #d0021b;
+            color: #ce4f4b;
             border-color: #f5c6cb;
         }
 
@@ -347,7 +347,7 @@
         }
 
         .btn-save-red {
-            background: #d0021b;
+            background: #ce4f4b;
             color: #fff;
             border: none;
             padding: 8px 25px;
@@ -362,7 +362,7 @@
         }
 
         .btn-save-red:hover {
-            background: #b00217;
+            background: #b33e3a;
         }
 
         /* Modals */
@@ -580,7 +580,7 @@
         }
 
         .bulk-edit-input:focus {
-            border-color: #d0021b;
+            border-color: #ce4f4b;
             outline: none;
             background: #fff;
         }
@@ -726,7 +726,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            color: #d0021b;
+            color: #ce4f4b;
             font-weight: 600;
             text-decoration: none;
         }
@@ -955,7 +955,7 @@
             <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure you want to delete this offer?</div>
             <div class="confirm-modal-footer">
                 <button class="rc-btn-outline" style="padding: 8px 20px;" id="confirmCancelBtn">Cancel</button>
-                <button class="btn-save-red" style="padding: 8px 20px; background: #d0021b;"
+                <button class="btn-save-red" style="padding: 8px 20px; background: #ce4f4b;"
                     id="confirmContinueBtn">Continue</button>
             </div>
         </div>

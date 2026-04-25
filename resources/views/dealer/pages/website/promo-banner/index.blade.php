@@ -58,7 +58,7 @@
         }
 
         .rc-sidebar-item.active i {
-            color: #d0021b !important;
+            color: #ce4f4b !important;
         }
 
         .rc-main-container {
@@ -335,7 +335,7 @@
         }
 
         .bulk-rte:focus-within {
-            border-color: #d0021b;
+            border-color: #ce4f4b;
         }
 
         .rte-toolbar {
@@ -377,13 +377,13 @@
 
         .rte-btn:hover {
             background: #f8f9fa;
-            color: #d0021b;
+            color: #ce4f4b;
             border-color: #eee;
         }
 
         .rte-btn.active {
             background: #fff5f5;
-            color: #d0021b;
+            color: #ce4f4b;
             border-color: #f5c6cb;
         }
 
