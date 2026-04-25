@@ -507,82 +507,187 @@
             background-position: right 10px center;
         }
 
-        /* RTE Precision */
-        .bulk-rte-wrap {
-            padding: 15px;
+        /* RTE Enhanced Styles */
+        .bulk-rte {
+            border: 1px solid #eef0f2;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            transition: border-color 0.2s;
         }
 
-        .bulk-rte {
-            border: 1px solid #dcdcdc;
-            border-radius: 4px;
-            background: #fff;
+        .bulk-rte:focus-within {
+            border-color: #d0021b;
         }
 
         .rte-toolbar {
-            background: #f8f8f8;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 6px 12px;
+            background: #fff;
+            border-bottom: 1px solid #eef0f2;
+            padding: 8px 12px;
             display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
             align-items: center;
-            gap: 15px;
         }
 
         .rte-tool-group {
             display: flex;
+            gap: 2px;
+            border-right: 1px solid #eee;
+            padding-right: 6px;
             align-items: center;
-            gap: 10px;
-            border-right: 1px solid #e0e0e0;
-            padding-right: 12px;
         }
 
         .rte-tool-group:last-child {
             border-right: none;
-        }
-
-        .rte-select-wrap {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .rte-select {
-            border: none;
-            background: transparent;
-            font-size: 12px;
-            color: #555;
-            cursor: pointer;
-            outline: none;
-            font-weight: 500;
-            appearance: none;
+            padding-right: 0;
         }
 
         .rte-btn {
             background: none;
-            border: none;
-            color: #777;
+            border: 1px solid transparent;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            color: #555;
             cursor: pointer;
-            font-size: 14px;
-            padding: 2px;
-            transition: color .2s;
+            transition: all .2s;
         }
 
         .rte-btn:hover {
-            color: #333;
+            background: #f8f9fa;
+            color: #d0021b;
+            border-color: #eee;
+        }
+
+        .rte-btn.active {
+            background: #fff5f5;
+            color: #d0021b;
+            border-color: #f5c6cb;
+        }
+
+        .rte-select-format {
+            height: 32px;
+            padding: 0 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #444;
+            font-weight: 600;
+            background: #fff;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .rte-select-format:hover {
+            border-color: #ddd;
         }
 
         .rte-textarea {
             width: 100%;
             border: none;
-            outline: none;
-            font-size: 13px;
-            color: #444;
-            min-height: 90px;
-            padding: 15px;
-            resize: vertical;
-            font-family: inherit;
+            padding: 20px;
+            min-height: 200px;
+            font-size: 14px;
             line-height: 1.6;
-            background: #f9f9f9;
+            color: #333;
+            outline: none;
+            background: #fcfdfe;
         }
+
+        .rte-textarea:focus {
+            background: #fff;
+        }
+
+        /* Bulk Edit Scroll Styles */
+        .bulk-body {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+        }
+
+        .bulk-rows-container {
+            width: max-content;
+            min-width: 100%;
+        }
+
+        .bulk-row {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            background: #fff;
+            align-items: flex-start;
+        }
+
+        .bulk-row:hover {
+            background: #fcfdfe;
+        }
+
+        .bulk-rte-wrap {
+            width: 500px;
+            border: 1px solid #eef0f2;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            padding: 0 !important;
+        }
+
+        .bulk-rte-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 6px 10px;
+            background: #fff;
+            border-bottom: 1px solid #eef0f2;
+        }
+
+        .bulk-rte-content {
+            padding: 15px;
+            min-height: 120px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #444;
+            outline: none;
+            background: #fcfdfe;
+        }
+
+        .bulk-rte-content:focus {
+            background: #fff;
+        }
+
+        .bulk-table-header {
+            display: flex;
+            gap: 15px;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            width: max-content;
+            min-width: 100%;
+        }
+
+        .bulk-header-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bulk-col-q { width: 300px; }
+        .bulk-col-c { width: 200px; }
+        .bulk-col-a { width: 500px; }
+        .bulk-col-s { width: 150px; }
+        .bulk-col-del { width: 50px; }
+    </style>
 
         .bulk-action-del {
             color: #c0392b;
@@ -868,30 +973,37 @@
                                     <div class="bulk-rte">
                                         <div class="rte-toolbar">
                                             <div class="rte-tool-group">
-                                                <div class="rte-select-wrap"><select class="rte-select">
-                                                        <option>Normal</option>
-                                                    </select><i class="bi bi-chevron-expand"
-                                                        style="font-size:10px;color:#999;"></i></div>
+                                                <select class="rte-select-format" data-cmd="formatBlock">
+                                                    <option value="p">Normal</option>
+                                                    <option value="h2">Heading 2</option>
+                                                    <option value="h3">Heading 3</option>
+                                                    <option value="h4">Heading 4</option>
+                                                    <option value="h5">Heading 5</option>
+                                                    <option value="h6">Heading 6</option>
+                                                </select>
                                             </div>
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn"><i class="bi bi-type-bold"></i></button>
-                                                <button class="rte-btn"><i class="bi bi-type-italic"></i></button>
-                                                <button class="rte-btn"><i class="bi bi-type-underline"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="bold" title="Bold"><i class="bi bi-type-bold"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="italic" title="Italic"><i class="bi bi-type-italic"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="underline" title="Underline"><i class="bi bi-type-underline"></i></button>
                                             </div>
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn"><i class="bi bi-text-left"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="justifyLeft" title="Align Left"><i class="bi bi-text-left"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="justifyCenter" title="Align Center"><i class="bi bi-text-center"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="justifyRight" title="Align Right"><i class="bi bi-text-right"></i></button>
                                             </div>
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn"><i class="bi bi-list-task"></i></button>
-                                                <button class="rte-btn"><i class="bi bi-list-ol"></i></button>
-                                                <button class="rte-btn"><i class="bi bi-text-indent-left"></i></button>
-                                                <button class="rte-btn"><i class="bi bi-text-indent-right"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="insertUnorderedList" title="Bullet List"><i class="bi bi-list-ul"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="insertOrderedList" title="Numbered List"><i class="bi bi-list-ol"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="outdent" title="Decrease Indent"><i class="bi bi-text-indent-left"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="indent" title="Increase Indent"><i class="bi bi-text-indent-right"></i></button>
                                             </div>
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn"><i class="bi bi-link-45deg"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="createLink" title="Insert Link"><i class="bi bi-link-45deg"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="unlink" title="Remove Link"><i class="bi bi-link"></i></button>
                                             </div>
                                         </div>
-                                        <textarea id="faqAnswerInput" class="rte-textarea" style="min-height: 150px; background: #fff;"></textarea>
+                                        <div contenteditable="true" id="faqAnswerInput" class="rte-textarea"></div>
                                     </div>
                                 </div>
 
@@ -930,7 +1042,16 @@
                     <button class="rc-btn-outline" id="bulkAddRowBtn" style="background: #fff;"><i
                             class="bi bi-plus-lg"></i> Add Row</button>
                 </div>
-                <div class="bulk-body" id="bulkRowsContainer"></div>
+                <div class="bulk-body" style="padding: 0;">
+                    <div class="bulk-table-header">
+                        <div class="bulk-header-label bulk-col-q">Question Title <span>*</span></div>
+                        <div class="bulk-header-label bulk-col-c">Category <span>*</span></div>
+                        <div class="bulk-header-label bulk-col-a">Answer <span>*</span></div>
+                        <div class="bulk-header-label bulk-col-s">Status</div>
+                        <div class="bulk-header-label bulk-col-del"></div>
+                    </div>
+                    <div id="bulkRowsContainer" class="bulk-rows-container"></div>
+                </div>
                 <div class="bulk-footer">
                     <button class="btn-cancel-outline" id="bulkCancelBtn">Cancel</button>
                     <button class="btn-save-red" id="bulkSaveBtn"><i class="bi bi-check-lg"></i> Save</button>
@@ -1277,22 +1398,26 @@
                 }) : null;
                 document.getElementById('formViewTitle').textContent = faq ? 'Edit FAQ' : 'Add FAQ';
                 document.getElementById('faqQuestionInput').value = faq ? faq.question : '';
-                document.getElementById('faqAnswerInput').value = faq ? (faq.answer || '') : '';
+                document.getElementById('faqAnswerInput').innerHTML = faq ? (faq.answer || '') : '';
                 populateCatSelect(faq ? faq.faq_category_id : '');
 
                 listView.style.display = 'none';
                 formView.style.display = 'block';
+
+                // Initialize RTE
+                document.querySelectorAll('.bulk-rte').forEach(rte => initRTE(rte));
             }
 
             document.getElementById('faqSaveBtn').addEventListener('click', function() {
                 var q = document.getElementById('faqQuestionInput').value.trim();
                 if (!q) return;
                 var catId = document.getElementById('faqCategorySelect').value;
-                var ans = document.getElementById('faqAnswerInput').value.trim();
+                var ans = document.getElementById('faqAnswerInput').innerHTML;
                 var payload = {
                     question: q,
                     answer: ans,
-                    faq_category_id: catId ? parseInt(catId) : null
+                    faq_category_id: catId ? parseInt(catId) : null,
+                    status: 'Published'
                 };
 
                 if (editingFaqId) {
@@ -1370,41 +1495,40 @@
                         ' selected' : '') + '>' + c.name + '</option>';
                 });
 
-                div.innerHTML =
-                    '<div class="bulk-col"><label class="bulk-col-label">Question Title <span>*</span></label><input type="text" class="bulk-input bulk-q" value="' +
-                    (faq ? faq.question : '') + '"></div>' +
-                    '<div class="bulk-col"><label class="bulk-col-label">Category <span>*</span></label><select class="bulk-select bulk-c">' +
-                    catOptions + '</select></div>' +
-                    '<div class="bulk-col">' +
-                    '<div class="bulk-rte-wrap">' +
-                    '<label class="bulk-col-label">Answer <span>*</span></label>' +
-                    '<div class="bulk-rte">' +
-                    '<div class="rte-toolbar">' +
-                    '<div class="rte-tool-group"><div class="rte-select-wrap"><select class="rte-select"><option>Normal</option></select><i class="bi bi-chevron-expand" style="font-size:10px;color:#999;"></i></div></div>' +
-                    '<div class="rte-tool-group">' +
-                    '<button class="rte-btn"><i class="bi bi-type-bold"></i></button>' +
-                    '<button class="rte-btn"><i class="bi bi-type-italic"></i></button>' +
-                    '<button class="rte-btn"><i class="bi bi-type-underline"></i></button>' +
-                    '</div>' +
-                    '<div class="rte-tool-group">' +
-                    '<button class="rte-btn"><i class="bi bi-text-left"></i></button>' +
-                    '</div>' +
-                    '<div class="rte-tool-group">' +
-                    '<button class="rte-btn"><i class="bi bi-list-task"></i></button>' +
-                    '<button class="rte-btn"><i class="bi bi-list-ol"></i></button>' +
-                    '<button class="rte-btn"><i class="bi bi-text-indent-left"></i></button>' +
-                    '<button class="rte-btn"><i class="bi bi-text-indent-right"></i></button>' +
-                    '</div>' +
-                    '<div class="rte-tool-group">' +
-                    '<button class="rte-btn"><i class="bi bi-link-45deg"></i></button>' +
-                    '</div>' +
-                    '</div>' +
-                    '<textarea class="rte-textarea bulk-a" placeholder="Enter answer here...">' + (faq ? faq.answer :
-                        '') + '</textarea>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="bulk-col"><div class="bulk-action-del"><i class="bi bi-trash"></i></div></div>';
+                var toolbarHtml = `
+                    <div class="bulk-rte-toolbar">
+                        <select class="rte-select-format" data-cmd="formatBlock" style="height:28px; font-size:11px;">
+                            <option value="p">Normal</option>
+                            <option value="h2">H2</option>
+                            <option value="h3">H3</option>
+                        </select>
+                        <button class="rte-btn" type="button" data-cmd="bold" style="width:28px; height:28px;"><i class="bi bi-type-bold"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="italic" style="width:28px; height:28px;"><i class="bi bi-type-italic"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="underline" style="width:28px; height:28px;"><i class="bi bi-type-underline"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="justifyLeft" style="width:28px; height:28px;"><i class="bi bi-text-left"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="justifyCenter" style="width:28px; height:28px;"><i class="bi bi-text-center"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="insertUnorderedList" style="width:28px; height:28px;"><i class="bi bi-list-ul"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="createLink" style="width:28px; height:28px;"><i class="bi bi-link-45deg"></i></button>
+                    </div>
+                `;
+
+                div.innerHTML = `
+                    <div class="bulk-col-q" style="padding:15px;"><input type="text" class="bulk-input bulk-q" value="${faq ? faq.question : ''}"></div>
+                    <div class="bulk-col-c" style="padding:15px;"><select class="bulk-select bulk-c">${catOptions}</select></div>
+                    <div class="bulk-col-a" style="padding:15px;">
+                        <div class="bulk-rte-wrap">
+                            ${toolbarHtml}
+                            <div contenteditable="true" class="bulk-rte-content bulk-a">${faq ? (faq.answer || '') : ''}</div>
+                        </div>
+                    </div>
+                    <div class="bulk-col-s" style="padding:15px;">
+                        <select class="bulk-select bulk-s">
+                            <option value="Published" ${faq && faq.status === 'Published' ? 'selected' : ''}>Published</option>
+                            <option value="Draft" ${faq && faq.status === 'Draft' ? 'selected' : ''}>Draft</option>
+                        </select>
+                    </div>
+                    <div class="bulk-col-del" style="padding:25px 15px; text-align:center;"><i class="bi bi-trash bulk-action-del"></i></div>
+                `;
 
                 div.querySelector('.bulk-action-del').addEventListener('click', function() {
                     customConfirm('Remove row?', function() {
@@ -1413,6 +1537,9 @@
                     });
                 });
                 bulkRowsContainer.appendChild(div);
+
+                // Initialize RTE for new row
+                div.querySelectorAll('.bulk-rte-wrap').forEach(wrap => initRTE(wrap));
             }
 
             document.getElementById('bulkSaveBtn').addEventListener('click', function() {
@@ -1424,7 +1551,8 @@
                         question: row.querySelector('.bulk-q').value.trim(),
                         faq_category_id: row.querySelector('.bulk-c').value ? parseInt(row
                             .querySelector('.bulk-c').value) : null,
-                        answer: row.querySelector('.bulk-a').value.trim(),
+                        answer: row.querySelector('.bulk-a').innerHTML,
+                        status: row.querySelector('.bulk-s').value,
                         is_deleted: row.dataset.deleted === 'true'
                     });
                 });
@@ -1444,5 +1572,63 @@
             renderCatFilter();
             renderFaqs();
         })();
+
+        // RTE Initialization & Logic
+        function initRTE(container) {
+            if (!container) return;
+
+            // Handle Buttons
+            container.querySelectorAll('.rte-btn').forEach(btn => {
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var cmd = this.dataset.cmd;
+                    var val = null;
+                    if (cmd === 'createLink') {
+                        val = prompt('Enter URL:', 'https://');
+                        if (!val) return;
+                    }
+                    document.execCommand(cmd, false, val);
+                    updateToolbarState(container);
+                };
+            });
+
+            // Handle Format Dropdown
+            container.querySelectorAll('.rte-select-format').forEach(sel => {
+                sel.onchange = function() {
+                    document.execCommand('formatBlock', false, this.value);
+                    updateToolbarState(container);
+                };
+            });
+
+            // Update toolbar state on selection change
+            var area = container.querySelector('.rte-textarea') || container.querySelector(
+                '.bulk-rte-content');
+            if (area) {
+                area.addEventListener('keyup', () => updateToolbarState(container));
+                area.addEventListener('mouseup', () => updateToolbarState(container));
+                area.addEventListener('focus', () => updateToolbarState(container));
+            }
+        }
+
+        function updateToolbarState(container) {
+            container.querySelectorAll('.rte-btn').forEach(btn => {
+                var cmd = btn.dataset.cmd;
+                if (document.queryCommandState(cmd)) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            // Update format dropdown
+            var sel = container.querySelector('.rte-select-format');
+            if (sel) {
+                var block = document.queryCommandValue('formatBlock');
+                if (block) {
+                    // Normalize block name (sometimes browser returns tags differently)
+                    var val = block.toLowerCase().replace('<', '').replace('>', '');
+                    if (['h2', 'h3', 'h4', 'h5', 'h6'].includes(val)) sel.value = val;
+                    else sel.value = 'p';
+                }
+            }
+        }
     </script>
 @endpush

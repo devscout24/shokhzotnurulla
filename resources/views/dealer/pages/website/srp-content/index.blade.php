@@ -729,34 +729,35 @@
             color: #fff;
         }
 
-        /* RTE Styling */
+        /* RTE Enhanced Styles */
         .bulk-rte {
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            background: #fff;
+            border: 1px solid #eef0f2;
+            border-radius: 8px;
             overflow: hidden;
-            margin-top: 10px;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .bulk-rte:focus-within {
+            border-color: #d0021b;
         }
 
         .rte-toolbar {
             background: #fff;
-            border-bottom: 1px solid #eee;
-            padding: 8px 15px;
+            border-bottom: 1px solid #eef0f2;
+            padding: 8px 12px;
             display: flex;
-            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 6px;
             align-items: center;
-            gap: 15px;
-            flex-wrap: nowrap;
         }
 
         .rte-tool-group {
             display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 12px;
+            gap: 2px;
             border-right: 1px solid #eee;
-            padding-right: 15px;
-            flex-wrap: nowrap;
+            padding-right: 6px;
+            align-items: center;
         }
 
         .rte-tool-group:last-child {
@@ -766,59 +767,142 @@
 
         .rte-btn {
             background: none;
-            border: none;
-            padding: 5px;
-            cursor: pointer;
-            color: #777;
+            border: 1px solid transparent;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 4px;
+            color: #555;
+            cursor: pointer;
             transition: all .2s;
-            outline: none;
         }
 
         .rte-btn:hover {
-            color: #000;
-            background: #f5f5f5;
-            border-radius: 3px;
+            background: #f8f9fa;
+            color: #d0021b;
+            border-color: #eee;
         }
 
-        .rte-btn i {
-            font-size: 15px;
-            line-height: 1;
+        .rte-btn.active {
+            background: #fff5f5;
+            color: #d0021b;
+            border-color: #f5c6cb;
         }
 
-        .rte-select-wrap {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-        }
-
-        .rte-select {
-            border: none;
-            background: transparent;
+        .rte-select-format {
+            height: 32px;
+            padding: 0 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
             font-size: 13px;
-            font-weight: 500;
             color: #444;
-            outline: none;
+            font-weight: 600;
+            background: #fff;
             cursor: pointer;
-            appearance: none;
-            padding: 0;
-            margin: 0;
+            outline: none;
+        }
+
+        .rte-select-format:hover {
+            border-color: #ddd;
         }
 
         .rte-textarea {
-            width: 100% !important;
-            border: none !important;
-            outline: none !important;
-            font-size: 15px !important;
-            color: #333 !important;
-            min-height: 250px !important;
-            padding: 30px 40px !important;
-            line-height: 1.7 !important;
+            width: 100%;
+            border: none;
+            padding: 20px;
+            min-height: 200px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            outline: none;
+            background: #fcfdfe;
+        }
+
+        .rte-textarea:focus {
+            background: #fff;
+        }
+
+        /* Bulk Edit Styles */
+        .bulk-body {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .bulk-rows-container {
+            width: max-content;
+            min-width: 100%;
+        }
+
+        .bulk-row {
+            display: grid;
+            grid-template-columns: 180px 150px 200px 200px 250px 140px 450px 120px 40px;
+            gap: 15px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #eef0f2;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            align-items: start;
+        }
+
+        .bulk-table-header {
+            display: grid;
+            grid-template-columns: 180px 150px 200px 200px 250px 140px 450px 120px 40px;
+            gap: 15px;
+            padding: 10px 20px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            width: max-content;
+            min-width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .bulk-header-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bulk-rte-wrap {
+            width: 100%;
+            border: 1px solid #eef0f2;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .bulk-rte-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 6px 10px;
             background: #fff !important;
-            resize: none !important;
+            border-bottom: 1px solid #eef0f2 !important;
+        }
+
+        .bulk-rte-content {
+            padding: 15px;
+            min-height: 120px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #444;
+            outline: none;
+            background: #fcfdfe;
+        }
+
+        .bulk-rte-content:focus {
+            background: #fff;
         }
     </style>
 @endpush
@@ -928,39 +1012,37 @@
                                     <div class="bulk-rte">
                                         <div class="rte-toolbar">
                                             <div class="rte-tool-group">
-                                                <div class="rte-select-wrap"><select class="rte-select">
-                                                        <option>Normal</option>
-                                                    </select><i class="bi bi-chevron-expand"
-                                                        style="font-size:10px;color:#999;"></i></div>
+                                                <select class="rte-select-format" data-cmd="formatBlock">
+                                                    <option value="p">Normal</option>
+                                                    <option value="h2">Heading 2</option>
+                                                    <option value="h3">Heading 3</option>
+                                                    <option value="h4">Heading 4</option>
+                                                    <option value="h5">Heading 5</option>
+                                                    <option value="h6">Heading 6</option>
+                                                </select>
                                             </div>
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button"><i
-                                                        class="bi bi-type-bold"></i></button>
-                                                <button class="rte-btn" type="button"><i
-                                                        class="bi bi-type-italic"></i></button>
-                                                <button class="rte-btn" type="button"><i
-                                                        class="bi bi-type-underline"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="bold" title="Bold"><i class="bi bi-type-bold"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="italic" title="Italic"><i class="bi bi-type-italic"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="underline" title="Underline"><i class="bi bi-type-underline"></i></button>
                                             </div>
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button"><i
-                                                        class="bi bi-text-left"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="justifyLeft" title="Align Left"><i class="bi bi-text-left"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="justifyCenter" title="Align Center"><i class="bi bi-text-center"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="justifyRight" title="Align Right"><i class="bi bi-text-right"></i></button>
                                             </div>
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button"><i
-                                                        class="bi bi-list-task"></i></button>
-                                                <button class="rte-btn" type="button"><i
-                                                        class="bi bi-list-ol"></i></button>
-                                                <button class="rte-btn" type="button"><i
-                                                        class="bi bi-text-indent-left"></i></button>
-                                                <button class="rte-btn" type="button"><i
-                                                        class="bi bi-text-indent-right"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="insertUnorderedList" title="Bullet List"><i class="bi bi-list-ul"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="insertOrderedList" title="Numbered List"><i class="bi bi-list-ol"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="outdent" title="Decrease Indent"><i class="bi bi-text-indent-left"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="indent" title="Increase Indent"><i class="bi bi-text-indent-right"></i></button>
                                             </div>
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button"><i
-                                                        class="bi bi-link-45deg"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="createLink" title="Insert Link"><i class="bi bi-link-45deg"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="unlink" title="Remove Link"><i class="bi bi-link"></i></button>
                                             </div>
                                         </div>
-                                        <textarea id="srpContentInput" class="rte-textarea" placeholder="Used cars for sale in Smyrna, TN..."></textarea>
+                                        <div contenteditable="true" id="srpContentInput" class="rte-textarea"></div>
                                     </div>
                                 </div>
 
@@ -1172,18 +1254,13 @@
                 document.getElementById('srpPlacementInput').value = item ? item.placement : 'bottom';
 
                 var contentInput = document.getElementById('srpContentInput');
-                contentInput.value = item ? (item.content || '') : '';
+                contentInput.innerHTML = item ? (item.content || '') : '';
 
                 listView.style.display = 'none';
                 formView.style.display = 'block';
 
-                // Auto-resize textarea
-                contentInput.style.height = 'auto';
-                contentInput.style.height = (contentInput.scrollHeight > 250 ? contentInput.scrollHeight : 250) + 'px';
-                contentInput.addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = (this.scrollHeight > 250 ? this.scrollHeight : 250) + 'px';
-                });
+                // Initialize RTE
+                document.querySelectorAll('.bulk-rte').forEach(rte => initRTE(rte));
             }
 
             document.getElementById('srpSaveBtn').addEventListener('click', function() {
@@ -1194,7 +1271,7 @@
                     meta_title: document.getElementById('srpMetaTitleInput').value.trim(),
                     meta_description: document.getElementById('srpMetaDescInput').value.trim(),
                     placement: document.getElementById('srpPlacementInput').value,
-                    content: document.getElementById('srpContentInput').value.trim(),
+                    content: document.getElementById('srpContentInput').innerHTML,
                     status: 'Published'
                 };
                 if (!payload.nickname || !payload.slug) return alert('Nickname and Slug are required');
@@ -1276,8 +1353,24 @@
                     '>Bottom</option>' +
                     '<option value="top" ' + (item && item.placement === 'top' ? 'selected' : '') + '>Top</option>' +
                     '</select>' +
-                    '<textarea class="bulk-textarea bulk-c" style="height: 100px; min-height: 100px;" placeholder="Page Content">' +
-                    (item ? (item.content || '') : '') + '</textarea>' +
+                    '<div class="bulk-rte-wrap">' +
+                    '<div class="bulk-edit-rte-toolbar" style="display:flex; flex-wrap:wrap; gap:4px; padding:6px 10px; background:#fff; border-bottom:1px solid #eef0f2;">' +
+                    '<select class="rte-select-format" data-cmd="formatBlock" style="height:28px; font-size:11px;">' +
+                    '<option value="p">Normal</option>' +
+                    '<option value="h2">H2</option>' +
+                    '<option value="h3">H3</option>' +
+                    '</select>' +
+                    '<button class="rte-btn" type="button" data-cmd="bold" style="width:28px; height:28px;"><i class="bi bi-type-bold"></i></button>' +
+                    '<button class="rte-btn" type="button" data-cmd="italic" style="width:28px; height:28px;"><i class="bi bi-type-italic"></i></button>' +
+                    '<button class="rte-btn" type="button" data-cmd="underline" style="width:28px; height:28px;"><i class="bi bi-type-underline"></i></button>' +
+                    '<button class="rte-btn" type="button" data-cmd="justifyLeft" style="width:28px; height:28px;"><i class="bi bi-text-left"></i></button>' +
+                    '<button class="rte-btn" type="button" data-cmd="justifyCenter" style="width:28px; height:28px;"><i class="bi bi-text-center"></i></button>' +
+                    '<button class="rte-btn" type="button" data-cmd="insertUnorderedList" style="width:28px; height:28px;"><i class="bi bi-list-ul"></i></button>' +
+                    '<button class="rte-btn" type="button" data-cmd="createLink" style="width:28px; height:28px;"><i class="bi bi-link-45deg"></i></button>' +
+                    '</div>' +
+                    '<div contenteditable="true" class="bulk-rte-content bulk-c">' + (item ? (item.content || '') : '') +
+                    '</div>' +
+                    '</div>' +
                     '<select class="bulk-select bulk-status">' +
                     '<option value="Published" ' + (item && item.status === 'Published' ? 'selected' : '') +
                     '>Published</option>' +
@@ -1292,6 +1385,9 @@
                     });
                 });
                 bulkRowsContainer.appendChild(div);
+
+                // Initialize RTE for new row
+                div.querySelectorAll('.bulk-rte-wrap').forEach(wrap => initRTE(wrap));
             }
 
             document.getElementById('bulkSaveBtn').addEventListener('click', function() {
@@ -1305,7 +1401,7 @@
                         meta_title: row.querySelector('.bulk-mt').value.trim(),
                         meta_description: row.querySelector('.bulk-md').value.trim(),
                         placement: row.querySelector('.bulk-p').value,
-                        content: row.querySelector('.bulk-c').value.trim(),
+                        content: row.querySelector('.bulk-c').innerHTML,
                         status: row.querySelector('.bulk-status').value,
                         is_deleted: row.dataset.deleted === 'true'
                     });
@@ -1323,5 +1419,63 @@
 
             renderTable();
         })();
+
+        // RTE Initialization & Logic
+        function initRTE(container) {
+            if (!container) return;
+
+            // Handle Buttons
+            container.querySelectorAll('.rte-btn').forEach(btn => {
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var cmd = this.dataset.cmd;
+                    var val = null;
+                    if (cmd === 'createLink') {
+                        val = prompt('Enter URL:', 'https://');
+                        if (!val) return;
+                    }
+                    document.execCommand(cmd, false, val);
+                    updateToolbarState(container);
+                };
+            });
+
+            // Handle Format Dropdown
+            container.querySelectorAll('.rte-select-format').forEach(sel => {
+                sel.onchange = function() {
+                    document.execCommand('formatBlock', false, this.value);
+                    updateToolbarState(container);
+                };
+            });
+
+            // Update toolbar state on selection change
+            var area = container.querySelector('.rte-textarea') || container.querySelector(
+                '.bulk-rte-content');
+            if (area) {
+                area.addEventListener('keyup', () => updateToolbarState(container));
+                area.addEventListener('mouseup', () => updateToolbarState(container));
+                area.addEventListener('focus', () => updateToolbarState(container));
+            }
+        }
+
+        function updateToolbarState(container) {
+            container.querySelectorAll('.rte-btn').forEach(btn => {
+                var cmd = btn.dataset.cmd;
+                if (document.queryCommandState(cmd)) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            // Update format dropdown
+            var sel = container.querySelector('.rte-select-format');
+            if (sel) {
+                var block = document.queryCommandValue('formatBlock');
+                if (block) {
+                    // Normalize block name (sometimes browser returns tags differently)
+                    var val = block.toLowerCase().replace('<', '').replace('>', '');
+                    if (['h2', 'h3', 'h4', 'h5', 'h6'].includes(val)) sel.value = val;
+                    else sel.value = 'p';
+                }
+            }
+        }
     </script>
 @endpush
