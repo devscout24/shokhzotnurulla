@@ -24,6 +24,7 @@ use App\Http\Controllers\Dealer\WebsiteStaffMemberController;
 use App\Http\Controllers\Dealer\WebsiteJobPostController;
 use App\Http\Controllers\Dealer\WebsiteServiceOfferController;
 use App\Http\Controllers\Dealer\WebsiteEventController;
+use App\Http\Controllers\Dealer\WebsiteReportController;
 
 Route::prefix('dealer')->name('dealer.')
     ->middleware(['auth', 'verified', 'all.active', 'isDealer'])
@@ -170,6 +171,11 @@ Route::prefix('dealer')->name('dealer.')
             Route::post('/categories',               [WebsiteEventController::class, 'storeCategory'])->name('categories.store');
             Route::patch('/categories/{eventCategory}', [WebsiteEventController::class, 'updateCategory'])->name('categories.update');
             Route::delete('/categories/{eventCategory}',[WebsiteEventController::class, 'destroyCategory'])->name('categories.destroy');
+        });
+
+        // ── Reports ──────────────────────────────────────────────────────────
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', [WebsiteReportController::class, 'index'])->name('index');
         });
 
         // ── Form Entries ──────────────────────────────────────────────────────────────

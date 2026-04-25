@@ -11,6 +11,24 @@
             <span>{{ __('Form Entries') }}</span>
         </div>
     </a>
+    <a class="sidebar-item-link" href="{{ route('dealer.website.pages.index') }}">
+        <div class="sidebar-item {{ request()->routeIs('dealer.website.pages.*') ? 'active' : '' }}">
+            <i class="bi bi-file-text"></i>
+            <span>{{ __('Pages') }}</span>
+        </div>
+    </a>
+    <a class="sidebar-item-link" href="#">
+        <div class="sidebar-item">
+            <i class="bi bi-chat-left-text"></i>
+            <span>{{ __('Blog Posts') }}</span>
+        </div>
+    </a>
+    <a class="sidebar-item-link" href="{{ route('dealer.website.faqs.index') }}">
+        <div class="sidebar-item {{ request()->routeIs('dealer.website.faqs.*', 'dealer.website.srp-content.*', 'dealer.website.static-page-content.*', 'dealer.website.promo-banners.*', 'dealer.website.customer-reviews.*', 'dealer.website.staff-members.*', 'dealer.website.job-posts.*', 'dealer.website.service-offers.*', 'dealer.website.events.*') ? 'active' : '' }}">
+            <i class="bi bi-layers"></i>
+            <span>{{ __('Reusable Content') }}</span>
+        </div>
+    </a>
     <a class="sidebar-item-link" href="{{ route('dealer.website.media') }}">
         <div class="sidebar-item {{ request()->routeIs('dealer.website.media') ? 'active' : '' }}">
             <i class="bi bi-image"></i>
@@ -23,16 +41,16 @@
             <span>{{ __('Menus') }}</span>
         </div>
     </a>
-    <a class="sidebar-item-link" href="{{ route('dealer.website.pages.index') }}">
-        <div class="sidebar-item {{ request()->routeIs('dealer.website.pages.*') ? 'active' : '' }}">
-            <i class="bi bi-file-text"></i>
-            <span>{{ __('Pages') }}</span>
+    <a class="sidebar-item-link" href="#">
+        <div class="sidebar-item">
+            <i class="bi bi-collection-play"></i>
+            <span>{{ __('Slides') }}</span>
         </div>
     </a>
-    <a class="sidebar-item-link" href="{{ route('dealer.website.faqs.index') }}">
-        <div class="sidebar-item {{ request()->routeIs('dealer.website.faqs.*', 'dealer.website.srp-content.*', 'dealer.website.static-page-content.*', 'dealer.website.promo-banners.*', 'dealer.website.customer-reviews.*', 'dealer.website.staff-members.*', 'dealer.website.job-posts.*', 'dealer.website.service-offers.*', 'dealer.website.events.*') ? 'active' : '' }}">
-            <i class="bi bi-layers"></i>
-            <span>{{ __('Reusable Content') }}</span>
+    <a class="sidebar-item-link" href="{{ route('dealer.website.reports.index') }}">
+        <div class="sidebar-item {{ request()->routeIs('dealer.website.reports.*') ? 'active' : '' }}">
+            <i class="bi bi-graph-up"></i>
+            <span>{{ __('Reports') }}</span>
         </div>
     </a>
     <a class="sidebar-item-link" href="{{ route('dealer.website.settings.general') }}">
