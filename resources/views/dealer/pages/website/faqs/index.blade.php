@@ -687,7 +687,6 @@
         .bulk-col-a { width: 500px; }
         .bulk-col-s { width: 150px; }
         .bulk-col-del { width: 50px; }
-    </style>
 
         .bulk-action-del {
             color: #c0392b;
