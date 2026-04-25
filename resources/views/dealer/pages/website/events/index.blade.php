@@ -251,37 +251,50 @@
             color: #9da3a8;
         }
 
-        /* RTE Placeholder */
+        /* RTE Enhanced Styles */
         .bulk-rte {
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
+            border: 1px solid #eef0f2;
+            border-radius: 8px;
             overflow: hidden;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .bulk-rte:focus-within {
+            border-color: #d0021b;
         }
 
         .rte-toolbar {
-            background: #f9f9f9;
-            border-bottom: 1px solid #e0e0e0;
+            background: #fff;
+            border-bottom: 1px solid #eef0f2;
             padding: 8px 12px;
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 6px;
             align-items: center;
         }
 
         .rte-tool-group {
             display: flex;
             gap: 2px;
-            border-right: 1px solid #ddd;
-            padding-right: 10px;
+            border-right: 1px solid #eee;
+            padding-right: 6px;
+            align-items: center;
         }
 
         .rte-tool-group:last-child {
             border-right: none;
+            padding-right: 0;
         }
 
         .rte-btn {
             background: none;
-            border: none;
-            padding: 5px 8px;
+            border: 1px solid transparent;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 4px;
             color: #555;
             cursor: pointer;
@@ -289,23 +302,48 @@
         }
 
         .rte-btn:hover {
-            background: #eee;
-            color: #000;
+            background: #f8f9fa;
+            color: #d0021b;
+            border-color: #eee;
+        }
+
+        .rte-btn.active {
+            background: #fff5f5;
+            color: #d0021b;
+            border-color: #f5c6cb;
+        }
+
+        .rte-select-format {
+            height: 32px;
+            padding: 0 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #444;
+            font-weight: 600;
+            background: #fff;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .rte-select-format:hover {
+            border-color: #ddd;
         }
 
         .rte-textarea {
             width: 100%;
             border: none;
-            padding: 15px;
-            min-height: 100px;
+            padding: 20px;
+            min-height: 180px;
             font-size: 14px;
+            line-height: 1.6;
             color: #333;
-            resize: vertical;
             outline: none;
+            background: #fcfdfe;
         }
 
         .rte-textarea:focus {
-            outline: none;
+            background: #fff;
         }
 
         .btn-save-red {
@@ -497,12 +535,15 @@
             border: 1px solid #eef0f2;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
             overflow-x: auto;
+            position: relative;
         }
 
         .bulk-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1600px;
+            width: max-content;
+            min-width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            table-layout: fixed;
         }
 
         .bulk-table th {
@@ -515,12 +556,16 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border-bottom: 1px solid #f0f0f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .bulk-table td {
-            padding: 15px;
+            padding: 20px 15px;
             border-bottom: 1px solid #f8f9fa;
             vertical-align: top;
+            background: #fff;
         }
 
         .bulk-edit-input {
@@ -541,28 +586,36 @@
         }
 
         .bulk-rte-wrap {
-            width: 450px;
+            width: 100%;
             border: 1px solid #eef0f2;
-            border-radius: 6px;
+            border-radius: 8px;
             overflow: hidden;
             background: #fff;
         }
 
         .bulk-rte-toolbar {
             display: flex;
-            gap: 5px;
-            padding: 8px;
-            background: #f9f9f9;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 6px 10px;
+            background: #fff;
             border-bottom: 1px solid #eef0f2;
         }
 
         .bulk-rte-content {
-            padding: 12px;
-            min-height: 80px;
+            padding: 15px;
+            min-height: 120px;
+            max-height: 300px;
+            overflow-y: auto;
             font-size: 13px;
-            line-height: 1.5;
+            line-height: 1.6;
             color: #444;
             outline: none;
+            background: #fcfdfe;
+        }
+
+        .bulk-rte-content:focus {
+            background: #fff;
         }
 
         .toaster-container {
@@ -643,43 +696,117 @@
             background: #9da3a8;
         }
 
-        /* Media Selector */
-        .photo-field-wrap {
+        /* Media Row / Preview */
+        .media-row {
+            margin-bottom: 30px;
             position: relative;
         }
 
-        .photo-preview-box {
-            width: 100%;
-            max-width: 400px;
-            margin-top: 15px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #f8f9fa;
-            display: none;
+        .media-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
-        .photo-preview-box img {
-            width: 100%;
-            display: block;
-        }
-
-        .btn-select-media {
-            border: none;
-            background: none;
-            padding: 0;
-            font-size: 11px;
+        .media-btn-select {
+            font-size: 12px;
+            font-weight: 600;
+            color: #d0021b;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 4px;
-            color: #d0021b;
-            font-weight: 600;
-            text-decoration: none;
+            gap: 5px;
         }
 
-        .btn-select-media:hover {
-            text-decoration: underline;
+        .media-preview-wrap {
+            margin-top: 15px;
+            display: none;
+            position: relative;
+            width: fit-content;
+        }
+
+        .media-preview-wrap img {
+            max-width: 400px;
+            max-height: 250px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+
+        .media-preview-remove {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #d0021b;
+            color: #fff;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        /* New Category Modal Styles */
+        .cat-modal-body {
+            padding: 25px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .cat-item-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #fff;
+            border: 1px solid #eef0f2;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cat-item-card:hover {
+            border-color: #d0021b;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .cat-item-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cat-item-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .cat-item-count {
+            background: #f0f2f5;
+            color: #999;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .cat-item-chevron {
+            color: #ccc;
+            font-size: 18px;
+        }
+
+        .cat-modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            background: #fff;
         }
     </style>
 @endpush
@@ -743,130 +870,97 @@
                             </div>
                             <div style="padding: 30px; background: #fff;">
 
-                                <div style="margin-bottom: 25px;">
-                                    <label class="bulk-col-label">Title</label>
-                                    <input type="text" id="titleInput" class="bulk-input"
-                                        placeholder="Spring cleaning special">
+                                <div style="margin-bottom: 30px;">
+                                    <label class="bulk-col-label">Event Title <span>*</span></label>
+                                    <input type="text" id="eventTitleInput" class="bulk-input"
+                                        placeholder="Cars & Coffee">
                                 </div>
 
-                                <div style="margin-bottom: 25px;">
-                                    <label class="bulk-col-label">Subtitle</label>
-                                    <input type="text" id="subtitleInput" class="bulk-input"
-                                        placeholder="Price or percentage discount evented">
-                                </div>
-
-                                <div style="margin-bottom: 25px;">
-                                    <label class="bulk-col-label">Description <span>*</span></label>
-                                    <div class="bulk-rte">
-                                        <div class="rte-toolbar" style="background: #fff; padding: 10px 15px;">
-                                            <select class="rte-dropdown" style="border:none; font-weight:600; color:#444;">
-                                                <option>Normal</option>
-                                            </select>
-                                            <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button" data-cmd="bold"><i
-                                                        class="bi bi-type-bold"></i></button>
-                                                <button class="rte-btn" type="button" data-cmd="italic"><i
-                                                        class="bi bi-type-italic"></i></button>
-                                                <button class="rte-btn" type="button" data-cmd="underline"><i
-                                                        class="bi bi-type-underline"></i></button>
-                                            </div>
-                                            <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button" data-cmd="justifyLeft"><i
-                                                        class="bi bi-text-left"></i></button>
-                                                <button class="rte-btn" type="button" data-cmd="justifyCenter"><i
-                                                        class="bi bi-text-center"></i></button>
-                                            </div>
-                                            <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button" data-cmd="insertUnorderedList"><i
-                                                        class="bi bi-list-ul"></i></button>
-                                                <button class="rte-btn" type="button" data-cmd="insertOrderedList"><i
-                                                        class="bi bi-list-ol"></i></button>
-                                            </div>
-                                            <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button" data-cmd="createLink"><i
-                                                        class="bi bi-link-45deg"></i></button>
-                                            </div>
-                                        </div>
-                                        <div contenteditable="true" id="descInput" class="rte-textarea"
-                                            style="background: #fcfdfe; border-top: 1px solid #eef0f2;"></div>
-                                    </div>
-                                </div>
-
-                                <div style="margin-bottom: 25px;">
+                                <div style="margin-bottom: 30px;">
                                     <label class="bulk-col-label">Category <span>*</span></label>
                                     <select id="categorySelect" class="bulk-select"></select>
                                 </div>
 
-                                <div style="margin-bottom: 25px;">
-                                    <div
-                                        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                        <label class="bulk-col-label" style="margin:0;">Photo URL</label>
-                                        <button class="btn-select-media" type="button"
-                                            onclick="window.openMediaSelector('photoInput', 'photoPreview')"><i
-                                                class="bi bi-images"></i> Select Media</button>
+                                <div class="media-row">
+                                    <div class="media-header">
+                                        <label class="bulk-col-label" style="margin: 0;">Event Image (600x300) <span>*</span></label>
+                                        <span class="media-btn-select" id="selectMediaBtn" style="color: #d0021b;"><i
+                                                class="bi bi-images"></i> Select Media</span>
                                     </div>
-                                    <div class="photo-field-wrap">
-                                        <input type="text" id="photoInput" class="bulk-input"
-                                            placeholder="https://path.to.image/photo.jpg">
-                                        <div class="photo-preview-box" id="photoPreview">
-                                            <img src="" id="photoPreviewImg">
-                                        </div>
+                                    <input type="text" id="photoUrlInput" class="bulk-input"
+                                        placeholder="https://path.to.image/event.jpg">
+                                    <div class="media-preview-wrap" id="photoPreviewWrap">
+                                        <img src="" id="photoPreview">
+                                        <span class="media-preview-remove" id="photoRemoveBtn">&times;</span>
                                     </div>
                                 </div>
 
-                                <div style="margin-bottom: 25px;">
-                                    <label class="bulk-col-label">Link event to <span>*</span></label>
-                                    <input type="text" id="linkToInput" class="bulk-input"
-                                        placeholder="/schedule-service">
+                                <div style="display: flex; gap: 20px; margin-bottom: 30px;">
+                                    <div style="flex: 1;">
+                                        <label class="bulk-col-label">Event Detail Link</label>
+                                        <input type="text" id="detailLinkInput" class="bulk-input" placeholder="https://">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label class="bulk-col-label">Event Registration Link</label>
+                                        <input type="text" id="registrationLinkInput" class="bulk-input" placeholder="https://">
+                                    </div>
                                 </div>
 
-                                <div style="margin-bottom: 25px;">
-                                    <label class="bulk-col-label">Link text <span>*</span></label>
-                                    <input type="text" id="linkTextInput" class="bulk-input"
-                                        placeholder="Schedule Service">
+                                <div style="display: flex; gap: 20px; margin-bottom: 30px;">
+                                    <div style="flex: 1;">
+                                        <label class="bulk-col-label">Event Date <span>*</span></label>
+                                        <input type="date" id="eventDateInput" class="bulk-input">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label class="bulk-col-label">Start Time <span>*</span></label>
+                                        <input type="time" id="startTimeInput" class="bulk-input">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label class="bulk-col-label">End Time <span>*</span></label>
+                                        <input type="time" id="endTimeInput" class="bulk-input">
+                                    </div>
                                 </div>
 
-                                <div style="margin-bottom: 35px;">
-                                    <label class="bulk-col-label">Disclaimer <span>*</span></label>
+                                <div style="margin-bottom: 40px;">
+                                    <label class="bulk-col-label">Description <span>*</span></label>
                                     <div class="bulk-rte">
-                                        <div class="rte-toolbar" style="background: #fff; padding: 10px 15px;">
-                                            <select class="rte-dropdown"
-                                                style="border:none; font-weight:600; color:#444;">
-                                                <option>Normal</option>
-                                            </select>
+                                        <div class="rte-toolbar">
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button" data-cmd="bold"><i
-                                                        class="bi bi-type-bold"></i></button>
-                                                <button class="rte-btn" type="button" data-cmd="italic"><i
-                                                        class="bi bi-type-italic"></i></button>
-                                                <button class="rte-btn" type="button" data-cmd="underline"><i
-                                                        class="bi bi-type-underline"></i></button>
+                                                <select class="rte-select-format" data-cmd="formatBlock">
+                                                    <option value="p">Normal</option>
+                                                    <option value="h2">Heading 2</option>
+                                                    <option value="h3">Heading 3</option>
+                                                    <option value="h4">Heading 4</option>
+                                                </select>
                                             </div>
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button" data-cmd="justifyLeft"><i
-                                                        class="bi bi-text-left"></i></button>
-                                                <button class="rte-btn" type="button" data-cmd="justifyCenter"><i
-                                                        class="bi bi-text-center"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="bold" title="Bold"><i class="bi bi-type-bold"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="italic" title="Italic"><i class="bi bi-type-italic"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="underline" title="Underline"><i class="bi bi-type-underline"></i></button>
                                             </div>
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button" data-cmd="insertUnorderedList"><i
-                                                        class="bi bi-list-ul"></i></button>
-                                                <button class="rte-btn" type="button" data-cmd="insertOrderedList"><i
-                                                        class="bi bi-list-ol"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="justifyLeft" title="Align Left"><i class="bi bi-text-left"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="justifyCenter" title="Align Center"><i class="bi bi-text-center"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="justifyRight" title="Align Right"><i class="bi bi-text-right"></i></button>
                                             </div>
                                             <div class="rte-tool-group">
-                                                <button class="rte-btn" type="button" data-cmd="createLink"><i
-                                                        class="bi bi-link-45deg"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="insertUnorderedList" title="Bullet List"><i class="bi bi-list-ul"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="insertOrderedList" title="Numbered List"><i class="bi bi-list-ol"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="outdent" title="Decrease Indent"><i class="bi bi-text-indent-left"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="indent" title="Increase Indent"><i class="bi bi-text-indent-right"></i></button>
+                                            </div>
+                                            <div class="rte-tool-group">
+                                                <button class="rte-btn" type="button" data-cmd="createLink" title="Insert Link"><i class="bi bi-link-45deg"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="unlink" title="Remove Link"><i class="bi bi-link"></i></button>
                                             </div>
                                         </div>
-                                        <div contenteditable="true" id="disclaimerInput" class="rte-textarea"
-                                            style="background: #fcfdfe; border-top: 1px solid #eef0f2;"></div>
+                                        <div contenteditable="true" id="descInput" class="rte-textarea"></div>
                                     </div>
                                 </div>
 
-                                <button class="btn-save-red" id="saveBtn"
-                                    style="border-radius: 8px; padding: 12px 40px;"><i class="bi bi-check-lg"></i>
-                                    Save</button>
+                                <button class="btn-save-red" id="saveBtn" style="padding: 12px 40px; border-radius: 8px;">
+                                    <i class="bi bi-check-lg"></i> Save
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -877,14 +971,19 @@
 
     {{-- Modals --}}
     <div class="faq-modal-overlay" id="catModalOverlay">
-        <div class="faq-modal">
+        <div class="faq-modal" style="width: 550px;">
             <div
                 style="padding: 20px 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="margin: 0; font-size: 18px; font-weight: 700;" id="catModalTitle">Manage Categories</h3>
-                <button style="background:none; border:none; font-size:24px; cursor:pointer;"
+                <button style="background:none; border:none; font-size:24px; cursor:pointer; color: #999;"
                     id="catModalClose">&times;</button>
             </div>
-            <div id="catModalBody"></div>
+            <div id="catModalContent">
+                <div class="cat-modal-body" id="catModalBody"></div>
+                <div class="cat-modal-footer" id="catModalFooter">
+                    <button class="rc-btn-add" id="catAddBtn"><i class="bi bi-plus-lg"></i> Add Category</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -921,14 +1020,16 @@
                     <table class="bulk-table" id="bulkTableMain">
                         <thead>
                             <tr>
-                                <th style="width: 250px;">Title</th>
-                                <th style="width: 200px;">Subtitle</th>
-                                <th style="width: 450px;">Description *</th>
-                                <th style="width: 200px;">Category *</th>
-                                <th style="width: 400px;">Photo URL</th>
-                                <th style="width: 250px;">Link event to *</th>
-                                <th style="width: 200px;">Link text *</th>
-                                <th style="width: 80px;">Actions</th>
+                                <th style="width: 250px;">Event Title *</th>
+                                <th style="width: 180px;">Category *</th>
+                                <th style="width: 350px;">Event Image (600x300) *</th>
+                                <th style="width: 200px;">Detail Link</th>
+                                <th style="width: 200px;">Reg. Link</th>
+                                <th style="width: 150px;">Date *</th>
+                                <th style="width: 120px;">Start *</th>
+                                <th style="width: 120px;">End *</th>
+                                <th style="width: 500px;">Description *</th>
+                                <th style="width: 100px;">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="bulkTableBody"></tbody>
@@ -1113,16 +1214,16 @@
                 }) : null;
                 document.getElementById('formViewTitle').textContent = item ? 'Edit Event' : 'Add Event';
 
-                document.getElementById('titleInput').value = item ? item.title : '';
-                document.getElementById('subtitleInput').value = item ? item.subtitle : '';
+                document.getElementById('eventTitleInput').value = item ? item.title : '';
+                document.getElementById('photoUrlInput').value = item ? item.photo_url : '';
+                document.getElementById('detailLinkInput').value = item ? (item.detail_link || '') : '';
+                document.getElementById('registrationLinkInput').value = item ? (item.registration_link || '') : '';
+                document.getElementById('eventDateInput').value = item ? (item.event_date || '') : '';
+                document.getElementById('startTimeInput').value = item ? (item.start_time || '') : '';
+                document.getElementById('endTimeInput').value = item ? (item.end_time || '') : '';
                 document.getElementById('descInput').innerHTML = item ? (item.description || '') : '';
-                document.getElementById('photoInput').value = item ? item.photo_url : '';
-                document.getElementById('linkToInput').value = item ? item.link_event_to : '';
-                document.getElementById('linkTextInput').value = item ? item.link_text : '';
-                document.getElementById('disclaimerInput').innerHTML = item ? (item.disclaimer || '') : '';
 
-                // Update preview
-                updatePhotoPreview('photoInput', 'photoPreview');
+                updatePhotoPreview('photoUrlInput', 'photoPreviewWrap', 'photoPreview');
 
                 var catSel = document.getElementById('categorySelect');
                 catSel.innerHTML = '<option value="">Uncategorized</option>';
@@ -1134,37 +1235,52 @@
 
                 document.getElementById('listView').style.display = 'none';
                 document.getElementById('formView').style.display = 'block';
+                
+                // Init RTE
+                document.querySelectorAll('.bulk-rte').forEach(rte => initRTE(rte));
             }
 
-            function updatePhotoPreview(inputId, previewId) {
+            function updatePhotoPreview(inputId, wrapId, previewId) {
                 var val = document.getElementById(inputId).value;
-                var box = document.getElementById(previewId);
-                if (val) box.innerHTML = '<img src="' + val + '">';
-                else box.innerHTML = '<i class="bi bi-image" style="color:#ccc; font-size:24px;"></i>';
+                var wrap = document.getElementById(wrapId);
+                var img = document.getElementById(previewId);
+                if (val) {
+                    img.src = val;
+                    wrap.style.display = 'block';
+                } else {
+                    wrap.style.display = 'none';
+                }
             }
-            document.getElementById('photoInput').oninput = function() {
-                updatePhotoPreview('photoInput', 'photoPreview');
+
+            document.getElementById('photoRemoveBtn').onclick = function() {
+                document.getElementById('photoUrlInput').value = '';
+                updatePhotoPreview('photoUrlInput', 'photoPreviewWrap', 'photoPreview');
+            };
+
+            document.getElementById('selectMediaBtn').onclick = function() {
+                window.openMediaSelector('photoUrlInput', 'photoPreviewWrap', 'photoPreview');
             };
 
             document.getElementById('saveBtn').onclick = function() {
                 var p = {
-                    title: document.getElementById('titleInput').value.trim(),
-                    subtitle: document.getElementById('subtitleInput').value.trim(),
+                    title: document.getElementById('eventTitleInput').value.trim(),
+                    photo_url: document.getElementById('photoUrlInput').value.trim(),
+                    detail_link: document.getElementById('detailLinkInput').value.trim(),
+                    registration_link: document.getElementById('registrationLinkInput').value.trim(),
+                    event_date: document.getElementById('eventDateInput').value,
+                    start_time: document.getElementById('startTimeInput').value,
+                    end_time: document.getElementById('endTimeInput').value,
                     description: document.getElementById('descInput').innerHTML.trim(),
                     event_category_id: document.getElementById('categorySelect').value,
-                    photo_url: document.getElementById('photoInput').value.trim(),
-                    link_event_to: document.getElementById('linkToInput').value.trim(),
-                    link_text: document.getElementById('linkTextInput').value.trim(),
-                    disclaimer: document.getElementById('disclaimerInput').innerHTML.trim(),
                     status: 'Active'
                 };
 
-                if (!p.title) return alert('Title is required');
-                if (!p.description) return alert('Description is required');
+                if (!p.title) return alert('Event Title is required');
                 if (!p.event_category_id) return alert('Category is required');
-                if (!p.link_event_to) return alert('Link Event To is required');
-                if (!p.link_text) return alert('Link Text is required');
-                if (!p.disclaimer) return alert('Disclaimer is required');
+                if (!p.event_date) return alert('Event Date is required');
+                if (!p.start_time) return alert('Start Time is required');
+                if (!p.end_time) return alert('End Time is required');
+                if (!p.description) return alert('Description is required');
 
                 ajax(editingId ? 'PATCH' : 'POST', editingId ? ROUTES.update.replace('__ID__', editingId) : ROUTES
                     .store, p,
@@ -1193,22 +1309,26 @@
 
             function showCatList() {
                 var body = document.getElementById('catModalBody');
-                var html = '<div style="padding:10px;">';
+                var footer = document.getElementById('catModalFooter');
+                footer.style.display = 'flex';
+                
+                var html = '';
                 categories.forEach(function(c) {
-                    html +=
-                        '<div style="display:flex; justify-content:space-between; padding:15px; border-bottom:1px solid #f0f0f0; align-items:center;">' +
-                        '<span>' + c.name + '</span>' +
-                        '<div style="display:flex; gap:10px;">' +
-                        '<button class="rc-row-btn" onclick="window._editCat(' + c.id +
-                        ')"><i class="bi bi-pencil"></i></button>' +
-                        '<button class="rc-row-btn trash-btn" onclick="window._delCat(' + c.id +
-                        ')"><i class="bi bi-trash"></i></button>' +
-                        '</div></div>';
+                    var count = events.filter(e => e.event_category_id == c.id).length;
+                    html += `
+                        <div class="cat-item-card" onclick="window._editCat(${c.id})">
+                            <div class="cat-item-info">
+                                <span class="cat-item-name">${c.name}</span>
+                                <span class="cat-item-count">${count}</span>
+                            </div>
+                            <i class="bi bi-chevron-right cat-item-chevron"></i>
+                        </div>
+                    `;
                 });
-                html +=
-                    '<div style="padding:20px; text-align:center;"><button class="rc-btn-add" id="catAddBtn" style="margin: 0 auto;"><i class="bi bi-plus-lg"></i> Add Category</button></div></div>';
-                body.innerHTML = html;
+                
+                body.innerHTML = html || '<div style="text-align:center; padding:30px; color:#999;">No categories found.</div>';
                 catOverlay.classList.add('open');
+                
                 document.getElementById('catAddBtn').onclick = function() {
                     showCatEdit(null);
                 };
@@ -1221,7 +1341,7 @@
                 showCatEdit(c);
             };
             window._delCat = function(id) {
-                customConfirm('Delete category?', function() {
+                customConfirm('Delete category? All events in this category will become uncategorized.', function() {
                     ajax('DELETE', ROUTES.catDestroy.replace('__ID__', id), null, function(err) {
                         if (err) return alert(err);
                         categories = categories.filter(function(x) {
@@ -1237,18 +1357,29 @@
             function showCatEdit(cat) {
                 var isNew = !cat;
                 var body = document.getElementById('catModalBody');
-                body.innerHTML = '<div style="padding:25px;">' +
-                    '<label class="bulk-col-label">Category Name</label>' +
-                    '<input type="text" id="catNameInput" class="bulk-input" value="' + (isNew ? '' : cat.name) + '">' +
-                    '<div style="display:flex; gap:10px; margin-top:20px;">' +
-                    '<button class="btn-save-red" id="catSaveBtn">' + (isNew ? 'Add' : 'Save') + '</button>' +
-                    '<button class="rc-btn-outline" onclick="showCatList()">Back</button>' +
-                    '</div></div>';
+                var footer = document.getElementById('catModalFooter');
+                footer.style.display = 'none';
+
+                body.innerHTML = `
+                    <div style="padding: 10px 5px;">
+                        <div style="margin-bottom: 25px;">
+                            <label class="bulk-col-label">Category Name</label>
+                            <input type="text" id="catNameInput" class="bulk-input" value="${isNew ? '' : cat.name}" placeholder="e.g. Community Events">
+                        </div>
+                        <div style="display:flex; justify-content: space-between; align-items:center;">
+                            <div style="display:flex; gap:10px;">
+                                <button class="btn-save-red" id="catSaveBtn" style="padding: 10px 30px;">${isNew ? 'Create Category' : 'Save Changes'}</button>
+                                <button class="rc-btn-outline" onclick="showCatList()" style="padding: 10px 25px;">Cancel</button>
+                            </div>
+                            ${!isNew ? `<button class="rc-row-btn trash-btn" onclick="window._delCat(${cat.id})" style="padding: 8px 15px;"><i class="bi bi-trash"></i> Delete</button>` : ''}
+                        </div>
+                    </div>
+                `;
+
                 document.getElementById('catSaveBtn').onclick = function() {
                     var val = document.getElementById('catNameInput').value.trim();
-                    if (!val) return;
-                    ajax(isNew ? 'POST' : 'PATCH', isNew ? ROUTES.catStore : ROUTES.catUpdate.replace('__ID__', cat
-                        .id), {
+                    if (!val) return alert('Category name is required');
+                    ajax(isNew ? 'POST' : 'PATCH', isNew ? ROUTES.catStore : ROUTES.catUpdate.replace('__ID__', cat.id), {
                         name: val
                     }, function(err, res) {
                         if (err) return alert(err);
@@ -1298,18 +1429,25 @@
                 row.dataset.id = item ? item.id : '';
                 var rowId = 'row-' + Math.random().toString(36).substr(2, 9);
 
+                var toolbarHtml = `
+                    <div class="bulk-rte-toolbar">
+                        <select class="rte-select-format" data-cmd="formatBlock" style="height:28px; font-size:11px;">
+                            <option value="p">Normal</option>
+                            <option value="h2">H2</option>
+                            <option value="h3">H3</option>
+                        </select>
+                        <button class="rte-btn" type="button" data-cmd="bold" style="width:28px; height:28px;"><i class="bi bi-type-bold"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="italic" style="width:28px; height:28px;"><i class="bi bi-type-italic"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="underline" style="width:28px; height:28px;"><i class="bi bi-type-underline"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="justifyLeft" style="width:28px; height:28px;"><i class="bi bi-text-left"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="justifyCenter" style="width:28px; height:28px;"><i class="bi bi-text-center"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="insertUnorderedList" style="width:28px; height:28px;"><i class="bi bi-list-ul"></i></button>
+                        <button class="rte-btn" type="button" data-cmd="createLink" style="width:28px; height:28px;"><i class="bi bi-link-45deg"></i></button>
+                    </div>
+                `;
+
                 row.innerHTML = `
             <td><input type="text" class="bulk-edit-input bulk-title" value="${item ? item.title : ''}"></td>
-            <td><input type="text" class="bulk-edit-input bulk-subtitle" value="${item ? item.subtitle || '' : ''}"></td>
-            <td>
-                <div class="bulk-rte-wrap">
-                    <div class="bulk-rte-toolbar">
-                        <button class="rte-btn" type="button" onclick="document.execCommand('bold', false, null)"><i class="bi bi-type-bold"></i></button>
-                        <button class="rte-btn" type="button" onclick="document.execCommand('italic', false, null)"><i class="bi bi-type-italic"></i></button>
-                    </div>
-                    <div contenteditable="true" class="bulk-rte-content bulk-desc">${item ? item.description || '' : ''}</div>
-                </div>
-            </td>
             <td>
                 <select class="bulk-edit-input bulk-category">
                     <option value="">[Select]</option>
@@ -1317,21 +1455,33 @@
                 </select>
             </td>
             <td>
-                <div style="display:flex; flex-direction:column; gap:5px;">
+                <div style="display:flex; flex-direction:column; gap:5px; width:320px;">
                     <div style="display:flex; gap:5px; align-items:center;">
                         <input type="text" id="${rowId}-input" class="bulk-edit-input bulk-photo" value="${item ? item.photo_url || '' : ''}">
-                        <button class="btn-select-media" style="padding:5px 8px;" type="button" onclick="window.openMediaSelector('${rowId}-input', '${rowId}-preview')"><i class="bi bi-images"></i></button>
+                        <button class="rc-row-btn" style="padding:8px;" type="button" onclick="window.openMediaSelector('${rowId}-input', '${rowId}-preview-wrap', '${rowId}-preview')"><i class="bi bi-images"></i></button>
                     </div>
-                    <div class="photo-preview-box" style="width:100%; height:80px;" id="${rowId}-preview">
-                        ${item && item.photo_url ? '<img src="'+item.photo_url+'">' : '<i class="bi bi-image" style="color:#ccc;"></i>'}
+                    <div class="media-preview-wrap" style="width:100%; height:120px; display:${item && item.photo_url ? 'block' : 'none'};" id="${rowId}-preview-wrap">
+                        <img id="${rowId}-preview" src="${item && item.photo_url ? item.photo_url : ''}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;">
                     </div>
                 </div>
             </td>
-            <td><input type="text" class="bulk-edit-input bulk-link-to" value="${item ? item.link_event_to || '' : ''}"></td>
-            <td><input type="text" class="bulk-edit-input bulk-link-text" value="${item ? item.link_text || '' : ''}"></td>
+            <td><input type="text" class="bulk-edit-input bulk-detail-link" value="${item ? item.detail_link || '' : ''}"></td>
+            <td><input type="text" class="bulk-edit-input bulk-reg-link" value="${item ? item.registration_link || '' : ''}"></td>
+            <td><input type="date" class="bulk-edit-input bulk-date" value="${item ? item.event_date || '' : ''}"></td>
+            <td><input type="time" class="bulk-edit-input bulk-start" value="${item ? item.start_time || '' : ''}"></td>
+            <td><input type="time" class="bulk-edit-input bulk-end" value="${item ? item.end_time || '' : ''}"></td>
+            <td>
+                <div class="bulk-rte-wrap">
+                    ${toolbarHtml}
+                    <div contenteditable="true" class="bulk-rte-content bulk-desc">${item ? item.description || '' : ''}</div>
+                </div>
+            </td>
             <td><button class="rc-row-btn trash-btn" onclick="this.closest('tr').remove()"><i class="bi bi-trash"></i></button></td>
         `;
                 bulkTableBody.appendChild(row);
+                
+                // Initialize RTE for the new row
+                row.querySelectorAll('.bulk-rte-wrap').forEach(wrap => initRTE(wrap));
             }
 
             document.getElementById('bulkEditSaveBtn').onclick = function() {
@@ -1343,14 +1493,14 @@
                     data.push({
                         id: row.dataset.id || null,
                         title: title,
-                        subtitle: row.querySelector('.bulk-subtitle').value.trim(),
-                        description: row.querySelector('.bulk-desc').innerHTML,
-                        event_category_id: row.querySelector('.bulk-category').value ||
-                            null,
                         photo_url: row.querySelector('.bulk-photo').value.trim(),
-                        link_event_to: row.querySelector('.bulk-link-to').value.trim(),
-                        link_text: row.querySelector('.bulk-link-text').value.trim(),
-                        disclaimer: 'Default disclaimer text if not set in bulk edit', // Bulk edit doesn't have disclaimer in screenshot
+                        detail_link: row.querySelector('.bulk-detail-link').value.trim(),
+                        registration_link: row.querySelector('.bulk-reg-link').value.trim(),
+                        event_date: row.querySelector('.bulk-date').value,
+                        start_time: row.querySelector('.bulk-start').value,
+                        end_time: row.querySelector('.bulk-end').value,
+                        description: row.querySelector('.bulk-desc').innerHTML,
+                        event_category_id: row.querySelector('.bulk-category').value || null,
                         status: 'Active'
                     });
                 });
@@ -1362,16 +1512,17 @@
                     events = res;
                     renderTable();
                     bulkOverlay.classList.remove('open');
-                    showToaster('Bulk data saved.');
+                    showToaster('Bulk events saved.');
                 });
             };
 
             // Global Media Integration
             var selectedMediaUrl = null,
                 mediaPage = 1;
-            window.openMediaSelector = function(inputId, previewId) {
+            window.openMediaSelector = function(inputId, wrapId, previewId) {
                 window._currentMediaTarget = {
                     input: inputId,
+                    wrap: wrapId,
                     preview: previewId
                 };
                 document.getElementById('mediaModalOverlay').classList.add('open');
@@ -1467,11 +1618,11 @@
             document.getElementById('confirmMediaBtn').onclick = function() {
                 if (selectedMediaUrl && window._currentMediaTarget) {
                     document.getElementById(window._currentMediaTarget.input).value = selectedMediaUrl;
-                    var box = document.getElementById(window._currentMediaTarget.preview);
-                    if (box) {
-                        var img = box.querySelector('img');
-                        if (img) img.src = selectedMediaUrl;
-                        box.style.display = 'block';
+                    var wrap = document.getElementById(window._currentMediaTarget.wrap);
+                    var img = document.getElementById(window._currentMediaTarget.preview);
+                    if (wrap && img) {
+                        img.src = selectedMediaUrl;
+                        wrap.style.display = 'block';
                     }
                     document.getElementById('mediaModalOverlay').classList.remove('open');
                 }
@@ -1482,15 +1633,61 @@
             renderTable();
         })();
 
-        // RTE Logic
-        document.querySelectorAll('.rte-btn').forEach(btn => {
-            btn.onclick = function() {
-                var cmd = this.dataset.cmd;
-                var val = null;
-                if (cmd === 'createLink') val = prompt('Enter URL:');
-                document.execCommand(cmd, false, val);
-            };
-        });
+        // RTE Initialization & Logic
+        function initRTE(container) {
+            if (!container) return;
+
+            // Handle Buttons
+            container.querySelectorAll('.rte-btn').forEach(btn => {
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var cmd = this.dataset.cmd;
+                    var val = null;
+                    if (cmd === 'createLink') {
+                        val = prompt('Enter URL:', 'https://');
+                        if (!val) return;
+                    }
+                    document.execCommand(cmd, false, val);
+                    updateToolbarState(container);
+                };
+            });
+
+            // Handle Format Dropdown
+            container.querySelectorAll('.rte-select-format').forEach(sel => {
+                sel.onchange = function() {
+                    document.execCommand('formatBlock', false, this.value);
+                    updateToolbarState(container);
+                };
+            });
+
+            // Update toolbar state on selection change
+            var area = container.querySelector('.rte-textarea') || container.querySelector(
+                '.bulk-rte-content');
+            if (area) {
+                area.addEventListener('keyup', () => updateToolbarState(container));
+                area.addEventListener('mouseup', () => updateToolbarState(container));
+                area.addEventListener('focus', () => updateToolbarState(container));
+            }
+        }
+
+        function updateToolbarState(container) {
+            container.querySelectorAll('.rte-btn').forEach(btn => {
+                var cmd = btn.dataset.cmd;
+                if (document.queryCommandState(cmd)) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            // Update format dropdown
+            var sel = container.querySelector('.rte-select-format');
+            if (sel) {
+                var block = document.queryCommandValue('formatBlock');
+                if (block) {
+                    var val = block.toLowerCase().replace('<', '').replace('>', '');
+                    if (['h2', 'h3', 'h4', 'h5', 'h6'].includes(val)) sel.value = val;
+                    else sel.value = 'p';
+                }
+            }
+        }
     </script>
-</script>
 @endpush

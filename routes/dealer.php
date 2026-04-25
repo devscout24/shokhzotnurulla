@@ -23,6 +23,7 @@ use App\Http\Controllers\Dealer\CustomerReviewController;
 use App\Http\Controllers\Dealer\WebsiteStaffMemberController;
 use App\Http\Controllers\Dealer\WebsiteJobPostController;
 use App\Http\Controllers\Dealer\WebsiteServiceOfferController;
+use App\Http\Controllers\Dealer\WebsiteEventController;
 
 Route::prefix('dealer')->name('dealer.')
     ->middleware(['auth', 'verified', 'all.active', 'isDealer'])
@@ -157,6 +158,18 @@ Route::prefix('dealer')->name('dealer.')
             Route::post('/categories',               [WebsiteServiceOfferController::class, 'storeCategory'])->name('categories.store');
             Route::patch('/categories/{serviceOfferCategory}', [WebsiteServiceOfferController::class, 'updateCategory'])->name('categories.update');
             Route::delete('/categories/{serviceOfferCategory}',[WebsiteServiceOfferController::class, 'destroyCategory'])->name('categories.destroy');
+        });
+
+        // ── Events (Reusable Content) ──────────────────────────────────────────
+        Route::prefix('events')->name('events.')->group(function () {
+            Route::get('/',                          [WebsiteEventController::class, 'index'])->name('index');
+            Route::post('/',                         [WebsiteEventController::class, 'store'])->name('store');
+            Route::patch('/{event}',                 [WebsiteEventController::class, 'update'])->name('update');
+            Route::delete('/{event}',                [WebsiteEventController::class, 'destroy'])->name('destroy');
+            Route::post('/bulk-update',              [WebsiteEventController::class, 'bulkUpdate'])->name('bulk-update');
+            Route::post('/categories',               [WebsiteEventController::class, 'storeCategory'])->name('categories.store');
+            Route::patch('/categories/{eventCategory}', [WebsiteEventController::class, 'updateCategory'])->name('categories.update');
+            Route::delete('/categories/{eventCategory}',[WebsiteEventController::class, 'destroyCategory'])->name('categories.destroy');
         });
 
         // ── Form Entries ──────────────────────────────────────────────────────────────

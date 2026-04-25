@@ -23,7 +23,7 @@
     <a href="{{ route('dealer.website.service-offers.index') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.service-offers.*') ? 'active' : '' }}">
         <i class="bi bi-tags"></i> Service Offers
     </a>
-    <a href="#" class="rc-sidebar-item">
-        <i class="bi bi-calendar3"></i> Events
+    <a href="{{ route('dealer.website.events.index') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.events.*') ? 'active' : '' }}">
+        <i class="bi bi-calendar-event"></i> Events
     </a>
 </div>
