@@ -1,6 +1,6 @@
 @php
-    $primary       = $vehicle->relationLoaded('primaryPhoto') ? $vehicle->primaryPhoto : null;
-    $rest          = $vehicle->relationLoaded('photos') ? $vehicle->photos : collect();
+    $primary = $vehicle->relationLoaded('primaryPhoto') ? $vehicle->primaryPhoto : null;
+    $rest = $vehicle->relationLoaded('photos') ? $vehicle->photos : collect();
 
     $displayPhotos = $primary
         ? collect([$primary])->concat($rest->where('id', '!=', $primary->id))
@@ -9,18 +9,18 @@
     $totalCount = $vehicle->photos_count ?? $displayPhotos->count();
 
     // Pricing — use attached pricing or fallback to list_price
-    $p           = $vehicle->pricing ?? null;
-    $finalPrice  = $p ? $p['final_price']      : (float) $vehicle->list_price;
-    $origPrice   = $p ? $p['display_original'] : (float) ($vehicle->original_price ?? 0);
-    $savings     = $p ? $p['savings']           : 0.0;
-    $monthly     = $p ? $p['monthly']           : 0.0;
-    $hasDiscount = $p ? $p['has_discount']      : ($origPrice > $finalPrice);
-    $isFormfill  = $p ? $p['is_formfill']       : false;
-    $isSpecialFin= $p ? $p['is_special_finance']: false;
-    $btnText     = $p ? $p['button_text']        : null;
+    $p = $vehicle->pricing ?? null;
+    $finalPrice = $p ? $p['final_price'] : (float) $vehicle->list_price;
+    $origPrice = $p ? $p['display_original'] : (float) ($vehicle->original_price ?? 0);
+    $savings = $p ? $p['savings'] : 0.0;
+    $monthly = $p ? $p['monthly'] : 0.0;
+    $hasDiscount = $p ? $p['has_discount'] : ($origPrice > $finalPrice);
+    $isFormfill = $p ? $p['is_formfill'] : false;
+    $isSpecialFin = $p ? $p['is_special_finance'] : false;
+    $btnText = $p ? $p['button_text'] : null;
 
-    if (! $monthly && $finalPrice > 0) {
-        $r       = (6.79 / 100) / 12;
+    if (!$monthly && $finalPrice > 0) {
+        $r = (6.79 / 100) / 12;
         $monthly = ($finalPrice * $r) / (1 - pow(1 + $r, -60));
     }
 @endphp
@@ -42,17 +42,16 @@
                         Hot
                     </div>
                 @endif
-
                 <div class="position-relative cursor-pointer">
-                    <div class="img-srp-container">
+                    <div class="img-srp-container" onclick="window.location.href='{{ route('frontend.inventory.show', $vehicle->slug) }}'">
 
                         <div class="sc-dba2d435-2 deAfgc">
-                            <div class="toggle left-toggle">
+                            <div class="toggle left-toggle" onclick="event.stopPropagation()">
                                 <span class="d-inline-block h2 m-0">
                                     <i class="fa-solid fa-angle-left white-text-29"></i>
                                 </span>
                             </div>
-                            <div class="toggle right-toggle">
+                            <div class="toggle right-toggle" onclick="event.stopPropagation()">
                                 <span class="d-inline-block h2 m-0">
                                     <i class="fa-solid fa-angle-right white-text-29"></i>
                                 </span>
@@ -67,32 +66,25 @@
                             @endforeach
                         </div>
 
-                        <a href="{{ route('frontend.inventory.show', $vehicle->slug) }}">
-                            @forelse($displayPhotos as $photo)
-                                <img src="{{ $photo->url }}"
-                                     class="img-srp {{ $loop->first ? 'd-block' : 'd-none' }}"
-                                     alt="{{ $vehicle->display_title }}"
-                                     loading="{{ $loop->first ? 'eager' : 'lazy' }}">
-                            @empty
-                                <img src="{{ asset('assets/frontend/img/no-photo.webp') }}"
-                                     class="img-srp d-block"
-                                     alt="{{ $vehicle->display_title }}"
-                                     loading="lazy">
-                            @endforelse
-                        </a>
+                        @forelse($displayPhotos as $photo)
+                            <img src="{{ $photo->url }}" class="img-srp {{ $loop->first ? 'd-block' : 'd-none' }}"
+                                alt="{{ $vehicle->display_title }}" loading="{{ $loop->first ? 'eager' : 'lazy' }}">
+                        @empty
+                            <img src="{{ asset('assets/frontend/img/no-photo.webp') }}" class="img-srp d-block"
+                                alt="{{ $vehicle->display_title }}" loading="lazy">
+                        @endforelse
 
-                        <div id="has-more-photos" class="sc-dba2d435-0 QeHlJ" bis_skin_checked="1">
-                            <div class="w-75 mx-auto mt-n4" bis_skin_checked="1">
-                                <button type="button"
-                                    class="w-100 text-white border-white btn btn-default btn-lg">
-                                    View all {{ $totalCount }} photos
-                                </button>
-                                <a role="button" tabindex="0" target="_self"
-                                    title="Apply online"
-                                    class="mt-4 w-100 btn btn-primary btn-lg"
-                                    href="{{ route('frontend.inventory.show', $vehicle->slug) }}">
-                                    Apply online
-                                </a>
+                        <div id="has-more-photos" class="sc-dba2d435-0 QeHlJ" bis_skin_checked="1" onclick="event.stopPropagation()">
+                                <div class="w-75 mx-auto mt-n4" bis_skin_checked="1">
+                                    <button type="button" class="w-100 text-white border-white btn btn-default btn-lg">
+                                        View all {{ $totalCount }} photos
+                                    </button>
+                                    <a role="button" tabindex="0" target="_self" title="Apply online"
+                                        class="mt-4 w-100 btn btn-primary btn-lg"
+                                        href="{{ route('frontend.inventory.show', $vehicle->slug) }}">
+                                        Apply online
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -115,8 +107,7 @@
                             </a>
                         </div>
                         <div class="flex-shrink-0">
-                            <span data-cy="btn-favorite"
-                                class="d-inline-block h4 cursor-pointer mb-0 favorite-icon">
+                            <span data-cy="btn-favorite" class="d-inline-block h4 cursor-pointer mb-0 favorite-icon">
                                 <i class="fa-solid fa-heart greyIcon"></i>
                             </span>
                         </div>
@@ -137,14 +128,12 @@
                         {{-- Final price or e-Price button --}}
                         @if($isFormfill)
                             <span class="h5 font-weight-bold label-price text-muted"
-                                  style="filter:blur(4px);user-select:none;">
+                                style="filter:blur(4px);user-select:none;">
                                 ${{ number_format($finalPrice) }}
                             </span>
                             <div class="mt-1">
-                                <button type="button"
-                                    class="btn btn-sm btn-outline-secondary w-100 btn-unlock-price"
-                                    data-bs-toggle="offcanvas"
-                                    data-bs-target="#unlockEPrice"
+                                <button type="button" class="btn btn-sm btn-outline-secondary w-100 btn-unlock-price"
+                                    data-bs-toggle="offcanvas" data-bs-target="#unlockEPrice"
                                     data-vehicle-id="{{ $vehicle->id }}"
                                     data-vehicle-title="{{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}"
                                     style="font-size:11px;">
@@ -175,7 +164,7 @@
                     </div>
 
                     {{-- Monthly payment --}}
-                    @if(! $isFormfill)
+                    @if(!$isFormfill)
                         <div class="text-end text-nowrap ms-auto my-1">
                             <span class="cursor-pointer" role="button">
                                 <small class="opacity-75">Est. Payment</small><br>

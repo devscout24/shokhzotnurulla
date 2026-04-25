@@ -1657,6 +1657,5 @@
             };
         });
     </script>
-@endpush
 </script>
 @endpush

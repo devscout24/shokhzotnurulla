@@ -1,6 +1,6 @@
 @extends('layouts.dealer.app')
 
-@section('title', __('Reusable Content: Job') . ' | ' . __(config('app.name')))
+@section('title', __('Reusable Content: Event') . ' | ' . __(config('app.name')))
 
 @push('page-styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -213,27 +213,30 @@
 
         /* Form Styles */
         .bulk-col-label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
-            color: #333;
-            margin-bottom: 8px;
+            color: #444;
+            margin-bottom: 6px;
             display: block;
+            text-transform: none;
         }
 
         .bulk-col-label span {
             color: #d0021b;
+            margin-left: 2px;
         }
 
         .bulk-input,
         .bulk-select {
             width: 100%;
-            padding: 12px 15px;
+            padding: 8px 12px;
             border: 1px solid #eef0f2;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 4px;
+            font-size: 13px;
             color: #333;
             transition: all .2s;
-            background: #fcfdfe;
+            background: #fff;
+            height: 38px;
         }
 
         .bulk-input:focus,
@@ -241,18 +244,11 @@
             border-color: #d0021b;
             outline: none;
             background: #fff;
-            box-shadow: 0 0 0 4px rgba(208, 2, 27, 0.05);
+            box-shadow: none;
         }
 
         .bulk-input::placeholder {
             color: #9da3a8;
-        }
-
-        .hint-box {
-            font-size: 12px;
-            color: #888;
-            margin-top: 6px;
-            line-height: 1.4;
         }
 
         /* RTE Placeholder */
@@ -316,14 +312,14 @@
             background: #d0021b;
             color: #fff;
             border: none;
-            padding: 12px 35px;
-            border-radius: 6px;
+            padding: 8px 25px;
+            border-radius: 4px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             transition: background .2s;
         }
 
@@ -461,9 +457,9 @@
 
         .bulk-modal {
             background: #f0f2f5;
-            width: 95%;
-            max-width: 1400px;
-            height: 90vh;
+            width: 98%;
+            max-width: 1700px;
+            height: 95vh;
             border-radius: 12px;
             display: flex;
             flex-direction: column;
@@ -506,7 +502,7 @@
         .bulk-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 100%;
+            min-width: 1600px;
         }
 
         .bulk-table th {
@@ -646,6 +642,45 @@
         .status-dot.inactive {
             background: #9da3a8;
         }
+
+        /* Media Selector */
+        .photo-field-wrap {
+            position: relative;
+        }
+
+        .photo-preview-box {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8f9fa;
+            display: none;
+        }
+
+        .photo-preview-box img {
+            width: 100%;
+            display: block;
+        }
+
+        .btn-select-media {
+            border: none;
+            background: none;
+            padding: 0;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #d0021b;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-select-media:hover {
+            text-decoration: underline;
+        }
     </style>
 @endpush
 
@@ -654,7 +689,7 @@
         <div style="padding: 30px 45px;">
             <div class="page-header" style="margin-bottom: 25px; border: none; background: transparent; padding: 0;">
                 <h2 class="view-title" style="font-size: 24px; font-weight: 700; color: #222;">
-                    {{ __('Reusable Content: Job') }}</h2>
+                    {{ __('Reusable Content: Event') }}</h2>
                 <div class="rc-header-actions">
                     <div class="rc-dropdown-wrap">
                         <button class="rc-btn-outline" type="button" id="filterBtn"><i class="bi bi-funnel"></i> Filter by
@@ -668,7 +703,7 @@
                     <button class="rc-btn-outline" type="button" id="bulkEditBtn"><i class="bi bi-pencil-square"></i>
                         {{ __('Bulk Edit') }}</button>
                     <button class="rc-btn-add" type="button" id="addBtn"><i class="bi bi-plus-lg"></i>
-                        {{ __('Add New Job') }}</button>
+                        {{ __('Add New Event') }}</button>
                 </div>
             </div>
 
@@ -679,7 +714,7 @@
                     {{-- List View --}}
                     <div id="listView">
                         <div class="rc-main-container">
-                            <table class="rc-table" id="jobTable">
+                            <table class="rc-table" id="eventTable">
                                 <thead>
                                     <tr>
                                         <th style="width: 50%;">Title</th>
@@ -688,7 +723,7 @@
                                         <th style="width: 15%;">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody id="jobTableBody"></tbody>
+                                <tbody id="eventTableBody"></tbody>
                             </table>
                         </div>
                     </div>
@@ -702,24 +737,26 @@
                         </div>
                         <div class="rc-main-container" style="border: 1px solid #e0e0e0; border-radius: 8px;">
                             <div
-                                style="padding: 20px 30px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; background: #fff;">
-                                <h3 style="font-size: 15px; font-weight: 700; color: #333; margin: 0;" id="formViewTitle">
-                                    Add Job</h3>
+                                style="padding: 15px 30px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; background: #fff;">
+                                <h3 style="font-size: 14px; font-weight: 700; color: #333; margin: 0;" id="formViewTitle">
+                                    Add Event</h3>
                             </div>
                             <div style="padding: 30px; background: #fff;">
-                                <div style="margin-bottom: 30px;">
-                                    <label class="bulk-col-label">Job Title <span>*</span></label>
-                                    <input type="text" id="jobTitleInput" class="bulk-input"
-                                        placeholder="What is the question?">
+
+                                <div style="margin-bottom: 25px;">
+                                    <label class="bulk-col-label">Title</label>
+                                    <input type="text" id="titleInput" class="bulk-input"
+                                        placeholder="Spring cleaning special">
                                 </div>
 
-                                <div style="margin-bottom: 30px;">
-                                    <label class="bulk-col-label">Category <span>*</span></label>
-                                    <select id="categorySelect" class="bulk-select"></select>
+                                <div style="margin-bottom: 25px;">
+                                    <label class="bulk-col-label">Subtitle</label>
+                                    <input type="text" id="subtitleInput" class="bulk-input"
+                                        placeholder="Price or percentage discount evented">
                                 </div>
 
-                                <div style="margin-bottom: 40px;">
-                                    <label class="bulk-col-label">Job Description <span>*</span></label>
+                                <div style="margin-bottom: 25px;">
+                                    <label class="bulk-col-label">Description <span>*</span></label>
                                     <div class="bulk-rte">
                                         <div class="rte-toolbar" style="background: #fff; padding: 10px 15px;">
                                             <select class="rte-dropdown" style="border:none; font-weight:600; color:#444;">
@@ -751,6 +788,78 @@
                                             </div>
                                         </div>
                                         <div contenteditable="true" id="descInput" class="rte-textarea"
+                                            style="background: #fcfdfe; border-top: 1px solid #eef0f2;"></div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom: 25px;">
+                                    <label class="bulk-col-label">Category <span>*</span></label>
+                                    <select id="categorySelect" class="bulk-select"></select>
+                                </div>
+
+                                <div style="margin-bottom: 25px;">
+                                    <div
+                                        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                        <label class="bulk-col-label" style="margin:0;">Photo URL</label>
+                                        <button class="btn-select-media" type="button"
+                                            onclick="window.openMediaSelector('photoInput', 'photoPreview')"><i
+                                                class="bi bi-images"></i> Select Media</button>
+                                    </div>
+                                    <div class="photo-field-wrap">
+                                        <input type="text" id="photoInput" class="bulk-input"
+                                            placeholder="https://path.to.image/photo.jpg">
+                                        <div class="photo-preview-box" id="photoPreview">
+                                            <img src="" id="photoPreviewImg">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom: 25px;">
+                                    <label class="bulk-col-label">Link event to <span>*</span></label>
+                                    <input type="text" id="linkToInput" class="bulk-input"
+                                        placeholder="/schedule-service">
+                                </div>
+
+                                <div style="margin-bottom: 25px;">
+                                    <label class="bulk-col-label">Link text <span>*</span></label>
+                                    <input type="text" id="linkTextInput" class="bulk-input"
+                                        placeholder="Schedule Service">
+                                </div>
+
+                                <div style="margin-bottom: 35px;">
+                                    <label class="bulk-col-label">Disclaimer <span>*</span></label>
+                                    <div class="bulk-rte">
+                                        <div class="rte-toolbar" style="background: #fff; padding: 10px 15px;">
+                                            <select class="rte-dropdown"
+                                                style="border:none; font-weight:600; color:#444;">
+                                                <option>Normal</option>
+                                            </select>
+                                            <div class="rte-tool-group">
+                                                <button class="rte-btn" type="button" data-cmd="bold"><i
+                                                        class="bi bi-type-bold"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="italic"><i
+                                                        class="bi bi-type-italic"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="underline"><i
+                                                        class="bi bi-type-underline"></i></button>
+                                            </div>
+                                            <div class="rte-tool-group">
+                                                <button class="rte-btn" type="button" data-cmd="justifyLeft"><i
+                                                        class="bi bi-text-left"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="justifyCenter"><i
+                                                        class="bi bi-text-center"></i></button>
+                                            </div>
+                                            <div class="rte-tool-group">
+                                                <button class="rte-btn" type="button" data-cmd="insertUnorderedList"><i
+                                                        class="bi bi-list-ul"></i></button>
+                                                <button class="rte-btn" type="button" data-cmd="insertOrderedList"><i
+                                                        class="bi bi-list-ol"></i></button>
+                                            </div>
+                                            <div class="rte-tool-group">
+                                                <button class="rte-btn" type="button" data-cmd="createLink"><i
+                                                        class="bi bi-link-45deg"></i></button>
+                                            </div>
+                                        </div>
+                                        <div contenteditable="true" id="disclaimerInput" class="rte-textarea"
                                             style="background: #fcfdfe; border-top: 1px solid #eef0f2;"></div>
                                     </div>
                                 </div>
@@ -787,7 +896,7 @@
                 <button style="background:none; border:none; font-size:20px; cursor:pointer; color:#999;"
                     id="confirmModalCloseBtn">&times;</button>
             </div>
-            <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure you want to delete this post?</div>
+            <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure you want to delete this event?</div>
             <div class="confirm-modal-footer">
                 <button class="rc-btn-outline" style="padding: 8px 20px;" id="confirmCancelBtn">Cancel</button>
                 <button class="btn-save-red" style="padding: 8px 20px; background: #d0021b;"
@@ -800,7 +909,7 @@
     <div class="bulk-overlay" id="bulkOverlay">
         <div class="bulk-modal">
             <div class="bulk-header">
-                <h2 style="font-size: 18px; font-weight: 700; margin: 0; color: #333;">Bulk Edit Job Posts</h2>
+                <h2 style="font-size: 18px; font-weight: 700; margin: 0; color: #333;">Bulk Edit Events</h2>
                 <button style="background:none; border:none; font-size:24px; cursor:pointer; color:#999;"
                     id="bulkEditCloseBtn">&times;</button>
             </div>
@@ -812,9 +921,13 @@
                     <table class="bulk-table" id="bulkTableMain">
                         <thead>
                             <tr>
-                                <th style="width: 300px;">Job Title *</th>
-                                <th style="width: 250px;">Category *</th>
-                                <th style="width: 500px;">Job Description *</th>
+                                <th style="width: 250px;">Title</th>
+                                <th style="width: 200px;">Subtitle</th>
+                                <th style="width: 450px;">Description *</th>
+                                <th style="width: 200px;">Category *</th>
+                                <th style="width: 400px;">Photo URL</th>
+                                <th style="width: 250px;">Link event to *</th>
+                                <th style="width: 200px;">Link text *</th>
                                 <th style="width: 80px;">Actions</th>
                             </tr>
                         </thead>
@@ -829,6 +942,9 @@
         </div>
     </div>
 
+    {{-- Media Selector Modal --}}
+    @include('dealer.partials.media-selector')
+
     <div class="toaster-container" id="toasterContainer"></div>
 
 @endsection
@@ -836,18 +952,18 @@
 @push('page-scripts')
     <script>
         (function() {
-            var jobs = @json($jobs);
+            var events = @json($events);
             var categories = @json($categories);
             var editingId = null;
 
             var ROUTES = {
-                store: "{{ route('dealer.website.job-posts.store') }}",
-                update: "{{ route('dealer.website.job-posts.update', '__ID__') }}",
-                destroy: "{{ route('dealer.website.job-posts.destroy', '__ID__') }}",
-                bulkUpdate: "{{ route('dealer.website.job-posts.bulk-update') }}",
-                catStore: "{{ route('dealer.website.job-posts.categories.store') }}",
-                catUpdate: "{{ route('dealer.website.job-posts.categories.update', '__ID__') }}",
-                catDestroy: "{{ route('dealer.website.job-posts.categories.destroy', '__ID__') }}"
+                store: "{{ route('dealer.website.events.store') }}",
+                update: "{{ route('dealer.website.events.update', '__ID__') }}",
+                destroy: "{{ route('dealer.website.events.destroy', '__ID__') }}",
+                bulkUpdate: "{{ route('dealer.website.events.bulk-update') }}",
+                catStore: "{{ route('dealer.website.events.categories.store') }}",
+                catUpdate: "{{ route('dealer.website.events.categories.update', '__ID__') }}",
+                catDestroy: "{{ route('dealer.website.events.categories.destroy', '__ID__') }}"
             };
 
             function ajax(method, url, data, cb) {
@@ -905,27 +1021,27 @@
             }
 
             window._trash = function(id) {
-                customConfirm('Are you sure you want to delete this job?', function() {
+                customConfirm('Are you sure you want to delete this event?', function() {
                     ajax('DELETE', ROUTES.destroy.replace('__ID__', id), null, function(err) {
                         if (err) return alert(err);
-                        jobs = jobs.filter(r => r.id != id);
+                        events = events.filter(r => r.id != id);
                         renderTable();
-                        showToaster('Job deleted successfully.');
+                        showToaster('Event deleted.');
                     });
                 });
             };
 
             function renderTable() {
                 var catFilter = selectedCategoryId;
-                var tbody = document.getElementById('jobTableBody');
+                var tbody = document.getElementById('eventTableBody');
                 var html = '';
-                var filtered = jobs.filter(b => (catFilter === 'All' || b.job_post_category_id == catFilter));
+                var filtered = events.filter(b => (catFilter === 'All' || b.event_category_id == catFilter));
 
                 filtered.forEach(b => {
                     var status = getDisplayStatus(b);
                     html += `<tr>
                 <td><div class="rc-title-cell"><span class="rc-drag"><i class="bi bi-list"></i></span>
-                <div class="rc-content-wrap"><div class="rc-nickname">${b.job_title}</div>
+                <div class="rc-content-wrap"><div class="rc-nickname">${b.title}</div>
                 <div class="rc-row-actions">
                     <a href="#edit/${b.id}" class="rc-row-btn" onclick="openForm(${b.id})"><i class="bi bi-pencil-square"></i> Edit</a>
                     <button class="rc-row-btn trash-btn" onclick="window._trash(${b.id})"><i class="bi bi-trash"></i> Trash</button>
@@ -992,49 +1108,77 @@
 
             window.openForm = function(id) {
                 editingId = id;
-                var item = id ? jobs.find(function(b) {
+                var item = id ? events.find(function(b) {
                     return b.id == id;
                 }) : null;
-                document.getElementById('formViewTitle').textContent = item ? 'Edit Job' : 'Add Job';
-                document.getElementById('jobTitleInput').value = item ? item.job_title : '';
-                document.getElementById('descInput').innerHTML = item ? (item.job_description || '') : '';
+                document.getElementById('formViewTitle').textContent = item ? 'Edit Event' : 'Add Event';
+
+                document.getElementById('titleInput').value = item ? item.title : '';
+                document.getElementById('subtitleInput').value = item ? item.subtitle : '';
+                document.getElementById('descInput').innerHTML = item ? (item.description || '') : '';
+                document.getElementById('photoInput').value = item ? item.photo_url : '';
+                document.getElementById('linkToInput').value = item ? item.link_event_to : '';
+                document.getElementById('linkTextInput').value = item ? item.link_text : '';
+                document.getElementById('disclaimerInput').innerHTML = item ? (item.disclaimer || '') : '';
+
+                // Update preview
+                updatePhotoPreview('photoInput', 'photoPreview');
 
                 var catSel = document.getElementById('categorySelect');
                 catSel.innerHTML = '<option value="">Uncategorized</option>';
                 categories.forEach(function(c) {
                     catSel.innerHTML += '<option value="' + c.id + '"' + (item && item
-                        .job_post_category_id == c.id ? ' selected' : '') + '>' + c.name + '</option>';
+                            .event_category_id == c.id ? ' selected' : '') + '>' + c.name +
+                        '</option>';
                 });
 
                 document.getElementById('listView').style.display = 'none';
                 document.getElementById('formView').style.display = 'block';
             }
 
+            function updatePhotoPreview(inputId, previewId) {
+                var val = document.getElementById(inputId).value;
+                var box = document.getElementById(previewId);
+                if (val) box.innerHTML = '<img src="' + val + '">';
+                else box.innerHTML = '<i class="bi bi-image" style="color:#ccc; font-size:24px;"></i>';
+            }
+            document.getElementById('photoInput').oninput = function() {
+                updatePhotoPreview('photoInput', 'photoPreview');
+            };
+
             document.getElementById('saveBtn').onclick = function() {
                 var p = {
-                    job_title: document.getElementById('jobTitleInput').value.trim(),
-                    job_post_category_id: document.getElementById('categorySelect').value,
-                    job_description: document.getElementById('descInput').innerHTML.trim(),
+                    title: document.getElementById('titleInput').value.trim(),
+                    subtitle: document.getElementById('subtitleInput').value.trim(),
+                    description: document.getElementById('descInput').innerHTML.trim(),
+                    event_category_id: document.getElementById('categorySelect').value,
+                    photo_url: document.getElementById('photoInput').value.trim(),
+                    link_event_to: document.getElementById('linkToInput').value.trim(),
+                    link_text: document.getElementById('linkTextInput').value.trim(),
+                    disclaimer: document.getElementById('disclaimerInput').innerHTML.trim(),
                     status: 'Active'
                 };
 
-                if (!p.job_title) return alert('Job Title is required');
-                if (!p.job_post_category_id) return alert('Category is required');
-                if (!p.job_description) return alert('Job Description is required');
+                if (!p.title) return alert('Title is required');
+                if (!p.description) return alert('Description is required');
+                if (!p.event_category_id) return alert('Category is required');
+                if (!p.link_event_to) return alert('Link Event To is required');
+                if (!p.link_text) return alert('Link Text is required');
+                if (!p.disclaimer) return alert('Disclaimer is required');
 
                 ajax(editingId ? 'PATCH' : 'POST', editingId ? ROUTES.update.replace('__ID__', editingId) : ROUTES
                     .store, p,
                     function(err, res) {
                         if (err) return alert(err);
                         if (editingId) {
-                            var idx = jobs.findIndex(function(b) {
+                            var idx = events.findIndex(function(b) {
                                 return b.id == editingId;
                             });
-                            if (idx > -1) jobs[idx] = res;
-                        } else jobs.push(res);
+                            if (idx > -1) events[idx] = res;
+                        } else events.push(res);
                         window.location.hash = '#list';
                         renderTable();
-                        showToaster('Job saved.');
+                        showToaster('Event saved.');
                     });
             };
 
@@ -1142,7 +1286,7 @@
 
             function openBulkEdit() {
                 bulkTableBody.innerHTML = '';
-                if (jobs.length > 0) jobs.forEach(function(b) {
+                if (events.length > 0) events.forEach(function(b) {
                     addBulkRow(b);
                 });
                 else addBulkRow(null);
@@ -1152,26 +1296,39 @@
             function addBulkRow(item) {
                 var row = document.createElement('tr');
                 row.dataset.id = item ? item.id : '';
+                var rowId = 'row-' + Math.random().toString(36).substr(2, 9);
 
                 row.innerHTML = `
-            <td><input type="text" class="bulk-edit-input bulk-title" value="${item ? item.job_title : ''}"></td>
-            <td>
-                <select class="bulk-edit-input bulk-category">
-                    <option value="">[Select]</option>
-                    ${categories.map(c => `<option value="${c.id}" ${item && item.job_post_category_id == c.id ? 'selected' : ''}>${c.name}</option>`).join('')}
-                </select>
-            </td>
+            <td><input type="text" class="bulk-edit-input bulk-title" value="${item ? item.title : ''}"></td>
+            <td><input type="text" class="bulk-edit-input bulk-subtitle" value="${item ? item.subtitle || '' : ''}"></td>
             <td>
                 <div class="bulk-rte-wrap">
                     <div class="bulk-rte-toolbar">
                         <button class="rte-btn" type="button" onclick="document.execCommand('bold', false, null)"><i class="bi bi-type-bold"></i></button>
                         <button class="rte-btn" type="button" onclick="document.execCommand('italic', false, null)"><i class="bi bi-type-italic"></i></button>
-                        <button class="rte-btn" type="button" onclick="document.execCommand('insertUnorderedList', false, null)"><i class="bi bi-list-ul"></i></button>
-                        <button class="rte-btn" type="button" onclick="document.execCommand('createLink', false, prompt('URL:'))"><i class="bi bi-link-45deg"></i></button>
                     </div>
-                    <div contenteditable="true" class="bulk-rte-content bulk-desc">${item ? item.job_description || '' : ''}</div>
+                    <div contenteditable="true" class="bulk-rte-content bulk-desc">${item ? item.description || '' : ''}</div>
                 </div>
             </td>
+            <td>
+                <select class="bulk-edit-input bulk-category">
+                    <option value="">[Select]</option>
+                    ${categories.map(c => `<option value="${c.id}" ${item && item.event_category_id == c.id ? 'selected' : ''}>${c.name}</option>`).join('')}
+                </select>
+            </td>
+            <td>
+                <div style="display:flex; flex-direction:column; gap:5px;">
+                    <div style="display:flex; gap:5px; align-items:center;">
+                        <input type="text" id="${rowId}-input" class="bulk-edit-input bulk-photo" value="${item ? item.photo_url || '' : ''}">
+                        <button class="btn-select-media" style="padding:5px 8px;" type="button" onclick="window.openMediaSelector('${rowId}-input', '${rowId}-preview')"><i class="bi bi-images"></i></button>
+                    </div>
+                    <div class="photo-preview-box" style="width:100%; height:80px;" id="${rowId}-preview">
+                        ${item && item.photo_url ? '<img src="'+item.photo_url+'">' : '<i class="bi bi-image" style="color:#ccc;"></i>'}
+                    </div>
+                </div>
+            </td>
+            <td><input type="text" class="bulk-edit-input bulk-link-to" value="${item ? item.link_event_to || '' : ''}"></td>
+            <td><input type="text" class="bulk-edit-input bulk-link-text" value="${item ? item.link_text || '' : ''}"></td>
             <td><button class="rc-row-btn trash-btn" onclick="this.closest('tr').remove()"><i class="bi bi-trash"></i></button></td>
         `;
                 bulkTableBody.appendChild(row);
@@ -1185,22 +1342,139 @@
                     if (!title) return;
                     data.push({
                         id: row.dataset.id || null,
-                        job_title: title,
-                        job_post_category_id: row.querySelector('.bulk-category').value || null,
-                        job_description: row.querySelector('.bulk-desc').innerHTML,
+                        title: title,
+                        subtitle: row.querySelector('.bulk-subtitle').value.trim(),
+                        description: row.querySelector('.bulk-desc').innerHTML,
+                        event_category_id: row.querySelector('.bulk-category').value ||
+                            null,
+                        photo_url: row.querySelector('.bulk-photo').value.trim(),
+                        link_event_to: row.querySelector('.bulk-link-to').value.trim(),
+                        link_text: row.querySelector('.bulk-link-text').value.trim(),
+                        disclaimer: 'Default disclaimer text if not set in bulk edit', // Bulk edit doesn't have disclaimer in screenshot
                         status: 'Active'
                     });
                 });
 
                 ajax('POST', ROUTES.bulkUpdate, {
-                    jobs: data
+                    events: data
                 }, function(err, res) {
                     if (err) return alert(err);
-                    jobs = res;
+                    events = res;
                     renderTable();
                     bulkOverlay.classList.remove('open');
                     showToaster('Bulk data saved.');
                 });
+            };
+
+            // Global Media Integration
+            var selectedMediaUrl = null,
+                mediaPage = 1;
+            window.openMediaSelector = function(inputId, previewId) {
+                window._currentMediaTarget = {
+                    input: inputId,
+                    preview: previewId
+                };
+                document.getElementById('mediaModalOverlay').classList.add('open');
+                loadMedia(1);
+            };
+
+            document.getElementById('mediaModalClose').onclick = function() {
+                document.getElementById('mediaModalOverlay').classList.remove('open');
+            };
+
+            var mediaSearchTimer = null;
+            document.getElementById('mediaSearchInput').oninput = function() {
+                var val = this.value;
+                clearTimeout(mediaSearchTimer);
+                mediaSearchTimer = setTimeout(function() {
+                    loadMedia(1, val);
+                }, 300);
+            };
+
+            document.getElementById('mediaDisplaySelect').onchange = function() {
+                var g = document.getElementById('mediaGrid');
+                g.className = 'media-grid ' + this.value.toLowerCase();
+            };
+
+            function loadMedia(page, search = '') {
+                mediaPage = page;
+                var s = search || document.getElementById('mediaSearchInput').value;
+                var url = "{{ route('dealer.website.media.list') }}?page=" + page + "&search=" + s + "&type=image";
+                ajax('GET', url, null, function(err, res) {
+                    if (err) return alert(err);
+                    renderMediaGrid(res.data);
+                    renderMediaPagination(res);
+                });
+            }
+
+            function renderMediaGrid(items) {
+                var html = '';
+                items.forEach(function(item) {
+                    var dims = item.dimensions !== '—' ? item.dimensions : 'Unknown';
+                    var size = item.size || 'Unknown';
+                    var author = item.uploaded_by || 'System';
+                    var title = item.title || item.original_name || 'Untitled';
+
+                    html += '<div class="media-card" data-url="' + item.url + '">' +
+                        '<img src="' + item.url + '" class="media-thumb">' +
+                        '<div class="media-info">' +
+                        '<div class="media-info-author"><b>By:</b> ' + author + '</div>' +
+                        '<div class="media-info-dims"><b>Dimensions:</b> ' + dims + '</div>' +
+                        '<div class="media-info-size"><b>Size:</b> ' + size + '</div>' +
+                        '<div class="media-info-title"><b>Title:</b> ' + title + '</div>' +
+                        '</div>' +
+                        '</div>';
+                });
+                document.getElementById('mediaGrid').innerHTML = html ||
+                    '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #999;">No media found.</div>';
+
+                document.querySelectorAll('.media-card').forEach(function(card) {
+                    card.onclick = function() {
+                        document.querySelectorAll('.media-card').forEach(function(c) {
+                            c.classList.remove('selected');
+                        });
+                        this.classList.add('selected');
+                        selectedMediaUrl = this.dataset.url;
+                        var btn = document.getElementById('confirmMediaBtn');
+                        btn.style.opacity = '1';
+                        btn.style.pointerEvents = 'auto';
+                        btn.style.background = '#c0392b';
+                    };
+                });
+            }
+
+            function renderMediaPagination(res) {
+                var html = '';
+                var cur = res.current_page;
+                var last = res.last_page;
+                html += '<button class="pag-btn ' + (cur === 1 ? 'disabled' : '') + '" onclick="loadMedia(' + (cur -
+                    1) + ')"><i class="bi bi-chevron-left"></i></button>';
+                for (var i = 1; i <= last; i++) {
+                    if (i === 1 || i === last || (i >= cur - 1 && i <= cur + 1)) {
+                        html += '<button class="pag-btn ' + (i === cur ? 'active' : '') + '" onclick="loadMedia(' + i +
+                            ')">' + i + '</button>';
+                    } else if (i === cur - 2 || i === cur + 2) {
+                        html += '<span class="pag-dots">...</span>';
+                    }
+                }
+                html += '<button class="pag-btn ' + (cur === last ? 'disabled' : '') + '" onclick="loadMedia(' + (cur +
+                    1) + ')"><i class="bi bi-chevron-right"></i></button>';
+                document.getElementById('mediaPagination').innerHTML = html;
+                document.getElementById('mediaPaginationInfo').textContent = 'Showing ' + res.from + ' to ' + res.to +
+                    ' of ' + res.total;
+            }
+
+            document.getElementById('confirmMediaBtn').onclick = function() {
+                if (selectedMediaUrl && window._currentMediaTarget) {
+                    document.getElementById(window._currentMediaTarget.input).value = selectedMediaUrl;
+                    var box = document.getElementById(window._currentMediaTarget.preview);
+                    if (box) {
+                        var img = box.querySelector('img');
+                        if (img) img.src = selectedMediaUrl;
+                        box.style.display = 'block';
+                    }
+                    document.getElementById('mediaModalOverlay').classList.remove('open');
+                }
             };
 
             populateFilters();

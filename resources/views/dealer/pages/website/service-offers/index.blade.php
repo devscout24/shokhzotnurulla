@@ -1492,6 +1492,5 @@
             };
         });
     </script>
-@endpush
 </script>
 @endpush
