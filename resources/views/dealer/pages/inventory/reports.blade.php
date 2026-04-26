@@ -3,6 +3,10 @@
 @section('title', __('Inventory Reports') . ' | '. __(config('app.name')))
 
 @section('page-content')
+    {{-- Flatpickr for Date Range --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <main class="main-content" id="mainContent">
         <div class="view-content inventory-view" data-view="inventory">
             {{-- Inventory Top Bar --}}
@@ -14,11 +18,13 @@
                     {{-- Filters Section --}}
                     <div class="report-filters-bar">
                         <form action="{{ route('dealer.inventory.reports.index') }}" method="GET" class="filters-form" id="reportsFilterForm">
-                            <div class="filter-item date-range-picker-wrapper">
-                                <div class="date-range-display" id="dateRangeDisplay">
+                            {{-- Date Range with Prefix --}}
+                            <div class="filter-item input-group-custom date-range-picker-wrapper">
+                                <div class="input-group-prefix" id="dateRangeDisplay">
                                     <i class="bi bi-calendar3"></i>
-                                    <span id="dateRangeText">3/30/2026 - 4/26/2026</span>
-                                    <i class="bi bi-chevron-down ms-auto"></i>
+                                </div>
+                                <div class="form-control-wrapper">
+                                    <span id="dateRangeText">{{ request('from') && request('to') ? date('n/j/Y', strtotime(request('from'))) . ' - ' . date('n/j/Y', strtotime(request('to'))) : 'Select Date Range' }}</span>
                                 </div>
                                 <div class="date-picker-dropdown" id="datePickerDropdown">
                                     <div class="date-picker-sidebar">
@@ -65,9 +71,12 @@
                                 </select>
                             </div>
 
-                            <div class="filter-item search-box">
-                                <i class="bi bi-search"></i>
-                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by Stock # or VIN">
+                            {{-- Search with Prefix --}}
+                            <div class="filter-item input-group-custom">
+                                <div class="input-group-prefix">
+                                    <i class="bi bi-search"></i>
+                                </div>
+                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by Stock # or VIN" class="form-control">
                             </div>
 
                             <div class="filter-actions">
@@ -164,43 +173,52 @@
                                         // User specifically said: "if sold date is blank then mark as green"
                                         if (empty($vehicle->prices->sold_date)) $dayColor = 'bg-success';
                                     @endphp
-                                    <tr>
-                                        <td>{{ $vehicle->inventory_date ? $vehicle->inventory_date->format('n/j/Y') : ($vehicle->created_at ? $vehicle->created_at->format('n/j/Y') : '--') }}</td>
-                                        <td>
-                                            <span class="days-badge {{ $dayColor }}">{{ $days }}</span>
-                                        </td>
-                                        <td class="vehicle-info-cell">
-                                            <div class="vehicle-thumb">
-                                                <img src="{{ $vehicle->primaryPhoto?->url ?? asset('assets/panels/common/images/logos/no-image.png') }}" alt="">
-                                            </div>
-                                            <div class="vehicle-title-wrap">
-                                                <a href="{{ route('dealer.inventory.vdp.show', $vehicle) }}" class="vehicle-title">{{ $vehicle->display_title }}</a>
-                                                <i class="bi bi-box-arrow-up-right text-danger ms-1 small"></i>
-                                            </div>
-                                        </td>
-                                        <td>{{ $vehicle->stock_number }}</td>
-                                        <td>{{ number_format($vehicle->mileage) }}</td>
-                                        <td>
-                                            @if($vehicle->prices->dealer_cost)
-                                                ${{ number_format($vehicle->prices->dealer_cost) }} <i class="bi bi-pencil-square text-secondary ms-1"></i>
-                                            @else
-                                                -- <i class="bi bi-pencil-square text-secondary ms-1"></i>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($vehicle->prices->msrp)
-                                                ${{ number_format($vehicle->prices->msrp) }} <i class="bi bi-pencil-square text-secondary ms-1"></i>
-                                            @else
-                                                -- <i class="bi bi-pencil-square text-secondary ms-1"></i>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($vehicle->prices->sold_price)
-                                                ${{ number_format($vehicle->prices->sold_price) }} <i class="bi bi-pencil-square text-secondary ms-1"></i>
-                                            @else
-                                                -- <i class="bi bi-pencil-square text-secondary ms-1"></i>
-                                            @endif
-                                        </td>
+                                     <tr data-vehicle-id="{{ $vehicle->id }}">
+                                         <td>{{ $vehicle->inventory_date ? $vehicle->inventory_date->format('n/j/Y') : ($vehicle->created_at ? $vehicle->created_at->format('n/j/Y') : '--') }}</td>
+                                         <td>
+                                             <span class="days-badge {{ $dayColor }}">{{ $days }}</span>
+                                         </td>
+                                         <td class="vehicle-info-cell">
+                                             <div class="vehicle-thumb">
+                                                 <img src="{{ $vehicle->primaryPhoto?->url ?? asset('assets/panels/common/images/logos/no-image.png') }}" alt="">
+                                             </div>
+                                             <div class="vehicle-title-wrap">
+                                                 <a href="{{ route('dealer.inventory.vdp.show', $vehicle) }}" class="vehicle-title">{{ $vehicle->display_title }}</a>
+                                                 <i class="bi bi-box-arrow-up-right text-danger ms-1 small"></i>
+                                             </div>
+                                         </td>
+                                         <td>{{ $vehicle->stock_number }}</td>
+                                         <td>{{ number_format($vehicle->mileage) }}</td>
+                                         <td class="editable-cell">
+                                             <div class="view-val">
+                                                 @if($vehicle->prices->dealer_cost)
+                                                     ${{ number_format($vehicle->prices->dealer_cost) }} <i class="bi bi-pencil-square text-secondary ms-1 edit-trigger"></i>
+                                                 @else
+                                                     -- <i class="bi bi-pencil-square text-secondary ms-1 edit-trigger"></i>
+                                                 @endif
+                                             </div>
+                                             <input type="number" class="form-control edit-input edit-cost" value="{{ (float)$vehicle->prices->dealer_cost }}" style="display:none; width: 100px;">
+                                         </td>
+                                         <td class="editable-cell">
+                                             <div class="view-val">
+                                                 @if($vehicle->prices->msrp)
+                                                     ${{ number_format($vehicle->prices->msrp) }} <i class="bi bi-pencil-square text-secondary ms-1 edit-trigger"></i>
+                                                 @else
+                                                     -- <i class="bi bi-pencil-square text-secondary ms-1 edit-trigger"></i>
+                                                 @endif
+                                             </div>
+                                             <input type="number" class="form-control edit-input edit-price" value="{{ (float)$vehicle->prices->msrp }}" style="display:none; width: 100px;">
+                                         </td>
+                                         <td class="editable-cell">
+                                             <div class="view-val">
+                                                 @if($vehicle->prices->sold_price)
+                                                     ${{ number_format($vehicle->prices->sold_price) }} <i class="bi bi-pencil-square text-secondary ms-1 edit-trigger"></i>
+                                                 @else
+                                                     -- <i class="bi bi-pencil-square text-secondary ms-1 edit-trigger"></i>
+                                                 @endif
+                                             </div>
+                                             <input type="number" class="form-control edit-input edit-sold-price" value="{{ (float)$vehicle->prices->sold_price }}" style="display:none; width: 100px;">
+                                         </td>
                                         <td class="{{ $vehicle->report_profit !== null && $vehicle->report_profit > 0 ? 'text-success' : ($vehicle->report_profit !== null && $vehicle->report_profit < 0 ? 'text-danger' : '') }}">
                                             @if($vehicle->report_profit !== null)
                                                 ${{ number_format($vehicle->report_profit) }}
@@ -229,6 +247,110 @@
         .reports-container {
             padding: 20px;
         }
+
+        /* ── Mobile Header & Nav (Exactly like screenshot) ──────────────── */
+        @media (max-width: 992px) {
+            .topbar-secondary {
+                display: flex !important;
+                flex-direction: column !important;
+                background: linear-gradient(90deg, #4b0082, #8d1b3d) !important; /* Specific gradient */
+                padding: 0 !important;
+                border: none !important;
+                margin: 0 !important;
+            }
+            .mobile-report-header {
+                padding: 18px 20px !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 15px !important;
+            }
+            .mobile-logo {
+                width: 40px !important;
+                height: 40px !important;
+                border: 2px solid #ff9900 !important; /* Orange accent border from logo */
+                border-radius: 50% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                color: #fff !important;
+                font-size: 22px !important;
+                background: transparent !important;
+            }
+            .mobile-title {
+                color: #fff !important;
+                font-size: 19px !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.5px !important;
+            }
+            .nav-links {
+                background: #fdfdfd !important;
+                width: 100% !important;
+                display: flex !important;
+                overflow-x: auto !important;
+                padding: 10px 20px !important;
+                gap: 30px !important;
+                border-bottom: 1px solid #eee !important;
+                box-shadow: none !important;
+            }
+            .nav-item {
+                background: transparent !important; /* Remove blocky background */
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                flex-direction: row !important;
+                gap: 6px !important;
+                color: #888 !important;
+                font-size: 15px !important;
+                padding: 8px 0 !important;
+                font-weight: 500 !important;
+                position: relative !important;
+                opacity: 1 !important;
+            }
+            .nav-item i {
+                font-size: 18px !important;
+                color: #aaa !important;
+            }
+            .nav-item.active {
+                color: #333 !important;
+            }
+            .nav-item.active i {
+                color: #666 !important;
+            }
+            .nav-item.active::after {
+                content: '' !important;
+                position: absolute !important;
+                bottom: -2px !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 3px !important;
+                background: #ccc !important; /* Grey underline as in SS */
+            }
+            .nav-item .badge {
+                display: none !important; /* Remove badges on mobile as in SS */
+            }
+            .top-search {
+                background: #fdfdfd !important;
+                width: 100% !important;
+                padding: 15px 20px !important;
+                margin: 0 !important;
+                border-bottom: 1px solid #eee !important;
+            }
+            .top-search input {
+                width: 100% !important;
+                background: #fff !important;
+                border: 1px solid #ddd !important;
+                border-radius: 8px !important;
+                padding: 12px 15px 12px 45px !important;
+                font-size: 15px !important;
+                color: #333 !important;
+            }
+            .top-search .search-icon {
+                left: 35px !important;
+                color: #888 !important;
+                font-size: 18px !important;
+            }
+        }
+
         .report-filters-bar {
             background: #fff;
             padding: 15px;
@@ -246,24 +368,44 @@
             position: relative;
         }
 
-        /* Date Range Picker Style */
-        .date-range-picker-wrapper {
-            position: relative;
-            min-width: 250px;
-        }
-        .date-range-display {
-            padding: 8px 12px;
+        /* Custom Input Group Style */
+        .input-group-custom {
+            display: flex;
+            align-items: stretch;
             border: 1px solid #dee2e6;
             border-radius: 6px;
-            background-color: #f8f9fa;
-            cursor: pointer;
+            overflow: hidden;
+            background: #fff;
+        }
+        .input-group-prefix {
+            background: #f1f1f1;
+            padding: 8px 15px;
+            border-right: 1px solid #dee2e6;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 14px;
+            justify-content: center;
+            color: #495057;
+            font-size: 16px;
         }
-        .date-range-display i {
-            color: #6c757d;
+        .input-group-custom .form-control, 
+        .input-group-custom .form-control-wrapper {
+            border: none;
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            background: #fff;
+            color: #212529;
+        }
+        .input-group-custom .form-control:focus {
+            box-shadow: none;
+        }
+
+        /* Date Range Picker Style */
+        .date-range-picker-wrapper {
+            min-width: 280px;
+            cursor: pointer;
         }
         .date-picker-dropdown {
             position: absolute;
@@ -313,39 +455,26 @@
         
         /* Select wrappers */
         .filter-item select {
-            padding: 8px 12px;
+            padding: 10px 12px;
             border: 1px solid #dee2e6;
             border-radius: 6px;
-            font-size: 14px;
-            min-width: 150px;
-            background-color: #f8f9fa;
+            font-size: 15px;
+            min-width: 160px;
+            background-color: #fff;
             cursor: pointer;
-        }
-        .search-box input {
-            padding: 8px 12px 8px 32px;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            font-size: 14px;
-            min-width: 250px;
-            background-color: #f8f9fa;
-        }
-        .search-box i {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
         }
         .btn-export {
             background: #d9534f;
             color: #fff;
-            padding: 8px 20px;
+            padding: 10px 25px;
             border-radius: 6px;
             text-decoration: none;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            font-weight: 500;
+            font-weight: 600;
+            width: 100%;
         }
         .btn-export:hover {
             background: #c9302c;
@@ -360,28 +489,36 @@
         }
         .summary-card {
             background: #fff;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 12px 10px; /* Reduced padding */
+            border-radius: 4px; /* Slightly sharper corners */
             text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            border: 1px solid #f0f0f0;
+            min-height: 90px; /* Smaller height */
         }
         .card-icon {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #6c757d;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #adb5bd;
+        }
+        .card-icon svg {
+            width: 24px; /* Smaller icons */
+            height: 24px;
         }
         .card-value {
-            font-size: 20px;
+            font-size: 16px; /* Smaller font */
             font-weight: 700;
             color: #212529;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .card-label {
-            font-size: 12px;
+            font-size: 11px; /* Smaller label */
             color: #6c757d;
             font-weight: 500;
         }
@@ -398,19 +535,54 @@
         }
         .report-table th {
             background: #f8f9fa;
-            padding: 12px 15px;
+            padding: 10px 15px;
             text-align: left;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #495057;
             border-bottom: 1px solid #dee2e6;
+            white-space: nowrap;
         }
         .report-table td {
-            padding: 12px 15px;
-            font-size: 14px;
+            padding: 8px 15px;
+            font-size: 13px;
             border-bottom: 1px solid #f1f1f1;
             vertical-align: middle;
         }
+        /* Zebra Striping (Color Combo) */
+        .report-table tbody tr:nth-child(even) {
+            background-color: #fcfcfc; /* Off/dark white */
+        }
+        .report-table tbody tr:nth-child(odd) {
+            background-color: #ffffff; /* White */
+        }
+        .report-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Inline Edit Styles */
+        .editable-cell .view-val {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .edit-trigger {
+            opacity: 0.3;
+            transition: opacity 0.2s;
+        }
+        .editable-cell:hover .edit-trigger {
+            opacity: 1;
+        }
+        tr.editing .view-val {
+            display: none !important;
+        }
+        tr.editing .edit-input {
+            display: block !important;
+            padding: 4px 8px !important;
+            height: auto !important;
+            font-size: 13px !important;
+        }
+        
         .days-badge {
             display: inline-block;
             padding: 2px 8px;
@@ -458,11 +630,87 @@
             box-shadow: none;
             border: none;
         }
+
+        /* ── Responsive Styles ────────────────────────────────────────── */
+        @media (max-width: 1200px) {
+            .report-summary-cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .filters-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-item, .filter-item select, .filter-item input {
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+            .date-picker-dropdown {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                max-width: 400px;
+                max-height: 90vh;
+                overflow-y: auto;
+                flex-direction: column;
+            }
+            .date-picker-sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #f1f1f1;
+            }
+            .date-picker-sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 5px;
+            }
+            .date-picker-sidebar li {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .report-summary-cards {
+                grid-template-columns: 1fr; /* Exact stack like screenshot */
+            }
+            .reports-container {
+                padding: 10px;
+            }
+            .summary-card {
+                padding: 30px 20px;
+                border-radius: 0; /* Flat look like screenshot */
+                box-shadow: none;
+                border-bottom: 1px solid #eee;
+                margin-bottom: 0;
+            }
+            .card-value {
+                font-size: 24px;
+            }
+        }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const dateRangeDisplay = document.getElementById('dateRangeDisplay');
+            // Ensure mobile header is present
+            const topbar = document.querySelector('.topbar-secondary');
+            if (topbar && !document.querySelector('.mobile-report-header')) {
+                const mobileHeader = document.createElement('div');
+                mobileHeader.className = 'mobile-report-header d-md-none';
+                mobileHeader.innerHTML = `
+                    <div class="mobile-logo">
+                        <i class="bi bi-speedometer"></i>
+                    </div>
+                    <div class="mobile-title">Mobile Inventory Management</div>
+                `;
+                topbar.prepend(mobileHeader);
+            }
+
+            const dateRangeWrapper = document.querySelector('.date-range-picker-wrapper');
             const datePickerDropdown = document.getElementById('datePickerDropdown');
             const dateRangeText = document.getElementById('dateRangeText');
             const sidebarItems = document.querySelectorAll('.date-picker-sidebar li');
@@ -488,18 +736,24 @@
                         
                         // Clear active sidebar selection
                         sidebarItems.forEach(i => i.classList.remove('active'));
+
+                        // Auto-submit on calendar range selection
+                        form.submit();
                     }
                 }
             });
 
             // Toggle dropdown
-            dateRangeDisplay.addEventListener('click', function(e) {
+            dateRangeWrapper.addEventListener('click', function(e) {
+                // If the click is on the sidebar or calendar, don't toggle (close)
+                if (datePickerDropdown.contains(e.target)) return;
+                
                 e.stopPropagation();
                 datePickerDropdown.classList.toggle('show');
             });
 
             document.addEventListener('click', function(e) {
-                if (!datePickerDropdown.contains(e.target) && e.target !== dateRangeDisplay) {
+                if (!datePickerDropdown.contains(e.target) && !dateRangeWrapper.contains(e.target)) {
                     datePickerDropdown.classList.remove('show');
                 }
             });
@@ -509,9 +763,6 @@
                 toInput.value = to;
                 dateRangeText.innerText = display;
                 rangeInput.value = display;
-                
-                // Optional: trigger form submit
-                // form.submit();
             }
 
             // Sidebar shortcuts
@@ -557,7 +808,6 @@
                     
                     updateDateRange(fromStr, toStr, `${fromDisp} - ${toDisp}`);
                     
-                    // Auto-submit after selection
                     form.submit();
                 });
             });
@@ -573,23 +823,25 @@
             const makeSelect = document.getElementById('makeSelect');
             const modelSelect = document.getElementById('modelSelect');
 
-            makeSelect.addEventListener('change', function() {
-                const makeId = this.value;
-                modelSelect.innerHTML = '<option value="">[Model]</option>';
-                
-                if (makeId) {
-                    fetch(`{{ route('dealer.inventory.models') }}?make_id=${makeId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            data.forEach(model => {
-                                const option = document.createElement('option');
-                                option.value = model.id;
-                                option.textContent = model.name;
-                                modelSelect.appendChild(option);
+            if (makeSelect) {
+                makeSelect.addEventListener('change', function() {
+                    const makeId = this.value;
+                    modelSelect.innerHTML = '<option value="">[Model]</option>';
+                    
+                    if (makeId) {
+                        fetch(`{{ route('dealer.inventory.models') }}?make_id=${makeId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                data.forEach(model => {
+                                    const option = document.createElement('option');
+                                    option.value = model.id;
+                                    option.textContent = model.name;
+                                    modelSelect.appendChild(option);
+                                });
                             });
-                        });
-                }
-            });
+                    }
+                });
+            }
 
             // Auto-submit on select change
             document.querySelectorAll('#reportsFilterForm select').forEach(select => {
@@ -599,6 +851,94 @@
                     }
                 });
             });
+
+            // Handle search input submit on Enter and reset when cleared
+            const searchInput = document.querySelector('input[name="search"]');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        form.submit();
+                    }
+                });
+
+                // Reset when text is manually cleared and user clicks away or presses enter
+                searchInput.addEventListener('input', function() {
+                    if (this.value === '') {
+                        // Optional: auto-submit when cleared
+                        // form.submit();
+                    }
+                });
+            }
+
+            // Inline Editing Logic
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('edit-trigger')) {
+                    const tr = e.target.closest('tr');
+                    tr.classList.add('editing');
+                    tr.querySelector('.edit-cost').focus();
+                }
+            });
+
+            // Save on Enter
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && e.target.classList.contains('edit-input')) {
+                    const tr = e.target.closest('tr');
+                    saveVehiclePrices(tr);
+                }
+            });
+
+            // Also save on blur? Maybe just on Enter for now to avoid accidental saves
+            // document.addEventListener('focusout', function(e) {
+            //     if (e.target.classList.contains('edit-input')) {
+            //         const tr = e.target.closest('tr');
+            //         // setTimeout to allow clicking other inputs in same row
+            //         setTimeout(() => {
+            //             if (!tr.contains(document.activeElement)) {
+            //                 saveVehiclePrices(tr);
+            //             }
+            //         }, 100);
+            //     }
+            // });
+
+            function saveVehiclePrices(tr) {
+                const vehicleId = tr.getAttribute('data-vehicle-id');
+                const cost = tr.querySelector('.edit-cost').value;
+                const price = tr.querySelector('.edit-price').value;
+                const soldPrice = tr.querySelector('.edit-sold-price').value;
+
+                tr.classList.remove('editing');
+                tr.style.opacity = '0.5';
+
+                fetch(`/dealer/inventory/reports/${vehicleId}/price`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        dealer_cost: cost,
+                        msrp: price,
+                        sold_price: soldPrice
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Refresh to update calculations or update DOM manually
+                        window.location.reload(); 
+                    } else {
+                        alert('Error saving prices');
+                        tr.style.opacity = '1';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error saving prices');
+                    tr.style.opacity = '1';
+                });
+            }
         });
     </script>
 @endsection

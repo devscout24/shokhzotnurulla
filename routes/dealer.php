@@ -362,6 +362,7 @@ Route::prefix('dealer')->name('dealer.')
         Route::prefix('reports')->name('reports.')->group(function () {
             Route::get('/', [InventoryReportController::class, 'index'])->name('index');
             Route::get('/export', [InventoryReportController::class, 'export'])->name('export');
+            Route::patch('/{vehicle}/price', [InventoryReportController::class, 'updatePrice'])->name('price.update');
         });
 
     });

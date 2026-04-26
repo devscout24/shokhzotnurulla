@@ -193,4 +193,24 @@ class InventoryReportController extends Controller
             fclose($handle);
         }, $filename, ['Content-Type' => 'text/csv']);
     }
+    
+    /**
+     * Update vehicle price details via AJAX.
+     */
+    public function updatePrice(Request $request, Vehicle $vehicle)
+    {
+        $request->validate([
+            'dealer_cost' => 'nullable|numeric',
+            'msrp'        => 'nullable|numeric',
+            'sold_price'  => 'nullable|numeric',
+        ]);
+
+        $vehicle->prices()->updateOrCreate([], [
+            'dealer_cost' => $request->dealer_cost,
+            'msrp'        => $request->msrp,
+            'sold_price'  => $request->sold_price,
+        ]);
+
+        return response()->json(['success' => true]);
+    }
 }
