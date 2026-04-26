@@ -31,10 +31,12 @@
                 <span>Settings</span>
             </div>
         </a>
-        {{-- <div class="nav-item" data-view="reports">
-            <i class="bi bi-bar-chart"></i>
-            <span>Reports</span>
-        </div> --}}
+        <a href="{{ route('dealer.inventory.reports.index') }}">
+            <div class="nav-item {{ request()->routeIs('dealer.inventory.reports.*') ? 'active' : '' }}" data-view="reports">
+                <i class="bi bi-bar-chart"></i>
+                <span>Reports</span>
+            </div>
+        </a>
     </div>
     <div class="top-search">
         <input type="text" placeholder="Search by make, model, feature">

@@ -25,6 +25,7 @@ use App\Http\Controllers\Dealer\WebsiteJobPostController;
 use App\Http\Controllers\Dealer\WebsiteServiceOfferController;
 use App\Http\Controllers\Dealer\WebsiteEventController;
 use App\Http\Controllers\Dealer\WebsiteReportController;
+use App\Http\Controllers\Dealer\InventoryReportController;
 
 Route::prefix('dealer')->name('dealer.')
     ->middleware(['auth', 'verified', 'all.active', 'isDealer'])
@@ -355,6 +356,12 @@ Route::prefix('dealer')->name('dealer.')
 
             // ── Other Settings ──
             Route::get('/syndication', [InventorySettingController::class, 'syndication'])->name('syndication');
+        });
+
+        // ── Reports ──────────────────────────────────────────────────────────
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', [InventoryReportController::class, 'index'])->name('index');
+            Route::get('/export', [InventoryReportController::class, 'export'])->name('export');
         });
 
     });
