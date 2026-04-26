@@ -81,32 +81,32 @@
                     {{-- Summary Cards Section --}}
                     <div class="report-summary-cards">
                         <div class="summary-card">
-                            <div class="card-icon"><i class="bi bi-calendar-event"></i></div>
-                            <div class="card-value">{{ number_format($avgDaysOnMarket, 0) }}</div>
+                            <div class="card-icon"><i class="bi bi-calendar3"></i></div>
+                            <div class="card-value text-danger">{{ number_format($avgDaysOnMarket, 0) }}</div>
                             <div class="card-label">Avg. Days on Market</div>
                         </div>
                         <div class="summary-card">
-                            <div class="card-icon text-success"><i class="bi bi-cash-stack"></i></div>
-                            <div class="card-value">${{ number_format($totalInvestment, 0) }}</div>
+                            <div class="card-icon"><i class="bi bi-cash-stack"></i></div>
+                            <div class="card-value text-success">${{ number_format($totalInvestment, 0) }}</div>
                             <div class="card-label">Total Investment</div>
                         </div>
                         <div class="summary-card">
-                            <div class="card-icon text-primary"><i class="bi bi-file-earmark-text"></i></div>
-                            <div class="card-value">${{ number_format($totalSales, 0) }}</div>
+                            <div class="card-icon"><i class="bi bi-receipt"></i></div>
+                            <div class="card-value text-success">${{ number_format($totalSales, 0) }}</div>
                             <div class="card-label">Total Sales</div>
                         </div>
                         <div class="summary-card">
-                            <div class="card-icon text-info"><i class="bi bi-pie-chart"></i></div>
+                            <div class="card-icon"><i class="bi bi-pie-chart"></i></div>
                             <div class="card-value">${{ number_format($grossProfit, 0) }}</div>
                             <div class="card-label">Gross Profit</div>
                         </div>
                         <div class="summary-card">
-                            <div class="card-icon text-warning"><i class="bi bi-percent"></i></div>
+                            <div class="card-icon"><i class="bi bi-percent"></i></div>
                             <div class="card-value">{{ number_format($grossMargin, 1) }}%</div>
                             <div class="card-label">Gross Margin</div>
                         </div>
                         <div class="summary-card">
-                            <div class="card-icon text-danger"><i class="bi bi-fire"></i></div>
+                            <div class="card-icon"><i class="bi bi-fire"></i></div>
                             <div class="card-value">${{ number_format($avgGrossProfit, 0) }}</div>
                             <div class="card-label">Avg. Gross Profit</div>
                         </div>

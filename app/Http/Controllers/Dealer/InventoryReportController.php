@@ -99,6 +99,7 @@ class InventoryReportController extends Controller
             }
         }
 
+        $grossProfit = $totalSales - $totalInvestment;
         $avgDaysOnMarket = $totalQuantity > 0 ? $totalDaysOnMarket / $totalQuantity : 0;
         $grossMargin = $totalInvestment > 0 ? ($grossProfit / $totalInvestment) * 100 : 0;
         $avgGrossProfit = $totalQuantity > 0 ? $grossProfit / $totalQuantity : 0;
