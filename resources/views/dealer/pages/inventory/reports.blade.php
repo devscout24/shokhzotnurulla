@@ -32,7 +32,7 @@
         .date-picker-calendar { padding: 10px; }
 
         .form-select-custom { height: 40px; border: 1px solid #dee2e6; border-radius: 4px; padding: 0 30px 0 12px; font-size: 14px; background: #fff; min-width: 140px; }
-        .btn-export { background: #d9534f; color: #fff !important; height: 40px; padding: 0 25px; border-radius: 4px; display: flex; align-items: center; gap: 8px; font-weight: 500; text-decoration: none; margin-left: auto; }
+        .btn-export { background: #d9534f; color: #fff !important; height: 40px; padding: 0 25px; border-radius: 4px; display: flex; align-items: center; gap: 8px; font-weight: 500; text-decoration: none; white-space: nowrap; }
 
         /* Summary Cards */
         .report-summary-cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 30px; }
