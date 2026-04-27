@@ -31,9 +31,17 @@ class InventoryReportController extends Controller
 
         // ── Filters ───────────────────────────────────────────────────────────
 
-        // Time frame (inventory_date)
+        // Time frame (inventory_date or created_at fallback)
         if ($request->filled(['from', 'to'])) {
-            $query->whereBetween('inventory_date', [$request->from, $request->to]);
+            $from = $request->from;
+            $to = $request->to;
+            $query->where(function($q) use ($from, $to) {
+                $q->whereBetween('inventory_date', [$from, $to])
+                  ->orWhere(function($sq) use ($from, $to) {
+                      $sq->whereNull('inventory_date')
+                         ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
+                  });
+            });
         }
 
         // Make
@@ -74,7 +82,7 @@ class InventoryReportController extends Controller
         foreach ($vehicles as $vehicle) {
             $cost = (float) ($vehicle->prices->dealer_cost ?? 0);
             $soldPrice = (float) ($vehicle->prices->sold_price ?? 0);
-            $isSold = ($vehicle->status === 'sold' || $soldPrice > 0) && ($vehicle->status !== 'active' && $vehicle->status !== 'draft');
+            $isSold = ($soldPrice > 0);
             
             $totalInvestment += $cost;
             $totalSales += $soldPrice;
@@ -91,7 +99,7 @@ class InventoryReportController extends Controller
             if ($isSold) {
                 $profit = $soldPrice - $cost;
                 $vehicle->report_profit = $profit;
-                $vehicle->report_margin = ($soldPrice > 0) ? ($profit / $soldPrice) * 100 : 0;
+                $vehicle->report_margin = ($cost > 0) ? ($profit / $cost) * 100 : 0;
                 $grossProfit += $profit;
             } else {
                 $vehicle->report_profit = null;
@@ -133,7 +141,15 @@ class InventoryReportController extends Controller
 
         // Apply same filters as index
         if ($request->filled(['from', 'to'])) {
-            $query->whereBetween('inventory_date', [$request->from, $request->to]);
+            $from = $request->from;
+            $to = $request->to;
+            $query->where(function($q) use ($from, $to) {
+                $q->whereBetween('inventory_date', [$from, $to])
+                  ->orWhere(function($sq) use ($from, $to) {
+                      $sq->whereNull('inventory_date')
+                         ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
+                  });
+            });
         }
         if ($request->filled('make_id')) {
             $query->where('make_id', $request->make_id);
