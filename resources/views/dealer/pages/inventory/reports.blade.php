@@ -220,9 +220,7 @@
                                 @php
                                     $days = $vehicle->report_days;
                                     $dayClass = 'bg-green';
-                                    if ($days >= 200) $dayClass = 'bg-red';
-                                    elseif ($days >= 90) $dayClass = 'bg-dark-orange';
-                                    elseif ($days >= 60) $dayClass = 'bg-orange';
+                                    if ($days >= 90) $dayClass = 'bg-red';
                                     elseif ($days >= 30) $dayClass = 'bg-yellow';
                                 @endphp
                                 <tr data-vehicle-id="{{ $vehicle->id }}">
