@@ -73,44 +73,55 @@ class InventoryReportController extends Controller
 
         // ── Calculations ──────────────────────────────────────────────────────
         
-        $totalQuantity = $vehicles->count();
-        $totalInvestment = 0;
-        $totalSales = 0;
+        $totalQuantity     = $vehicles->count();
+        $totalInvestment   = 0;
+        $totalSales        = 0;
         $totalDaysOnMarket = 0;
-        $grossProfit = 0;
+
+        // Sold-only accumulators (used for gross profit / margin / avg gross profit)
+        $soldCostTotal   = 0;
+        $soldCount       = 0;
+        $grossProfit     = 0;
 
         foreach ($vehicles as $vehicle) {
-            $cost = (float) ($vehicle->prices->dealer_cost ?? 0);
-            $soldPrice = (float) ($vehicle->prices->sold_price ?? 0);
-            $isSold = ($soldPrice > 0);
-            
+            $cost      = (float) ($vehicle->prices->dealer_cost ?? 0);
+            $soldPrice = (float) ($vehicle->prices->sold_price  ?? 0);
+            $isSold    = ($soldPrice > 0);
+
+            // Total investment = all vehicles' cost
             $totalInvestment += $cost;
-            $totalSales += $soldPrice;
-            
-            // Days on market calculation: inventory_date to sold_date (or now if not sold)
+            $totalSales      += $soldPrice;
+
+            // Days on market: inventory_date → sold_date (or now if still active)
             $startDate = $vehicle->inventory_date ?? $vehicle->created_at;
-            $endDate = $vehicle->prices->sold_date ?? now();
-            $days = $startDate ? (int) $startDate->diffInDays($endDate) : 0;
-            
+            $endDate   = $vehicle->prices->sold_date ?? now();
+            $days      = $startDate ? (int) $startDate->diffInDays($endDate) : 0;
+
             $vehicle->report_days = $days;
-            $totalDaysOnMarket += $days;
-            
-            // Per vehicle profit and margin
+            $totalDaysOnMarket   += $days;
+
+            // Per-vehicle profit & margin — only for sold vehicles
             if ($isSold) {
                 $profit = $soldPrice - $cost;
                 $vehicle->report_profit = $profit;
-                $vehicle->report_margin = ($cost > 0) ? ($profit / $cost) * 100 : 0;
-                $grossProfit += $profit;
+                $vehicle->report_margin = ($soldPrice > 0) ? ($profit / $soldPrice) * 100 : 0;
+
+                $grossProfit   += $profit;
+                $soldPriceTotal = ($soldPriceTotal ?? 0) + $soldPrice;
+                $soldCount++;
             } else {
                 $vehicle->report_profit = null;
                 $vehicle->report_margin = null;
             }
         }
 
-        $grossProfit = $totalSales - $totalInvestment;
         $avgDaysOnMarket = $totalQuantity > 0 ? $totalDaysOnMarket / $totalQuantity : 0;
-        $grossMargin = $totalInvestment > 0 ? ($grossProfit / $totalInvestment) * 100 : 0;
-        $avgGrossProfit = $totalQuantity > 0 ? $grossProfit / $totalQuantity : 0;
+
+        // Gross margin and avg gross profit are based on SOLD vehicles only
+        // Margin = profit / sold revenue (standard gross margin formula)
+        $soldPriceTotal = $soldPriceTotal ?? 0;
+        $grossMargin    = $soldPriceTotal > 0 ? ($grossProfit / $soldPriceTotal) * 100 : 0;
+        $avgGrossProfit = $soldCount      > 0 ? $grossProfit / $soldCount            : 0;
 
         // ── Dropdowns for filters ─────────────────────────────────────────────
         $makes = Make::whereHas('vehicles', fn ($q) => $q->where('dealer_id', $dealerId))
