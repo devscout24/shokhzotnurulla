@@ -16,7 +16,7 @@ body {
 .topbar,
 .topbar-secondary .nav-item.active {
     color: #fff;
-    background: linear-gradient(90deg, #B379FD 0%, #5b8ef0 50%, #0088EA 100%)
+    background: linear-gradient(90deg, #a86ef5 0%, #6a9ef8 50%, #3ab5f5 100%)
 }
 .topbar a, .topbar-secondary a {
     color: inherit;
@@ -215,7 +215,7 @@ body {
 }
 
 .nav-item.active i {
-    color: #a8d8ff
+    color: rgba(255,255,255,0.95)
 }
 
 .nav-item.active::after {
@@ -225,7 +225,8 @@ body {
     left: 0;
     width: 100%;
     height: 3px;
-    background: #a8d8ff
+    background: rgba(255,255,255,0.85);
+    border-radius: 2px 2px 0 0
 }
 
 .topbar-right {
