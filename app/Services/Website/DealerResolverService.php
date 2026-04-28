@@ -3,6 +3,7 @@
 namespace App\Services\Website;
 
 use App\Models\Dealership\Dealer;
+use App\Models\Website\Domain;
 use Illuminate\Support\Facades\Cache;
 
 class DealerResolverService
@@ -16,12 +17,17 @@ class DealerResolverService
             return self::$resolved;
         }
 
-        $domain = request()->getHost();
+        $domain = strtolower(request()->getHost());
 
         self::$resolved = Cache::remember(
             "dealer_id_by_domain:{$domain}",
             now()->addHour(),
             function () use ($domain) {
+                $domainRecord = Domain::where('domain', $domain)->first(['dealer_id']);
+                if ($domainRecord) {
+                    return $domainRecord->dealer_id;
+                }
+
                 $dealer = Dealer::where('domain', $domain)
                     ->orWhere('staging_domain', $domain)
                     ->first(['id']);
