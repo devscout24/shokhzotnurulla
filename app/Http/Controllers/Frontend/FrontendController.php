@@ -17,6 +17,7 @@ use App\Services\Inventory\VinDecodeService;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
@@ -61,7 +62,7 @@ class FrontendController extends Controller
                 'prices:vehicle_id,special_price,msrp',
             ])
             ->orderByDesc('listed_at')
-            ->limit(4)
+            ->limit(12)
             ->get();
 
         $this->attachPricing($newArrivals, $dealerId);

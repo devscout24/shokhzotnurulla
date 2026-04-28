@@ -5,30 +5,26 @@
     Note: No inline <script> — all JS handled by inventory-listing.js
 --}}
 <div class="mb-5 mt-3 mt-md-0 notranslate filterCard card">
-    <div class="pt-3 pb-2 bg-white card-header">
-        <div class="card-title h6 font-weight-bold mb-3">
-            {{ $total }} matches
+    <div class="pt-3 pb-2 bg-white card-header border-bottom">
+        <div class="card-title h6 font-weight-bold mb-3 d-flex justify-content-between align-items-center">
+            <span>{{ $total }} matches</span>
             @if(array_filter($filters ?? []))
-                <a href="javascript:void(0)" onclick="window.location.href = window.location.pathname" title="Clear inventory filters"
-                    class="float-end font-weight-normal text-14 cursor-pointer text-primary clear-filters-btn">
+                <a href="javascript:void(0)" onclick="window.location.href = window.location.pathname"
+                    class="font-weight-normal text-12 cursor-pointer text-primary clear-filters-btn">
                     Clear Filters
                 </a>
             @endif
         </div>
 
         {{-- Active filter badges --}}
-        <div class="filter-badges" id="filter-badges">
+        <div class="filter-badges d-flex flex-wrap" id="filter-badges">
             @foreach($filters ?? [] as $key => $value)
                 @if(!empty($value))
                     @foreach((array)$value as $v)
-                        <div class="d-inline-block badge-default px-2 py-0 me-2 rounded border my-1 cursor-pointer"
+                        <div class="filter-chip d-flex align-items-center bg-light border rounded-pill px-2 py-1 me-2 mb-2 cursor-pointer"
                              data-filter-key="{{ $key }}" data-filter-val="{{ $v }}">
-                            <span class="small">{{ $v }}</span>
-                            <span class="d-inline-block ms-2 float-end text-primary">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 16 16" fill="#166B87">
-                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
-                                </svg>
-                            </span>
+                            <span class="text-xs text-muted me-2">{{ $v }}</span>
+                            <i class="fa-solid fa-circle-xmark text-primary" style="font-size: 14px;"></i>
                         </div>
                     @endforeach
                 @endif
@@ -39,8 +35,35 @@
     <form method="GET" action="{{ request()->url() }}" id="inventory-filter-form" class="pb-0 mt-sm-0">
 
         {{-- ── Price / Financing ── --}}
-        <div class="price-financing card-footer">
-            <div class="cursor-pointer">Price Financing</div>
+        <div class="price-financing card-footer border-0 pb-0">
+            <div class="h6 font-weight-bold mb-3">Price & Financing</div>
+            
+            <div class="mb-3">
+                <small class="text-muted mb-2 d-block">Shop by</small>
+                <div class="btn-group w-100 price-payment-toggle" role="group">
+                    <input type="radio" class="btn-check" name="shop_by" id="shop_price" checked>
+                    <label class="btn btn-outline-primary btn-sm py-2" for="shop_price">Price</label>
+                    <input type="radio" class="btn-check" name="shop_by" id="shop_payment">
+                    <label class="btn btn-outline-primary btn-sm py-2" for="shop_payment">Payment</label>
+                </div>
+            </div>
+
+            {{-- Histogram Mockup --}}
+            <div class="histogram-container mb-2">
+                <div class="d-flex align-items-end justify-content-between h-40px px-1">
+                    <div class="bg-primary opacity-25" style="height: 20%; width: 8%;"></div>
+                    <div class="bg-primary opacity-25" style="height: 40%; width: 8%;"></div>
+                    <div class="bg-primary opacity-75" style="height: 80%; width: 8%;"></div>
+                    <div class="bg-primary opacity-75" style="height: 100%; width: 8%;"></div>
+                    <div class="bg-primary opacity-75" style="height: 70%; width: 8%;"></div>
+                    <div class="bg-primary opacity-75" style="height: 90%; width: 8%;"></div>
+                    <div class="bg-primary opacity-25" style="height: 30%; width: 8%;"></div>
+                    <div class="bg-primary opacity-25" style="height: 15%; width: 8%;"></div>
+                    <div class="bg-primary opacity-25" style="height: 25%; width: 8%;"></div>
+                    <div class="bg-primary opacity-25" style="height: 10%; width: 8%;"></div>
+                </div>
+            </div>
+
             <div class="opacity-100">
                 @php
                     $minPrice  = (int)($filterData['priceRange']->min_price ?? 0);
@@ -48,37 +71,43 @@
                     $activeMin = request()->input('price.gt', $minPrice);
                     $activeMax = request()->input('price.lt', $maxPrice);
                 @endphp
-                <div class="slider-wrapper">
+                <div class="slider-wrapper mt-0 mb-4">
                     <div class="slider-track price-financing-slider">
                         <div class="slider-handle" id="handle-min" tabindex="0"
                             aria-valuemax="{{ $maxPrice }}" aria-valuemin="{{ $minPrice }}"
                             aria-valuenow="{{ $activeMin }}" draggable="false" role="slider">
-                            <div class="slider-handle-bar"></div>
                         </div>
                         <div class="slider-handle slider-handle-top" id="handle-max" tabindex="0"
                             aria-valuemax="{{ $maxPrice }}" aria-valuemin="{{ $minPrice }}"
                             aria-valuenow="{{ $activeMax }}" draggable="false" role="slider">
-                            <div class="slider-handle-bar"></div>
                         </div>
                     </div>
                 </div>
-                <div class="no-gutters my-3 row">
-                    <div class="pe-1 col-6">
-                        <small><strong>Min</strong></small>
-                        <input type="text" class="form-control" name="price-display-min"
-                            value="${{ number_format($activeMin) }}" inputmode="numeric">
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <small class="text-muted d-block mb-1">Min</small>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white border-end-0">$</span>
+                            <input type="text" class="form-control border-start-0 ps-0" name="price-display-min"
+                                value="{{ number_format($activeMin) }}" inputmode="numeric">
+                        </div>
                     </div>
-                    <div class="ps-1 col-6">
-                        <small><strong>Max</strong></small>
-                        <input type="text" class="form-control" name="price-display-max"
-                            value="${{ number_format($activeMax) }}" inputmode="numeric">
+                    <div class="col-6">
+                        <small class="text-muted d-block mb-1">Max</small>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white border-end-0">$</span>
+                            <input type="text" class="form-control border-start-0 ps-0" name="price-display-max"
+                                value="{{ number_format($activeMax) }}" inputmode="numeric">
+                        </div>
                     </div>
                 </div>
             </div>
-            {{-- <div class="rounded text-sm border my-2 py-2 px-3 text-center">
-                75 months @ <br><span class="notranslate">6.79%</span> APR
-                <div class="text-primary cursor-pointer border-top mt-2 pt-2">Adjust Terms</div>
-            </div> --}}
+
+            <div class="bg-light rounded p-3 mb-3 text-center border">
+                <div class="small fw-bold mb-1">60 months @ 7.99% APR</div>
+                <a href="javascript:void(0)" class="text-primary small text-decoration-none border-top d-block mt-2 pt-2">Adjust Terms</a>
+            </div>
+
             <input type="hidden" id="minprice" name="price[gt]" value="{{ $activeMin }}">
             <input type="hidden" id="maxprice" name="price[lt]" value="{{ $activeMax }}">
         </div>

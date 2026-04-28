@@ -391,6 +391,7 @@ small {
     }
 }
 
+
 @media (hover: none) and (pointer: coarse) {
     .deAfgc .left-toggle {
         transform: translateX(0);
@@ -400,5 +401,130 @@ small {
     .deAfgc .right-toggle {
         transform: translateX(0);
         opacity: 1;
+    }
+}
+
+/* ── New Arrivals Carousel ──────────────────────────────────────────────── */
+.btn-pill-all {
+    background-color: #f8f9fa !important;
+    border: 1px solid #e9ecef !important;
+    border-radius: 50px !important;
+    padding: 8px 24px !important;
+    color: #666 !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease;
+}
+
+.btn-pill-all:hover {
+    background-color: #e9ecef !important;
+    color: #166B87 !important;
+}
+
+.small-chevron {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.pill-badge {
+    border-radius: 50px !important;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+}
+.new-arrivals-carousel-wrapper {
+    position: relative;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+}
+
+.new-arrivals-arrow {
+    flex: 0 0 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    color: #999;
+    background: #fff;
+    transition: all 0.2s ease;
+    z-index: 10;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.new-arrivals-arrow:hover {
+    background-color: #f8f9fa;
+    color: #166B87;
+    border-color: #166B87;
+}
+
+.new-arrivals-arrow i {
+    font-size: 1.2rem;
+}
+
+.new-arrivals-track-outer {
+    overflow: hidden;
+    width: 100%;
+    margin: 0 15px;
+}
+
+.new-arrivals-track {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transition: transform 0.4s ease;
+    will-change: transform;
+}
+
+/* Strictly enforce card widths and heights */
+#home-new-arrivals .new-arrivals-track .srp-cardcontainer {
+    flex: 0 0 25% !important;
+    width: 25% !important;
+    max-width: 25% !important;
+    padding: 0 10px !important;
+    margin-bottom: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#home-new-arrivals .new-arrivals-track .srp-card {
+    height: 100% !important;
+    margin-bottom: 0 !important;
+}
+
+@media (max-width: 1199px) {
+    #home-new-arrivals .new-arrivals-track .srp-cardcontainer {
+        flex: 0 0 33.333% !important;
+        width: 33.333% !important;
+        max-width: 33.333% !important;
+    }
+}
+
+@media (max-width: 991px) {
+    #home-new-arrivals .new-arrivals-track .srp-cardcontainer {
+        flex: 0 0 50% !important;
+        width: 50% !important;
+        max-width: 50% !important;
+    }
+}
+
+@media (max-width: 575px) {
+    #home-new-arrivals .new-arrivals-track .srp-cardcontainer {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .new-arrivals-arrow {
+        display: none;
+    }
+    .new-arrivals-track-outer {
+        margin: 0;
     }
 }

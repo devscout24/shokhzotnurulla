@@ -384,39 +384,43 @@
     <div class="min-height-570">
         <section class="border-top" id="home-new-arrivals">
             <div class="container">
-                <div class="row">
+                <div class="row align-items-end">
                     <div class="col">
-                        <h3 class="h4 border-bottom border-theme border-thick pb-3 d-inline-block">
+                        <h3 class="h4 border-bottom border-theme border-thick pb-3 d-inline-block mb-0">
                             New Arrivals
                         </h3>
-                        <div class="text-end mt-3 px-0 d-md-none d-block w-100 ">
-                            <a href="{{ route('frontend.inventory') }}" class="btn w-100 btn-default">
-                                All Inventory
-                                <span class="d-inline-block ms-2">
-                                    <i class="fa-solid fa-angle-right font-base"></i>
-                                </span>
-                            </a>
-                        </div>
                     </div>
 
                     <div class="text-end d-none d-md-block col">
-                        <a href="{{ route('frontend.inventory') }}" class="btn btn-default">
+                        <a href="{{ route('frontend.inventory') }}" class="btn btn-pill-all">
                             All Inventory
-                            <span class="d-inline-block ms-2">
-                                <i class="fa-solid fa-angle-right font-base"></i>
+                            <span class="ms-1 small-chevron">
+                                <i class="fa-solid fa-angle-right"></i>
                             </span>
                         </a>
                     </div>
                 </div>
 
-                <div class="mt-3 d-flex align-items-center mx-n5">
-                    <!-- <div class="pe-4">
-                        <span class="d-inline-block h1 m-0 text-muted cursor-pointer">
-                            <i class="fa-solid fa-circle-left" ></i>
+                {{-- Mobile Button --}}
+                <div class="text-end mt-3 d-md-none d-block w-100">
+                    <a href="{{ route('frontend.inventory') }}" class="btn w-100 btn-pill-all">
+                        All Inventory
+                        <span class="ms-1 small-chevron">
+                            <i class="fa-solid fa-angle-right"></i>
                         </span>
-                    </div> -->
-                    <div class="w-100">
-                        <div class="row  ">
+                    </a>
+                </div>
+
+                {{-- Carousel wrapper --}}
+                <div class="mt-3 d-flex align-items-center new-arrivals-carousel-wrapper">
+                    {{-- Prev arrow --}}
+                    <div class="new-arrivals-arrow new-arrivals-prev">
+                        <i class="fa-solid fa-angle-left"></i>
+                    </div>
+
+                    {{-- Scrollable track --}}
+                    <div class="new-arrivals-track-outer">
+                        <div class="new-arrivals-track">
                             @forelse($newArrivals as $vehicle)
                                 @include('frontend.partials.vehicle-card')
                             @empty
@@ -426,11 +430,11 @@
                             @endforelse
                         </div>
                     </div>
-                    <!-- <div class="ps-4">
-                        <span class="d-inline-block h1 m-0 text-muted cursor-pointer">
-                            <i class="fa-solid fa-circle-right" ></i>
-                        </span>
-                    </div> -->
+
+                    {{-- Next arrow --}}
+                    <div class="new-arrivals-arrow new-arrivals-next">
+                        <i class="fa-solid fa-angle-right"></i>
+                    </div>
                 </div>
             </div>
         </section>
@@ -480,5 +484,63 @@
             makeModels:    '{{ route('frontend.data.make-models', ['make' => '__make__']) }}',
         };
         window.npsRouteTemplate = '{{ route('frontend.forms.nps', ['formEntry' => '__id__']) }}';
+    </script>
+
+    <script>
+        (function () {
+            var track   = document.querySelector('.new-arrivals-track');
+            var outer   = document.querySelector('.new-arrivals-track-outer');
+            var btnPrev = document.querySelector('.new-arrivals-prev');
+            var btnNext = document.querySelector('.new-arrivals-next');
+
+            if (!track || !outer || !btnPrev || !btnNext) return;
+
+            var cards      = track.querySelectorAll('.srp-cardcontainer');
+            var total      = cards.length;
+            var currentIdx = 0;
+
+            function visibleCount() {
+                var w = outer.offsetWidth;
+                if (w < 576)  return 1;
+                if (w < 992)  return 2;
+                if (w < 1200) return 3;
+                return 4;
+            }
+
+            function cardWidth() {
+                return outer.offsetWidth / visibleCount();
+            }
+
+            function maxIdx() {
+                return Math.max(0, total - visibleCount());
+            }
+
+            function update() {
+                var offset = currentIdx * cardWidth();
+                track.style.transform = 'translateX(-' + offset + 'px)';
+                btnPrev.style.opacity = currentIdx <= 0        ? '0.3' : '1';
+                btnNext.style.opacity = currentIdx >= maxIdx() ? '0.3' : '1';
+            }
+
+            btnPrev.addEventListener('click', function () {
+                if (currentIdx > 0) { currentIdx--; update(); }
+            });
+
+            btnNext.addEventListener('click', function () {
+                if (currentIdx < maxIdx()) { currentIdx++; update(); }
+            });
+
+            // Recalculate on resize (debounced)
+            var resizeTimer;
+            window.addEventListener('resize', function () {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function () {
+                    currentIdx = Math.min(currentIdx, maxIdx());
+                    update();
+                }, 150);
+            });
+
+            update();
+        })();
     </script>
 @endpush

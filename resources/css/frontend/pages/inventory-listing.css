@@ -49,17 +49,7 @@
     border: 1px solid rgba(24, 28, 33, .06);
     background-color: #fff !important;
     box-shadow: 0 1px 4px rgba(24, 28, 33, .08);
-}
-
-.card {
-    box-shadow: 0 1px 4px rgba(24, 28, 33, .012);
-}
-
-.card {
     overflow: hidden;
-    border: 1px solid transparent !important;
-    box-shadow: 0 0 0 !important;
-    border: 1px solid#e1e1e1 !important;
     border-radius: 12px !important;
 }
 
@@ -752,4 +742,110 @@ html[dir=rtl] .border-primary {
         opacity: 1;
     }
 
+}
+
+/* Histogram */
+.histogram-container .h-40px {
+    height: 40px;
+}
+.histogram-container div {
+    border-radius: 2px 2px 0 0;
+}
+
+/* Price/Payment Toggle */
+.price-payment-toggle .btn-outline-primary {
+    border-color: #e9ecef !important;
+    color: #666 !important;
+    background: #f8f9fa !important;
+}
+.price-payment-toggle .btn-check:checked + .btn-outline-primary {
+    background-color: #166B87 !important;
+    color: #fff !important;
+    border-color: #166B87 !important;
+}
+
+/* Filter Chips */
+.filter-chip {
+    background-color: #f8f9fa !important;
+    border-color: #e9ecef !important;
+    transition: all 0.2s ease;
+}
+.filter-chip:hover {
+    background-color: #e9ecef !important;
+}
+.text-xs {
+    font-size: 0.75rem;
+}
+
+/* Sidebar Styling */
+.filterCard {
+    border: 1px solid #eee !important;
+    border-radius: 8px !important;
+}
+.filterCard .card-header {
+    background-color: #fff !important;
+    padding: 1.25rem !important;
+}
+.filterCard .card-footer {
+    border-top: 1px solid #f8f9fa !important;
+    padding: 1.25rem !important;
+}
+
+/* Main Search Input */
+.search-input {
+    border-radius: 8px !important;
+    border: 1px solid #ddd !important;
+    background-color: #fff !important;
+    padding: 10px 20px 10px 45px !important;
+    font-size: 0.95rem !important;
+}
+
+.search-icon {
+    top: 12px !important;
+    left: 18px !important;
+}
+
+/* Inventory Heading */
+.inventoryheading {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Sorting Button */
+#sortby {
+    border-radius: 50px !important;
+    border-color: #ddd !important;
+    padding: 5px 15px !important;
+    background-color: #fff !important;
+    color: #333 !important;
+    font-size: 13px !important;
+}
+
+#sortby svg {
+    color: #166B87 !important;
+}
+
+/* Vehicle Card Buttons */
+.btn-estimate-payment {
+    background-color: #166B87 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 10px !important;
+    transition: opacity 0.2s ease;
+}
+
+.btn-estimate-payment:hover {
+    opacity: 0.9;
+    color: #fff !important;
+}
+
+#inventory-grid .srp-card {
+    border-radius: 8px !important;
+    transition: box-shadow 0.3s ease;
+    border: 1px solid #eee !important;
+}
+#inventory-grid .srp-card:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
 }

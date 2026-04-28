@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\View\Composers;
 
 use App\Models\Catalog\BodyStyle;
@@ -42,7 +41,7 @@ class FrontendCatalogComposer
             return self::$cache;
         }
 
-        self::$cache = Cache::remember('frontend_catalog_all', 3600, fn () => [
+        self::$cache = Cache::remember('frontend_catalog_all', 3600, fn() => [
             'globalMakes'           => Make::orderBy('name')->get(['id', 'name']),
             'globalColors'          => Color::orderBy('name')->get(['id', 'name']),
             'globalBodyTypes'       => BodyType::orderBy('name')->get(['id', 'name']),

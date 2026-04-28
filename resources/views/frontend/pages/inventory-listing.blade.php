@@ -15,28 +15,23 @@
     <div class="d-block h-104 d-xl-none" id="mobile-nav-spacer" bis_skin_checked="1"></div>
 
     <main class="position-relative path-inventory" id="inventory-index">
-        <div class="bg-secondary p-4" id="top-banner">
-            <div class="align-items-center container">
-                <div class="d-flex align-items-center row">
-                    <div class="text-large text-center text-white col-sm-12">
-                        <img alt="Get your trade-in value" loading="lazy" width="40" height="40" decoding="async"
-                            data-nimg="1" class="me-4 d-none d-sm-inline-block"
+        <div class="bg-secondary py-3" id="top-banner">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-center position-relative">
+                    <div class="d-flex align-items-center justify-content-center flex-wrap">
+                        <img alt="Get your trade-in value" loading="lazy" width="30" height="30" decoding="async"
+                            class="me-3"
                             src="{{ asset('assets/frontend/img/streamlinehq-car-tool-keys-transportation-white-200.png') }}">
-                        What's your car worth?
-                        <button type="button" class="border-white ms-4 mt-3 mt-sm-0 btn btn-light"
-                            fdprocessedid="qu5qwv" data-bs-toggle="offcanvas" data-bs-target="#getTrade" aria-controls="offcanvasRight">Get your trade-in value</button>
-
-                        <button type="button" id="close-banner"
-                            class="close text-white text-large float-end p-0 mb-n2 mt-n1 mr-n2 btn btn-link">
-                            <span class="d-inline-block">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="36" viewBox="0 0 16 16"
-                                    fill="white">
-                                    <path
-                                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                                </svg>
-                            </span>
-                        </button>
+                        <span class="text-white me-3 mb-2 mb-sm-0">What's your car worth?</span>
+                        <button type="button" class="btn btn-light rounded-pill px-4 py-2 fw-bold"
+                            style="font-size: 13px;"
+                            data-bs-toggle="offcanvas" data-bs-target="#getTrade">Get your trade-in value</button>
                     </div>
+
+                    <button type="button" id="close-banner"
+                        class="btn btn-link text-white p-0 position-absolute end-0">
+                        <i class="fa-solid fa-xmark h4 mb-0"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -116,79 +111,71 @@
 
             </div>
         </div>
-        <div class="mb-5 container-fluid">
-            <div class="d-flex mt-3">
+        <div class="mb-5 container-fluid px-lg-5">
+            <div class="row mt-3">
 
                 <!-- filter  -->
-                <div class="d-none d-xl-block filter-container w-20">
-                    <div class="p-3">
+                <div class="col-xl-3 col-lg-4 d-none d-lg-block filter-container">
+                    <div class="pe-0">
                         @include('frontend.partials.filter-sidebar')
                     </div>
-
                 </div>
 
-                <div class="w-100 ps-0  ps-lg-3 pe-lg-3">
-                    <div class="position-relative d-none d-md-block mt-3">
-                        <div class="position-relative search-wrapper">
-                            <span class="search-icon text-primary">
+                <div class="col-xl-9 col-lg-8 col-12 ps-lg-4">
+                    <div class="position-relative mt-2 mb-4">
+                        <div class="position-relative search-wrapper w-100">
+                            <span class="search-icon text-primary" style="position: absolute; left: 15px; top: 12px;">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </span>
 
                             <input data-bs-toggle="modal" data-bs-target="#modalSearch" data-cy="input-search"
                                 placeholder="Search by make, model, feature" autocomplete="off" tabindex="-1"
-                                type="text" class="search-input ps-5 mt-0 form-control form-control-lg"
+                                type="text" class="search-input w-100 form-control py-2 ps-5"
+                                style="border-radius: 8px;"
                                 name="search" value="">
                         </div>
                     </div>
 
-                    <div class="d-flex align-items-center my-3 my-lg-4">
-                        <h1 id="inventory-heading" class="inventoryheading text-center text-lg-start mx-auto
-                         m-md-0">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h1 id="inventory-heading" class="inventoryheading m-0 h5">
                                 {{ $total }} used {{ $type ? config("vehicle_types.{$type}.heading_label") : 'vehicles' }} for sale in Smyrna, TN
-                         </h1>
-                        <div class="text-end text-nowrap ms-auto d-none d-md-flex flex-row justify-content-end">
-                            <div class="mt-n2 dropdown">
-                                <button type="button" id="sortby" aria-expanded="false" data-cy="sortby"
-                                    class="text-decoration-none pl-0 border border-dark d-block dropdown-toggle  btn btn-link btn-sm">
-                                    <span class="d-inline-block text-primary me-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            viewBox="0 0 16 16" fill="currentColor">
-                                            <path d="M2 12h12v-1H2v1zm0-5h8V6H2v1zm0-5h4V1H2v1z" />
-                                        </svg>
-                                    </span>
-                                    <strong data-cy="sortby-selected">Sort by Best Match</strong>
-                                </button>
-                                <div class="py-0 mt-2 recent absolute-offset dropdown-menu ">
-
-                                    <ul class="p-0">
-                                        <li class="border-bottom  cursor-pointer dropdown-item">Best Match</li>
-                                        <li class="border-bottom cursor-pointer dropdown-item">Price: Lowest</li>
-                                        <li class="border-bottom cursor-pointer dropdown-item">Newest Arrivals</li>
-                                        <li class="border-bottom cursor-pointer dropdown-item">Miles: Low to High
-                                        </li>
-                                        <li class="border-bottom cursor-pointer dropdown-item">Miles: High to Low
-                                        </li>
-                                        <li class="border-bottom cursor-pointer dropdown-item">Year: Newest</li>
-                                        <li class="border-bottom cursor-pointer dropdown-item">Year: Oldest</li>
-                                        <li class="border-bottom cursor-pointer dropdown-item">Make: A-Z</li>
-                                    </ul>
-
-                                </div>
+                        </h1>
+                        <div class="dropdown">
+                            <button type="button" id="sortby" aria-expanded="false" data-cy="sortby"
+                                class="dropdown-toggle btn btn-sm d-flex align-items-center border rounded-pill px-3">
+                                <span class="me-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        viewBox="0 0 16 16" fill="#166B87">
+                                        <path d="M2 12h12v-1H2v1zm0-5h8V6H2v1zm0-5h4V1H2v1z" />
+                                    </svg>
+                                </span>
+                                <strong>Sort by Best Match</strong>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                <ul class="p-0 mb-0 list-unstyled">
+                                    <li class="dropdown-item py-2 px-3 border-bottom">Best Match</li>
+                                    <li class="dropdown-item py-2 px-3 border-bottom">Price: Lowest</li>
+                                    <li class="dropdown-item py-2 px-3 border-bottom">Newest Arrivals</li>
+                                    <li class="dropdown-item py-2 px-3 border-bottom">Miles: Low to High</li>
+                                    <li class="dropdown-item py-2 px-3 border-bottom">Miles: High to Low</li>
+                                    <li class="dropdown-item py-2 px-3 border-bottom">Year: Newest</li>
+                                    <li class="dropdown-item py-2 px-3 border-bottom">Year: Oldest</li>
+                                    <li class="dropdown-item py-2 px-3">Make: A-Z</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
 
                     <!-- details  -->
 
-                    <div class="mt-0 mt-lg-1 row" id="inventory-grid">
+                    <div class="row g-3" id="inventory-grid">
                         @include('frontend.partials.inventory-grid')
                     </div>
 
                     {{-- Pagination --}}
-                    <div id="inventory-pagination">
+                    <div id="inventory-pagination" class="mt-5">
                         {{ $vehicles->links() }}
                     </div>
-                    {{-- @include('frontend.partials.inventory-pagination') --}}
                 </div>
             </div>
         </div>

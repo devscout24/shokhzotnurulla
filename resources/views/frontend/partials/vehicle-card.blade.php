@@ -35,9 +35,9 @@
             <div class="new-arrival position-relative border-bottom">
 
                 @if($vehicle->is_spotlight || $vehicle->featured)
-                    <div class="bg-danger text-white small py-1 px-2 rounded font-weight-bold vc-popular">
+                    <div class="bg-danger text-white small py-1 px-3 pill-badge font-weight-bold vc-popular">
                         <span class="d-inline-block me-1">
-                            <i class="fa-solid fa-fire-flame-curved white-text-16"></i>
+                            <i class="fa-solid fa-fire-flame-curved text-white" style="font-size:14px;"></i>
                         </span>
                         Hot
                     </div>
@@ -89,7 +89,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
             {{-- Card info --}}
             <div class="px-3 pt-3 pb-0">
@@ -123,7 +122,7 @@
 
                 {{-- Price section --}}
                 <div class="d-flex align-items-center mb-3 border-top pt-2 srpPriceContainer">
-                    <div class="font-weight-bold">
+                    <div class="font-weight-bold w-100">
 
                         {{-- Final price or e-Price button --}}
                         @if($isFormfill)
@@ -132,7 +131,7 @@
                                 ${{ number_format($finalPrice) }}
                             </span>
                             <div class="mt-1">
-                                <button type="button" class="btn btn-sm btn-outline-secondary w-100 btn-unlock-price"
+                                <button type="button" class="btn btn-sm btn-pill-all w-100 btn-unlock-price"
                                     data-bs-toggle="offcanvas" data-bs-target="#unlockEPrice"
                                     data-vehicle-id="{{ $vehicle->id }}"
                                     data-vehicle-title="{{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}"
@@ -156,32 +155,47 @@
                                 </div>
                             @endif
                         @else
-                            <span class="h4 font-weight-bold mt-1 label-price">
-                                ${{ number_format($finalPrice) }}
-                            </span>
+                            <div class="d-flex justify-content-between align-items-end">
+                                <div>
+                                    @if($hasDiscount && $origPrice > $finalPrice)
+                                        <div class="text-muted small mb-n1">
+                                            was ${{ number_format($origPrice) }}
+                                            <span class="text-success ms-1">
+                                                <i class="fa-solid fa-circle-check"></i>
+                                            </span>
+                                        </div>
+                                    @endif
+                                    <span class="h4 font-weight-bold mt-1 label-price">
+                                        ${{ number_format($finalPrice) }}
+                                    </span>
+                                </div>
+                                
+                                {{-- Monthly payment --}}
+                                @if(!$isFormfill)
+                                    <div class="text-end text-nowrap ms-auto my-1">
+                                        <span class="cursor-pointer" role="button">
+                                            <small class="opacity-75">Est. Payment</small><br>
+                                            <span class="fw-bold">${{ number_format($monthly) }}/mo</span>
+                                            <span class="d-inline-block faIcon ms-1 text-primary">
+                                                <i class="fa-solid fa-pen-to-square" style="font-size: 14px;"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                @endif
+                            </div>
                         @endif
 
                     </div>
 
-                    {{-- Monthly payment --}}
-                    @if(!$isFormfill)
-                        <div class="text-end text-nowrap ms-auto my-1">
-                            <span class="cursor-pointer" role="button">
-                                <small class="opacity-75">Est. Payment</small><br>
-                                ${{ number_format($monthly) }}/mo
-                                <span class="d-inline-block faIcon ms-2 text-primary">
-                                    <i class="fa-solid fa-pen-to-square blue-base-text"></i>
-                                </span>
-                            </span>
-                        </div>
-                    @endif
-
                 </div>
             </div>
-        </div>
 
-        <div>
-            <div class="capitalone-button-container p-2"></div>
+            <div class="px-2 pb-2 mt-n2">
+                <button class="btn btn-estimate-payment w-100 py-2 font-weight-bold">
+                    Estimate payment
+                    <div style="font-size: 10px; font-weight: normal; opacity: 0.9;">No impact to your credit score</div>
+                </button>
+            </div>
         </div>
     </div>
 </div>
