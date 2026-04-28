@@ -2,8 +2,11 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Models\Dealership\Dealer;
+use App\Models\Website\Domain;
 use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Frontend\FormEntryController;
+use App\Services\Website\DealerResolverService;
 
 Route::name('frontend.')->group(function () {
 
@@ -39,6 +42,23 @@ Route::name('frontend.')->group(function () {
     // Data endpoints
     Route::get('/data/makes/{make}/models', [FrontendController::class, 'makeModels'])->name('data.make-models');
     Route::post('/data/vin-decode', [FrontendController::class, 'vinDecode'])->name('data.vin-decode');
+
+    // Debug: verify dealer resolution on frontend
+    Route::get('/test/dealer/frontend-data', function (DealerResolverService $dealerResolver) {
+        $host = strtolower(request()->getHost());
+        $dealerId = $dealerResolver->resolve();
+
+        $dealer = Dealer::find($dealerId, ['id', 'name', 'slug', 'domain', 'staging_domain', 'is_active']);
+        $domainRecord = Domain::where('domain', $host)
+            ->first(['id', 'dealer_id', 'domain', 'is_primary', 'is_verified']);
+
+        return response()->json([
+            'request_host' => $host,
+            'resolved_dealer_id' => $dealerId,
+            'dealer' => $dealer,
+            'domain_record' => $domainRecord,
+        ]);
+    })->name('frontend.test.dealer-frontend-data');
 
     // Form submissions
     Route::prefix('forms')->name('forms.')->group(function () {
