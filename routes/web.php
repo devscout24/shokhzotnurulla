@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Dealership\Dealer;
 use App\Models\Website\Domain;
 use App\Http\Controllers\Frontend\FrontendController;
@@ -46,6 +47,9 @@ Route::name('frontend.')->group(function () {
     // Debug: verify dealer resolution on frontend
     Route::get('/test/dealer/frontend-data', function (DealerResolverService $dealerResolver) {
         $host = strtolower(request()->getHost());
+        if (request()->boolean('refresh')) {
+            Cache::forget("dealer_id_by_domain:{$host}");
+        }
         $dealerId = $dealerResolver->resolve();
 
         $dealer = Dealer::find($dealerId, ['id', 'name', 'slug', 'domain', 'staging_domain', 'is_active']);
@@ -54,6 +58,7 @@ Route::name('frontend.')->group(function () {
 
         return response()->json([
             'request_host' => $host,
+            'cache_refreshed' => request()->boolean('refresh'),
             'resolved_dealer_id' => $dealerId,
             'dealer' => $dealer,
             'domain_record' => $domainRecord,
