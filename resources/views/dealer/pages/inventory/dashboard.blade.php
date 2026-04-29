@@ -154,12 +154,10 @@
                                                             <tr>
                                                                 <th>Model</th>
                                                                 <th class="text-center">Sold</th>
-                                                                <th class="text-center">Est. Sales</th>
-                                                                <th class="text-center">Avg. Price</th>
                                                                 <th class="text-center">Avg. Days</th>
-                                                                <th class="text-center">Min. Days</th>
-                                                                <th class="text-center">Max. Days</th>
-                                                                <th class="text-center"># Changes</th>
+                                                                <th class="text-center">Changes</th>
+                                                                <th class="text-center">Avg. Change</th>
+                                                                <th class="text-center">Price (Avg)</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody class="model-tbody">
@@ -545,7 +543,7 @@
 
                         // Fetch data if not already loaded
                         if (tbody.children.length === 0) {
-                            tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border spinner-border-sm text-danger" role="status"></div> Loading...</td></tr>';
+                            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4"><div class="spinner-border spinner-border-sm text-danger" role="status"></div> Loading...</td></tr>';
                             
                             const dealerId = "{{ $currentDealerId }}";
                             const dateRange = "{{ $dateRange }}";
@@ -555,7 +553,7 @@
                                 .then(data => {
                                     tbody.innerHTML = '';
                                     if (data.length === 0) {
-                                        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4">No data available</td></tr>';
+                                        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">No data available</td></tr>';
                                         return;
                                     }
                                     data.forEach(model => {
@@ -563,18 +561,16 @@
                                         tr.innerHTML = `
                                             <td>${model.model_name}</td>
                                             <td class="text-center">${model.sold}</td>
-                                            <td class="text-center text-success">$${model.est_sales}</td>
-                                            <td class="text-center text-success">$${model.avg_price}</td>
                                             <td class="text-center">${model.avg_days}</td>
-                                            <td class="text-center">${model.min_days}</td>
-                                            <td class="text-center">${model.max_days}</td>
                                             <td class="text-center">${model.changes_count}</td>
+                                            <td class="text-center">${model.avg_change}</td>
+                                            <td class="text-center text-success">$${model.avg_price}</td>
                                         `;
                                         tbody.appendChild(tr);
                                     });
                                 })
                                 .catch(error => {
-                                    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger py-4">Error loading data</td></tr>';
+                                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Error loading data</td></tr>';
                                     console.error('Error:', error);
                                 });
                         }

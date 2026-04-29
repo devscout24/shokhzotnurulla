@@ -676,9 +676,8 @@ class InventoryController extends Controller
                     'est_sales' => number_format($estSales),
                     'avg_price' => number_format($avgPrice),
                     'avg_days' => round($avgDays),
-                    'min_days' => $minDays,
-                    'max_days' => $maxDays,
                     'changes_count' => '--',
+                    'avg_change' => '--',
                 ];
             })->sortByDesc('sold')->values();
 

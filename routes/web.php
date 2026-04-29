@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Cache;
+use App\Http\Controllers\Frontend\FormEntryController;
+use App\Http\Controllers\Frontend\FrontendController;
 use App\Models\Dealership\Dealer;
 use App\Models\Website\Domain;
-use App\Http\Controllers\Frontend\FrontendController;
-use App\Http\Controllers\Frontend\FormEntryController;
 use App\Services\Website\DealerResolverService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Route;
 
 Route::name('frontend.')->group(function () {
 
@@ -20,7 +20,7 @@ Route::name('frontend.')->group(function () {
 
     Route::get('/inventory/{slug}', [FrontendController::class, 'inventoryDetail'])->name('inventory.show');
 
-    Route::get('/inventory/printable/{vehicle}/{printable}', [FrontendController::class, 'printable']) ->name('inventory.vehicle.printable');
+    Route::get('/inventory/printable/{vehicle}/{printable}', [FrontendController::class, 'printable'])->name('inventory.vehicle.printable');
 
     // Vehicle type pages + their AJAX filter endpoints
     Route::get('/{type}', [FrontendController::class, 'inventoryByType'])
@@ -32,13 +32,13 @@ Route::name('frontend.')->group(function () {
         ->where('type', implode('|', array_keys(config('vehicle_types'))));
 
     // Static pages
-    Route::view('/get-approved',     'frontend.pages.get-approved')->name('get-approved');
+    Route::view('/get-approved', 'frontend.pages.get-approved')->name('get-approved');
     Route::view('/schedule-service', 'frontend.pages.service')->name('service');
-    Route::get('/about-us',          [FrontendController::class, 'aboutUs'])->name('about');
-    Route::get('/contact-us',        [FrontendController::class, 'contactUs'])->name('contact');
-    Route::view('/privacy-policy',   'frontend.pages.privacy-policy')->name('privacy');
+    Route::get('/about-us', [FrontendController::class, 'aboutUs'])->name('about');
+    Route::get('/contact-us', [FrontendController::class, 'contactUs'])->name('contact');
+    Route::view('/privacy-policy', 'frontend.pages.privacy-policy')->name('privacy');
     Route::view('/terms-of-service', 'frontend.pages.terms-of-service')->name('terms');
-    Route::view('/direction',        'frontend.pages.direction')->name('direction');
+    Route::view('/direction', 'frontend.pages.direction')->name('direction');
 
     // Data endpoints
     Route::get('/data/makes/{make}/models', [FrontendController::class, 'makeModels'])->name('data.make-models');
@@ -52,30 +52,30 @@ Route::name('frontend.')->group(function () {
         }
         $dealerId = $dealerResolver->resolve();
 
-        $dealer = Dealer::find($dealerId, ['id', 'name', 'slug', 'domain', 'staging_domain', 'is_active']);
+        $dealer       = Dealer::find($dealerId, ['id', 'name', 'slug', 'domain', 'staging_domain', 'is_active']);
         $domainRecord = Domain::where('domain', $host)
             ->first(['id', 'dealer_id', 'domain', 'is_primary', 'is_verified']);
 
         return response()->json([
-            'request_host' => $host,
-            'cache_refreshed' => request()->boolean('refresh'),
+            'request_host'       => $host,
+            'cache_refreshed'    => request()->boolean('refresh'),
             'resolved_dealer_id' => $dealerId,
-            'dealer' => $dealer,
-            'domain_record' => $domainRecord,
+            'dealer'             => $dealer,
+            'domain_record'      => $domainRecord,
         ]);
     })->name('frontend.test.dealer-frontend-data');
 
     // Form submissions
     Route::prefix('forms')->name('forms.')->group(function () {
-        Route::post('/trade-in',            [FormEntryController::class, 'tradeIn'])->name('trade-in');
-        Route::post('/get-approved',        [FormEntryController::class, 'getApproved'])->name('get-approved');
-        Route::post('/managers-special',    [FormEntryController::class, 'managersSpecial'])->name('managers-special');
-        Route::post('/ask-question',        [FormEntryController::class, 'askQuestion'])->name('ask-question');
+        Route::post('/trade-in', [FormEntryController::class, 'tradeIn'])->name('trade-in');
+        Route::post('/get-approved', [FormEntryController::class, 'getApproved'])->name('get-approved');
+        Route::post('/managers-special', [FormEntryController::class, 'managersSpecial'])->name('managers-special');
+        Route::post('/ask-question', [FormEntryController::class, 'askQuestion'])->name('ask-question');
         Route::post('/schedule-test-drive', [FormEntryController::class, 'scheduleTestDrive'])->name('schedule-test-drive');
-        Route::post('/contact-us',          [FormEntryController::class, 'contactUs'])->name('contact-us');
-        Route::post('/trade-in/photos',     [FormEntryController::class, 'uploadTradeInPhotos'])->name('trade-in.photos');
-        Route::patch('/{formEntry}/nps',    [FormEntryController::class, 'updateNps'])->name('nps');
-        Route::post('/unlock-price',         [FormEntryController::class, 'unlockPrice'])->name('unlock-price');
+        Route::post('/contact-us', [FormEntryController::class, 'contactUs'])->name('contact-us');
+        Route::post('/trade-in/photos', [FormEntryController::class, 'uploadTradeInPhotos'])->name('trade-in.photos');
+        Route::patch('/{formEntry}/nps', [FormEntryController::class, 'updateNps'])->name('nps');
+        Route::post('/unlock-price', [FormEntryController::class, 'unlockPrice'])->name('unlock-price');
     });
 });
 
