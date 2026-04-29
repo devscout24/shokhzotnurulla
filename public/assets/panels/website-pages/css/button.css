@@ -1,0 +1,98 @@
+/* ── Dropped Button Block ────────────────────────────────────────────────── */
+
+.dropped-btn {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 24px;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: opacity 0.15s;
+  font-family: inherit;
+}
+
+.dropped-btn:hover { opacity: 0.85; }
+.dropped-btn.full-width { width: 100%; text-align: center; display: block; }
+
+/* Sizes */
+.dropped-btn[data-size="small"]  { font-size: 12px; padding: 6px 16px; }
+.dropped-btn[data-size="medium"] { font-size: 14px; padding: 10px 24px; }
+.dropped-btn[data-size="large"]  { font-size: 16px; padding: 13px 32px; }
+
+/* Themes — Solid */
+.dropped-btn[data-theme="red"][data-bstyle="solid"]    { background:#d9534f; color:#fff; border-color:#d9534f; }
+.dropped-btn[data-theme="orange"][data-bstyle="solid"] { background:#f97316; color:#fff; border-color:#f97316; }
+.dropped-btn[data-theme="blue"][data-bstyle="solid"]   { background:#1d4ed8; color:#fff; border-color:#1d4ed8; }
+.dropped-btn[data-theme="green"][data-bstyle="solid"]  { background:#15803d; color:#fff; border-color:#15803d; }
+.dropped-btn[data-theme="dark"][data-bstyle="solid"]   { background:#111827; color:#fff; border-color:#111827; }
+
+/* Themes — Outline */
+.dropped-btn[data-theme="red"][data-bstyle="outline"]    { background:transparent; color:#d9534f; border-color:#d9534f; }
+.dropped-btn[data-theme="orange"][data-bstyle="outline"] { background:transparent; color:#f97316; border-color:#f97316; }
+.dropped-btn[data-theme="blue"][data-bstyle="outline"]   { background:transparent; color:#1d4ed8; border-color:#1d4ed8; }
+.dropped-btn[data-theme="green"][data-bstyle="outline"]  { background:transparent; color:#15803d; border-color:#15803d; }
+.dropped-btn[data-theme="dark"][data-bstyle="outline"]   { background:transparent; color:#111827; border-color:#111827; }
+
+/* ── Button Settings Panel ───────────────────────────────────────────────── */
+
+#button-settings-panel { display: none; }
+
+.bs-back-btn {
+  background: none; border: none; padding: 0; font-size: 13px; color: #555;
+  display: flex; align-items: center; gap: 6px; cursor: pointer;
+  margin-bottom: 18px; font-weight: 600;
+}
+.bs-back-btn:hover { color: #ef4444; }
+
+.bs-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; font-size: 13px; color: #444;
+}
+.bs-row label { min-width: 95px; font-weight: 500; }
+
+.bs-input, .bs-select {
+  border: 1px solid #ddd; border-radius: 4px; padding: 4px 8px;
+  font-size: 13px; color: #444; background: #fff; min-width: 120px;
+}
+.bs-select { cursor: pointer; }
+
+.bs-toggle-group {
+  display: flex; border: 1px solid #ddd; border-radius: 4px; overflow: hidden;
+}
+.bs-toggle-btn {
+  background: #fff; border: none; padding: 5px 11px; cursor: pointer;
+  font-size: 12px; color: #555; font-weight: 500; transition: background 0.15s;
+}
+.bs-toggle-btn:not(:last-child) { border-right: 1px solid #ddd; }
+.bs-toggle-btn.active { background: #e5e7eb; color: #111; font-weight: 700; }
+.bs-toggle-btn:hover:not(.active) { background: #f5f5f5; }
+
+.bs-align-group {
+  display: flex; border: 1px solid #ddd; border-radius: 4px; overflow: hidden;
+}
+.bs-align-btn {
+  background: #fff; border: none; padding: 5px 10px; cursor: pointer;
+  font-size: 13px; color: #555; transition: background 0.15s;
+}
+.bs-align-btn:not(:last-child) { border-right: 1px solid #ddd; }
+.bs-align-btn.active, .bs-align-btn:hover { background: #f1f1f1; color: #ef4444; }
+
+
+
+.bs-divider { border: none; border-top: 1px solid #eee; margin: 18px 0; }
+
+.bs-actions { display: flex; gap: 8px; margin-bottom: 20px; }
+.bs-btn-remove {
+  background: #ef4444; color: #fff; border: none; border-radius: 4px;
+  padding: 7px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; gap: 6px; flex: 1;
+}
+.bs-btn-cancel {
+  background: #fff; color: #444; border: 1px solid #ddd; border-radius: 4px;
+  padding: 7px 16px; font-size: 13px; font-weight: 600; cursor: pointer; flex: 1;
+}
+.bs-btn-remove:hover { background: #dc2626; }
+.bs-btn-cancel:hover { background: #f5f5f5; }

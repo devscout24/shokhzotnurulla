@@ -1,0 +1,89 @@
+/* ── Preview Styles (Manual CSS + Bootstrap) ──────────────────────────────── */
+
+body {
+  background-color: #f8fafc;
+  margin: 0;
+  padding: 0;
+}
+
+.preview-container {
+  max-width: 1100px;
+  margin: 50px auto;
+  padding: 60px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  border-radius: 12px;
+}
+
+#preview-page-title {
+  color: #1e293b;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 20px;
+}
+
+/* ── Block Custom Overrides ── */
+
+.dropped-block {
+  margin-bottom: 0;
+}
+
+/* Ensure dropped-block-inner doesn't have editor borders */
+.dropped-block-inner {
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Custom Button Styles (matching editor look but clean) */
+.dropped-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.dropped-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.dropped-btn[data-theme="red"] { background: #ef4444; color: #fff; }
+.dropped-btn[data-theme="orange"] { background: #f97316; color: #fff; }
+.dropped-btn[data-theme="blue"] { background: #3b82f6; color: #fff; }
+.dropped-btn[data-theme="green"] { background: #22c55e; color: #fff; }
+.dropped-btn[data-theme="dark"] { background: #111827; color: #fff; }
+
+.dropped-btn[data-bstyle="outline"] {
+  background: transparent !important;
+  border: 2px solid currentColor;
+}
+
+.dropped-btn[data-size="small"] { font-size: 13px; padding: 8px 20px; }
+.dropped-btn[data-size="large"] { font-size: 20px; padding: 16px 40px; }
+
+/* Accordion Custom look */
+.editor-accordion {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.acc-header {
+  font-size: 1.1rem;
+  transition: background 0.2s;
+}
+
+.acc-header:hover {
+  background: #f1f5f9;
+}
+
+/* Spacer */
+.editor-spacer {
+  width: 100%;
+}
+
+/* Card */
+.editor-card {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border: none !important;
+}

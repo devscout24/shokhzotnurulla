@@ -1,770 +1,199 @@
 @extends('layouts.dealer.app')
-
-@section('title', __('Create Page') . ' | ' . __(config('app.name')))
+@section('title', __('Add Page'))
 @push('page-assets')
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        .builder-wrapper {
-            display: grid;
-            grid-template-columns: 100px 1fr 320px;
-            gap: 0;
-            min-height: calc(100vh - 120px);
-            background: #f5f5f5;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        /* LEFT SIDEBAR - BLOCK SELECTOR */
-        .builder-sidebar-left {
-            background: #fff;
-            border-right: 1px solid #e0e0e0;
-            padding: 20px 0;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0;
-        }
-
-        .block-item {
-            width: 80px;
-            height: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            cursor: move;
-            user-select: none;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            font-size: 10px;
-            color: #666;
-            font-weight: 500;
-            text-align: center;
-            padding: 8px;
-            draggable: true;
-        }
-
-        .block-item:hover {
-            background: #f5f5f5;
-            border-color: #e74c3c;
-            color: #e74c3c;
-        }
-
-        .block-item i {
-            font-size: 28px;
-            color: inherit;
-        }
-
-        /* CENTER CONTENT AREA */
-        .builder-center {
-            background: #fff;
-            padding: 30px 40px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .editor-header {
-            margin-bottom: 30px;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 20px;
-        }
-
-        .editor-header h2 {
-            font-size: 28px;
-            font-weight: 600;
-            color: #333;
-            margin: 0 0 15px 0;
-        }
-
-        .editor-subheader {
-            font-size: 12px;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-        }
-
-        .editor-title-input {
-            display: inline-block;
-            font-size: 24px;
-            font-weight: 600;
-            border: none;
-            border-bottom: 2px solid #e0e0e0;
-            padding: 8px 0;
-            margin-bottom: 15px;
-            transition: border-color 0.2s;
-            width: 100%;
-        }
-
-        .editor-title-input:focus {
-            outline: none;
-            border-color: #e74c3c;
-        }
-
-        .content-editor {
-            min-height: 400px;
-            border: 2px dashed #e0e0e0;
-            border-radius: 8px;
-            padding: 40px 20px;
-            background: #fafafa;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .content-editor.drag-over {
-            border-color: #e74c3c;
-            background: #fff5f0;
-        }
-
-        .content-editor-placeholder {
-            color: #999;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .content-blocks {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .content-block {
-            background: #fafafa;
-            border: 1px solid #e0e0e0;
-            border-left: 4px solid #e74c3c;
-            border-radius: 6px;
-            padding: 15px;
-            position: relative;
-            transition: all 0.2s;
-        }
-
-        .content-block:hover {
-            border-color: #e74c3c;
-            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.1);
-        }
-
-        .block-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .block-type {
-            display: inline-block;
-            background: #e74c3c;
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .block-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .block-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #ccc;
-            font-size: 16px;
-            transition: color 0.2s;
-            padding: 4px;
-        }
-
-        .block-btn:hover {
-            color: #e74c3c;
-        }
-
-        .block-content input,
-        .block-content textarea {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
-
-        .block-content textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        /* RIGHT SIDEBAR - SETTINGS */
-        .builder-sidebar-right {
-            background: #f9f9f9;
-            border-left: 1px solid #e0e0e0;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .settings-section {
-            margin-bottom: 25px;
-        }
-
-        .settings-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 6px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 13px;
-            background: #fff;
-            transition: border-color 0.2s;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #e74c3c;
-        }
-
-        .form-check {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .form-check input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #e74c3c;
-        }
-
-        .form-check label {
-            font-size: 13px;
-            color: #333;
-            cursor: pointer;
-            margin: 0;
-        }
-
-        .badge {
-            display: inline-block;
-            background: #e74c3c;
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 3px;
-            font-size: 12px;
-            margin-right: 6px;
-            margin-bottom: 6px;
-        }
-
-        .badge .btn-close {
-            margin-left: 6px;
-            cursor: pointer;
-        }
-
-        .save-btn-group {
-            display: flex;
-            gap: 10px;
-            padding: 20px 0;
-            border-top: 1px solid #e0e0e0;
-            margin-top: 20px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            flex: 1;
-        }
-
-        .btn-primary {
-            background: #e74c3c;
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            background: #c0392b;
-        }
-
-        .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
-        }
-
-        .btn-secondary:hover {
-            background: #ccc;
-        }
-
-        @media (max-width: 1400px) {
-            .builder-wrapper {
-                grid-template-columns: 80px 1fr 280px;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .builder-wrapper {
-                grid-template-columns: 1fr;
-            }
-
-            .builder-sidebar-left,
-            .builder-sidebar-right {
-                display: none;
-            }
-        }
-    </style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/editor.css') }}"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/heading.css') }}"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/p.css') }}"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/button.css') }}"/>
+<style>
+.layout{display:flex!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;height:100vh;overflow:hidden}
+.of-master-frame{display:flex;flex-direction:column;width:100%;height:100vh;background:#f8f9fa}
+.bg-lighter{background-color:#f1f3f5!important}
+.of-header h4{white-space:nowrap;margin-bottom:0;font-size:28px!important;color:#1a1f36}
+.sidebar-right{width:450px;border-left:1px solid #e0e6ed;background:#fff;height:100%;overflow-y:auto;padding:25px;flex-shrink:0}
+.section-title{font-size:11px;font-weight:800;color:#adb5bd;text-transform:uppercase;letter-spacing:1.2px;margin:25px 0 15px}
+.block-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.block-item{border:1px solid #f1f3f5;border-radius:8px;padding:18px 5px;text-align:center;cursor:grab;background:#fff;transition:all .15s ease}
+.block-item:hover{border-color:#c0392b;background:#fffcfc;transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,0,0,.06)}
+.block-item i{font-size:22px;display:block;margin-bottom:10px;color:#c0392b}
+.block-item span{font-size:11px;font-weight:700;color:#4f566b;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.block-item.dragging{opacity:.5;border:2px dashed #c0392b!important}
+.canvas-left{flex-grow:1;overflow:auto;background:#f8f9fa;padding:40px}
+#drop-indicator{height:4px;background:#c0392b;margin:10px 0;border-radius:2px}
+.hs-row{margin-bottom:22px}
+.hs-row label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;color:#4f566b;margin-bottom:8px;letter-spacing:.8px}
+.hs-input,.hs-select{width:100%;padding:10px 12px;border:1px solid #e0e6ed;border-radius:8px;font-size:14px;color:#1a1f36;transition:all .2s;background:#fff}
+.hs-input:focus,.hs-select:focus{border-color:#c0392b;outline:none;box-shadow:0 0 0 3px rgba(192,57,43,.1)}
+.hs-divider{border:0;border-top:1px solid #f1f3f5;margin:20px 0}
+.hs-back-btn{background:none;border:none;font-weight:800;color:#1a1f36;margin-bottom:25px;display:flex;align-items:center;gap:10px;padding:0;font-size:16px}
+.hs-actions{display:flex;gap:10px;margin-top:20px}
+.hs-btn-remove{background:#fff5f5;color:#c0392b;border:1px solid #ffe3e3;padding:10px 15px;border-radius:8px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;flex:1;justify-content:center;cursor:pointer}
+.hs-btn-remove:hover{background:#c0392b;color:#fff}
+.hs-btn-cancel{background:#f8f9fa;color:#4f566b;border:1px solid #e0e6ed;padding:10px 15px;border-radius:8px;font-weight:700;font-size:13px;flex:1;cursor:pointer}
+[id$="-settings-panel"]{display:none}
+</style>
 @endpush
-
 @section('page-content')
-    <form method="POST" action="{{ $routes['store'] }}" id="pageForm">
-        @csrf
-        <div class="builder-wrapper">
-            <!-- LEFT SIDEBAR - BLOCK SELECTOR -->
-            <div class="builder-sidebar-left">
-                <div class="block-item" draggable="true" data-block-type="heading" title="Heading">
-                    <i class="bi bi-type-h1"></i>
-                    <span>Heading</span>
-                </div>
-                <div class="block-item" draggable="true" data-block-type="paragraph" title="Paragraph">
-                    <i class="bi bi-type"></i>
-                    <span>Text</span>
-                </div>
-                <div class="block-item" draggable="true" data-block-type="image" title="Image">
-                    <i class="bi bi-image"></i>
-                    <span>Image</span>
-                </div>
-                <div class="block-item" draggable="true" data-block-type="button" title="Button">
-                    <i class="bi bi-cursor-fill"></i>
-                    <span>Button</span>
-                </div>
-                <div class="block-item" draggable="true" data-block-type="columns" title="Columns">
-                    <i class="bi bi-columns-gap"></i>
-                    <span>Columns</span>
-                </div>
-                <div class="block-item" draggable="true" data-block-type="separator" title="Divider">
-                    <i class="bi bi-dash-lg"></i>
-                    <span>Divider</span>
-                </div>
-                <div class="block-item" draggable="true" data-block-type="quote" title="Quote">
-                    <i class="bi bi-quote"></i>
-                    <span>Quote</span>
-                </div>
-                <div class="block-item" draggable="true" data-block-type="list" title="List">
-                    <i class="bi bi-list-ul"></i>
-                    <span>List</span>
-                </div>
-                <div class="block-item" draggable="true" data-block-type="spacer" title="Spacer">
-                    <i class="bi bi-arrow-up-down"></i>
-                    <span>Spacer</span>
-                </div>
-            </div>
-
-            <!-- CENTER CONTENT AREA -->
-            <div class="builder-center">
-                <div class="editor-header">
-                    <div class="editor-subheader">{{ __('Page Title') }}</div>
-                    <input type="text" id="title" name="title" class="editor-title-input"
-                        value="{{ old('title') }}" required placeholder="{{ __('Enter page title') }}" autocomplete="off">
-                </div>
-
-                <div id="builderCanvas" class="content-editor">
-                    <div class="content-editor-placeholder">{{ __('Drag blocks from the sidebar to start building') }}</div>
-                </div>
-
-                <input type="hidden" name="content" id="contentStructure" value="{{ old('content', '[]') }}">
-            </div>
-
-            <!-- RIGHT SIDEBAR - SETTINGS -->
-            <div class="builder-sidebar-right">
-                <!-- URL SLUG -->
-                <div class="settings-section">
-                    <label class="settings-title">{{ __('URL Slug') }}</label>
-                    <div class="form-group">
-                        <input type="text" id="slug" name="slug" class="form-control" value="{{ old('slug') }}"
-                            required placeholder="page-url-slug" pattern="^[a-z0-9\-]+$">
-                        <small
-                            style="color:#7f8c8d; display: block; margin-top: 4px;">{{ __('lowercase-with-hyphens') }}</small>
-                    </div>
-                </div>
-
-                <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 15px 0;">
-
-                <!-- SEO SETTINGS -->
-                <div class="settings-section">
-                    <label class="settings-title">{{ __('SEO Settings') }}</label>
-
-                    <div class="form-group">
-                        <label class="form-label">{{ __('Meta Title') }}</label>
-                        <input type="text" id="meta_title" name="meta_title" class="form-control"
-                            value="{{ old('meta_title') }}" placeholder="Meta title" maxlength="255">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">{{ __('Meta Description') }}</label>
-                        <textarea id="meta_description" name="meta_description" class="form-control" placeholder="Meta description"
-                            maxlength="255" rows="3">{{ old('meta_description') }}</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">{{ __('Meta Keywords') }}</label>
-                        <input type="text" id="meta_keywords" name="meta_keywords" class="form-control"
-                            value="{{ old('meta_keywords') }}" placeholder="keyword1, keyword2">
-                    </div>
-                </div>
-
-                <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 15px 0;">
-
-                <!-- TAGS -->
-                <div class="settings-section">
-                    <label class="settings-title">{{ __('Tags') }}</label>
-                    <input type="text" id="tags" class="form-control" placeholder="Add tags..."
-                        style="margin-bottom: 8px;">
-                    <div id="tags-container"></div>
-                    <input type="hidden" name="tags" id="tags-hidden" value="[]">
-                </div>
-
-                <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 15px 0;">
-
-                <!-- PUBLISHING -->
-                <div class="settings-section">
-                    <label class="settings-title">{{ __('Publishing') }}</label>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1"
-                            {{ old('is_active', true) ? 'checked' : '' }}>
-                        <label class="form-check-label" for="is_active">{{ __('Active') }}</label>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="is_featured" id="is_featured"
-                            value="1" {{ old('is_featured') ? 'checked' : '' }}>
-                        <label class="form-check-label" for="is_featured">{{ __('Featured') }}</label>
-                    </div>
-
-                    <div class="form-group" style="margin-top: 12px;">
-                        <label class="form-label">{{ __('Publish Date') }}</label>
-                        <input type="datetime-local" id="published_at" name="published_at" class="form-control"
-                            value="{{ old('published_at') }}">
-                    </div>
-                </div>
-
-                <div class="save-btn-group">
-                    <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
-                    <a href="{{ route('dealer.website.pages.index') }}"
-                        class="btn btn-secondary">{{ __('Cancel') }}</a>
-                </div>
-            </div>
-        </div>
-    </form>
-
-    <script>
-        // Page Builder Logic
-        let pageBlocks = [];
-        let draggedBlockType = null;
-
-        const builderCanvas = document.getElementById('builderCanvas');
-        const contentStructure = document.getElementById('contentStructure');
-
-        // Block Templates
-        const blockTemplates = {
-            heading: {
-                type: 'heading',
-                content: 'Enter heading text',
-                level: 'h2'
-            },
-            paragraph: {
-                type: 'paragraph',
-                content: 'Enter paragraph text'
-            },
-            image: {
-                type: 'image',
-                src: '',
-                alt: '',
-                width: '100%'
-            },
-            button: {
-                type: 'button',
-                text: 'Click Me',
-                url: '#',
-                color: 'primary'
-            },
-            columns: {
-                type: 'columns',
-                cols: 2,
-                content: ['Column 1', 'Column 2']
-            },
-            separator: {
-                type: 'separator'
-            },
-            quote: {
-                type: 'quote',
-                text: 'Enter quote text',
-                author: ''
-            },
-            list: {
-                type: 'list',
-                items: ['Item 1', 'Item 2', 'Item 3']
-            },
-            spacer: {
-                type: 'spacer',
-                height: '20px'
-            }
-        };
-
-        // Drag and Drop - Dragging from Sidebar
-        document.querySelectorAll('.block-item').forEach(item => {
-            item.addEventListener('dragstart', (e) => {
-                draggedBlockType = e.currentTarget.dataset.blockType;
-                e.dataTransfer.effectAllowed = 'copy';
-                e.dataTransfer.setData('text/plain', draggedBlockType);
-            });
-        });
-
-        // Canvas Drop Zone
-        builderCanvas.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'copy';
-            builderCanvas.classList.add('drag-over');
-        });
-
-        builderCanvas.addEventListener('dragleave', () => {
-            builderCanvas.classList.remove('drag-over');
-        });
-
-        builderCanvas.addEventListener('drop', (e) => {
-            e.preventDefault();
-            builderCanvas.classList.remove('drag-over');
-
-            if (draggedBlockType) {
-                const blockData = JSON.parse(JSON.stringify(blockTemplates[draggedBlockType]));
-                blockData.id = 'block-' + Date.now() + Math.random();
-                pageBlocks.push(blockData);
-                renderCanvas();
-                draggedBlockType = null;
-            }
-        });
-
-        // Render Canvas
-        function renderCanvas() {
-            if (pageBlocks.length === 0) {
-                builderCanvas.innerHTML =
-                    '<div class="content-editor-placeholder">Drag blocks from the sidebar to start building</div>';
-            } else {
-                builderCanvas.innerHTML = '';
-                const blockContainer = document.createElement('div');
-                blockContainer.className = 'content-blocks';
-                pageBlocks.forEach((block, idx) => {
-                    blockContainer.appendChild(createBlockElement(block, idx));
-                });
-                builderCanvas.appendChild(blockContainer);
-            }
-            updateContentStructure();
-        }
-
-        // Create Block Element
-        function createBlockElement(block, idx) {
-            const blockEl = document.createElement('div');
-            blockEl.className = 'content-block';
-            blockEl.dataset.blockId = block.id;
-
-            let contentHTML = '';
-
-            switch (block.type) {
-                case 'heading':
-                    contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">Heading</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')" title="Delete">✕</button>
-                    </div>
-                </div>
-                <div class="block-content">
-                    <input type="text" value="${block.content}" placeholder="Heading text" onchange="updateBlockContent('${block.id}', 'content', this.value)">
-                </div>
-            `;
-                    break;
-
-                case 'paragraph':
-                    contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">Text</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')" title="Delete">✕</button>
-                    </div>
-                </div>
-                <div class="block-content">
-                    <textarea placeholder="Paragraph text" onchange="updateBlockContent('${block.id}', 'content', this.value)">${block.content}</textarea>
-                </div>
-            `;
-                    break;
-
-                case 'image':
-                    contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">Image</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')" title="Delete">✕</button>
-                    </div>
-                </div>
-                <div class="block-content">
-                    <input type="text" value="${block.src}" placeholder="Image URL" onchange="updateBlockContent('${block.id}', 'src', this.value)" style="margin-bottom: 8px;">
-                    <input type="text" value="${block.alt}" placeholder="Alt text" onchange="updateBlockContent('${block.id}', 'alt', this.value)">
-                </div>
-            `;
-                    break;
-
-                case 'button':
-                    contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">Button</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')" title="Delete">✕</button>
-                    </div>
-                </div>
-                <div class="block-content">
-                    <input type="text" value="${block.text}" placeholder="Button text" onchange="updateBlockContent('${block.id}', 'text', this.value)" style="margin-bottom: 8px;">
-                    <input type="text" value="${block.url}" placeholder="Button URL" onchange="updateBlockContent('${block.id}', 'url', this.value)">
-                </div>
-            `;
-                    break;
-
-                case 'separator':
-                    contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">Divider</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')" title="Delete">✕</button>
-                    </div>
-                </div>
-                <div style="height: 1px; background: #ddd; margin: 10px 0;"></div>
-            `;
-                    break;
-
-                default:
-                    contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">${block.type.charAt(0).toUpperCase() + block.type.slice(1)}</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')" title="Delete">✕</button>
-                    </div>
-                </div>
-                <div class="block-content">[${block.type} block]</div>
-            `;
-            }
-
-            blockEl.innerHTML = contentHTML;
-            return blockEl;
-        }
-
-        // Update Block
-        function updateBlockContent(blockId, field, value) {
-            const block = pageBlocks.find(b => b.id === blockId);
-            if (block) {
-                block[field] = value;
-                updateContentStructure();
-            }
-        }
-
-        // Delete Block
-        function deleteBlock(blockId) {
-            pageBlocks = pageBlocks.filter(b => b.id !== blockId);
-            renderCanvas();
-        }
-
-        // Update Content Structure
-        function updateContentStructure() {
-            contentStructure.value = JSON.stringify(pageBlocks);
-        }
-
-        // Tags Management
-        let tags = [];
-        const tagInput = document.getElementById('tags');
-        const tagsContainer = document.getElementById('tags-container');
-        const tagsHidden = document.getElementById('tags-hidden');
-
-        function renderTags() {
-            tagsContainer.innerHTML = '';
-            tags.forEach((tag, index) => {
-                const badge = document.createElement('span');
-                badge.className = 'badge';
-                badge.innerHTML =
-                    `${tag} <span class="btn-close" onclick="removeTag(${index})" style="margin-left: 6px; cursor: pointer;">✕</span>`;
-                tagsContainer.appendChild(badge);
-            });
-            tagsHidden.value = JSON.stringify(tags);
-        }
-
-        function removeTag(index) {
-            tags.splice(index, 1);
-            renderTags();
-        }
-
-        tagInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ',') {
-                e.preventDefault();
-                const tag = tagInput.value.trim();
-                if (tag && !tags.includes(tag)) {
-                    tags.push(tag);
-                    tagInput.value = '';
-                    renderTags();
-                }
-            }
-        });
-
-        tagInput.addEventListener('blur', () => {
-            const tag = tagInput.value.trim();
-            if (tag && !tags.includes(tag)) {
-                tags.push(tag);
-                tagInput.value = '';
-                renderTags();
-            }
-        });
-
-        // Auto-generate slug from title
-        document.getElementById('title').addEventListener('input', function() {
-            const slug = this.value
-                .toLowerCase()
-                .trim()
-                .replace(/[^\w\s-]/g, '')
-                .replace(/[\s_]+/g, '-')
-                .replace(/^-+|-+$/g, '');
-            document.getElementById('slug').value = slug;
-        });
-
-        // Validate on submit
-        document.getElementById('pageForm').addEventListener('submit', function(e) {
-            if (pageBlocks.length === 0) {
-                e.preventDefault();
-                alert('Please add at least one block to your page');
-            }
-        });
-    </script>
+<div class="of-master-frame">
+<form action="{{ $routes['store'] }}" method="POST" id="page-builder-form" style="display:contents">
+@csrf
+<div class="of-header p-4 d-flex align-items-center bg-white border-bottom shadow-sm">
+<h4 class="fw-bold m-0">Add Page</h4>
+<div class="ms-auto d-flex align-items-center gap-2">
+<a href="#" class="btn btn-outline-secondary btn-sm px-4 fw-bold" id="btn-preview"><i class="fa-solid fa-arrow-up-right-from-square me-2"></i>Preview</a>
+<button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold"><i class="fa-solid fa-gear me-2"></i>Page Settings</button>
+<button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold"><i class="fa-solid fa-clock-rotate-left me-2"></i>Page Revisions</button>
+<button type="submit" class="btn btn-danger btn-sm px-5 fw-bold" style="background:#c0392b"><i class="fa-solid fa-check me-2"></i>Save</button>
+</div>
+</div>
+<div class="input-group border-bottom bg-white" style="height:55px">
+<span class="bg-lighter input-group-text border-0 px-4 fw-bold small text-muted" style="min-width:140px">PAGE TITLE</span>
+<input type="text" value="The name of our country" class="form-control border-0 px-4 fs-6" name="title" id="page-title" required autocomplete="off">
+<span class="bg-white input-group-text border-0 text-muted small px-4 border-start"><i class="fa-solid fa-circle me-2" style="font-size:8px;color:#ced4da"></i> Status: Draft</span>
+<input type="hidden" name="slug" id="page-slug">
+</div>
+<div class="d-flex flex-grow-1 overflow-hidden">
+<div class="canvas-left flex-grow-1 overflow-auto">
+<div class="bg-white border rounded shadow-sm mx-auto my-4" style="max-width:1000px;min-height:1000px">
+<div class="card border-0">
+<div class="fw-bold bg-lighter card-header d-flex justify-content-between align-items-center py-3">
+<span class="small text-dark">Content Editor</span>
+<div class="d-flex align-items-center gap-2">
+<button type="button" class="btn btn-link btn-sm text-dark text-decoration-none fw-bold small"><i class="fa-solid fa-arrow-down-to-line me-1"></i>Export</button>
+<button type="button" class="btn btn-link btn-sm text-dark text-decoration-none fw-bold small"><i class="fa-solid fa-arrow-up-to-line me-1"></i>Import</button>
+<div class="btn-group bg-white border ms-2">
+<button type="button" class="btn btn-light btn-sm border-end" id="btn-undo" disabled><i class="fa-solid fa-rotate-left"></i> Undo</button>
+<button type="button" class="btn btn-light btn-sm" id="btn-redo"><i class="fa-solid fa-rotate-right text-primary"></i> Redo</button>
+</div>
+</div>
+</div>
+<div class="p-4">
+<div id="content-editor-zone">
+<div class="editor-empty-state" id="empty-state"><span class="editor-empty-badge">Document</span><input class="editor-empty-input" placeholder="" readonly/></div>
+<div id="blocks-container" style="min-height:800px"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sidebar-right">
+{{-- All existing panels from JS files --}}
+@include('dealer.pages.website.pages._panels')
+<div id="sidebar-default-content">
+<p class="text-muted small mb-3 ps-1" style="font-size:11px">Select a block from the editor to adjust its settings.</p>
+<div class="section-title">Layout</div>
+<div class="block-grid">
+<div class="block-item" draggable="true" data-type="container"><i class="fa-solid fa-square-poll-horizontal"></i><span>Container</span></div>
+<div class="block-item" draggable="true" data-type="2col"><i class="fa-solid fa-columns"></i><span>2-Col</span></div>
+<div class="block-item" draggable="true" data-type="3col"><i class="fa-solid fa-table-columns"></i><span>3-Col</span></div>
+<div class="block-item" draggable="true" data-type="overlay"><i class="fa-solid fa-clone"></i><span>Overlay</span></div>
+<div class="block-item" draggable="true" data-type="html"><i class="fa-solid fa-code"></i><span>HTML</span></div>
+<div class="block-item" draggable="true" data-type="css"><i class="fa-solid fa-terminal"></i><span>CSS</span></div>
+<div class="block-item" draggable="true" data-type="card"><i class="fa-solid fa-id-card"></i><span>Card</span></div>
+</div>
+<div class="section-title">Elements</div>
+<div class="block-grid">
+<div class="block-item" draggable="true" data-type="span"><i class="fa-solid fa-quote-left"></i><span>Span</span></div>
+<div class="block-item" draggable="true" data-type="heading"><i class="fa-solid fa-heading"></i><span>Heading</span></div>
+<div class="block-item" draggable="true" data-type="text"><i class="fa-solid fa-align-left"></i><span>Text</span></div>
+<div class="block-item" draggable="true" data-type="button"><i class="fa-solid fa-toggle-on"></i><span>Button</span></div>
+<div class="block-item" draggable="true" data-type="divider"><i class="fa-solid fa-minus"></i><span>Divider</span></div>
+<div class="block-item" draggable="true" data-type="image"><i class="fa-solid fa-image"></i><span>Image</span></div>
+<div class="block-item" draggable="true" data-type="video"><i class="fa-solid fa-video"></i><span>Video</span></div>
+<div class="block-item" draggable="true" data-type="carousel"><i class="fa-solid fa-images"></i><span>Carousel</span></div>
+<div class="block-item" draggable="true" data-type="accordion"><i class="fa-solid fa-list"></i><span>Accordion</span></div>
+<div class="block-item" draggable="true" data-type="spacer"><i class="fa-solid fa-arrows-up-down"></i><span>Spacer</span></div>
+<div class="block-item" draggable="true" data-type="icon"><i class="fa-solid fa-icons"></i><span>Icon</span></div>
+<div class="block-item" draggable="true" data-type="cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></div>
+<div class="block-item" draggable="true" data-type="iframe"><i class="fa-solid fa-window-maximize"></i><span>iFrame</span></div>
+</div>
+<div class="section-title">Overfuel Blocks</div>
+<div class="block-grid">
+<div class="block-item" draggable="true" data-type="inventory"><i class="fa-solid fa-car-side"></i><span>Inventory</span></div>
+<div class="block-item" draggable="true" data-type="search"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></div>
+<div class="block-item" draggable="true" data-type="form"><i class="fa-solid fa-file-invoice"></i><span>Form</span></div>
+<div class="block-item" draggable="true" data-type="blog"><i class="fa-solid fa-newspaper"></i><span>Blog Posts</span></div>
+<div class="block-item" draggable="true" data-type="content_block"><i class="fa-solid fa-cubes"></i><span>Content Block</span></div>
+<div class="block-item" draggable="true" data-type="body_types"><i class="fa-solid fa-truck-pickup"></i><span>Body Types</span></div>
+<div class="block-item" draggable="true" data-type="map_hours"><i class="fa-solid fa-clock"></i><span>Map / Hours</span></div>
+<div class="block-item" draggable="true" data-type="plugin"><i class="fa-solid fa-plug"></i><span>Plugin</span></div>
+</div>
+</div>
+</div>
+</div>
+<input type="hidden" name="content" id="page-content-json">
+</form>
+</div>
 @endsection
+@push('pannel-scripts')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/history.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/text.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/button.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/image.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/card.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/main.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/save.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/span.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/container.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+// Back buttons for new panels
+['vs','crs','tbs','inv','plg','frm','blg','sch','mh'].forEach(function(p){
+var btn=document.getElementById(p+'-back-btn');
+if(btn)btn.addEventListener('click',function(){
+document.querySelectorAll('[id$="-settings-panel"]').forEach(function(el){el.style.display='none';});
+var d=document.getElementById('sidebar-default-content');if(d)d.style.display='block';
+});
+var rm=document.getElementById(p+'-remove-btn');
+if(rm)rm.addEventListener('click',function(){
+if(window.activeEl){var b=window.activeEl.closest('.dropped-block');if(b)b.remove();}
+document.querySelectorAll('[id$="-settings-panel"]').forEach(function(el){el.style.display='none';});
+var d=document.getElementById('sidebar-default-content');if(d)d.style.display='block';
+if(typeof saveHistory==='function')saveHistory();
+});
+});
+// openVideoSettings
+window.openVideoSettings=function(el){
+window.activeEl=el;
+document.getElementById('sidebar-default-content').style.display='none';
+document.querySelectorAll('[id$="-settings-panel"]').forEach(function(p){p.style.display='none';});
+document.getElementById('video-settings-panel').style.display='block';
+};
+window.openCarouselSettings=function(el){
+window.activeEl=el;
+document.getElementById('sidebar-default-content').style.display='none';
+document.querySelectorAll('[id$="-settings-panel"]').forEach(function(p){p.style.display='none';});
+document.getElementById('carousel-settings-panel').style.display='block';
+};
+window.openTabsSettings=function(el){
+window.activeEl=el;
+document.getElementById('sidebar-default-content').style.display='none';
+document.querySelectorAll('[id$="-settings-panel"]').forEach(function(p){p.style.display='none';});
+document.getElementById('tabs-settings-panel').style.display='block';
+};
+window.openInventorySettings=function(el){
+window.activeEl=el;
+document.getElementById('sidebar-default-content').style.display='none';
+document.querySelectorAll('[id$="-settings-panel"]').forEach(function(p){p.style.display='none';});
+document.getElementById('inventory-settings-panel').style.display='block';
+};
+// Fix layout
+var layout=document.querySelector('.layout');
+if(layout){layout.style.display='flex';layout.style.width='100%';layout.style.maxWidth='100%';layout.style.flex='1';layout.style.overflow='hidden';}
+});
+</script>
+@endpush
