@@ -252,6 +252,7 @@ Route::prefix('dealer')->name('dealer.')
 
         // Dashboard / Reports
         Route::get('/dashboard', [InventoryController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard/sold-models', [InventoryController::class, 'getSoldModelsByMake'])->name('dashboard.sold-models');
 
         // Incentives
         Route::prefix('incentives')->name('incentives.')->group(function () {
