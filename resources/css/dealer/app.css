@@ -16,7 +16,7 @@ body {
 .topbar,
 .topbar-secondary .nav-item.active {
     color: #fff;
-    background: linear-gradient(90deg, #a86ef5 0%, #6a9ef8 50%, #3ab5f5 100%)
+    background: linear-gradient(90deg, #4c0b5e 0%, #320841 100%)
 }
 .topbar a, .topbar-secondary a {
     color: inherit;

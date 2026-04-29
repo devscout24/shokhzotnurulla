@@ -240,7 +240,7 @@
     </form>
 @endsection
 
-@push('styles')
+@push('page-styles')
     <style>
         .inv-cards-grid {
             display: grid;
@@ -310,6 +310,12 @@
         .stat-footer i {
             font-size: 16px;
             color: #333;
+        }
+
+        /* Ensure links don't look like default links */
+        a.inv-stat-card, a.inv-stat-card:hover, a.inv-stat-card:focus {
+            text-decoration: none !important;
+            color: inherit !important;
         }
 
         .inv-location-dropdown-wrapper {
@@ -477,7 +483,7 @@
     </style>
 @endpush
 
-@push('scripts')
+@push('page-scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Location Dropdown
