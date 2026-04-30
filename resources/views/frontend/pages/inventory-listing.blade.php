@@ -1,14 +1,7 @@
 @extends('layouts.frontend.app')
 
 @push('page-assets')
-    @vite([
-        'resources/css/frontend/pages/inventory-listing.css',
-        'resources/js/frontend/pages/inventory-listing.js',
-        'resources/js/frontend/pages/trade-in.js',
-        'resources/js/frontend/pages/get-approved-offcanvas.js',
-        'resources/js/frontend/pages/unlock-eprice.js',
-        'resources/js/frontend/pages/nps.js',
-    ])
+    @vite(['resources/css/frontend/pages/inventory-listing.css', 'resources/js/frontend/pages/inventory-listing.js', 'resources/js/frontend/pages/trade-in.js', 'resources/js/frontend/pages/get-approved-offcanvas.js', 'resources/js/frontend/pages/unlock-eprice.js', 'resources/js/frontend/pages/nps.js'])
 @endpush
 
 @section('page-content')
@@ -23,13 +16,11 @@
                             class="me-3"
                             src="{{ asset('assets/frontend/img/streamlinehq-car-tool-keys-transportation-white-200.png') }}">
                         <span class="text-white me-3 mb-2 mb-sm-0">What's your car worth?</span>
-                        <button type="button" class="btn btn-light rounded-pill px-4 py-2 fw-bold"
-                            style="font-size: 13px;"
+                        <button type="button" class="btn btn-light rounded-pill px-4 py-2 fw-bold" style="font-size: 13px;"
                             data-bs-toggle="offcanvas" data-bs-target="#getTrade">Get your trade-in value</button>
                     </div>
 
-                    <button type="button" id="close-banner"
-                        class="btn btn-link text-white p-0 position-absolute end-0">
+                    <button type="button" id="close-banner" class="btn btn-link text-white p-0 position-absolute end-0">
                         <i class="fa-solid fa-xmark h4 mb-0"></i>
                     </button>
                 </div>
@@ -37,8 +28,7 @@
         </div>
         <!-- mobile filter  -->
         <div class="sc-1ee57aef-0 eiTTSf w-100 border-bottom ToolbarMobile bg-white d-block d-xl-none searchHidden">
-            <div
-                class="no-gutters row-bordered text-start text-nowrap sticky-top bg-white border-bottom border-top row">
+            <div class="no-gutters row-bordered text-start text-nowrap sticky-top bg-white border-bottom border-top row">
                 <div data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"
                     class="py-2 pe-2 ps-3 cursor-pointer col-sm-6 col-5">
                     <span class="d-inline-block text-primary me-2">
@@ -131,14 +121,14 @@
                             <input data-bs-toggle="modal" data-bs-target="#modalSearch" data-cy="input-search"
                                 placeholder="Search by make, model, feature" autocomplete="off" tabindex="-1"
                                 type="text" class="search-input w-100 form-control py-2 ps-5"
-                                style="border-radius: 8px;"
-                                name="search" value="">
+                                style="border-radius: 8px;" name="search" value="">
                         </div>
                     </div>
 
                     <div class="d-flex align-items-center justify-content-between mb-4">
                         <h1 id="inventory-heading" class="inventoryheading m-0 h5">
-                                {{ $total }} used {{ $type ? config("vehicle_types.{$type}.heading_label") : 'vehicles' }} for sale in Smyrna, TN
+                            {{ $total }} used
+                            {{ $type ? config("vehicle_types.{$type}.heading_label") : 'vehicles' }} for sale in Smyrna, TN
                         </h1>
                         <div class="dropdown">
                             <button type="button" id="sortby" aria-expanded="false" data-cy="sortby"
@@ -239,7 +229,11 @@
                     <p>{!! $inventoryDisclaimer !!}</p>
                 @else
                     <p>
-                        It is the customer's sole responsibility to verify the existence and condition of any equipment listed. Neither the dealership nor eBizAutos is responsible for misprints on prices or equipment. It is the customer's sole responsibility to verify the accuracy of the prices with the dealer, including the pricing for all added accessories. Financing Fees apply for all vehicles not purchased with cash. See Dealer for details.
+                        It is the customer's sole responsibility to verify the existence and condition of any equipment
+                        listed. Neither the dealership nor eBizAutos is responsible for misprints on prices or equipment. It
+                        is the customer's sole responsibility to verify the accuracy of the prices with the dealer,
+                        including the pricing for all added accessories. Financing Fees apply for all vehicles not purchased
+                        with cash. See Dealer for details.
                     </p>
                 @endif
             </div>
@@ -259,13 +253,13 @@
     <script>
         window.srpConfig = {
             filterUrl: '{{ $type ? route('frontend.inventory.type.filter', $type) : route('frontend.inventory.filter') }}',
-            csrf:      '{{ csrf_token() }}',
+            csrf: '{{ csrf_token() }}',
         };
 
         window.tiRoutes = {
-            tradeIn:      '{{ route('frontend.forms.trade-in') }}',
+            tradeIn: '{{ route('frontend.forms.trade-in') }}',
             tradeInPhotos: '{{ route('frontend.forms.trade-in.photos') }}',
-            makeModels:   '{{ route('frontend.data.make-models', ['make' => '__make__']) }}',
+            makeModels: '{{ route('frontend.data.make-models', ['make' => '__make__']) }}',
         };
 
         window.gaRoutes = {
@@ -277,7 +271,7 @@
 
     {{-- Close banner --}}
     <script>
-        document.getElementById('close-banner')?.addEventListener('click', function () {
+        document.getElementById('close-banner')?.addEventListener('click', function() {
             document.getElementById('top-banner').style.display = 'none';
         });
     </script>

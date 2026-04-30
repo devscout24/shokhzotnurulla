@@ -4,7 +4,7 @@
             <div class="nav-item {{ request()->routeIs('dealer.inventory.dashboard') ? 'active' : '' }}" data-view="dashboard">
                 <i class="bi bi-speedometer2"></i>
                 <span>Dashboard</span>
-                <span class="badge bg-danger ms-1">39</span>
+                {{-- <span class="badge bg-danger ms-1">39</span> --}}
             </div>
         </a>
         <a href="{{ route('dealer.inventory.index') }}">

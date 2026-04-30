@@ -244,6 +244,35 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-export-make:hover {
+            background: #b84341;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .btn-export-all {
+            background: #ce4f4b;
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-export-all:hover {
+            background: #b84341;
+            color: #fff;
+            text-decoration: none;
         }
 
         .model-table {
