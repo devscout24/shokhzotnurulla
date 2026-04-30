@@ -635,36 +635,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach($daysStats as $range => $stat)
                                         <tr>
-                                            <td>0-30</td>
-                                            <td>24</td>
-                                            <td>$471,197</td>
-                                            <td>$19,633</td>
+                                            <td>{{ $range }}</td>
+                                            <td>{{ $stat['units'] }}</td>
+                                            <td>${{ number_format($stat['total']) }}</td>
+                                            <td>${{ number_format($stat['avg']) }}</td>
                                         </tr>
-                                        <tr>
-                                            <td>31-60</td>
-                                            <td>10</td>
-                                            <td>$182,396</td>
-                                            <td>$18,240</td>
-                                        </tr>
-                                        <tr>
-                                            <td>61-90</td>
-                                            <td>9</td>
-                                            <td>$153,696</td>
-                                            <td>$17,077</td>
-                                        </tr>
-                                        <tr>
-                                            <td>91-120</td>
-                                            <td>5</td>
-                                            <td>$91,898</td>
-                                            <td>$18,380</td>
-                                        </tr>
-                                        <tr>
-                                            <td>120+</td>
-                                            <td>13</td>
-                                            <td>$245,600</td>
-                                            <td>$18,892</td>
-                                        </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -855,10 +833,10 @@
                             new Chart(ctx1, {
                                 type: 'line',
                                 data: {
-                                    labels: ['4/2', '4/6', '4/10', '4/14', '4/18', '4/22', '4/26', '4/30'],
+                                    labels: @json($chartLabels),
                                     datasets: [{
                                         label: 'Total Views',
-                                        data: [160, 150, 180, 220, 190, 205, 170, 60],
+                                        data: @json($chartViews),
                                         borderColor: '#3ab5f5',
                                         backgroundColor: 'rgba(58, 181, 245, 0.08)',
                                         fill: true,
@@ -868,7 +846,7 @@
                                         yAxisID: 'y1'
                                     }, {
                                         label: 'Units In Stock',
-                                        data: [90, 88, 85, 82, 78, 76, 77, 75],
+                                        data: @json($chartStock),
                                         borderColor: '#f56e4e',
                                         backgroundColor: '#f56e4e',
                                         fill: false,
@@ -887,8 +865,8 @@
                                         legend: { position: 'top', align: 'end' }
                                     },
                                     scales: {
-                                        y1: { type: 'linear', position: 'left', max: 240 },
-                                        y2: { type: 'linear', position: 'right', max: 100 }
+                                        y1: { type: 'linear', position: 'left', beginAtZero: true },
+                                        y2: { type: 'linear', position: 'right', beginAtZero: true }
                                     }
                                 }
                             });
@@ -901,7 +879,7 @@
                                 data: {
                                     labels: ['0-30', '31-60', '61-90', '91-120', '120+'],
                                     datasets: [{
-                                        data: [24, 10, 9, 5, 13],
+                                        data: @json($chartDays),
                                         backgroundColor: '#f56e4e',
                                         borderRadius: 6,
                                         barThickness: 24
@@ -911,7 +889,7 @@
                                     responsive: true,
                                     maintainAspectRatio: false,
                                     plugins: { legend: { display: false } },
-                                    scales: { y: { beginAtZero: true, max: 25 } }
+                                    scales: { y: { beginAtZero: true } }
                                 }
                             });
                         }

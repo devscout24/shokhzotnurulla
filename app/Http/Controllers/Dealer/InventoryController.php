@@ -802,11 +802,76 @@ class InventoryController extends Controller
 
         $dealers = $user->dealers;
 
+        // ─── Inventory Activity Chart Data (Last 30 Days) ─────────────────────
+        $chartLabels = [];
+        $chartViews = [];
+        $chartStock = [];
+        
+        $stats = \App\Models\Inventory\VehicleDailyStat::whereIn('dealer_id', $targetDealerIds)
+            ->where('date', '>=', now()->subDays(29)->format('Y-m-d'))
+            ->select('date', DB::raw('SUM(views) as total_views'))
+            ->groupBy('date')
+            ->pluck('total_views', 'date');
+
+        $vehicles = Vehicle::whereIn('dealer_id', $targetDealerIds)
+            ->whereIn('status', ['active', 'sold'])
+            ->whereNotNull('listed_at')
+            ->get(['listed_at', 'sold_at']);
+
+        for ($i = 29; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $dateStr = $date->format('Y-m-d');
+            $chartLabels[] = $date->format('n/j');
+            
+            // Views
+            $chartViews[] = (int) ($stats[$dateStr] ?? 0);
+            
+            // Stock
+            $endOfDay = $date->copy()->endOfDay();
+            $stockCount = $vehicles->filter(function($v) use ($endOfDay) {
+                return $v->listed_at <= $endOfDay && ($v->sold_at === null || $v->sold_at > $endOfDay);
+            })->count();
+            $chartStock[] = $stockCount;
+        }
+
+        // ─── Days in Inventory Chart Data (Active Vehicles Only) ──────────────
+        $daysStats = [
+            '0-30' => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '31-60' => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '61-90' => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '91-120' => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '120+' => ['units' => 0, 'total' => 0, 'avg' => 0],
+        ];
+
+        foreach ($vehicles as $v) {
+            if ($v->sold_at === null) {
+                $days = (int) $v->listed_at->diffInDays(now());
+                $bucket = '120+';
+                if ($days <= 30) $bucket = '0-30';
+                elseif ($days <= 60) $bucket = '31-60';
+                elseif ($days <= 90) $bucket = '61-90';
+                elseif ($days <= 120) $bucket = '91-120';
+                
+                $price = $v->prices->internet_price ?? 0;
+                $daysStats[$bucket]['units']++;
+                $daysStats[$bucket]['total'] += $price;
+            }
+        }
+
+        foreach ($daysStats as $key => $stat) {
+            if ($stat['units'] > 0) {
+                $daysStats[$key]['avg'] = $stat['total'] / $stat['units'];
+            }
+        }
+
+        $chartDays = array_column($daysStats, 'units');
+
         return view('dealer.pages.inventory.dashboard', compact(
             'inStockCount', 'inStockCost', 'inStockValue',
             'soldCount', 'soldValue',
             'noPhotosCount', 'noPriceCount',
-            'soldMakes', 'dealers', 'currentDealerId', 'dateRange'
+            'soldMakes', 'dealers', 'currentDealerId', 'dateRange',
+            'chartLabels', 'chartViews', 'chartStock', 'chartDays', 'daysStats'
         ));
     }
 
