@@ -728,7 +728,7 @@ body {
 }
 
 .inv-card-amount.inv-warning {
-    color: #dc2626;
+    color: #ce4f4b;
     font-size: 14px
 }
 
@@ -1259,7 +1259,7 @@ a.inv-stat-card:focus {
 }
 
 .inv-table .text-danger {
-    color: #dc2626;
+    color: #ce4f4b;
     font-weight: 600
 }
 

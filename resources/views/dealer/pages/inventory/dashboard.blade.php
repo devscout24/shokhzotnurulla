@@ -573,10 +573,15 @@
                                                     <div class="model-table-header">
                                                         <h4>{{ $makeData['make_name'] }} Units sold by model
                                                         </h4>
-                                                        <button class="btn-export-make">
-                                                            <i class="bi bi-cloud-arrow-down"></i> Export
-                                                            {{ $makeData['make_name'] }}
-                                                        </button>
+                                                        <a href="{{ route('dealer.inventory.dashboard.export-make', [
+                                                                'make_id'    => $makeData['make_id'],
+                                                                'dealer_id'  => $currentDealerId,
+                                                                'date_range' => $dateRange,
+                                                            ]) }}"
+                                                           class="btn-export-make"
+                                                           title="Download CSV for {{ $makeData['make_name'] }}">
+                                                            <i class="bi bi-cloud-arrow-down"></i> Export {{ $makeData['make_name'] }}
+                                                        </a>
                                                     </div>
                                                     <table class="model-table">
                                                         <thead>

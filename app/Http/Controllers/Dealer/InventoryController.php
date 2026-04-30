@@ -771,6 +771,92 @@ class InventoryController extends Controller
         }, 200, $headers);
     }
 
+    public function exportSoldModelsByMake(Request $request, int $make_id): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $user            = $request->user();
+        $dealerIds       = $user->dealers()->pluck('dealers.id')->toArray();
+        $currentDealerId = $request->integer('dealer_id');
+        $targetDealerIds = ($currentDealerId && in_array($currentDealerId, $dealerIds))
+            ? [$currentDealerId]
+            : $dealerIds;
+
+        $dateRange = $request->input('date_range');
+        $startDate = $endDate = null;
+        if ($dateRange) {
+            $dates = explode(' - ', $dateRange);
+            if (count($dates) === 2) {
+                try {
+                    $startDate = \Carbon\Carbon::parse($dates[0])->startOfDay();
+                    $endDate   = \Carbon\Carbon::parse($dates[1])->endOfDay();
+                } catch (\Exception $e) {}
+            }
+        }
+
+        $makeName = \App\Models\Catalog\Make::find($make_id)?->name ?? 'make';
+
+        $query = Vehicle::whereIn('dealer_id', $targetDealerIds)
+            ->where('make_id', $make_id)
+            ->sold()
+            ->with(['makeModel', 'make', 'prices']);
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('sold_at', [$startDate, $endDate]);
+        }
+
+        $rows = $query->get()
+            ->groupBy('make_model_id')
+            ->map(function ($vehicles) use ($makeName) {
+                $model      = $vehicles->first()->makeModel;
+                $prices     = $vehicles->map(fn($v) => $v->prices->sold_price
+                                    ?? $v->prices->internet_price
+                                    ?? $v->prices->msrp
+                                    ?? 0);
+                $days       = $vehicles->map(fn($v) => $v->days_on_lot ?? 0);
+                $soldCount  = $vehicles->count();
+                $totalPrice = $prices->sum();
+
+                return [
+                    'make'               => $makeName,
+                    'model'              => $model->name ?? '',
+                    'avg_days'           => $soldCount > 0 ? round($days->avg(), 2) : 0,
+                    'avg_price'          => $soldCount > 0 ? round($totalPrice / $soldCount, 2) : 0,
+                    'count_pricechanges' => '--',
+                    'max_days'           => $days->max() ?? 0,
+                    'max_price'          => $prices->max() ?? 0,
+                    'min_days'           => $days->min() ?? 0,
+                    'min_price'          => $prices->min() ?? 0,
+                    'pct_pricechanges'   => '--',
+                    'soldcount'          => $soldCount,
+                    'total_price'        => $totalPrice,
+                    'total_pricechanges' => '--',
+                ];
+            })->values();
+
+        $safeMake = preg_replace('/[^a-z0-9]+/i', '-', strtolower($makeName));
+        $filename = "inventory-{$safeMake}-models-" . now()->format('Ymd-His') . '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            'Cache-Control'       => 'no-cache, no-store, must-revalidate',
+        ];
+
+        $columns = [
+            'make', 'model', 'avg_days', 'avg_price', 'count_pricechanges',
+            'max_days', 'max_price', 'min_days', 'min_price',
+            'pct_pricechanges', 'soldcount', 'total_price', 'total_pricechanges',
+        ];
+
+        return response()->stream(function () use ($rows, $columns) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, $columns);
+            foreach ($rows as $row) {
+                fputcsv($handle, array_map(fn($col) => $row[$col] ?? '', $columns));
+            }
+            fclose($handle);
+        }, 200, $headers);
+    }
+
     // ─── Destroy ──────────────────────────────────────────────────────────────
 
     public function destroy(Request $request, Vehicle $vehicle): RedirectResponse

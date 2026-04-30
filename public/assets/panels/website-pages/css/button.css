@@ -94,5 +94,5 @@
   background: #fff; color: #444; border: 1px solid #ddd; border-radius: 4px;
   padding: 7px 16px; font-size: 13px; font-weight: 600; cursor: pointer; flex: 1;
 }
-.bs-btn-remove:hover { background: #dc2626; }
+.bs-btn-remove:hover { background: #ce4f4b; }
 .bs-btn-cancel:hover { background: #f5f5f5; }
