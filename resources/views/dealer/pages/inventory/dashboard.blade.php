@@ -92,6 +92,7 @@
         a.inv-stat-card:focus {
             text-decoration: none !important;
             color: inherit !important;
+            border: 1px solid #e0e0e0;
         }
 
         .inv-location-dropdown-wrapper {
@@ -274,7 +275,9 @@
         }
 
         .inv-sidebar {
-            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         /* Daterangepicker Custom Styling - Exact Match */
@@ -406,6 +409,7 @@
         }
     </style>
 @endpush
+
 @section('page-content')
     <main class="main-content" id="mainContent">
         <div class="view-content inventory-view" data-view="inventory">
@@ -414,8 +418,8 @@
 
             <div class="subview" data-subview="dashboard">
                 <div class="inv-main-content row g-4 px-3">
-                    <div class="inv-table-section col-xl-8 col-lg-7">
-                        <!-- filters and summary cards -->
+                    {{-- Main Section: Cards and Units Sold Table --}}
+                    <div class="col-xl-8 col-lg-7">
                         <div class="inv-top-bar">
                             <div class="inv-location-dropdown-wrapper">
                                 <div class="inv-location-dropdown" id="locationDropdownToggle">
@@ -515,12 +519,12 @@
                                     </div>
                                 </a>
                             </div>
-                        </div>sash
+                        </div>
 
                         <div class="inv-table-header">
                             <h3>Inventory: Units Sold</h3>
                             <button class="btn-export-all">
-                                <i class="bi bi-download"></i> Export All
+                                <i class="bi bi-cloud-arrow-down"></i> Export All
                             </button>
                         </div>
 
@@ -563,7 +567,7 @@
                                                         <h4>{{ strtoupper($makeData['make_name']) }} Units sold by model
                                                         </h4>
                                                         <button class="btn-export-make">
-                                                            <i class="bi bi-download"></i> Export
+                                                            <i class="bi bi-cloud-arrow-down"></i> Export
                                                             {{ strtoupper($makeData['make_name']) }}
                                                         </button>
                                                     </div>
@@ -578,7 +582,6 @@
                                                                 <th class="text-center">Min. Days</th>
                                                                 <th class="text-center">Max. Days</th>
                                                                 <th class="text-center"># Changes</th>
-                                                                <th class="text-center">Avg. Change</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody class="model-tbody">
@@ -599,13 +602,13 @@
                         </div>
                     </div>
 
+                    {{-- Sidebar: Charts Section --}}
                     <aside class="inv-sidebar col-xl-4 col-lg-5">
-                        {{-- Charts are placeholders as requested to build first section and table --}}
                         <div class="inv-card-box">
                             <div class="inv-card-box-title">Inventory Activity</div>
                             <div class="inv-card-box-content">
                                 <div class="chart-container"
-                                    style="position: relative; height:340px; width:100%; min-height: 340px;">
+                                    style="position: relative; height:340px; width:100%;">
                                     <canvas id="invActivityChartV2"></canvas>
                                 </div>
                             </div>
@@ -619,24 +622,26 @@
                                     <canvas id="invDaysChartV2"></canvas>
                                 </div>
                                 <table class="inv-mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Days</th>
+                                            <th>Units</th>
+                                            <th>Total</th>
+                                            <th>Average</th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Days</td>
-                                            <td>Units</td>
-                                            <td>Total</td>
-                                            <td>Average</td>
-                                        </tr>
-                                        <tr>
                                             <td>0-30</td>
-                                            <td>22</td>
-                                            <td>$466,296</td>
-                                            <td>$21,195</td>
+                                            <td>24</td>
+                                            <td>$471,197</td>
+                                            <td>$19,633</td>
                                         </tr>
                                         <tr>
                                             <td>31-60</td>
-                                            <td>9</td>
-                                            <td>$163,397</td>
-                                            <td>$18,155</td>
+                                            <td>10</td>
+                                            <td>$182,396</td>
+                                            <td>$18,240</td>
                                         </tr>
                                         <tr>
                                             <td>61-90</td>
@@ -646,14 +651,22 @@
                                         </tr>
                                         <tr>
                                             <td>91-120</td>
-                                            <td>6</td>
-                                            <td>$110,398</td>
-                                            <td>$18,400</td>
+                                            <td>5</td>
+                                            <td>$91,898</td>
+                                            <td>$18,380</td>
+                                        </tr>
+                                        <tr>
+                                            <td>120+</td>
+                                            <td>13</td>
+                                            <td>$245,600</td>
+                                            <td>$18,892</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+
+                        <div class="inv-card-box-title border-0 bg-transparent ps-0 pb-0" style="font-size: 15px; font-weight: 600;">Inventory by Location</div>
                     </aside>
                 </div>
             </div>
@@ -666,11 +679,9 @@
     </form>
 @endsection
 
-
-
 @push('page-scripts')
     {{-- CDN Fallback for Chart.js to ensure it always loads --}}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
                     // Location Dropdown
@@ -760,252 +771,113 @@
                             const isExpanded = modelRow.style.display !== 'none';
 
                             if (!isExpanded) {
-                                // Expand
                                 modelRow.style.display = 'table-row';
                                 this.innerHTML = '<i class="bi bi-dash-lg"></i>';
-
-                                // Fetch data if not already loaded
                                 if (tbody.children.length === 0) {
-                                    tbody.innerHTML =
-                                        '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border spinner-border-sm text-danger" role="status"></div> Loading...</td></tr>';
-
-                                    const dealerId = "{{ $currentDealerId }}";
-                                    const dateRange = "{{ $dateRange }}";
-
-                                    fetch(
-                                            `{{ route('dealer.inventory.dashboard.sold-models') }}?make_id=${makeId}&dealer_id=${dealerId}&date_range=${dateRange}`
-                                            )
+                                    tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border spinner-border-sm text-danger" role="status"></div> Loading...</td></tr>';
+                                    fetch(`{{ route('dealer.inventory.dashboard.sold-models') }}?make_id=${makeId}&dealer_id={{ $currentDealerId }}&date_range={{ $dateRange }}`)
                                         .then(response => response.json())
                                         .then(data => {
                                             tbody.innerHTML = '';
                                             if (data.length === 0) {
-                                                tbody.innerHTML =
-                                                    '<tr><td colspan="8" class="text-center py-4">No data available</td></tr>';
+                                                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4">No data available</td></tr>';
                                                 return;
                                             }
                                             data.forEach(model => {
                                                 const tr = document.createElement('tr');
-                                                tr.innerHTML = `
-                                            <td>${model.model_name}</td>
-                                            <td class="text-center">${model.sold}</td>
-                                            <td class="text-center text-success">$${model.est_sales}</td>
-                                            <td class="text-center text-success">$${model.avg_price}</td>
-                                            <td class="text-center">${model.avg_days}</td>
-                                            <td class="text-center">${model.min_days}</td>
-                                            <td class="text-center">${model.max_days}</td>
-                                            <td class="text-center">${model.changes_count}</td>
-                                            <td class="text-center">${model.avg_change}</td>
-                                        `;
+                                                tr.innerHTML = `<td>${model.model_name}</td><td class="text-center">${model.sold}</td><td class="text-center text-success">$${model.est_sales}</td><td class="text-center text-success">$${model.avg_price}</td><td class="text-center">${model.avg_days}</td><td class="text-center">${model.min_days}</td><td class="text-center">${model.max_days}</td><td class="text-center">${model.changes_count}</td>`;
                                                 tbody.appendChild(tr);
                                             });
-                                        })
-                                        .catch(error => {
-                                            tbody.innerHTML =
-                                                '<tr><td colspan="8" class="text-center text-danger py-4">Error loading data</td></tr>';
-                                            console.error('Error:', error);
                                         });
                                 }
                             } else {
-                                // Collapse
                                 modelRow.style.display = 'none';
                                 this.innerHTML = '<i class="bi bi-plus-lg"></i>';
                             }
                         });
                     });
+                });
 
-                    {{-- Fail-safe Chart.js inclusion --}}
-                        <
-                        script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
-                    crossorigin = "anonymous"
-                    referrerpolicy = "no-referrer" >
-    </script>
-    <script>
-        (function() {
-            function renderCharts() {
-                if (typeof Chart === 'undefined') {
-                    setTimeout(renderCharts, 200);
-                    return;
-                }
-
-                // Chart 1: Inventory Activity
-                const ctx1 = document.getElementById('invActivityChartV2');
-                if (ctx1) {
-                    new Chart(ctx1, {
-                        type: 'line',
-                        data: {
-                            labels: ['4/2', '4/6', '4/10', '4/14', '4/18', '4/22', '4/26', '4/30'],
-                            datasets: [{
-                                label: 'Total Views',
-                                data: [160, 150, 180, 220, 190, 205, 170, 60],
-                                borderColor: '#3ab5f5',
-                                backgroundColor: 'rgba(58, 181, 245, 0.08)',
-                                fill: true,
-                                tension: 0.45,
-                                borderWidth: 3,
-                                pointRadius: 0,
-                                pointHoverRadius: 6,
-                                pointHoverBackgroundColor: '#3ab5f5',
-                                pointHoverBorderColor: '#fff',
-                                pointHoverBorderWidth: 2,
-                                yAxisID: 'y1'
-                            }, {
-                                label: 'Units In Stock',
-                                data: [90, 88, 85, 82, 78, 76, 77, 75],
-                                borderColor: '#f56e4e',
-                                backgroundColor: '#f56e4e',
-                                fill: false,
-                                tension: 0,
-                                borderWidth: 2,
-                                yAxisID: 'y2',
-                                pointRadius: 4,
-                                pointBackgroundColor: '#fff',
-                                pointBorderColor: '#f56e4e',
-                                pointBorderWidth: 2
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            interaction: {
-                                mode: 'index',
-                                intersect: false
-                            },
-                            plugins: {
-                                legend: {
-                                    position: 'top',
-                                    align: 'end',
-                                    labels: {
-                                        usePointStyle: true,
-                                        boxWidth: 8,
-                                        padding: 20,
-                                        font: {
-                                            size: 12,
-                                            weight: '500'
-                                        }
-                                    }
-                                },
-                                tooltip: {
-                                    backgroundColor: '#fff',
-                                    titleColor: '#1e293b',
-                                    bodyColor: '#475569',
-                                    borderColor: '#e2e8f0',
-                                    borderWidth: 1,
-                                    padding: 12,
-                                    boxPadding: 6,
-                                    usePointStyle: true,
-                                    callbacks: {
-                                        title: (items) => 'Date: ' + items[0].label,
-                                        label: (item) => ' ' + item.dataset.label + ': ' + item.formattedValue
-                                    }
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    grid: {
-                                        display: false
-                                    },
-                                    ticks: {
-                                        font: {
-                                            size: 11
-                                        }
-                                    }
-                                },
-                                y1: {
-                                    type: 'linear',
-                                    position: 'left',
-                                    beginAtZero: true,
-                                    max: 240,
-                                    grid: {
-                                        color: '#f1f5f9'
-                                    },
-                                    ticks: {
-                                        stepSize: 60,
-                                        font: {
-                                            size: 11
-                                        }
-                                    }
-                                },
-                                y2: {
-                                    type: 'linear',
-                                    position: 'right',
-                                    beginAtZero: true,
-                                    max: 100,
-                                    grid: {
-                                        display: false
-                                    },
-                                    ticks: {
-                                        stepSize: 25,
-                                        font: {
-                                            size: 11
-                                        }
-                                    }
-                                }
-                            }
+                // Separate Chart Initialization
+                (function() {
+                    function initCharts() {
+                        if (typeof Chart === 'undefined') {
+                            setTimeout(initCharts, 100);
+                            return;
                         }
-                    });
-                }
 
-                // Chart 2: Days in Inventory
-                const ctx2 = document.getElementById('invDaysChartV2');
-                if (ctx2) {
-                    new Chart(ctx2, {
-                        type: 'bar',
-                        data: {
-                            labels: ['0-30', '31-60', '61-90', '91-120', '120+'],
-                            datasets: [{
-                                data: [22, 9, 9, 6, 12],
-                                backgroundColor: '#f56e4e',
-                                borderRadius: 6,
-                                barThickness: 24,
-                                hoverBackgroundColor: '#ef4444'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: false
+                        const ctx1 = document.getElementById('invActivityChartV2');
+                        if (ctx1) {
+                            new Chart(ctx1, {
+                                type: 'line',
+                                data: {
+                                    labels: ['4/2', '4/6', '4/10', '4/14', '4/18', '4/22', '4/26', '4/30'],
+                                    datasets: [{
+                                        label: 'Total Views',
+                                        data: [160, 150, 180, 220, 190, 205, 170, 60],
+                                        borderColor: '#3ab5f5',
+                                        backgroundColor: 'rgba(58, 181, 245, 0.08)',
+                                        fill: true,
+                                        tension: 0.4,
+                                        borderWidth: 3,
+                                        pointRadius: 0,
+                                        yAxisID: 'y1'
+                                    }, {
+                                        label: 'Units In Stock',
+                                        data: [90, 88, 85, 82, 78, 76, 77, 75],
+                                        borderColor: '#f56e4e',
+                                        backgroundColor: '#f56e4e',
+                                        fill: false,
+                                        tension: 0,
+                                        borderWidth: 2,
+                                        yAxisID: 'y2',
+                                        pointRadius: 4,
+                                        pointBackgroundColor: '#fff',
+                                        pointBorderColor: '#f56e4e'
+                                    }]
                                 },
-                                tooltip: {
-                                    enabled: true
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    grid: {
-                                        display: false
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: { position: 'top', align: 'end' }
                                     },
-                                    ticks: {
-                                        font: {
-                                            size: 11
-                                        }
-                                    }
-                                },
-                                y: {
-                                    beginAtZero: true,
-                                    max: 25,
-                                    grid: {
-                                        color: '#f1f5f9'
-                                    },
-                                    ticks: {
-                                        stepSize: 5,
-                                        font: {
-                                            size: 11
-                                        }
+                                    scales: {
+                                        y1: { type: 'linear', position: 'left', max: 240 },
+                                        y2: { type: 'linear', position: 'right', max: 100 }
                                     }
                                 }
-                            }
+                            });
                         }
-                    });
-                }
-            }
 
-            if (document.readyState === 'complete') {
-                renderCharts();
-            } else {
-                window.addEventListener('load', renderCharts);
-            }
-        })();
+                        const ctx2 = document.getElementById('invDaysChartV2');
+                        if (ctx2) {
+                            new Chart(ctx2, {
+                                type: 'bar',
+                                data: {
+                                    labels: ['0-30', '31-60', '61-90', '91-120', '120+'],
+                                    datasets: [{
+                                        data: [24, 10, 9, 5, 13],
+                                        backgroundColor: '#f56e4e',
+                                        borderRadius: 6,
+                                        barThickness: 24
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } },
+                                    scales: { y: { beginAtZero: true, max: 25 } }
+                                }
+                            });
+                        }
+                    }
+
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', initCharts);
+                    } else {
+                        initCharts();
+                    }
+                })();
     </script>
 @endpush
