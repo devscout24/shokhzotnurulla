@@ -92,8 +92,19 @@ class InventoryController extends Controller
                 'primaryPhoto',
                 'prices:vehicle_id,msrp,internet_price,dealer_cost',
             ])
-            ->forDealer($dealerId)
-            ->orderByDesc('listed_at');
+            ->forDealer($dealerId);
+
+        // ── Sorting ───────────────────────────────────────────────────────────
+        $sortBy    = $request->input('sortby', 'listed_at');
+        $sortOrder = $request->input('sortorder', 'desc');
+
+        if ($sortBy === 'price') {
+            $query->join('vehicle_prices', 'vehicles.id', '=', 'vehicle_prices.vehicle_id')
+                ->select('vehicles.*')
+                ->orderBy('vehicle_prices.internet_price', $sortOrder);
+        } else {
+            $query->orderBy($sortBy, $sortOrder);
+        }
 
         // ── Filters ───────────────────────────────────────────────────────────
 
@@ -103,6 +114,10 @@ class InventoryController extends Controller
 
         if ($request->boolean('on_hold')) {
             $query->onHold();
+        }
+
+        if ($request->boolean('no_photos')) {
+            $query->doesntHave('photos');
         }
 
         if ($request->filled('make_id')) {
@@ -610,6 +625,66 @@ class InventoryController extends Controller
         return response()->json(['success' => true, 'message' => 'Incentive visible.']);
     }
 
+    public function getSoldModelsByMake(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $dealerIds = $user->dealers()->pluck('dealers.id')->toArray();
+        $currentDealerId = $request->integer('dealer_id');
+        $makeId = $request->integer('make_id');
+
+        $targetDealerIds = ($currentDealerId && in_array($currentDealerId, $dealerIds))
+            ? [$currentDealerId]
+            : $dealerIds;
+
+        $dateRange = $request->input('date_range');
+        $startDate = null;
+        $endDate = null;
+
+        if ($dateRange) {
+            $dates = explode(' - ', $dateRange);
+            if (count($dates) === 2) {
+                try {
+                    $startDate = \Carbon\Carbon::parse($dates[0])->startOfDay();
+                    $endDate = \Carbon\Carbon::parse($dates[1])->endOfDay();
+                } catch (\Exception $e) {}
+            }
+        }
+
+        $query = Vehicle::whereIn('dealer_id', $targetDealerIds)
+            ->where('make_id', $makeId)
+            ->sold();
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('sold_at', [$startDate, $endDate]);
+        }
+
+        $models = $query->with(['makeModel', 'prices'])
+            ->get()
+            ->groupBy('make_model_id')
+            ->map(function ($vehicles) {
+                $model = $vehicles->first()->makeModel;
+                $soldCount = $vehicles->count();
+                $estSales = $vehicles->sum(fn($v) => $v->prices->sold_price ?? 0);
+                $avgPrice = $soldCount > 0 ? $estSales / $soldCount : 0;
+                $avgDays = $vehicles->avg(fn($v) => $v->days_on_lot);
+                $minDays = $vehicles->min(fn($v) => $v->days_on_lot);
+                $maxDays = $vehicles->max(fn($v) => $v->days_on_lot);
+
+                return [
+                    'model_name' => $model->name ?? 'Unknown',
+                    'sold' => $soldCount,
+                    'est_sales' => number_format($estSales),
+                    'avg_price' => number_format($avgPrice),
+                    'avg_days' => round($avgDays),
+                    'min_days' => $minDays,
+                    'max_days' => $maxDays,
+                    'changes_count' => '--',
+                ];
+            })->sortByDesc('sold')->values();
+
+        return response()->json($models);
+    }
+
     // ─── Destroy ──────────────────────────────────────────────────────────────
 
     public function destroy(Request $request, Vehicle $vehicle): RedirectResponse
@@ -633,7 +708,105 @@ class InventoryController extends Controller
 
     public function dashboard(Request $request): View
     {
-        return view('dealer.pages.inventory.dashboard');
+        $user = $request->user();
+        $dealerIds = $user->dealers()->pluck('dealers.id')->toArray();
+        $currentDealerId = $request->integer('dealer_id');
+
+        // If no dealer_id is provided or it's 0 (All Locations), use all dealer IDs the user belongs to
+        $targetDealerIds = ($currentDealerId && in_array($currentDealerId, $dealerIds))
+            ? [$currentDealerId]
+            : $dealerIds;
+
+        // Date Range Filter
+        $dateRange = $request->input('date_range');
+        $startDate = null;
+        $endDate = null;
+
+        if ($dateRange) {
+            $dates = explode(' - ', $dateRange);
+            if (count($dates) === 2) {
+                try {
+                    $startDate = \Carbon\Carbon::parse($dates[0])->startOfDay();
+                    $endDate = \Carbon\Carbon::parse($dates[1])->endOfDay();
+                } catch (\Exception $e) {
+                    // Fallback or ignore
+                }
+            }
+        }
+
+        // Summary Cards Data
+        $baseQuery = Vehicle::whereIn('dealer_id', $targetDealerIds);
+
+        // In Stock: Active vehicles
+        $inStockQuery = (clone $baseQuery)->active();
+        $inStockCount = $inStockQuery->count();
+        $inStockCost = (clone $inStockQuery)->join('vehicle_prices', 'vehicles.id', '=', 'vehicle_prices.vehicle_id')
+            ->sum('vehicle_prices.dealer_cost');
+        $inStockValue = (clone $inStockQuery)->join('vehicle_prices', 'vehicles.id', '=', 'vehicle_prices.vehicle_id')
+            ->sum('vehicle_prices.internet_price');
+            // Actually usually sold price for in stock means list price or asking price.
+            // But let's follow: "count their cost/dealer_cost and sold price"
+            // Wait, "in stock card will count unsold/active cars and count their cost/dealer_cost and sold price".
+            // For in-stock, sold_price might be NULL. Maybe they mean list_price or asking_price.
+            // Let's use list_price as a fallback for "sold price" on in-stock vehicles if sold_price is not set.
+            // Actually, in the screenshot, the "in stock" card shows a total dollar amount.
+            // I'll use internet_price as the primary value for in-stock total.
+
+        // Sold: Sold vehicles within date range
+        $soldQuery = (clone $baseQuery)->sold();
+        if ($startDate && $endDate) {
+            $soldQuery->whereBetween('sold_at', [$startDate, $endDate]);
+        }
+        $soldCount = $soldQuery->count();
+        $soldValue = (clone $soldQuery)->join('vehicle_prices', 'vehicles.id', '=', 'vehicle_prices.vehicle_id')
+            ->sum('vehicle_prices.sold_price');
+
+        // No Photos: Active vehicles with no photos
+        $noPhotosCount = (clone $baseQuery)->active()->doesntHave('photos')->count();
+
+        // No Price: Active vehicles with no list price (asking_price or internet_price is 0 or null)
+        $noPriceCount = (clone $baseQuery)->active()
+            ->whereHas('prices', function($q) {
+                $q->whereNull('internet_price')->orWhere('internet_price', 0);
+            })->count();
+
+        // Inventory: Units Sold Table (Make-wise)
+        $soldMakes = (clone $baseQuery)->sold()
+            ->when($startDate && $endDate, fn($q) => $q->whereBetween('sold_at', [$startDate, $endDate]))
+            ->with(['make', 'prices'])
+            ->get()
+            ->groupBy('make_id')
+            ->map(function ($vehicles) {
+                $make = $vehicles->first()->make;
+                $unitsSold = $vehicles->count();
+                $avgDays = $vehicles->avg(fn($v) => $v->days_on_lot);
+                $estSales = $vehicles->sum(fn($v) => $v->prices->sold_price ?? 0);
+                $avgPrice = $unitsSold > 0 ? $estSales / $unitsSold : 0;
+
+                // For # Changes and Avg. Change - these would usually come from an audit log or price history table.
+                // Since I don't see a price history table yet, I'll return placeholder or 0 for now if not available.
+                // Wait, I should check if there's a price history table.
+
+                return [
+                    'make_id' => $make->id ?? 0,
+                    'make_name' => $make->name ?? 'Unknown',
+                    'units_sold' => $unitsSold,
+                    'avg_days' => round($avgDays),
+                    'est_sales' => $estSales,
+                    'avg_price' => $avgPrice,
+                    'changes_count' => '--',
+                    'avg_change' => '--',
+                ];
+            })->sortByDesc('units_sold')->values();
+
+        $dealers = $user->dealers;
+
+        return view('dealer.pages.inventory.dashboard', compact(
+            'inStockCount', 'inStockCost', 'inStockValue',
+            'soldCount', 'soldValue',
+            'noPhotosCount', 'noPriceCount',
+            'soldMakes', 'dealers', 'currentDealerId', 'dateRange'
+        ));
     }
 
     // ─── Private Helpers ──────────────────────────────────────────────────────

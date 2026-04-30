@@ -1,5 +1,6 @@
 @import "bootstrap-icons/font/bootstrap-icons.css";
 @import "flatpickr/dist/flatpickr.min.css";
+@import "daterangepicker/daterangepicker.css";
 
 body {
     margin: 0;
@@ -15,8 +16,8 @@ body {
 
 .topbar,
 .topbar-secondary .nav-item.active {
-    color: #fff;
-    background: linear-gradient(90deg, #a86ef5 0%, #6a9ef8 50%, #3ab5f5 100%)
+    color: #fff !important;
+    background: linear-gradient(90deg, #a86ef5, #6a9ef8, #3ab5f5) !important;
 }
 .topbar a, .topbar-secondary a {
     color: inherit;

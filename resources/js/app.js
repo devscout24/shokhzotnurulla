@@ -3,6 +3,11 @@ import './bootstrap';
 import $ from 'jquery';
 window.$ = window.jQuery = $;
 
+import moment from 'moment';
+window.moment = moment;
+
+import 'daterangepicker';
+
 // import Swal from 'sweetalert2';
 // window.Swal = Swal; // make swal global
 
