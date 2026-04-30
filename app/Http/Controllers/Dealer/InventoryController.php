@@ -679,6 +679,7 @@ class InventoryController extends Controller
                     'min_days' => $minDays,
                     'max_days' => $maxDays,
                     'changes_count' => '--',
+                    'avg_change' => '--',
                 ];
             })->sortByDesc('sold')->values();
 

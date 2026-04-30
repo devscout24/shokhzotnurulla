@@ -777,15 +777,15 @@ body {
     color: #000
 }
 
-.btn-export-all {
-    background: #dc2626;
+.btn-export-all, .btn-export-make {
+    background: #ce4f4b !important;
     color: #fff;
     border: none;
     padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 13px;
-    gap: 6px
+    gap: 6px;
 }
 
 .inv-card-box-title,
@@ -794,8 +794,9 @@ body {
     font-weight: 600
 }
 
-.btn-export-all:hover {
-    background: #b91c1c
+.btn-export-all:hover, .btn-export-make:hover {
+    background: #ce4f4b !important;
+    opacity: 0.9;
 }
 
 .btn-export-all i {

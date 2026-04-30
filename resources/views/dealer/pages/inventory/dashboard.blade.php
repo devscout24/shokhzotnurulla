@@ -2,260 +2,6 @@
 
 @section('title', __('Inventory Dashboard') . ' | ' . __(config('app.name')))
 
-@section('page-content')
-    <main class="main-content" id="mainContent">
-        <div class="view-content inventory-view" data-view="inventory">
-            {{-- Inventory Top Bar --}}
-            @include('dealer.partials.inventory-topbar')
-
-            <div class="subview" data-subview="dashboard">
-                <div class="inv-main-content row g-4 px-3">
-                    <div class="inv-table-section col-xl-8 col-lg-7">
-                        <!-- filters and summary cards -->
-                        <div class="inv-top-bar">
-                            <div class="inv-location-dropdown-wrapper">
-                                <div class="inv-location-dropdown" id="locationDropdownToggle">
-                                    <i class="bi bi-geo-alt-fill"></i>
-                                    <span id="selectedLocationName">
-                                        {{ $currentDealerId ? $dealers->firstWhere('id', $currentDealerId)->name : 'All Locations' }}
-                                    </span>
-                                    <i class="bi bi-chevron-down"></i>
-                                </div>
-                                <div class="inv-location-menu" id="locationMenu">
-                                    <div class="inv-location-item {{ !$currentDealerId ? 'active' : '' }}" data-id="0">
-                                        @if (!$currentDealerId)
-                                            <i class="bi bi-check2"></i>
-                                        @endif
-                                        All Locations
-                                    </div>
-                                    @foreach ($dealers as $dealer)
-                                        <div class="inv-location-item {{ $currentDealerId == $dealer->id ? 'active' : '' }}"
-                                            data-id="{{ $dealer->id }}">
-                                            @if ($currentDealerId == $dealer->id)
-                                                <i class="bi bi-check2"></i>
-                                            @endif
-                                            {{ $dealer->name }}
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            <div class="inv-date-range">
-                                <i class="bi bi-calendar3"></i>
-                                <input type="text" id="inventoryDateRange" placeholder="Date range"
-                                    value="{{ $dateRange }}" readonly>
-                            </div>
-                        </div>
-
-                        <div class="inv-cards-and-chart">
-                            <div class="inv-cards-grid">
-                                {{-- Card 1: In Stock --}}
-                                <a href="{{ route('dealer.inventory.index', ['status' => 'active', 'dealer_id' => $currentDealerId]) }}"
-                                    class="inv-stat-card">
-                                    <div class="stat-main">
-                                        <div class="stat-value">
-                                            <span class="number">{{ number_format($inStockCount) }}</span>
-                                            <span class="label">in stock</span>
-                                        </div>
-                                        <div class="stat-amount">${{ number_format($inStockValue, 0) }}</div>
-                                    </div>
-                                    <div class="stat-footer">
-                                        <span class="footer-title">Inventory</span>
-                                        <i class="bi bi-arrow-right"></i>
-                                    </div>
-                                </a>
-
-                                {{-- Card 2: Sold --}}
-                                <a href="{{ route('dealer.inventory.index', ['status' => 'sold', 'dealer_id' => $currentDealerId, 'date_range' => $dateRange]) }}"
-                                    class="inv-stat-card">
-                                    <div class="stat-main">
-                                        <div class="stat-value">
-                                            <span class="number">{{ number_format($soldCount) }}</span>
-                                            <span class="label">sold</span>
-                                        </div>
-                                        <div class="stat-amount">${{ number_format($soldValue, 0) }}</div>
-                                    </div>
-                                    <div class="stat-footer">
-                                        <span class="footer-title">Sold Report</span>
-                                        <i class="bi bi-arrow-right"></i>
-                                    </div>
-                                </a>
-
-                                {{-- Card 3: No Photos --}}
-                                <a href="{{ route('dealer.inventory.index', ['no_photos' => 1, 'dealer_id' => $currentDealerId]) }}"
-                                    class="inv-stat-card">
-                                    <div class="stat-main">
-                                        <div class="stat-value">
-                                            <span class="number">{{ number_format($noPhotosCount) }}</span>
-                                        </div>
-                                        <div class="stat-label-only">No Photos</div>
-                                    </div>
-                                    <div class="stat-footer">
-                                        <span class="footer-title">Fix</span>
-                                        <i class="bi bi-arrow-right"></i>
-                                    </div>
-                                </a>
-
-                                {{-- Card 4: No Price --}}
-                                <a href="{{ route('dealer.inventory.index', ['sortby' => 'price', 'sortorder' => 'asc', 'dealer_id' => $currentDealerId]) }}"
-                                    class="inv-stat-card">
-                                    <div class="stat-main">
-                                        <div class="stat-value">
-                                            <span class="number">{{ number_format($noPriceCount) }}</span>
-                                        </div>
-                                        <div class="stat-label-only">No Price</div>
-                                    </div>
-                                    <div class="stat-footer">
-                                        <span class="footer-title">Fix</span>
-                                        <i class="bi bi-arrow-right"></i>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="inv-table-header">
-                            <h3>Inventory: Units Sold</h3>
-                            <button class="btn-export-all">
-                                <i class="bi bi-download"></i> Export All
-                            </button>
-                        </div>
-
-                        <div class="inv-table-wrapper">
-                            <table class="inv-table">
-                                <thead>
-                                    <tr>
-                                        <th>Make</th>
-                                        <th class="text-center">Units Sold</th>
-                                        <th class="text-center">Avg. Days</th>
-                                        <th class="text-center">Est. Sales</th>
-                                        <th class="text-center">Avg. Price</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($soldMakes as $makeData)
-                                        <tr class="make-row" data-make-id="{{ $makeData['make_id'] }}"
-                                            data-make-name="{{ $makeData['make_name'] }}">
-                                            <td>{{ strtoupper($makeData['make_name']) }}</td>
-                                            <td class="text-center">{{ $makeData['units_sold'] }}</td>
-                                            <td class="text-center">{{ $makeData['avg_days'] }}</td>
-                                            <td class="text-center text-success">
-                                                ${{ number_format($makeData['est_sales']) }}</td>
-                                            <td class="text-center text-success">
-                                                ${{ number_format($makeData['avg_price']) }}</td>
-                                            <td class="text-right">
-                                                <span class="table-expand"><i class="bi bi-plus-lg"></i></span>
-                                            </td>
-                                        </tr>
-                                        <tr class="model-row-container" id="model-row-{{ $makeData['make_id'] }}"
-                                            style="display: none;">
-                                            <td colspan="8" class="p-0">
-                                                <div class="model-data-wrapper">
-                                                    <div class="model-table-header">
-                                                        <h4>{{ strtoupper($makeData['make_name']) }} Units sold by model
-                                                        </h4>
-                                                        <button class="btn-export-make">
-                                                            <i class="bi bi-download"></i> Export
-                                                            {{ strtoupper($makeData['make_name']) }}
-                                                        </button>
-                                                    </div>
-                                                    <table class="model-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Model</th>
-                                                                <th class="text-center">Sold</th>
-                                                                <th class="text-center">Est. Sales</th>
-                                                                <th class="text-center">Avg. Price</th>
-                                                                <th class="text-center">Avg. Days</th>
-                                                                <th class="text-center">Min. Days</th>
-                                                                <th class="text-center">Max. Days</th>
-                                                                <th class="text-center"># Changes</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="model-tbody">
-                                                            {{-- Loaded via AJAX --}}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="8" class="text-center py-4">No data found for the selected
-                                                criteria.</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <aside class="inv-sidebar col-xl-4 col-lg-5">
-                        {{-- Charts are placeholders as requested to build first section and table --}}
-                        <div class="inv-card-box">
-                            <div class="inv-card-box-title">Inventory Activity</div>
-                            <div class="inv-card-box-content">
-                                <div class="chart-container" style="position: relative; height:340px; width:100%; min-height: 340px;">
-                                    <canvas id="invActivityChartV2"></canvas>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="inv-card-box">
-                            <div class="inv-card-box-title">Days in Inventory</div>
-                            <div class="inv-card-box-content">
-                                <div class="chart-container"
-                                    style="position: relative; height:200px; width:100%; margin-bottom: 20px;">
-                                    <canvas id="invDaysChartV2"></canvas>
-                                </div>
-                                <table class="inv-mini-table">
-                                    <tbody>
-                                        <tr>
-                                            <td>Days</td>
-                                            <td>Units</td>
-                                            <td>Total</td>
-                                            <td>Average</td>
-                                        </tr>
-                                        <tr>
-                                            <td>0-30</td>
-                                            <td>22</td>
-                                            <td>$466,296</td>
-                                            <td>$21,195</td>
-                                        </tr>
-                                        <tr>
-                                            <td>31-60</td>
-                                            <td>9</td>
-                                            <td>$163,397</td>
-                                            <td>$18,155</td>
-                                        </tr>
-                                        <tr>
-                                            <td>61-90</td>
-                                            <td>9</td>
-                                            <td>$153,696</td>
-                                            <td>$17,077</td>
-                                        </tr>
-                                        <tr>
-                                            <td>91-120</td>
-                                            <td>6</td>
-                                            <td>$110,398</td>
-                                            <td>$18,400</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </aside>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <form id="filterForm" method="GET" style="display: none;">
-        <input type="hidden" name="dealer_id" id="filterDealerId" value="{{ $currentDealerId }}">
-        <input type="hidden" name="date_range" id="filterDateRange" value="{{ $dateRange }}">
-    </form>
-@endsection
-
 @push('page-styles')
     <style>
         .inv-cards-grid {
@@ -488,7 +234,7 @@
         }
 
         .btn-export-make {
-            background: #dc2626;
+            background: #ce4f4b;
             color: #fff;
             border: none;
             padding: 6px 12px;
@@ -502,7 +248,7 @@
         }
 
         .btn-export-make:hover {
-            background: #b91c1c;
+            background: #ce4f4b;
         }
 
         .model-table {
@@ -660,124 +406,386 @@
         }
     </style>
 @endpush
+@section('page-content')
+    <main class="main-content" id="mainContent">
+        <div class="view-content inventory-view" data-view="inventory">
+            {{-- Inventory Top Bar --}}
+            @include('dealer.partials.inventory-topbar')
+
+            <div class="subview" data-subview="dashboard">
+                <div class="inv-main-content row g-4 px-3">
+                    <div class="inv-table-section col-xl-8 col-lg-7">
+                        <!-- filters and summary cards -->
+                        <div class="inv-top-bar">
+                            <div class="inv-location-dropdown-wrapper">
+                                <div class="inv-location-dropdown" id="locationDropdownToggle">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    <span id="selectedLocationName">
+                                        {{ $currentDealerId ? $dealers->firstWhere('id', $currentDealerId)->name : 'All Locations' }}
+                                    </span>
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                                <div class="inv-location-menu" id="locationMenu">
+                                    <div class="inv-location-item {{ !$currentDealerId ? 'active' : '' }}" data-id="0">
+                                        @if (!$currentDealerId)
+                                            <i class="bi bi-check2"></i>
+                                        @endif
+                                        All Locations
+                                    </div>
+                                    @foreach ($dealers as $dealer)
+                                        <div class="inv-location-item {{ $currentDealerId == $dealer->id ? 'active' : '' }}"
+                                            data-id="{{ $dealer->id }}">
+                                            @if ($currentDealerId == $dealer->id)
+                                                <i class="bi bi-check2"></i>
+                                            @endif
+                                            {{ $dealer->name }}
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <div class="inv-date-range">
+                                <i class="bi bi-calendar3"></i>
+                                <input type="text" id="inventoryDateRange" placeholder="Date range"
+                                    value="{{ $dateRange }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="inv-cards-and-chart">
+                            <div class="inv-cards-grid">
+                                {{-- Card 1: In Stock --}}
+                                <a href="{{ route('dealer.inventory.index', ['status' => 'active', 'dealer_id' => $currentDealerId]) }}"
+                                    class="inv-stat-card">
+                                    <div class="stat-main">
+                                        <div class="stat-value">
+                                            <span class="number">{{ number_format($inStockCount) }}</span>
+                                            <span class="label">in stock</span>
+                                        </div>
+                                        <div class="stat-amount">${{ number_format($inStockValue, 0) }}</div>
+                                    </div>
+                                    <div class="stat-footer">
+                                        <span class="footer-title">Inventory</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </div>
+                                </a>
+
+                                {{-- Card 2: Sold --}}
+                                <a href="{{ route('dealer.inventory.index', ['status' => 'sold', 'dealer_id' => $currentDealerId, 'date_range' => $dateRange]) }}"
+                                    class="inv-stat-card">
+                                    <div class="stat-main">
+                                        <div class="stat-value">
+                                            <span class="number">{{ number_format($soldCount) }}</span>
+                                            <span class="label">sold</span>
+                                        </div>
+                                        <div class="stat-amount">${{ number_format($soldValue, 0) }}</div>
+                                    </div>
+                                    <div class="stat-footer">
+                                        <span class="footer-title">Sold Report</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </div>
+                                </a>
+
+                                {{-- Card 3: No Photos --}}
+                                <a href="{{ route('dealer.inventory.index', ['no_photos' => 1, 'dealer_id' => $currentDealerId]) }}"
+                                    class="inv-stat-card">
+                                    <div class="stat-main">
+                                        <div class="stat-value">
+                                            <span class="number">{{ number_format($noPhotosCount) }}</span>
+                                        </div>
+                                        <div class="stat-label-only">No Photos</div>
+                                    </div>
+                                    <div class="stat-footer">
+                                        <span class="footer-title">Fix</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </div>
+                                </a>
+
+                                {{-- Card 4: No Price --}}
+                                <a href="{{ route('dealer.inventory.index', ['sortby' => 'price', 'sortorder' => 'asc', 'dealer_id' => $currentDealerId]) }}"
+                                    class="inv-stat-card">
+                                    <div class="stat-main">
+                                        <div class="stat-value">
+                                            <span class="number">{{ number_format($noPriceCount) }}</span>
+                                        </div>
+                                        <div class="stat-label-only">No Price</div>
+                                    </div>
+                                    <div class="stat-footer">
+                                        <span class="footer-title">Fix</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>sash
+
+                        <div class="inv-table-header">
+                            <h3>Inventory: Units Sold</h3>
+                            <button class="btn-export-all">
+                                <i class="bi bi-download"></i> Export All
+                            </button>
+                        </div>
+
+                        <div class="inv-table-wrapper">
+                            <table class="inv-table">
+                                <thead>
+                                    <tr>
+                                        <th>Make</th>
+                                        <th class="text-center">Units Sold</th>
+                                        <th class="text-center">Avg. Days</th>
+                                        <th class="text-center">Est. Sales</th>
+                                        <th class="text-center">Avg. Price</th>
+                                        <th class="text-center"># Changes</th>
+                                        <th class="text-center">Avg. Change</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($soldMakes as $makeData)
+                                        <tr class="make-row" data-make-id="{{ $makeData['make_id'] }}"
+                                            data-make-name="{{ $makeData['make_name'] }}">
+                                            <td>{{ strtoupper($makeData['make_name']) }}</td>
+                                            <td class="text-center">{{ $makeData['units_sold'] }}</td>
+                                            <td class="text-center">{{ $makeData['avg_days'] }}</td>
+                                            <td class="text-center text-success">
+                                                ${{ number_format($makeData['est_sales']) }}</td>
+                                            <td class="text-center text-success">
+                                                ${{ number_format($makeData['avg_price']) }}</td>
+                                            <td class="text-center">{{ $makeData['changes_count'] }}</td>
+                                            <td class="text-center">{{ $makeData['avg_change'] }}</td>
+                                            <td class="text-right">
+                                                <span class="table-expand"><i class="bi bi-plus-lg"></i></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="model-row-container" id="model-row-{{ $makeData['make_id'] }}"
+                                            style="display: none;">
+                                            <td colspan="8" class="p-0">
+                                                <div class="model-data-wrapper">
+                                                    <div class="model-table-header">
+                                                        <h4>{{ strtoupper($makeData['make_name']) }} Units sold by model
+                                                        </h4>
+                                                        <button class="btn-export-make">
+                                                            <i class="bi bi-download"></i> Export
+                                                            {{ strtoupper($makeData['make_name']) }}
+                                                        </button>
+                                                    </div>
+                                                    <table class="model-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Model</th>
+                                                                <th class="text-center">Sold</th>
+                                                                <th class="text-center">Est. Sales</th>
+                                                                <th class="text-center">Avg. Price</th>
+                                                                <th class="text-center">Avg. Days</th>
+                                                                <th class="text-center">Min. Days</th>
+                                                                <th class="text-center">Max. Days</th>
+                                                                <th class="text-center"># Changes</th>
+                                                                <th class="text-center">Avg. Change</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="model-tbody">
+                                                            {{-- Loaded via AJAX --}}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="8" class="text-center py-4">No data found for the selected
+                                                criteria.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <aside class="inv-sidebar col-xl-4 col-lg-5">
+                        {{-- Charts are placeholders as requested to build first section and table --}}
+                        <div class="inv-card-box">
+                            <div class="inv-card-box-title">Inventory Activity</div>
+                            <div class="inv-card-box-content">
+                                <div class="chart-container"
+                                    style="position: relative; height:340px; width:100%; min-height: 340px;">
+                                    <canvas id="invActivityChartV2"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="inv-card-box">
+                            <div class="inv-card-box-title">Days in Inventory</div>
+                            <div class="inv-card-box-content">
+                                <div class="chart-container"
+                                    style="position: relative; height:200px; width:100%; margin-bottom: 20px;">
+                                    <canvas id="invDaysChartV2"></canvas>
+                                </div>
+                                <table class="inv-mini-table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Days</td>
+                                            <td>Units</td>
+                                            <td>Total</td>
+                                            <td>Average</td>
+                                        </tr>
+                                        <tr>
+                                            <td>0-30</td>
+                                            <td>22</td>
+                                            <td>$466,296</td>
+                                            <td>$21,195</td>
+                                        </tr>
+                                        <tr>
+                                            <td>31-60</td>
+                                            <td>9</td>
+                                            <td>$163,397</td>
+                                            <td>$18,155</td>
+                                        </tr>
+                                        <tr>
+                                            <td>61-90</td>
+                                            <td>9</td>
+                                            <td>$153,696</td>
+                                            <td>$17,077</td>
+                                        </tr>
+                                        <tr>
+                                            <td>91-120</td>
+                                            <td>6</td>
+                                            <td>$110,398</td>
+                                            <td>$18,400</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <form id="filterForm" method="GET" style="display: none;">
+        <input type="hidden" name="dealer_id" id="filterDealerId" value="{{ $currentDealerId }}">
+        <input type="hidden" name="date_range" id="filterDateRange" value="{{ $dateRange }}">
+    </form>
+@endsection
+
+
 
 @push('page-scripts')
     {{-- CDN Fallback for Chart.js to ensure it always loads --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Location Dropdown
-            const toggle = document.getElementById('locationDropdownToggle');
-            const menu = document.getElementById('locationMenu');
-            const filterForm = document.getElementById('filterForm');
-            const dealerIdInput = document.getElementById('filterDealerId');
+                    // Location Dropdown
+                    const toggle = document.getElementById('locationDropdownToggle');
+                    const menu = document.getElementById('locationMenu');
+                    const filterForm = document.getElementById('filterForm');
+                    const dealerIdInput = document.getElementById('filterDealerId');
 
-            if (toggle) {
-                toggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    menu.classList.toggle('show');
-                });
-            }
-
-            document.addEventListener('click', function() {
-                if (menu) menu.classList.remove('show');
-            });
-
-            document.querySelectorAll('.inv-location-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    dealerIdInput.value = id;
-                    filterForm.submit();
-                });
-            });
-
-            // Date Range Picker
-            const dateInput = $('#inventoryDateRange');
-            if (dateInput.length) {
-                const initialDate = "{{ $dateRange }}";
-                let startDate = moment().subtract(29, 'days');
-                let endDate = moment();
-
-                if (initialDate && initialDate.includes(' - ')) {
-                    const parts = initialDate.split(' - ');
-                    startDate = moment(parts[0], 'MM/DD/YYYY');
-                    endDate = moment(parts[1], 'MM/DD/YYYY');
-                }
-
-                dateInput.daterangepicker({
-                    startDate: startDate,
-                    endDate: endDate,
-                    opens: 'left',
-                    autoUpdateInput: true,
-                    alwaysShowCalendars: true,
-                    ranges: {
-                        'Last week': [moment().subtract(6, 'days'), moment()],
-                        'Month to date': [moment().startOf('month'), moment().endOf('month')],
-                        'Last 28 days': [moment().subtract(27, 'days'), moment()],
-                        'Last 30 days': [moment().subtract(29, 'days'), moment()],
-                        'Last 90 days': [moment().subtract(89, 'days'), moment()],
-                        'Last 180 days': [moment().subtract(179, 'days'), moment()],
-                        'Last 12 months': [moment().subtract(1, 'year').add(1, 'day'), moment()]
-                    },
-                    locale: {
-                        format: 'MMM D, YYYY',
-                        separator: ' - ',
-                        applyLabel: 'Apply',
-                        cancelLabel: 'Cancel',
-                        fromLabel: 'From',
-                        toLabel: 'To',
-                        customRangeLabel: 'Custom',
-                        weekLabel: 'W',
-                        daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-                        monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-                            'August', 'September', 'October', 'November', 'December'
-                        ],
-                        firstDay: 1
+                    if (toggle) {
+                        toggle.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            menu.classList.toggle('show');
+                        });
                     }
-                }, function(start, end, label) {
-                    const dateStr = start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY');
-                    document.getElementById('filterDateRange').value = dateStr;
-                    filterForm.submit();
-                });
-            }
 
-            // Expandable Rows
-            document.querySelectorAll('.make-row').forEach(row => {
-                const expandBtn = row.querySelector('.table-expand');
-                const makeId = row.getAttribute('data-make-id');
-                const modelRow = document.getElementById(`model-row-${makeId}`);
-                const tbody = modelRow.querySelector('.model-tbody');
+                    document.addEventListener('click', function() {
+                        if (menu) menu.classList.remove('show');
+                    });
 
-                expandBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const isExpanded = modelRow.style.display !== 'none';
+                    document.querySelectorAll('.inv-location-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const id = this.getAttribute('data-id');
+                            dealerIdInput.value = id;
+                            filterForm.submit();
+                        });
+                    });
 
-                    if (!isExpanded) {
-                        // Expand
-                        modelRow.style.display = 'table-row';
-                        this.innerHTML = '<i class="bi bi-dash-lg"></i>';
+                    // Date Range Picker
+                    const dateInput = $('#inventoryDateRange');
+                    if (dateInput.length) {
+                        const initialDate = "{{ $dateRange }}";
+                        let startDate = moment().subtract(29, 'days');
+                        let endDate = moment();
 
-                        // Fetch data if not already loaded
-                        if (tbody.children.length === 0) {
-                            tbody.innerHTML =
-                                '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border spinner-border-sm text-danger" role="status"></div> Loading...</td></tr>';
+                        if (initialDate && initialDate.includes(' - ')) {
+                            const parts = initialDate.split(' - ');
+                            startDate = moment(parts[0], 'MM/DD/YYYY');
+                            endDate = moment(parts[1], 'MM/DD/YYYY');
+                        }
 
-                            const dealerId = "{{ $currentDealerId }}";
-                            const dateRange = "{{ $dateRange }}";
+                        dateInput.daterangepicker({
+                            startDate: startDate,
+                            endDate: endDate,
+                            opens: 'left',
+                            autoUpdateInput: true,
+                            alwaysShowCalendars: true,
+                            ranges: {
+                                'Last week': [moment().subtract(6, 'days'), moment()],
+                                'Month to date': [moment().startOf('month'), moment().endOf('month')],
+                                'Last 28 days': [moment().subtract(27, 'days'), moment()],
+                                'Last 30 days': [moment().subtract(29, 'days'), moment()],
+                                'Last 90 days': [moment().subtract(89, 'days'), moment()],
+                                'Last 180 days': [moment().subtract(179, 'days'), moment()],
+                                'Last 12 months': [moment().subtract(1, 'year').add(1, 'day'), moment()]
+                            },
+                            locale: {
+                                format: 'MMM D, YYYY',
+                                separator: ' - ',
+                                applyLabel: 'Apply',
+                                cancelLabel: 'Cancel',
+                                fromLabel: 'From',
+                                toLabel: 'To',
+                                customRangeLabel: 'Custom',
+                                weekLabel: 'W',
+                                daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                                monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                                    'August', 'September', 'October', 'November', 'December'
+                                ],
+                                firstDay: 1
+                            }
+                        }, function(start, end, label) {
+                            const dateStr = start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY');
+                            document.getElementById('filterDateRange').value = dateStr;
+                            filterForm.submit();
+                        });
+                    }
 
-                            fetch(
-                                    `{{ route('dealer.inventory.dashboard.sold-models') }}?make_id=${makeId}&dealer_id=${dealerId}&date_range=${dateRange}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    tbody.innerHTML = '';
-                                    if (data.length === 0) {
-                                        tbody.innerHTML =
-                                            '<tr><td colspan="8" class="text-center py-4">No data available</td></tr>';
-                                        return;
-                                    }
-                                    data.forEach(model => {
-                                        const tr = document.createElement('tr');
-                                        tr.innerHTML = `
+                    // Expandable Rows
+                    document.querySelectorAll('.make-row').forEach(row => {
+                        const expandBtn = row.querySelector('.table-expand');
+                        const makeId = row.getAttribute('data-make-id');
+                        const modelRow = document.getElementById(`model-row-${makeId}`);
+                        const tbody = modelRow.querySelector('.model-tbody');
+
+                        expandBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const isExpanded = modelRow.style.display !== 'none';
+
+                            if (!isExpanded) {
+                                // Expand
+                                modelRow.style.display = 'table-row';
+                                this.innerHTML = '<i class="bi bi-dash-lg"></i>';
+
+                                // Fetch data if not already loaded
+                                if (tbody.children.length === 0) {
+                                    tbody.innerHTML =
+                                        '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border spinner-border-sm text-danger" role="status"></div> Loading...</td></tr>';
+
+                                    const dealerId = "{{ $currentDealerId }}";
+                                    const dateRange = "{{ $dateRange }}";
+
+                                    fetch(
+                                            `{{ route('dealer.inventory.dashboard.sold-models') }}?make_id=${makeId}&dealer_id=${dealerId}&date_range=${dateRange}`
+                                            )
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            tbody.innerHTML = '';
+                                            if (data.length === 0) {
+                                                tbody.innerHTML =
+                                                    '<tr><td colspan="8" class="text-center py-4">No data available</td></tr>';
+                                                return;
+                                            }
+                                            data.forEach(model => {
+                                                const tr = document.createElement('tr');
+                                                tr.innerHTML = `
                                             <td>${model.model_name}</td>
                                             <td class="text-center">${model.sold}</td>
                                             <td class="text-center text-success">$${model.est_sales}</td>
@@ -786,26 +794,31 @@
                                             <td class="text-center">${model.min_days}</td>
                                             <td class="text-center">${model.max_days}</td>
                                             <td class="text-center">${model.changes_count}</td>
+                                            <td class="text-center">${model.avg_change}</td>
                                         `;
-                                        tbody.appendChild(tr);
-                                    });
-                                })
-                                .catch(error => {
-                                    tbody.innerHTML =
-                                        '<tr><td colspan="8" class="text-center text-danger py-4">Error loading data</td></tr>';
-                                    console.error('Error:', error);
-                                });
-                        }
-                    } else {
-                        // Collapse
-                        modelRow.style.display = 'none';
-                        this.innerHTML = '<i class="bi bi-plus-lg"></i>';
-                    }
-                });
-            });
+                                                tbody.appendChild(tr);
+                                            });
+                                        })
+                                        .catch(error => {
+                                            tbody.innerHTML =
+                                                '<tr><td colspan="8" class="text-center text-danger py-4">Error loading data</td></tr>';
+                                            console.error('Error:', error);
+                                        });
+                                }
+                            } else {
+                                // Collapse
+                                modelRow.style.display = 'none';
+                                this.innerHTML = '<i class="bi bi-plus-lg"></i>';
+                            }
+                        });
+                    });
 
-    {{-- Fail-safe Chart.js inclusion --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                    {{-- Fail-safe Chart.js inclusion --}}
+                        <
+                        script src = "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
+                    crossorigin = "anonymous"
+                    referrerpolicy = "no-referrer" >
+    </script>
     <script>
         (function() {
             function renderCharts() {
@@ -853,12 +866,23 @@
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            interaction: { mode: 'index', intersect: false },
+                            interaction: {
+                                mode: 'index',
+                                intersect: false
+                            },
                             plugins: {
                                 legend: {
                                     position: 'top',
                                     align: 'end',
-                                    labels: { usePointStyle: true, boxWidth: 8, padding: 20, font: { size: 12, weight: '500' } }
+                                    labels: {
+                                        usePointStyle: true,
+                                        boxWidth: 8,
+                                        padding: 20,
+                                        font: {
+                                            size: 12,
+                                            weight: '500'
+                                        }
+                                    }
                                 },
                                 tooltip: {
                                     backgroundColor: '#fff',
@@ -876,22 +900,45 @@
                                 }
                             },
                             scales: {
-                                x: { grid: { display: false }, ticks: { font: { size: 11 } } },
-                                y1: { 
-                                    type: 'linear', 
-                                    position: 'left', 
-                                    beginAtZero: true, 
-                                    max: 240,
-                                    grid: { color: '#f1f5f9' },
-                                    ticks: { stepSize: 60, font: { size: 11 } }
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
                                 },
-                                y2: { 
-                                    type: 'linear', 
-                                    position: 'right', 
-                                    beginAtZero: true, 
-                                    max: 100, 
-                                    grid: { display: false },
-                                    ticks: { stepSize: 25, font: { size: 11 } }
+                                y1: {
+                                    type: 'linear',
+                                    position: 'left',
+                                    beginAtZero: true,
+                                    max: 240,
+                                    grid: {
+                                        color: '#f1f5f9'
+                                    },
+                                    ticks: {
+                                        stepSize: 60,
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                y2: {
+                                    type: 'linear',
+                                    position: 'right',
+                                    beginAtZero: true,
+                                    max: 100,
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        stepSize: 25,
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -916,21 +963,44 @@
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            plugins: { legend: { display: false }, tooltip: { enabled: true } },
-                            scales: { 
-                                x: { grid: { display: false }, ticks: { font: { size: 11 } } },
-                                y: { 
-                                    beginAtZero: true, 
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    enabled: true
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
                                     max: 25,
-                                    grid: { color: '#f1f5f9' },
-                                    ticks: { stepSize: 5, font: { size: 11 } }
-                                } 
+                                    grid: {
+                                        color: '#f1f5f9'
+                                    },
+                                    ticks: {
+                                        stepSize: 5,
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                }
                             }
                         }
                     });
                 }
             }
-            
+
             if (document.readyState === 'complete') {
                 renderCharts();
             } else {
