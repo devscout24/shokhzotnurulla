@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
+// ── Auth Routes ───────────────────────────────────────────────────────────────
+Auth::routes(['verify' => true]);
+
+// ── Panel Routes ──────────────────────────────────────────────────────────────
+require __DIR__ . '/dealer.php';
+require __DIR__ . '/admin.php';
+
 Route::name('frontend.')->group(function () {
 
     // Pages
@@ -81,13 +88,6 @@ Route::name('frontend.')->group(function () {
     // Dynamic Pages (Catch-all for slugs)
     Route::get('/{slug}', [FrontendController::class, 'showPage'])->name('page.show');
 });
-
-// ── Panel Routes ──────────────────────────────────────────────────────────────
-require __DIR__ . '/dealer.php';
-require __DIR__ . '/admin.php';
-
-// ── Auth Routes ───────────────────────────────────────────────────────────────
-Auth::routes(['verify' => true]);
 
 // ── Test Routes (local only) ──────────────────────────────────────────────────
 if (app()->isLocal()) {
