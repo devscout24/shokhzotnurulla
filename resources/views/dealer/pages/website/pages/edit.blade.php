@@ -1,622 +1,437 @@
 @extends('layouts.dealer.app')
-
-@section('title', __('Edit Page') . ' | ' . __(config('app.name')))
-
+@section('title', __('Edit Page'))
 @push('page-assets')
-    <style>
-        .page-builder-container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 20px;
-            min-height: 600px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            background: #fafafa;
-            overflow: hidden;
-        }
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/editor.css') }}?v=1.2"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/heading.css') }}?v=1.2"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/p.css') }}?v=1.2"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/button.css') }}?v=1.2"/>
+<style>
+.layout{display:flex!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;height:100vh;overflow:hidden}
+.of-master-frame{display:flex;flex-direction:column;width:100%;height:100vh;background:#f8f9fa}
+.bg-lighter{background-color:#f1f3f5!important}
+.of-header h4{white-space:nowrap;margin-bottom:0;font-size:28px!important;color:#1a1f36}
+.sidebar-right{width:450px;border-left:1px solid #e0e6ed;background:#fff;height:100%;overflow-y:auto;padding:25px;flex-shrink:0}
+.section-title{font-size:11px;font-weight:800;color:#adb5bd;text-transform:uppercase;letter-spacing:1.2px;margin:25px 0 15px}
+.block-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.block-item{border:1px solid #f1f3f5;border-radius:8px;padding:18px 5px;text-align:center;cursor:grab;background:#fff;transition:all .15s ease}
+.block-item:hover{border-color:#c0392b;background:#fffcfc;transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,0,0,.06)}
+.block-item i{font-size:22px;display:block;margin-bottom:10px;color:#c0392b}
+.block-item span{font-size:11px;font-weight:700;color:#4f566b;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.canvas-left{flex-grow:1;overflow:auto;background:#f8f9fa;padding:40px}
+.hs-row{margin-bottom:22px}
+.hs-row label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;color:#4f566b;margin-bottom:8px;letter-spacing:.8px}
+.hs-input,.hs-select{width:100%;padding:10px 12px;border:1px solid #e0e6ed;border-radius:8px;font-size:14px;color:#1a1f36;transition:all .2s;background:#fff}
+.hs-divider{border:0;border-top:1px solid #f1f3f5;margin:20px 0}
+.hs-actions{display:flex;gap:10px;margin-top:20px}
+.hs-btn-remove{background:#fff5f5;color:#c0392b;border:1px solid #ffe3e3;padding:10px 15px;border-radius:8px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;flex:1;justify-content:center;cursor:pointer}
+.hs-btn-remove:hover{background:#c0392b;color:#fff}
+[id$="-settings-panel"]{display:none}
 
-        .builder-sidebar {
-            background: #fff;
-            border-right: 1px solid #e0e0e0;
-            overflow-y: auto;
-            padding: 15px;
-        }
+.side-panel {
+    position: fixed;
+    right: -450px;
+    top: 0;
+    width: 450px;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+    z-index: 1050;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+.side-panel.open { right: 0; }
+.side-panel-header {
+    padding: 24px;
+    border-bottom: 1px solid #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.side-panel-title { font-size: 18px; font-weight: 800; color: #1a1f36; }
+.side-panel-body { padding: 24px; overflow-y: auto; flex: 1; }
+.side-panel-footer { padding: 24px; border-top: 1px solid #f1f3f5; display: flex; gap: 12px; }
 
-        .builder-blocks-title {
-            font-weight: 600;
-            font-size: 13px;
-            text-transform: uppercase;
-            color: #666;
-            margin-bottom: 12px;
-        }
+.ps-section-title {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #adb5bd;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+.featured-image-box {
+    border: 2px dashed #e0e6ed;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fcfdfe;
+}
+.featured-image-box:hover { border-color: #c0392b; background: #fffcfc; }
+.featured-image-box i { font-size: 32px; color: #adb5bd; margin-bottom: 12px; }
+.featured-image-box p { font-size: 13px; color: #4f566b; margin: 0; font-weight: 600; }
 
-        .block-item {
-            padding: 10px;
-            margin-bottom: 8px;
-            background: #f5f5f5;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            cursor: move;
-            user-select: none;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #333;
-        }
+.revision-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #f1f3f5;
+}
+.revision-info { display: flex; align-items: center; gap: 12px; }
+.revision-version {
+    width: 28px;
+    height: 28px;
+    background: #f1f3f5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #4f566b;
+}
+.revision-date { font-size: 13px; color: #1a1f36; font-weight: 600; }
+.btn-restore {
+    background: #fff5f5;
+    color: #c0392b;
+    border: 1px solid #ffe3e3;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.btn-restore:hover { background: #c0392b; color: #fff; }
 
-        .block-item:hover {
-            background: #efefef;
-            border-color: #bbb;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+#drop-indicator {
+    height: 4px;
+    background: #c0392b;
+    border-radius: 2px;
+    margin: 10px 0;
+    width: 100%;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 10px rgba(192, 57, 43, 0.4);
+}
+.drag-over {
+    background-color: rgba(192, 57, 43, 0.02) !important;
+    outline: 2px dashed #c0392b !important;
+    outline-offset: -2px;
+}
 
-        .block-item i {
-            font-size: 16px;
-            width: 24px;
-            text-align: center;
-            color: #e74c3c;
-        }
-
-        .builder-canvas {
-            background: #fff;
-            padding: 20px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .canvas-placeholder {
-            text-align: center;
-            color: #999;
-            padding: 40px 20px;
-            font-size: 14px;
-            border: 2px dashed #ddd;
-            border-radius: 5px;
-            background: #fafafa;
-        }
-
-        .content-block {
-            background: #fff;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 15px;
-            position: relative;
-            transition: all 0.2s;
-        }
-
-        .content-block:hover {
-            border-color: #e74c3c;
-            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.15);
-        }
-
-        .block-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .block-type {
-            font-weight: 600;
-            font-size: 12px;
-            color: #e74c3c;
-            text-transform: uppercase;
-        }
-
-        .block-actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        .block-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px 8px;
-            color: #999;
-            font-size: 14px;
-            transition: color 0.2s;
-        }
-
-        .block-btn:hover {
-            color: #e74c3c;
-        }
-
-        .block-content {
-            font-size: 13px;
-        }
-
-        .block-content input,
-        .block-content textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 13px;
-        }
-
-        .block-content textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        .form-section {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .form-section h3 {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .save-zone {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        @media (max-width: 1200px) {
-            .page-builder-container {
-                grid-template-columns: 1fr;
-            }
-            .builder-sidebar {
-                display: flex;
-                overflow-x: auto;
-                border-right: none;
-                border-bottom: 1px solid #e0e0e0;
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-            .builder-blocks-title {
-                width: 100%;
-            }
-            .block-item {
-                margin-bottom: 0;
-            }
-        }
-    </style>
+.editor-empty-state {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f3f5;
+    margin-bottom: 20px;
+    color: #adb5bd;
+}
+.editor-empty-badge {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-right: 12px;
+    color: #6c757d;
+}
+.editor-empty-input {
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: #adb5bd;
+    width: 100%;
+    outline: none;
+}
+</style>
 @endpush
-
 @section('page-content')
-<main class="main-content" id="mainContent">
-    <div class="page-header">
-        <h2 class="view-title">{{ __('Edit Page') }}: {{ $page->title }}</h2>
+<div class="overlay" id="side-overlay"></div>
+<div class="of-master-frame">
+<form action="{{ route('dealer.website.pages.update', $page->id) }}" method="POST" id="page-builder-form" style="display:contents" onsubmit="return prepareFormSubmit()">
+@csrf
+@method('PATCH')
+<div class="of-header p-4 d-flex align-items-center bg-white border-bottom shadow-sm">
+<h4 class="fw-bold m-0">Edit Page</h4>
+<div class="ms-auto d-flex align-items-center gap-2">
+<a href="{{ route('dealer.website.pages.index') }}" class="btn btn-outline-secondary btn-sm px-4 fw-bold"><i class="fa-solid fa-arrow-left me-2"></i>Back</a>
+<button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold" onclick="toggleSidePanel('page-settings')"><i class="fa-solid fa-gear me-2"></i>Page Settings</button>
+<button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold" onclick="toggleSidePanel('page-revisions')"><i class="fa-solid fa-clock-rotate-left me-2"></i>Page Revisions</button>
+<button type="submit" class="btn btn-danger btn-sm px-5 fw-bold" style="background:#c0392b"><i class="fa-solid fa-check me-2"></i>Update</button>
+</div>
+</div>
+<div class="input-group border-bottom bg-white" style="height:55px">
+<span class="bg-lighter input-group-text border-0 px-4 fw-bold small text-muted" style="min-width:140px">PAGE TITLE</span>
+<input type="text" value="{{ $page->title }}" class="form-control border-0 px-4 fs-6" name="title" id="page-title" required autocomplete="off" placeholder="Enter page title...">
+<span class="bg-white input-group-text border-0 text-muted small px-4 border-start" id="top-status-badge">
+    <i class="fa-solid fa-circle me-2" style="font-size:8px;color:{{ $page->is_active ? '#27ae60' : '#ced4da' }}"></i> Status: {{ $page->is_active ? 'Published' : 'Draft' }}
+</span>
+</div>
+
+<div class="d-flex flex-grow-1 overflow-hidden">
+<div class="canvas-left flex-grow-1 overflow-auto">
+<div class="bg-white border rounded shadow-sm mx-auto my-4" style="max-width:1000px;min-height:1000px">
+<div class="card border-0">
+<div class="fw-bold bg-lighter card-header d-flex justify-content-between align-items-center py-3">
+<span class="small text-dark">Content Editor</span>
+<div class="d-flex align-items-center gap-2">
+<div class="btn-group bg-white border">
+<button type="button" class="btn btn-light btn-sm border-end" id="btn-undo"><i class="fa-solid fa-rotate-left"></i> Undo</button>
+<button type="button" class="btn btn-light btn-sm" id="btn-redo"><i class="fa-solid fa-rotate-right text-primary"></i> Redo</button>
+</div>
+</div>
+</div>
+<div class="p-4">
+<div id="content-editor-zone">
+<div id="blocks-container" style="min-height:800px"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sidebar-right">
+@include('dealer.pages.website.pages._panels')
+<div id="sidebar-default-content">
+<p class="text-muted small mb-3 ps-1" style="font-size:11px">Select a block from the editor to adjust its settings.</p>
+<div class="section-title">Layout</div>
+<div class="block-grid">
+<div class="block-item" draggable="true" data-type="container"><i class="fa-solid fa-square-poll-horizontal"></i><span>Container</span></div>
+<div class="block-item" draggable="true" data-type="2col"><i class="fa-solid fa-columns"></i><span>2-Col</span></div>
+<div class="block-item" draggable="true" data-type="3col"><i class="fa-solid fa-table-columns"></i><span>3-Col</span></div>
+<div class="block-item" draggable="true" data-type="overlay"><i class="fa-solid fa-clone"></i><span>Overlay</span></div>
+<div class="block-item" draggable="true" data-type="html"><i class="fa-solid fa-code"></i><span>HTML</span></div>
+<div class="block-item" draggable="true" data-type="css"><i class="fa-solid fa-terminal"></i><span>CSS</span></div>
+</div>
+<div class="section-title">Elements</div>
+<div class="block-grid">
+<div class="block-item" draggable="true" data-type="span"><i class="fa-solid fa-quote-left"></i><span>Span</span></div>
+<div class="block-item" draggable="true" data-type="heading"><i class="fa-solid fa-heading"></i><span>Heading</span></div>
+<div class="block-item" draggable="true" data-type="text"><i class="fa-solid fa-align-left"></i><span>Text</span></div>
+<div class="block-item" draggable="true" data-type="button"><i class="fa-solid fa-toggle-on"></i><span>Button</span></div>
+<div class="block-item" draggable="true" data-type="divider"><i class="fa-solid fa-minus"></i><span>Divider</span></div>
+<div class="block-item" draggable="true" data-type="image"><i class="fa-solid fa-image"></i><span>Image</span></div>
+<div class="block-item" draggable="true" data-type="video"><i class="fa-solid fa-video"></i><span>Video</span></div>
+<div class="block-item" draggable="true" data-type="carousel"><i class="fa-solid fa-images"></i><span>Carousel</span></div>
+<div class="block-item" draggable="true" data-type="accordion"><i class="fa-solid fa-list"></i><span>Accordion</span></div>
+<div class="block-item" draggable="true" data-type="spacer"><i class="fa-solid fa-arrows-up-down"></i><span>Spacer</span></div>
+<div class="block-item" draggable="true" data-type="icon"><i class="fa-solid fa-icons"></i><span>Icon</span></div>
+<div class="block-item" draggable="true" data-type="cart"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></div>
+<div class="block-item" draggable="true" data-type="iframe"><i class="fa-solid fa-window-maximize"></i><span>iFrame</span></div>
+<div class="block-item" draggable="true" data-type="card"><i class="fa-solid fa-id-card"></i><span>Card</span></div>
+</div>
+<div class="section-title">Overfuel Blocks</div>
+<div class="block-grid">
+<div class="block-item" draggable="true" data-type="inventory"><i class="fa-solid fa-car-side"></i><span>Inventory</span></div>
+<div class="block-item" draggable="true" data-type="search"><i class="fa-solid fa-magnifying-glass"></i><span>Search</span></div>
+<div class="block-item" draggable="true" data-type="form"><i class="fa-solid fa-file-invoice"></i><span>Form</span></div>
+<div class="block-item" draggable="true" data-type="blog"><i class="fa-solid fa-newspaper"></i><span>Blog Posts</span></div>
+<div class="block-item" draggable="true" data-type="content_block"><i class="fa-solid fa-cubes"></i><span>Content Block</span></div>
+<div class="block-item" draggable="true" data-type="body_types"><i class="fa-solid fa-truck-pickup"></i><span>Body Types</span></div>
+<div class="block-item" draggable="true" data-type="map_hours"><i class="fa-solid fa-clock"></i><span>Map / Hours</span></div>
+<div class="block-item" draggable="true" data-type="plugin"><i class="fa-solid fa-plug"></i><span>Plugin</span></div>
+</div>
+</div>
+</div>
+</div>
+
+{{-- Page Settings Panel (Right Off-canvas) --}}
+<div class="side-panel" id="side-panel-page-settings">
+    <div class="side-panel-header">
+        <span class="side-panel-title">Page Settings</span>
+        <button type="button" class="btn-close" onclick="toggleSidePanel('page-settings')"></button>
     </div>
+    <div class="side-panel-body">
+        <div class="ps-section-title">Post Metadata</div>
+        <div class="hs-row"><label>Status</label>
+            <select class="hs-select" name="is_active" id="ps-status" onchange="updateTopStatus(this)">
+                <option value="1" {{ $page->is_active ? 'selected' : '' }}>Published</option>
+                <option value="0" {{ !$page->is_active ? 'selected' : '' }}>Draft</option>
+                <option value="pending">Pending Review</option>
+            </select>
+        </div>
+        <div class="hs-row"><label>Publish Date</label>
+            <input type="datetime-local" class="hs-input" name="published_at" id="ps-published-at" value="{{ $page->published_at ? $page->published_at->format('Y-m-d\TH:i') : '' }}">
+        </div>
+        <div class="hs-row"><label>Visibility</label>
+            <select class="hs-select"><option value="public" selected>Public</option><option value="private">Private</option></select>
+        </div>
+        <div class="hs-row"><label>Author</label>
+            <select class="hs-select"><option value="1" selected>Admin</option></select>
+        </div>
 
-    <div class="view-content">
-        <form method="POST" action="{{ $routes['update'] }}" id="pageForm" style="max-width:1400px;">
-            @csrf
-            @method('PATCH')
+        <hr class="hs-divider">
+        <div class="ps-section-title">SEO & Taxonomy</div>
+        <div class="hs-row"><label>Page Slug</label><input class="hs-input" name="slug" id="page-slug" value="{{ $page->slug }}" placeholder="home"></div>
+        <div class="hs-row"><label>Tags (Comma separated)</label><input class="hs-input" name="tags" id="ps-tags" value="{{ is_array($page->tags) ? implode(', ', $page->tags) : '' }}" placeholder="news, update, gallery"></div>
+        <div class="hs-row"><label>Meta Title</label><input class="hs-input" name="meta_title" id="ps-meta-title" value="{{ $page->meta_title }}" placeholder="Page browser title"></div>
+        <div class="hs-row"><label>Meta Description</label><textarea class="hs-input" name="meta_description" id="ps-meta-description" style="min-height:80px">{{ $page->meta_description }}</textarea></div>
 
-            <!-- Status Badge -->
-            <div style="margin-bottom: 20px;">
-                <span class="status-badge" style="background: {{ $page->is_active ? '#d4edda' : '#f8d7da' }}; color: {{ $page->is_active ? '#155724' : '#721c24' }};">
-                    {{ $page->getStatusLabel() }}
-                </span>
-                <small style="color: #666; margin-left: 15px;">
-                    <strong>{{ __('Created:') }}</strong> {{ $page->created_at->format('M d, Y H:i') }} |
-                    <strong>{{ __('Updated:') }}</strong> {{ $page->updated_at->format('M d, Y H:i') }}
-                </small>
-            </div>
+        <hr class="hs-divider">
+        <div class="ps-section-title">Style</div>
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <span style="font-size:13px;font-weight:600;color:#1a1f36">Hide Page Header</span>
+            <div class="form-check form-switch"><input class="form-check-input" type="checkbox"></div>
+        </div>
 
-            <!-- Section 1: Basic Info -->
-            <div class="form-section">
-                <h3>{{ __('Page Information') }}</h3>
-
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label for="title" class="form-label">{{ __('Page Title') }} <span style="color:#e74c3c;">*</span></label>
-                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title', $page->title) }}" required placeholder="{{ __('Enter page title') }}">
-                    @error('title')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label for="slug" class="form-label">{{ __('URL Slug') }} <span style="color:#e74c3c;">*</span></label>
-                    <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{ old('slug', $page->slug) }}" required placeholder="{{ __('page-url-slug') }}" pattern="^[a-z0-9\-]+$">
-                    <small style="color:#7f8c8d;">{{ __('Lowercase letters, numbers, and hyphens only') }}</small>
-                    @error('slug')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-            </div>
-
-            <!-- Section 2: Page Builder -->
-            <div class="form-section">
-                <h3>{{ __('Page Content') }} <span style="color:#e74c3c;">*</span></h3>
-                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">{{ __('Drag blocks from the left sidebar to build your page') }}</p>
-
-                <div class="page-builder-container">
-                    <!-- Sidebar: Available Blocks -->
-                    <div class="builder-sidebar">
-                        <div class="builder-blocks-title">{{ __('Blocks') }}</div>
-
-                        <div class="block-item" draggable="true" data-block-type="heading">
-                            <i class="bi bi-type-h1"></i> {{ __('Heading') }}
-                        </div>
-
-                        <div class="block-item" draggable="true" data-block-type="paragraph">
-                            <i class="bi bi-type"></i> {{ __('Paragraph') }}
-                        </div>
-
-                        <div class="block-item" draggable="true" data-block-type="image">
-                            <i class="bi bi-image"></i> {{ __('Image') }}
-                        </div>
-
-                        <div class="block-item" draggable="true" data-block-type="button">
-                            <i class="bi bi-cursor-fill"></i> {{ __('Button') }}
-                        </div>
-
-                        <div class="block-item" draggable="true" data-block-type="columns">
-                            <i class="bi bi-columns-gap"></i> {{ __('Columns') }}
-                        </div>
-
-                        <div class="block-item" draggable="true" data-block-type="separator">
-                            <i class="bi bi-dash-lg"></i> {{ __('Divider') }}
-                        </div>
-
-                        <div class="block-item" draggable="true" data-block-type="quote">
-                            <i class="bi bi-quote"></i> {{ __('Quote') }}
-                        </div>
-
-                        <div class="block-item" draggable="true" data-block-type="list">
-                            <i class="bi bi-list-ul"></i> {{ __('List') }}
-                        </div>
-
-                        <div class="block-item" draggable="true" data-block-type="spacer">
-                            <i class="bi bi-arrow-up-down"></i> {{ __('Spacer') }}
-                        </div>
-                    </div>
-
-                    <!-- Canvas: Drop Area -->
-                    <div class="builder-canvas" id="builderCanvas">
-                        <div class="canvas-placeholder" id="canvasPlaceholder">
-                            {{ __('Drag blocks here to build your page') }}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Hidden field to store page structure -->
-                <input type="hidden" name="content" id="contentStructure" value="{{ old('content', $page->content) }}">
-            </div>
-
-            <!-- Section 3: SEO -->
-            <div class="form-section">
-                <h3>{{ __('SEO Settings') }}</h3>
-
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label for="meta_title" class="form-label">{{ __('Meta Title') }}</label>
-                    <input type="text" class="form-control @error('meta_title') is-invalid @enderror" id="meta_title" name="meta_title" value="{{ old('meta_title', $page->meta_title) }}" placeholder="{{ __('Enter SEO title') }}" maxlength="255">
-                    <small style="color:#7f8c8d;">{{ __('Leave empty to use page title') }}</small>
-                </div>
-
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label for="meta_description" class="form-label">{{ __('Meta Description') }}</label>
-                    <textarea class="form-control @error('meta_description') is-invalid @enderror" id="meta_description" name="meta_description" placeholder="{{ __('Enter SEO description') }}" maxlength="255" style="min-height: 60px;">{{ old('meta_description', $page->meta_description) }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="meta_keywords" class="form-label">{{ __('Meta Keywords') }}</label>
-                    <input type="text" class="form-control @error('meta_keywords') is-invalid @enderror" id="meta_keywords" name="meta_keywords" value="{{ old('meta_keywords', $page->meta_keywords) }}" placeholder="{{ __('keyword1, keyword2, keyword3') }}">
-                </div>
-            </div>
-
-            <!-- Section 4: Tags & Publishing -->
-            <div class="form-section">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div>
-                        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">{{ __('Tags') }}</h3>
-                        <input type="text" class="form-control @error('tags') is-invalid @enderror" id="tags" placeholder="{{ __('Add tags...') }}" value="">
-                        <small style="color:#7f8c8d; display: block; margin-top: 5px;">{{ __('Press Enter to add') }}</small>
-                        <div id="tags-container" style="margin-top:10px;"></div>
-                        <input type="hidden" name="tags" id="tags-hidden" value="[]">
-                    </div>
-
-                    <div>
-                        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">{{ __('Publishing') }}</h3>
-                        <div class="form-check" style="margin-bottom: 10px;">
-                            <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', $page->is_active) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="is_active">{{ __('Active') }}</label>
-                        </div>
-                        <div class="form-check" style="margin-bottom: 10px;">
-                            <input class="form-check-input" type="checkbox" name="is_featured" id="is_featured" value="1" {{ old('is_featured', $page->is_featured) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="is_featured">{{ __('Featured') }}</label>
-                        </div>
-                        <div>
-                            <label for="published_at" class="form-label" style="font-size: 13px; margin-top: 10px;">{{ __('Publish Date') }}</label>
-                            <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror" id="published_at" name="published_at" value="{{ old('published_at', $page->published_at?->format('Y-m-d\TH:i')) }}" style="font-size: 13px;">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Submit Section -->
-            <div class="save-zone">
-                <button type="submit" class="btn btn-primary" style="padding: 10px 30px; font-weight: 600;">
-                    <i class="bi bi-check-circle"></i> {{ __('Update Page') }}
-                </button>
-                <a href="{{ route('dealer.website.pages.index') }}" class="btn btn-secondary" style="padding: 10px 30px; margin-left: 10px;">
-                    {{ __('Cancel') }}
-                </a>
-            </div>
-        </form>
+        <hr class="hs-divider">
+        <div class="ps-section-title">Featured Image</div>
+        <div class="featured-image-box">
+            <i class="fa-regular fa-image"></i>
+            <p>Click or drag image to upload</p>
+        </div>
     </div>
-</main>
+    <div class="side-panel-footer">
+        <button type="button" class="btn btn-danger w-100 fw-bold" onclick="toggleSidePanel('page-settings')" style="background:#c0392b">Apply Settings</button>
+    </div>
+</div>
 
+{{-- Page Revisions Panel (Right Off-canvas) --}}
+<div class="side-panel" id="side-panel-page-revisions">
+    <div class="side-panel-header">
+        <span class="side-panel-title">Page Revisions</span>
+        <button type="button" class="btn-close" onclick="toggleSidePanel('page-revisions')"></button>
+    </div>
+    <div class="side-panel-body">
+        <div class="revision-item">
+            <div class="revision-info">
+                <div class="revision-version">5</div>
+                <div>
+                    <div class="revision-date">Mar 29, 2026 11:20 PM</div>
+                    <div class="text-muted small">Current Version</div>
+                </div>
+            </div>
+        </div>
+        {{-- Revision History placeholders --}}
+        <div class="revision-item">
+            <div class="revision-info">
+                <div class="revision-version">4</div>
+                <div><div class="revision-date">{{ $page->updated_at->subDay()->format('M d, Y h:i A') }}</div></div>
+            </div>
+            <button type="button" class="btn-restore">Restore</button>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" name="content" id="page-content-json" value="{{ $page->content }}">
+<input type="hidden" name="meta_keywords" id="meta-keywords-hidden" value="{{ $page->meta_keywords }}">
+<input type="hidden" name="is_featured" value="{{ $page->is_featured ? 1 : 0 }}">
+</form>
+</div>
+@endsection
+@push('pannel-scripts')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=2.0"></script>
 <script>
-// Page Builder Logic
-let pageBlocks = [];
-let draggedBlockType = null;
+// Sync Top Bar Status
+function updateTopStatus(select) {
+    const badge = document.getElementById('top-status-badge');
+    const dot = badge.querySelector('i');
+    const text = select.options[select.selectedIndex].text;
+    
+    if (select.value === '1') {
+        dot.style.color = '#27ae60';
+    } else {
+        dot.style.color = '#ced4da';
+    }
+    badge.innerHTML = `<i class="fa-solid fa-circle me-2" style="font-size:8px;color:${dot.style.color}"></i> Status: ${text}`;
+}
 
-const builderCanvas = document.getElementById('builderCanvas');
-const contentStructure = document.getElementById('contentStructure');
-const canvasPlaceholder = document.getElementById('canvasPlaceholder');
+function toggleSidePanel(id) {
+    const panels = ['page-settings', 'page-revisions'];
+    const overlay = document.getElementById('side-overlay');
+    panels.forEach(p => {
+        const el = document.getElementById('side-panel-' + p);
+        if (p === id) {
+            if (el.classList.contains('open')) { el.classList.remove('open'); overlay.style.display = 'none'; }
+            else { panels.forEach(o => document.getElementById('side-panel-' + o).classList.remove('open')); el.classList.add('open'); overlay.style.display = 'block'; }
+        } else { el.classList.remove('open'); }
+    });
+}
+document.getElementById('side-overlay').addEventListener('click', function() {
+    document.querySelectorAll('.side-panel').forEach(p => p.classList.remove('open'));
+    this.style.display = 'none';
+});
+function prepareFormSubmit() {
+    // Collect content
+    var blocksContainer = document.getElementById('blocks-container');
+    if (typeof collectBlocksFromContainer === 'function') {
+        var contentData = collectBlocksFromContainer(blocksContainer);
+        document.getElementById('page-content-json').value = JSON.stringify(contentData);
+    }
 
-// Block Templates
-const blockTemplates = {
-    heading: { type: 'heading', content: 'Enter heading text', level: 'h2' },
-    paragraph: { type: 'paragraph', content: 'Enter paragraph text' },
-    image: { type: 'image', src: '', alt: '', width: '100%' },
-    button: { type: 'button', text: 'Click Me', url: '#', color: 'primary' },
-    columns: { type: 'columns', cols: 2, content: ['Column 1', 'Column 2'] },
-    separator: { type: 'separator' },
-    quote: { type: 'quote', text: 'Enter quote text', author: '' },
-    list: { type: 'list', items: ['Item 1', 'Item 2', 'Item 3'] },
-    spacer: { type: 'spacer', height: '20px' }
-};
+    // Sync Page Settings from sidebar to hidden inputs (if any)
+    var title = document.getElementById('page-title').value;
+    var slugField = document.getElementById('page-slug');
+    if (!slugField.value && title) {
+        slugField.value = title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/^-+|-+$/g, '');
+    }
 
-// Load existing content
-function loadExistingContent() {
+    return true;
+}
+// Slug auto-generation & sanitization
+document.getElementById('page-title').addEventListener('input', function() {
+    var slug = this.value.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/^-+|-+$/g, '');
+    document.getElementById('page-slug').value = slug;
+});
+
+document.getElementById('page-slug').addEventListener('input', function() {
+    this.value = this.value.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-');
+});
+
+document.getElementById('page-slug').addEventListener('blur', function() {
+    this.value = this.value.replace(/^-+|-+$/g, '');
+});
+document.addEventListener('DOMContentLoaded', function() {
     try {
-        const content = contentStructure.value;
-        if (content && content.trim() !== '[]' && content.trim() !== '') {
-            pageBlocks = JSON.parse(content);
-            renderCanvas();
+        var contentData = {!! $page->content ?: '[]' !!};
+        if (window.renderExistingContent) {
+            window.renderExistingContent(contentData);
         }
     } catch (e) {
-        console.error('Error loading content:', e);
+        console.error("Error loading page content:", e);
     }
-}
-
-// Drag and Drop - Dragging from Sidebar
-document.querySelectorAll('.block-item').forEach(item => {
-    item.addEventListener('dragstart', (e) => {
-        draggedBlockType = e.currentTarget.dataset.blockType;
-        e.dataTransfer.effectAllowed = 'copy';
-        e.dataTransfer.setData('text/plain', draggedBlockType);
-    });
-});
-
-// Canvas Drop Zone
-builderCanvas.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-    builderCanvas.style.background = '#f0f0f0';
-});
-
-builderCanvas.addEventListener('dragleave', () => {
-    builderCanvas.style.background = '#fff';
-});
-
-builderCanvas.addEventListener('drop', (e) => {
-    e.preventDefault();
-    builderCanvas.style.background = '#fff';
-
-    if (draggedBlockType) {
-        const blockData = JSON.parse(JSON.stringify(blockTemplates[draggedBlockType]));
-        blockData.id = 'block-' + Date.now() + Math.random();
-        pageBlocks.push(blockData);
-        renderCanvas();
-        draggedBlockType = null;
-    }
-});
-
-// Render Canvas
-function renderCanvas() {
-    if (pageBlocks.length === 0) {
-        canvasPlaceholder.style.display = 'block';
-        builderCanvas.innerHTML = '<div class="canvas-placeholder" id="canvasPlaceholder">Drag blocks here to build your page</div>';
-    } else {
-        canvasPlaceholder.style.display = 'none';
-        builderCanvas.innerHTML = '';
-        pageBlocks.forEach((block, idx) => {
-            builderCanvas.appendChild(createBlockElement(block, idx));
+    
+    ['vs','crs','tbs','inv','plg','frm','blg','sch','mh'].forEach(function(p) {
+        var btn = document.getElementById(p + '-back-btn');
+        if (btn) btn.addEventListener('click', function() {
+            document.querySelectorAll('[id$="-settings-panel"]').forEach(function(el) { el.style.display = 'none'; });
+            var d = document.getElementById('sidebar-default-content'); if (d) d.style.display = 'block';
         });
-    }
-    updateContentStructure();
-}
-
-// Create Block Element
-function createBlockElement(block, idx) {
-    const blockEl = document.createElement('div');
-    blockEl.className = 'content-block';
-    blockEl.dataset.blockId = block.id;
-
-    let contentHTML = '';
-
-    switch (block.type) {
-        case 'heading':
-            contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">Heading</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="editBlock('${block.id}')">✏️</button>
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')">🗑️</button>
-                    </div>
-                </div>
-                <div class="block-content">
-                    <input type="text" value="${block.content}" placeholder="Heading text" onchange="updateBlockContent('${block.id}', 'content', this.value)">
-                </div>
-            `;
-            break;
-
-        case 'paragraph':
-            contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">Paragraph</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')">🗑️</button>
-                    </div>
-                </div>
-                <div class="block-content">
-                    <textarea placeholder="Paragraph text" onchange="updateBlockContent('${block.id}', 'content', this.value)">${block.content}</textarea>
-                </div>
-            `;
-            break;
-
-        case 'image':
-            contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">Image</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')">🗑️</button>
-                    </div>
-                </div>
-                <div class="block-content">
-                    <input type="text" value="${block.src}" placeholder="Image URL" onchange="updateBlockContent('${block.id}', 'src', this.value)" style="margin-bottom: 8px;">
-                    <input type="text" value="${block.alt}" placeholder="Alt text" onchange="updateBlockContent('${block.id}', 'alt', this.value)">
-                </div>
-            `;
-            break;
-
-        case 'button':
-            contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">Button</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')">🗑️</button>
-                    </div>
-                </div>
-                <div class="block-content">
-                    <input type="text" value="${block.text}" placeholder="Button text" onchange="updateBlockContent('${block.id}', 'text', this.value)" style="margin-bottom: 8px;">
-                    <input type="text" value="${block.url}" placeholder="Button URL" onchange="updateBlockContent('${block.id}', 'url', this.value)">
-                </div>
-            `;
-            break;
-
-        case 'separator':
-            contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">Divider</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')">🗑️</button>
-                    </div>
-                </div>
-                <div style="height: 1px; background: #ddd; margin: 10px 0;"></div>
-            `;
-            break;
-
-        default:
-            contentHTML = `
-                <div class="block-header">
-                    <span class="block-type">${block.type.charAt(0).toUpperCase() + block.type.slice(1)}</span>
-                    <div class="block-actions">
-                        <button type="button" class="block-btn" onclick="deleteBlock('${block.id}')">🗑️</button>
-                    </div>
-                </div>
-                <div class="block-content">[${block.type} block]</div>
-            `;
-    }
-
-    blockEl.innerHTML = contentHTML;
-    return blockEl;
-}
-
-// Update Block
-function updateBlockContent(blockId, field, value) {
-    const block = pageBlocks.find(b => b.id === blockId);
-    if (block) {
-        block[field] = value;
-        updateContentStructure();
-    }
-}
-
-// Delete Block
-function deleteBlock(blockId) {
-    pageBlocks = pageBlocks.filter(b => b.id !== blockId);
-    renderCanvas();
-}
-
-// Update Content Structure
-function updateContentStructure() {
-    contentStructure.value = JSON.stringify(pageBlocks);
-}
-
-// Tags Management
-let tags = @json($page->tags ?? []);
-const tagInput = document.getElementById('tags');
-const tagsContainer = document.getElementById('tags-container');
-const tagsHidden = document.getElementById('tags-hidden');
-
-function renderTags() {
-    tagsContainer.innerHTML = '';
-    tags.forEach((tag, index) => {
-        const badge = document.createElement('span');
-        badge.className = 'badge bg-primary me-2 mb-2';
-        badge.innerHTML = `${tag} <button type="button" class="btn-close btn-close-white" onclick="removeTag(${index})" style="font-size: 0.7rem;"></button>`;
-        tagsContainer.appendChild(badge);
+        var rm = document.getElementById(p + '-remove-btn');
+        if (rm) rm.addEventListener('click', function() {
+            if (window.activeEl) { var b = window.activeEl.closest('.dropped-block'); if (b) b.remove(); }
+            document.querySelectorAll('[id$="-settings-panel"]').forEach(function(el) { el.style.display = 'none'; });
+            var d = document.getElementById('sidebar-default-content'); if (d) d.style.display = 'block';
+        });
     });
-    tagsHidden.value = JSON.stringify(tags);
-}
-
-function removeTag(index) {
-    tags.splice(index, 1);
-    renderTags();
-}
-
-tagInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ',') {
-        e.preventDefault();
-        const tag = tagInput.value.trim();
-        if (tag && !tags.includes(tag)) {
-            tags.push(tag);
-            tagInput.value = '';
-            renderTags();
-        }
-    }
-});
-
-tagInput.addEventListener('blur', () => {
-    const tag = tagInput.value.trim();
-    if (tag && !tags.includes(tag)) {
-        tags.push(tag);
-        tagInput.value = '';
-        renderTags();
-    }
-});
-
-// Initial renders
-loadExistingContent();
-renderTags();
-
-// Validate on submit
-document.getElementById('pageForm').addEventListener('submit', function(e) {
-    if (pageBlocks.length === 0) {
-        e.preventDefault();
-        alert('Please add at least one block to your page');
-    }
+    var layout = document.querySelector('.layout');
+    if (layout) { layout.style.display = 'flex'; layout.style.width = '100%'; layout.style.maxWidth = '100%'; layout.style.flex = '1'; layout.style.overflow = 'hidden'; }
 });
 </script>
-@endsection
+@endpush

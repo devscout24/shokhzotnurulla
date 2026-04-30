@@ -61,8 +61,9 @@ Route::prefix('dealer')->name('dealer.')
             Route::get('/create', [WebsitePageController::class, 'create'])->name('create');
             Route::post('/', [WebsitePageController::class, 'store'])->name('store');
             Route::get('/{page}/edit', [WebsitePageController::class, 'edit'])->name('edit');
-            Route::patch('/{page}', [WebsitePageController::class, 'update'])->name('update');
+            Route::match(['PUT', 'PATCH'], '/{page}', [WebsitePageController::class, 'update'])->name('update');
             Route::delete('/{page}', [WebsitePageController::class, 'destroy'])->name('destroy');
+            Route::post('/{page}/duplicate', [WebsitePageController::class, 'duplicate'])->name('duplicate');
             Route::get('/by-tag/{tag}', [WebsitePageController::class, 'getByTag'])->name('by-tag');
         });
 

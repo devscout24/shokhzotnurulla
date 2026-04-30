@@ -161,7 +161,7 @@ document.getElementById('bs-remove-btn').addEventListener('click', () => {
 function dropButtonBlock(returnBlock = false) {
   const emptyState = document.getElementById('empty-state');
   const blocksContainer = document.getElementById('blocks-container');
-  emptyState.style.display = 'none';
+  if (emptyState) emptyState.style.display = 'none';
 
   const block = document.createElement('div');
   block.className = 'dropped-block';

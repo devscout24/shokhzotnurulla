@@ -321,6 +321,18 @@ class FrontendController extends Controller
         ]);
     }
 
+    public function showPage(string $slug): View
+    {
+        $dealerId = $this->dealerResolver->resolve();
+        
+        $page = \App\Models\Website\Page::where('slug', $slug)
+            ->where('dealer_id', $dealerId)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        return view('frontend.pages.dynamic-page', compact('page'));
+    }
+
     // ─── Print Printables ───────────────────────────────────────────────────────────────
 
     public function printable(Request $request, Vehicle $vehicle, VehiclePrintable $printable): View|Response

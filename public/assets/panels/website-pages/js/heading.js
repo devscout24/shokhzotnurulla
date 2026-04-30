@@ -94,7 +94,7 @@ document.getElementById('hs-remove-btn').addEventListener('click', () => {
 function dropHeadingBlock(returnBlock = false) {
   const emptyState = document.getElementById('empty-state');
   const blocksContainer = document.getElementById('blocks-container');
-  emptyState.style.display = 'none';
+  if (emptyState) emptyState.style.display = 'none';
 
   const block = document.createElement('div');
   block.className = 'dropped-block';
@@ -108,7 +108,7 @@ function dropHeadingBlock(returnBlock = false) {
       <button class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner">
-      <h1 contenteditable="true" spellcheck="false"></h1>
+      <h1 contenteditable="true" spellcheck="false" data-placeholder="Enter Heading..."></h1>
     </div>`;
 
   if (returnBlock) return block;

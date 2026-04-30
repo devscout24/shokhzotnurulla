@@ -77,6 +77,9 @@ Route::name('frontend.')->group(function () {
         Route::patch('/{formEntry}/nps',    [FormEntryController::class, 'updateNps'])->name('nps');
         Route::post('/unlock-price',         [FormEntryController::class, 'unlockPrice'])->name('unlock-price');
     });
+
+    // Dynamic Pages (Catch-all for slugs)
+    Route::get('/{slug}', [FrontendController::class, 'showPage'])->name('page.show');
 });
 
 // ── Panel Routes ──────────────────────────────────────────────────────────────

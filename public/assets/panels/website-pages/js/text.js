@@ -68,7 +68,7 @@ document.getElementById('ts-remove-btn').addEventListener('click', () => {
 function dropTextBlock(returnBlock = false) {
   const emptyState = document.getElementById('empty-state');
   const blocksContainer = document.getElementById('blocks-container');
-  emptyState.style.display = 'none';
+  if (emptyState) emptyState.style.display = 'none';
 
   const block = document.createElement('div');
   block.className = 'dropped-block';
@@ -82,7 +82,7 @@ function dropTextBlock(returnBlock = false) {
       <button class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner">
-      <p contenteditable="true" spellcheck="false" style="margin:0;font-size:15px;color:#444;flex:1;"></p>
+      <p contenteditable="true" spellcheck="false" data-placeholder="Enter text details..." style="margin:0;font-size:15px;color:#444;width:100%;"></p>
     </div>`;
 
   if (returnBlock) return block;

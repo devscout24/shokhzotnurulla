@@ -50,15 +50,22 @@ function drop3ColBlock(returnBlock = false) {
     </div>
     <div class="dropped-block-inner" style="background: transparent; border: none; padding: 0;">
       <div class="editor-3col" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%;">
-        <div class="col-drop-zone" style="min-height: 100px; border: 1px dashed #ccc; padding: 10px; background: transparent;"></div>
-        <div class="col-drop-zone" style="min-height: 100px; border: 1px dashed #ccc; padding: 10px; background: transparent;"></div>
-        <div class="col-drop-zone" style="min-height: 100px; border: 1px dashed #ccc; padding: 10px; background: transparent;"></div>
+        <div class="col-drop-zone"></div>
+        <div class="col-drop-zone"></div>
+        <div class="col-drop-zone"></div>
       </div>
     </div>`;
 
-  // Attach nested drop zone listeners to columns
+  // Attach nested drop zone listeners to columns and add default text
   const cols = block.querySelectorAll('.col-drop-zone');
-  cols.forEach(col => attachDropZoneListeners(col));
+  cols.forEach(col => {
+      attachDropZoneListeners(col);
+      if (typeof dropTextBlock === 'function') {
+          const defaultText = dropTextBlock(true);
+          col.appendChild(defaultText);
+          attachBlockListeners(defaultText);
+      }
+  });
 
   if (returnBlock) return block;
 

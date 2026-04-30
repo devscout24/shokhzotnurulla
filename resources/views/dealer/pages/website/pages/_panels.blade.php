@@ -180,3 +180,19 @@
 <hr class="hs-divider"/>
 <div class="hs-actions"><button class="hs-btn-remove" id="col3-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button class="hs-btn-cancel" id="col3-cancel-btn">Cancel</button></div>
 </div>
+
+{{-- HTML Settings --}}
+<div id="html-settings-panel" style="display:none">
+<button class="hs-back-btn" id="html-back-btn"><i class="fa-solid fa-arrow-left"></i> HTML Settings</button>
+<div class="hs-row"><label>Custom HTML</label><textarea class="hs-input" id="html-code" style="min-height:250px;font-family:monospace;font-size:13px" placeholder="<div>Hello World</div>"></textarea></div>
+<hr class="hs-divider"/>
+<div class="hs-actions"><button class="hs-btn-remove" id="html-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button class="hs-btn-cancel" id="html-cancel-btn">Cancel</button></div>
+</div>
+
+{{-- CSS Settings --}}
+<div id="css-settings-panel" style="display:none">
+<button class="hs-back-btn" id="css-back-btn"><i class="fa-solid fa-arrow-left"></i> CSS Settings</button>
+<div class="hs-row"><label>Custom CSS</label><textarea class="hs-input" id="css-code" style="min-height:250px;font-family:monospace;font-size:13px" placeholder=".my-class { color: red; }"></textarea></div>
+<hr class="hs-divider"/>
+<div class="hs-actions"><button class="hs-btn-remove" id="css-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button class="hs-btn-cancel" id="css-cancel-btn">Cancel</button></div>
+</div>

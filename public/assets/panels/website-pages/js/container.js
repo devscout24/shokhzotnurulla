@@ -85,12 +85,20 @@ function dropContainerBlock(returnBlock = false) {
       <button class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner" style="background: transparent; border: none; padding: 0;">
-      <div class="editor-container col-drop-zone" style="min-height: 100px; border: 1px dashed #ccc; padding: 20px; background: #ffffff; width: 100%;">
+      <div class="editor-container col-drop-zone" style="min-height: 100px; padding: 20px; background: #ffffff; width: 100%;">
       </div>
     </div>`;
 
   const containerEl = block.querySelector('.editor-container');
-  if (containerEl) setupContainerListeners(containerEl);
+  if (containerEl) {
+    setupContainerListeners(containerEl);
+    // Add default Heading inside for immediate editing
+    if (typeof dropHeadingBlock === 'function') {
+        const defaultHeading = dropHeadingBlock(true);
+        containerEl.appendChild(defaultHeading);
+        attachBlockListeners(defaultHeading);
+    }
+  }
 
   if (returnBlock) return block;
 

@@ -3,10 +3,10 @@
 @push('page-assets')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/editor.css') }}"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/heading.css') }}"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/p.css') }}"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/button.css') }}"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/editor.css') }}?v=1.2"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/heading.css') }}?v=1.2"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/p.css') }}?v=1.2"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/button.css') }}?v=1.2"/>
 <style>
 .layout{display:flex!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;height:100vh;overflow:hidden}
 .of-master-frame{display:flex;flex-direction:column;width:100%;height:100vh;background:#f8f9fa}
@@ -19,41 +19,163 @@
 .block-item:hover{border-color:#c0392b;background:#fffcfc;transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,0,0,.06)}
 .block-item i{font-size:22px;display:block;margin-bottom:10px;color:#c0392b}
 .block-item span{font-size:11px;font-weight:700;color:#4f566b;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.block-item.dragging{opacity:.5;border:2px dashed #c0392b!important}
 .canvas-left{flex-grow:1;overflow:auto;background:#f8f9fa;padding:40px}
-#drop-indicator{height:4px;background:#c0392b;margin:10px 0;border-radius:2px}
 .hs-row{margin-bottom:22px}
 .hs-row label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;color:#4f566b;margin-bottom:8px;letter-spacing:.8px}
 .hs-input,.hs-select{width:100%;padding:10px 12px;border:1px solid #e0e6ed;border-radius:8px;font-size:14px;color:#1a1f36;transition:all .2s;background:#fff}
-.hs-input:focus,.hs-select:focus{border-color:#c0392b;outline:none;box-shadow:0 0 0 3px rgba(192,57,43,.1)}
 .hs-divider{border:0;border-top:1px solid #f1f3f5;margin:20px 0}
 .hs-back-btn{background:none;border:none;font-weight:800;color:#1a1f36;margin-bottom:25px;display:flex;align-items:center;gap:10px;padding:0;font-size:16px}
 .hs-actions{display:flex;gap:10px;margin-top:20px}
 .hs-btn-remove{background:#fff5f5;color:#c0392b;border:1px solid #ffe3e3;padding:10px 15px;border-radius:8px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;flex:1;justify-content:center;cursor:pointer}
 .hs-btn-remove:hover{background:#c0392b;color:#fff}
-.hs-btn-cancel{background:#f8f9fa;color:#4f566b;border:1px solid #e0e6ed;padding:10px 15px;border-radius:8px;font-weight:700;font-size:13px;flex:1;cursor:pointer}
 [id$="-settings-panel"]{display:none}
+
+/* Side Panels Style (Ref site) */
+.side-panel {
+    position: fixed;
+    right: -450px;
+    top: 0;
+    width: 450px;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+    z-index: 1050;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+.side-panel.open { right: 0; }
+.side-panel-header {
+    padding: 24px;
+    border-bottom: 1px solid #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.side-panel-title { font-size: 18px; font-weight: 800; color: #1a1f36; }
+.side-panel-body { padding: 24px; overflow-y: auto; flex: 1; }
+.side-panel-footer { padding: 24px; border-top: 1px solid #f1f3f5; display: flex; gap: 12px; }
+
+.ps-section-title {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #adb5bd;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+.featured-image-box {
+    border: 2px dashed #e0e6ed;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fcfdfe;
+}
+.featured-image-box:hover { border-color: #c0392b; background: #fffcfc; }
+.featured-image-box i { font-size: 32px; color: #adb5bd; margin-bottom: 12px; }
+.featured-image-box p { font-size: 13px; color: #4f566b; margin: 0; font-weight: 600; }
+
+.revision-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #f1f3f5;
+}
+.revision-info { display: flex; align-items: center; gap: 12px; }
+.revision-version {
+    width: 28px;
+    height: 28px;
+    background: #f1f3f5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #4f566b;
+}
+.revision-date { font-size: 13px; color: #1a1f36; font-weight: 600; }
+.btn-restore {
+    background: #fff5f5;
+    color: #c0392b;
+    border: 1px solid #ffe3e3;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.btn-restore:hover { background: #c0392b; color: #fff; }
+
+#drop-indicator {
+    height: 4px;
+    background: #c0392b;
+    border-radius: 2px;
+    margin: 10px 0;
+    width: 100%;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 10px rgba(192, 57, 43, 0.4);
+}
+.drag-over {
+    background-color: rgba(192, 57, 43, 0.02) !important;
+    outline: 2px dashed #c0392b !important;
+    outline-offset: -2px;
+}
+
+.editor-empty-state {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f3f5;
+    margin-bottom: 20px;
+    color: #adb5bd;
+}
+.editor-empty-badge {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-right: 12px;
+    color: #6c757d;
+}
+.editor-empty-input {
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: #adb5bd;
+    width: 100%;
+    outline: none;
+}
 </style>
 @endpush
 @section('page-content')
+<div class="overlay" id="side-overlay"></div>
 <div class="of-master-frame">
-<form action="{{ $routes['store'] }}" method="POST" id="page-builder-form" style="display:contents">
+<form action="{{ $routes['store'] }}" method="POST" id="page-builder-form" style="display:contents" onsubmit="return prepareFormSubmit()">
 @csrf
 <div class="of-header p-4 d-flex align-items-center bg-white border-bottom shadow-sm">
 <h4 class="fw-bold m-0">Add Page</h4>
 <div class="ms-auto d-flex align-items-center gap-2">
-<a href="#" class="btn btn-outline-secondary btn-sm px-4 fw-bold" id="btn-preview"><i class="fa-solid fa-arrow-up-right-from-square me-2"></i>Preview</a>
-<button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold"><i class="fa-solid fa-gear me-2"></i>Page Settings</button>
-<button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold"><i class="fa-solid fa-clock-rotate-left me-2"></i>Page Revisions</button>
+<a href="{{ route('dealer.website.pages.index') }}" class="btn btn-outline-secondary btn-sm px-4 fw-bold"><i class="fa-solid fa-arrow-left me-2"></i>Back</a>
+<button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold" onclick="toggleSidePanel('page-settings')"><i class="fa-solid fa-gear me-2"></i>Page Settings</button>
+<button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold" onclick="toggleSidePanel('page-revisions')"><i class="fa-solid fa-clock-rotate-left me-2"></i>Page Revisions</button>
 <button type="submit" class="btn btn-danger btn-sm px-5 fw-bold" style="background:#c0392b"><i class="fa-solid fa-check me-2"></i>Save</button>
 </div>
 </div>
 <div class="input-group border-bottom bg-white" style="height:55px">
 <span class="bg-lighter input-group-text border-0 px-4 fw-bold small text-muted" style="min-width:140px">PAGE TITLE</span>
-<input type="text" value="The name of our country" class="form-control border-0 px-4 fs-6" name="title" id="page-title" required autocomplete="off">
-<span class="bg-white input-group-text border-0 text-muted small px-4 border-start"><i class="fa-solid fa-circle me-2" style="font-size:8px;color:#ced4da"></i> Status: Draft</span>
-<input type="hidden" name="slug" id="page-slug">
+<input type="text" value="" class="form-control border-0 px-4 fs-6" name="title" id="page-title" required autocomplete="off" placeholder="Enter page title...">
+<span class="bg-white input-group-text border-0 text-muted small px-4 border-start" id="top-status-badge">
+    <i class="fa-solid fa-circle me-2" style="font-size:8px;color:#ced4da"></i> Status: Draft
+</span>
 </div>
+
 <div class="d-flex flex-grow-1 overflow-hidden">
 <div class="canvas-left flex-grow-1 overflow-auto">
 <div class="bg-white border rounded shadow-sm mx-auto my-4" style="max-width:1000px;min-height:1000px">
@@ -79,7 +201,6 @@
 </div>
 </div>
 <div class="sidebar-right">
-{{-- All existing panels from JS files --}}
 @include('dealer.pages.website.pages._panels')
 <div id="sidebar-default-content">
 <p class="text-muted small mb-3 ps-1" style="font-size:11px">Select a block from the editor to adjust its settings.</p>
@@ -123,77 +244,223 @@
 </div>
 </div>
 </div>
-<input type="hidden" name="content" id="page-content-json">
+
+{{-- Page Settings Panel (Right Off-canvas) --}}
+<div class="side-panel" id="side-panel-page-settings">
+    <div class="side-panel-header">
+        <span class="side-panel-title">Page Settings</span>
+        <button type="button" class="btn-close" onclick="toggleSidePanel('page-settings')"></button>
+    </div>
+    <div class="side-panel-body">
+        <div class="ps-section-title">Post Metadata</div>
+        <div class="hs-row"><label>Status</label>
+            <select class="hs-select" name="is_active" id="ps-status" onchange="updateTopStatus(this)">
+                <option value="1">Published</option>
+                <option value="0" selected>Draft</option>
+                <option value="pending">Pending Review</option>
+            </select>
+        </div>
+        <div class="hs-row"><label>Publish Date</label>
+            <input type="datetime-local" class="hs-input" name="published_at" id="ps-published-at">
+        </div>
+        <div class="hs-row"><label>Visibility</label>
+            <select class="hs-select"><option value="public" selected>Public</option><option value="private">Private</option></select>
+        </div>
+        <div class="hs-row"><label>Author</label>
+            <select class="hs-select"><option value="1" selected>Admin</option></select>
+        </div>
+
+        <hr class="hs-divider">
+        <div class="ps-section-title">SEO & Taxonomy</div>
+        <div class="hs-row"><label>Page Slug</label><input class="hs-input" name="slug" id="page-slug" placeholder="home"></div>
+        <div class="hs-row"><label>Tags (Comma separated)</label><input class="hs-input" name="tags" id="ps-tags" placeholder="news, update, gallery"></div>
+        <div class="hs-row"><label>Meta Title</label><input class="hs-input" name="meta_title" id="ps-meta-title" placeholder="Page browser title"></div>
+        <div class="hs-row"><label>Meta Description</label><textarea class="hs-input" name="meta_description" id="ps-meta-description" style="min-height:80px"></textarea></div>
+
+        <hr class="hs-divider">
+        <div class="ps-section-title">Style</div>
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <span style="font-size:13px;font-weight:600;color:#1a1f36">Hide Page Header</span>
+            <div class="form-check form-switch"><input class="form-check-input" type="checkbox"></div>
+        </div>
+
+        <hr class="hs-divider">
+        <div class="ps-section-title">Featured Image</div>
+        <div class="featured-image-box">
+            <i class="fa-regular fa-image"></i>
+            <p>Click or drag image to upload</p>
+        </div>
+    </div>
+    <div class="side-panel-footer">
+        <button type="button" class="btn btn-danger w-100 fw-bold" onclick="toggleSidePanel('page-settings')" style="background:#c0392b">Apply Settings</button>
+    </div>
+</div>
+
+{{-- Page Revisions Panel (Right Off-canvas) --}}
+<div class="side-panel" id="side-panel-page-revisions">
+    <div class="side-panel-header">
+        <span class="side-panel-title">Page Revisions</span>
+        <button type="button" class="btn-close" onclick="toggleSidePanel('page-revisions')"></button>
+    </div>
+    <div class="side-panel-body">
+        <div class="revision-item">
+            <div class="revision-info">
+                <div class="revision-version">5</div>
+                <div>
+                    <div class="revision-date">Mar 29, 2026 11:20 PM</div>
+                    <div class="text-muted small">Current Version</div>
+                </div>
+            </div>
+        </div>
+        <div class="revision-item">
+            <div class="revision-info">
+                <div class="revision-version">4</div>
+                <div>
+                    <div class="revision-date">Mar 28, 2026 10:15 AM</div>
+                </div>
+            </div>
+            <button type="button" class="btn-restore">Restore</button>
+        </div>
+        <div class="revision-item">
+            <div class="revision-info">
+                <div class="revision-version">3</div>
+                <div>
+                    <div class="revision-date">Mar 27, 2026 09:45 PM</div>
+                </div>
+            </div>
+            <button type="button" class="btn-restore">Restore</button>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" name="content" id="page-content-json" value="[]">
+<input type="hidden" name="meta_keywords" id="meta-keywords-hidden">
+<input type="hidden" name="is_featured" value="0">
 </form>
 </div>
 @endsection
 @push('pannel-scripts')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/history.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/text.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/button.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/image.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/card.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/main.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/save.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/span.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/container.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}"></script>
-<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}"></script>
+<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/html-css.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/inventory.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/carousel.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/tabs.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/search.js') }}?v=1.4"></script>
 <script>
-document.addEventListener('DOMContentLoaded',function(){
-// Back buttons for new panels
-['vs','crs','tbs','inv','plg','frm','blg','sch','mh'].forEach(function(p){
-var btn=document.getElementById(p+'-back-btn');
-if(btn)btn.addEventListener('click',function(){
-document.querySelectorAll('[id$="-settings-panel"]').forEach(function(el){el.style.display='none';});
-var d=document.getElementById('sidebar-default-content');if(d)d.style.display='block';
+// Sync Top Bar Status
+function updateTopStatus(select) {
+    const badge = document.getElementById('top-status-badge');
+    const dot = badge.querySelector('i');
+    const text = select.options[select.selectedIndex].text;
+    
+    if (select.value === '1') {
+        dot.style.color = '#27ae60';
+    } else {
+        dot.style.color = '#ced4da';
+    }
+    badge.innerHTML = `<i class="fa-solid fa-circle me-2" style="font-size:8px;color:${dot.style.color}"></i> Status: ${text}`;
+}
+
+// Toggle Side Panels
+function toggleSidePanel(id) {
+    const panels = ['page-settings', 'page-revisions'];
+    const overlay = document.getElementById('side-overlay');
+    
+    panels.forEach(p => {
+        const el = document.getElementById('side-panel-' + p);
+        if (p === id) {
+            if (el.classList.contains('open')) {
+                el.classList.remove('open');
+                overlay.style.display = 'none';
+            } else {
+                // Close others first
+                panels.forEach(other => document.getElementById('side-panel-' + other).classList.remove('open'));
+                el.classList.add('open');
+                overlay.style.display = 'block';
+            }
+        } else {
+            el.classList.remove('open');
+        }
+    });
+}
+
+document.getElementById('side-overlay').addEventListener('click', function() {
+    document.querySelectorAll('.side-panel').forEach(p => p.classList.remove('open'));
+    this.style.display = 'none';
 });
-var rm=document.getElementById(p+'-remove-btn');
-if(rm)rm.addEventListener('click',function(){
-if(window.activeEl){var b=window.activeEl.closest('.dropped-block');if(b)b.remove();}
-document.querySelectorAll('[id$="-settings-panel"]').forEach(function(el){el.style.display='none';});
-var d=document.getElementById('sidebar-default-content');if(d)d.style.display='block';
-if(typeof saveHistory==='function')saveHistory();
+
+// Slug auto-generation & sanitization
+document.getElementById('page-title').addEventListener('input', function() {
+    var slug = this.value.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/^-+|-+$/g, '');
+    document.getElementById('page-slug').value = slug;
 });
+
+document.getElementById('page-slug').addEventListener('input', function() {
+    this.value = this.value.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-');
 });
-// openVideoSettings
-window.openVideoSettings=function(el){
-window.activeEl=el;
-document.getElementById('sidebar-default-content').style.display='none';
-document.querySelectorAll('[id$="-settings-panel"]').forEach(function(p){p.style.display='none';});
-document.getElementById('video-settings-panel').style.display='block';
-};
-window.openCarouselSettings=function(el){
-window.activeEl=el;
-document.getElementById('sidebar-default-content').style.display='none';
-document.querySelectorAll('[id$="-settings-panel"]').forEach(function(p){p.style.display='none';});
-document.getElementById('carousel-settings-panel').style.display='block';
-};
-window.openTabsSettings=function(el){
-window.activeEl=el;
-document.getElementById('sidebar-default-content').style.display='none';
-document.querySelectorAll('[id$="-settings-panel"]').forEach(function(p){p.style.display='none';});
-document.getElementById('tabs-settings-panel').style.display='block';
-};
-window.openInventorySettings=function(el){
-window.activeEl=el;
-document.getElementById('sidebar-default-content').style.display='none';
-document.querySelectorAll('[id$="-settings-panel"]').forEach(function(p){p.style.display='none';});
-document.getElementById('inventory-settings-panel').style.display='block';
-};
-// Fix layout
-var layout=document.querySelector('.layout');
-if(layout){layout.style.display='flex';layout.style.width='100%';layout.style.maxWidth='100%';layout.style.flex='1';layout.style.overflow='hidden';}
+
+document.getElementById('page-slug').addEventListener('blur', function() {
+    this.value = this.value.replace(/^-+|-+$/g, '');
+});
+
+function prepareFormSubmit() {
+    // Collect content
+    var blocksContainer = document.getElementById('blocks-container');
+    if (typeof collectBlocksFromContainer === 'function') {
+        var contentData = collectBlocksFromContainer(blocksContainer);
+        document.getElementById('page-content-json').value = JSON.stringify(contentData);
+    }
+
+    // Sync Page Settings from sidebar to hidden inputs (if any)
+    var title = document.getElementById('page-title').value;
+    var slugField = document.getElementById('page-slug');
+    if (!slugField.value && title) {
+        slugField.value = title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/^-+|-+$/g, '');
+    }
+
+    return true;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Shared logic for sidebar panels (Blocks settings)
+    ['vs','crs','tbs','inv','plg','frm','blg','sch','mh'].forEach(function(p) {
+        var btn = document.getElementById(p + '-back-btn');
+        if (btn) btn.addEventListener('click', function() {
+            document.querySelectorAll('[id$="-settings-panel"]').forEach(function(el) { el.style.display = 'none'; });
+            var d = document.getElementById('sidebar-default-content'); if (d) d.style.display = 'block';
+        });
+        var rm = document.getElementById(p + '-remove-btn');
+        if (rm) rm.addEventListener('click', function() {
+            if (window.activeEl) { var b = window.activeEl.closest('.dropped-block'); if (b) b.remove(); }
+            document.querySelectorAll('[id$="-settings-panel"]').forEach(function(el) { el.style.display = 'none'; });
+            var d = document.getElementById('sidebar-default-content'); if (d) d.style.display = 'block';
+        });
+    });
+
+    // Fix layout overflow
+    var layout = document.querySelector('.layout');
+    if (layout) { layout.style.display = 'flex'; layout.style.width = '100%'; layout.style.maxWidth = '100%'; layout.style.flex = '1'; layout.style.overflow = 'hidden'; }
 });
 </script>
 @endpush

@@ -63,7 +63,7 @@ document.getElementById('ss-remove-btn').addEventListener('click', () => {
 function dropSpacerBlock(returnBlock = false) {
   const emptyState = document.getElementById('empty-state');
   const blocksContainer = document.getElementById('blocks-container');
-  emptyState.style.display = 'none';
+  if (emptyState) emptyState.style.display = 'none';
 
   const block = document.createElement('div');
   block.className = 'dropped-block spacer-block';

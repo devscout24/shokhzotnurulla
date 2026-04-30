@@ -19,8 +19,11 @@ function closeAllPanels() {
 
 function checkEmptyBlocks() {
   const emptyState = document.getElementById('empty-state');
+  if (!emptyState) return;
   if (!document.querySelector('.dropped-block')) {
     emptyState.style.display = 'flex';
+  } else {
+    emptyState.style.display = 'none';
   }
 }
 
@@ -46,7 +49,20 @@ function rgbToHex(rgb) {
 // ── Attach listeners to any block (h1 / p / button) ──────────────────────────
 
 function attachBlockListeners(block) {
-  // Copy / duplicate icon in badge
+  // Selection Logic
+  block.addEventListener('click', (e) => {
+    e.stopPropagation();
+    clearSelected();
+    block.classList.add('selected');
+    
+    // Auto-focus editable if it's a text/heading block
+    const editable = block.querySelector('[contenteditable="true"]');
+    if (editable && (e.target === block || e.target.classList.contains('dropped-block-inner'))) {
+      editable.focus();
+    }
+  });
+
+  // Copy / duplicate icon
   const copyBtn = block.querySelector('.copy-btn');
   if (copyBtn) {
     copyBtn.addEventListener('click', e => {
@@ -55,163 +71,109 @@ function attachBlockListeners(block) {
     });
   }
 
-  // Span
-  const spanEl = block.querySelector('span[contenteditable]');
-  if (spanEl) {
-    spanEl.addEventListener('click', (e) => { e.stopPropagation(); openSpanSettings(spanEl); });
-    spanEl.addEventListener('focus', (e) => { e.stopPropagation(); openSpanSettings(spanEl); });
-  }
-
-
-  // Reorder buttons (up/down arrows)
+  // Reorder buttons
   const upBtn = block.querySelector('.move-up-btn');
   const downBtn = block.querySelector('.move-down-btn');
   if (upBtn) upBtn.addEventListener('click', e => { e.stopPropagation(); moveBlockUp(block); });
   if (downBtn) downBtn.addEventListener('click', e => { e.stopPropagation(); moveBlockDown(block); });
 
-  // ── Drag-handle reorder ──────────────────────────────────────────────────
+  // Drag handle
   const handle = block.querySelector('.drag-handle');
   if (handle) {
-    // Make the whole dropped-block draggable but only when grabbing the handle
     handle.addEventListener('mousedown', () => { block.setAttribute('draggable', 'true'); });
     handle.addEventListener('mouseup', () => { block.removeAttribute('draggable'); });
-
     block.addEventListener('dragstart', e => {
-      // Only proceed when initiated via the handle
       if (!block.hasAttribute('draggable')) return;
       window.reorderBlock = block;
-      window.dragType = null; // not a sidebar drop
+      window.dragType = null;
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', 'reorder'); // required for Firefox
       handle.classList.add('grabbing');
-      // Slight delay so the ghost image is captured before we hide the block
       setTimeout(() => block.classList.add('reorder-dragging'), 0);
     });
-
     block.addEventListener('dragend', () => {
       block.removeAttribute('draggable');
       block.classList.remove('reorder-dragging');
       handle.classList.remove('grabbing');
       window.reorderBlock = null;
-      // Hide indicator
       const ind = document.getElementById('drop-indicator');
       if (ind) ind.style.display = 'none';
     });
   }
 
-  // Heading
+  // Individual Settings Handlers
   const h1 = block.querySelector('h1[contenteditable]');
   if (h1) {
     h1.addEventListener('click', (e) => { e.stopPropagation(); openHeadingSettings(h1); });
-    h1.addEventListener('focus', (e) => { e.stopPropagation(); openHeadingSettings(h1); });
+    h1.addEventListener('focus', (e) => { 
+        clearSelected(); 
+        block.classList.add('selected'); 
+        openHeadingSettings(h1); 
+    });
   }
 
-  // Text
   const p = block.querySelector('p[contenteditable]');
   if (p) {
     p.addEventListener('click', (e) => { e.stopPropagation(); openTextSettings(p); });
-    p.addEventListener('focus', (e) => { e.stopPropagation(); openTextSettings(p); });
-  }
-
-  // Button
-  const btn = block.querySelector('.dropped-btn');
-  if (btn) {
-    btn.addEventListener('click', e => {
-      e.preventDefault();
-      e.stopPropagation();
-      openButtonSettings(btn);
+    p.addEventListener('focus', (e) => { 
+        clearSelected(); 
+        block.classList.add('selected'); 
+        openTextSettings(p); 
     });
   }
 
-  // Divider
+  const spanEl = block.querySelector('span[contenteditable]');
+  if (spanEl) {
+    spanEl.addEventListener('click', (e) => { e.stopPropagation(); openSpanSettings(spanEl); });
+    spanEl.addEventListener('focus', (e) => { 
+        clearSelected(); 
+        block.classList.add('selected'); 
+        openSpanSettings(spanEl); 
+    });
+  }
+
+  const btn = block.querySelector('.dropped-btn');
+  if (btn) btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); openButtonSettings(btn); });
+
   const hr = block.querySelector('.editor-divider');
   if (hr) {
-    const inner = block.querySelector('.dropped-block-inner');
-    inner.style.cursor = 'pointer'; // Make it look clickable
-    inner.addEventListener('click', (e) => { e.stopPropagation(); openDividerSettings(hr); });
+    const dividerWrapper = hr.closest('.dropped-block-inner');
+    if (dividerWrapper) dividerWrapper.addEventListener('click', (e) => { e.stopPropagation(); openDividerSettings(hr); });
   }
 
-  // Image
   const img = block.querySelector('.editor-image');
-  if (img) {
-    img.addEventListener('click', (e) => { e.stopPropagation(); openImageSettings(img); });
-  }
+  if (img) img.addEventListener('click', (e) => { e.stopPropagation(); openImageSettings(img); });
 
-  // Accordion
   const acc = block.querySelector('.editor-accordion');
-  if (acc) {
-    acc.addEventListener('click', (e) => { e.stopPropagation(); openAccordionSettings(acc); });
-  }
+  if (acc) acc.addEventListener('click', (e) => { e.stopPropagation(); openAccordionSettings(acc); });
 
-  // Spacer
   const spacer = block.querySelector('.editor-spacer');
-  if (spacer) {
-    const inner = block.querySelector('.dropped-block-inner');
-    inner.style.cursor = 'pointer';
-    inner.addEventListener('click', (e) => { e.stopPropagation(); openSpacerSettings(spacer); });
-  }
+  if (spacer) spacer.addEventListener('click', (e) => { e.stopPropagation(); openSpacerSettings(spacer); });
 
-  // Card
   const card = block.querySelector('.editor-card');
-  if (card) {
-    card.addEventListener('click', (e) => { e.stopPropagation(); openCardSettings(card); });
-  }
+  if (card) card.addEventListener('click', (e) => { e.stopPropagation(); openCardSettings(card); });
 
-  // 3-Col
-  const col3 = block.querySelector('.editor-3col');
-  if (col3) {
-    col3.addEventListener('click', (e) => {
-      // Only open settings if we clicked the column wrapper background, not a child block
-      if (e.target === col3 || e.target.classList.contains('col-drop-zone')) {
-        e.stopPropagation(); open3ColSettings(col3);
-      }
-    });
-  }
-
-  // IFrame
   const iframe = block.querySelector('.editor-iframe');
-  if (iframe) {
-    iframe.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openIFrameSettings(iframe);
-    });
-  }
+  if (iframe) iframe.addEventListener('click', (e) => { e.stopPropagation(); openIFrameSettings(iframe); });
 
-  // 2-Col
-  const col2 = block.querySelector('.editor-2col');
-  if (col2) {
-    col2.addEventListener('click', (e) => {
-      if (e.target === col2 || e.target.classList.contains('col-drop-zone')) {
-        e.stopPropagation(); open2ColSettings(col2);
-      }
-    });
-  }
-
-  // Container
-  const container = block.querySelector('.editor-container');
-  if (container) {
-    container.addEventListener('click', (e) => {
-      if (e.target === container) {
-        e.stopPropagation(); openContainerSettings(container);
-      }
-    });
-  }
-  // Icon
   const icon = block.querySelector('.editor-icon');
-  if (icon) {
-    icon.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openIconSettings(icon);
-    });
-  }
-  // Cart
+  if (icon) icon.addEventListener('click', (e) => { e.stopPropagation(); openIconSettings(icon); });
+
   const cart = block.querySelector('.editor-cart');
-  if (cart) {
-    cart.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openCartSettings(cart);
-    });
-  }
+  if (cart) cart.addEventListener('click', (e) => { e.stopPropagation(); openCartSettings(cart); });
+
+  // Initialize Nested Drop Zones (for layout blocks)
+  block.querySelectorAll('.col-drop-zone').forEach(zone => {
+    attachDropZoneListeners(zone);
+  });
+
+  const col3 = block.querySelector('.editor-3col');
+  if (col3) col3.addEventListener('click', (e) => { if (e.target === col3 || e.target.classList.contains('col-drop-zone')) { e.stopPropagation(); open3ColSettings(col3); } });
+
+  const col2 = block.querySelector('.editor-2col');
+  if (col2) col2.addEventListener('click', (e) => { if (e.target === col2 || e.target.classList.contains('col-drop-zone')) { e.stopPropagation(); open2ColSettings(col2); } });
+
+  const container = block.querySelector('.editor-container');
+  if (container) container.addEventListener('click', (e) => { if (e.target === container) { e.stopPropagation(); openContainerSettings(container); } });
 }
 
 // ── Duplicate a block (with existing content) ─────────────────────────────────
@@ -324,6 +286,7 @@ document.addEventListener('mouseup', () => {
   }
 });
 
+
 function attachDropZoneListeners(col) {
   col.addEventListener('dragover', e => {
     e.preventDefault();
@@ -364,4 +327,221 @@ function attachDropZoneListeners(col) {
     }
     window.dragType = null;
   });
+}
+
+window.renderExistingContent = function(content) {
+  console.log("Rendering content:", content);
+  const container = document.getElementById('blocks-container');
+  if (!container) {
+    console.error("Blocks container not found!");
+    return;
+  }
+  if (!content) return;
+
+  // Handle string content if necessary
+  if (typeof content === 'string') {
+    try {
+      content = JSON.parse(content);
+      console.log("Parsed content string successfully");
+    } catch (e) {
+      console.error("Failed to parse content string:", e);
+      return;
+    }
+  }
+
+  container.innerHTML = ''; // Clear existing
+  
+  // Re-add drop indicator
+  const indicator = document.createElement('div');
+  indicator.id = 'drop-indicator';
+  indicator.style.display = 'none';
+  container.appendChild(indicator);
+
+  if (Array.isArray(content)) {
+    content.forEach((data, index) => {
+      console.log(`Rendering block ${index}:`, data.type);
+      const block = renderBlockData(data);
+      if (block) {
+        container.appendChild(block);
+        attachBlockListeners(block);
+      } else {
+        console.warn(`Failed to render block of type: ${data.type}`);
+      }
+    });
+  }
+  
+  checkEmptyBlocks();
+};
+
+function renderBlockData(data) {
+  let block = null;
+  
+  switch(data.type) {
+    case 'heading':
+      if (typeof dropHeadingBlock === 'function') {
+        block = dropHeadingBlock(true);
+        const h1 = block.querySelector('h1');
+        h1.innerText = data.text || '';
+        h1.style.textAlign = data.textAlign || 'left';
+        h1.style.color = data.color || '';
+        h1.style.fontSize = data.fontSize || '';
+        h1.dataset.cssClasses = data.cssClasses || '';
+      }
+      break;
+    case 'text':
+      if (typeof dropTextBlock === 'function') {
+        block = dropTextBlock(true);
+        const p = block.querySelector('p');
+        p.innerText = data.text || '';
+        p.style.color = data.color || '';
+        p.style.fontSize = data.fontSize || '';
+        p.dataset.cssClasses = data.cssClasses || '';
+      }
+      break;
+    case 'span':
+      if (typeof dropSpanBlock === 'function') {
+        block = dropSpanBlock(true);
+        const span = block.querySelector('span');
+        span.innerText = data.text || '';
+        span.style.color = data.color || '';
+        span.style.fontSize = data.fontSize || '';
+      }
+      break;
+    case 'button':
+      if (typeof dropButtonBlock === 'function') {
+        block = dropButtonBlock(true);
+        const btn = block.querySelector('.dropped-btn');
+        btn.innerText = data.text || '';
+        btn.dataset.theme = data.theme || 'red';
+        btn.dataset.bstyle = data.style || 'solid';
+        btn.dataset.size = data.size || 'medium';
+        btn.setAttribute('href', data.href || '#');
+        if (data.newTab) btn.setAttribute('target', '_blank');
+        if (data.fullWidth) btn.classList.add('full-width');
+        
+        const wrapper = btn.closest('.dropped-block-inner');
+        if (wrapper) {
+            const alignMap = { 'left': 'flex-start', 'center': 'center', 'right': 'flex-end' };
+            wrapper.style.justifyContent = alignMap[data.align] || 'center';
+        }
+      }
+      break;
+    case 'image':
+      if (typeof dropImageBlock === 'function') {
+        block = dropImageBlock(true);
+        const img = block.querySelector('.editor-image');
+        img.src = data.src || '';
+        img.alt = data.alt || '';
+        img.style.width = data.width || '100%';
+        
+        const wrapper = img.closest('.dropped-block-inner');
+        if (wrapper) {
+            const alignMap = { 'left': 'flex-start', 'center': 'center', 'right': 'flex-end' };
+            wrapper.style.justifyContent = alignMap[data.align] || 'left';
+        }
+      }
+      break;
+    case 'divider':
+      if (typeof dropDividerBlock === 'function') {
+        block = dropDividerBlock(true);
+        const hr = block.querySelector('.editor-divider');
+        hr.style.borderColor = data.color || '';
+        hr.dataset.cssClasses = data.cssClasses || '';
+      }
+      break;
+    case 'spacer':
+      if (typeof dropSpacerBlock === 'function') {
+        block = dropSpacerBlock(true);
+        const spacer = block.querySelector('.editor-spacer');
+        spacer.dataset.heightDesktop = data.heightDesktop || '10';
+        spacer.dataset.heightMobile = data.heightMobile || '10';
+        spacer.dataset.display = data.display || 'all';
+        spacer.style.height = data.heightDesktop + 'px';
+      }
+      break;
+    case 'container':
+      if (typeof dropContainerBlock === 'function') {
+        block = dropContainerBlock(true);
+        const container = block.querySelector('.editor-container');
+        container.innerHTML = ''; // Clear default
+        container.style.paddingTop = data.paddingTop || '20px';
+        container.style.paddingBottom = data.paddingBottom || '20px';
+        container.style.backgroundColor = data.backgroundColor || 'transparent';
+        container.style.flexDirection = data.flexDirection || 'column';
+        container.style.justifyContent = data.justifyContent || 'flex-start';
+        container.style.alignItems = data.alignItems || 'stretch';
+        
+        if (data.blocks) {
+          data.blocks.forEach(childData => {
+            const childBlock = renderBlockData(childData);
+            if (childBlock) {
+              container.appendChild(childBlock);
+              attachBlockListeners(childBlock);
+            }
+          });
+        }
+      }
+      break;
+    case '2col':
+    case '3col':
+      const fn = data.type === '2col' ? drop2ColBlock : drop3ColBlock;
+      if (typeof fn === 'function') {
+        block = fn(true);
+        const colWrapper = block.querySelector('.editor-2col, .editor-3col');
+        colWrapper.style.gap = data.gap || '20px';
+        
+        const zones = colWrapper.querySelectorAll('.col-drop-zone');
+        zones.forEach((zone, i) => {
+          zone.innerHTML = ''; // Clear default
+          if (data.columns && data.columns[i]) {
+            data.columns[i].forEach(childData => {
+              const childBlock = renderBlockData(childData);
+              if (childBlock) {
+                zone.appendChild(childBlock);
+                attachBlockListeners(childBlock);
+              }
+            });
+          }
+        });
+      }
+      break;
+    case 'icon':
+      if (typeof dropIconBlock === 'function') {
+        block = dropIconBlock(true);
+        const icon = block.querySelector('i');
+        if (data.iconClass) icon.className = data.iconClass;
+        icon.style.color = data.color || '';
+        icon.style.fontSize = data.fontSize || '';
+      }
+      break;
+    case 'accordion':
+      if (typeof dropAccordionBlock === 'function') block = dropAccordionBlock(true);
+      break;
+    case 'card':
+      if (typeof dropCardBlock === 'function') block = dropCardBlock(true);
+      break;
+    case 'inventory':
+      if (typeof dropInventoryBlock === 'function') block = dropInventoryBlock(true);
+      break;
+    case 'video':
+      if (typeof dropVideoBlock === 'function') block = dropVideoBlock(true);
+      break;
+    case 'carousel':
+      if (typeof dropCarouselBlock === 'function') block = dropCarouselBlock(true);
+      break;
+    case 'tabs':
+      if (typeof dropTabsBlock === 'function') block = dropTabsBlock(true);
+      break;
+    case 'search':
+      if (typeof dropSearchBlock === 'function') block = dropSearchBlock(true);
+      break;
+    case 'cart':
+      if (typeof dropCartBlock === 'function') block = dropCartBlock(true);
+      break;
+    case 'html-css':
+      if (typeof dropHtmlCssBlock === 'function') block = dropHtmlCssBlock(true);
+      break;
+  }
+  
+  return block;
 }

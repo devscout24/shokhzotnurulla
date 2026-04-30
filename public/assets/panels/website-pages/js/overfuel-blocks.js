@@ -27,6 +27,37 @@ function makeOFBlock(type, label, innerHtml) {
     return b;
 }
 
+function openHTMLSettings(el) {
+    closeAllPanels();
+    activeEl = el;
+    el.closest('.dropped-block').classList.add('selected');
+    document.getElementById('html-settings-panel').style.display = 'block';
+    document.getElementById('html-code').value = el.dataset.code || '';
+}
+
+function openCSSSettings(el) {
+    closeAllPanels();
+    activeEl = el;
+    el.closest('.dropped-block').classList.add('selected');
+    document.getElementById('css-settings-panel').style.display = 'block';
+    document.getElementById('css-code').value = el.dataset.code || '';
+}
+
+// Side Panel Listeners for HTML/CSS
+document.getElementById('html-code')?.addEventListener('input', e => {
+    if (activeEl) {
+        activeEl.dataset.code = e.target.value;
+        activeEl.innerHTML = `<div style="padding:10px;background:#f8f9fa;border-radius:4px;font-family:monospace;font-size:13px;color:#555">&lt;!-- Custom HTML --&gt;</div>`;
+    }
+});
+document.getElementById('css-code')?.addEventListener('input', e => {
+    if (activeEl) activeEl.dataset.code = e.target.value;
+});
+document.getElementById('html-back-btn')?.addEventListener('click', closeAllPanels);
+document.getElementById('css-back-btn')?.addEventListener('click', closeAllPanels);
+document.getElementById('html-remove-btn')?.addEventListener('click', () => { if(activeEl) activeEl.closest('.dropped-block').remove(); closeAllPanels(); });
+document.getElementById('css-remove-btn')?.addEventListener('click', () => { if(activeEl) activeEl.closest('.dropped-block').remove(); closeAllPanels(); });
+
 // ── Layout blocks ─────────────────────────────────────────────────────────────
 function dropOverlayBlock(ret=false){
     const b = makeOFBlock('overlay','Overlay',
@@ -34,12 +65,16 @@ function dropOverlayBlock(ret=false){
     if(ret)return b; document.getElementById('blocks-container').appendChild(b); attachBlockListeners(b); openContainerSettings(b.querySelector('.editor-container'));
 }
 function dropHTMLBlock(ret=false){
-    const b = makeOFBlock('html','HTML','<div style="padding:10px;background:#f8f9fa;border-radius:4px;font-family:monospace;font-size:13px;color:#555">&lt;!-- Custom HTML --&gt;</div>');
-    if(ret)return b; document.getElementById('blocks-container').appendChild(b); attachBlockListeners(b); openContainerSettings(b.querySelector('.editor-container'));
+    const b = makeOFBlock('html','HTML','<div class="html-preview" style="padding:10px;background:#f8f9fa;border-radius:4px;font-family:monospace;font-size:13px;color:#555">&lt;!-- Custom HTML --&gt;</div>');
+    const inner = b.querySelector('.editor-html');
+    inner.addEventListener('click', (e) => { e.stopPropagation(); openHTMLSettings(inner); });
+    if(ret)return b; document.getElementById('blocks-container').appendChild(b); attachBlockListeners(b); openHTMLSettings(inner);
 }
 function dropCSSBlock(ret=false){
-    const b = makeOFBlock('css','CSS','<div style="padding:10px;background:#f8f9fa;border-radius:4px;font-family:monospace;font-size:13px;color:#555">/* Custom CSS */</div>');
-    if(ret)return b; document.getElementById('blocks-container').appendChild(b); attachBlockListeners(b); openContainerSettings(b.querySelector('.editor-container'));
+    const b = makeOFBlock('css','CSS','<div class="css-preview" style="padding:10px;background:#f8f9fa;border-radius:4px;font-family:monospace;font-size:13px;color:#555">/* Custom CSS */</div>');
+    const inner = b.querySelector('.editor-css');
+    inner.addEventListener('click', (e) => { e.stopPropagation(); openCSSSettings(inner); });
+    if(ret)return b; document.getElementById('blocks-container').appendChild(b); attachBlockListeners(b); openCSSSettings(inner);
 }
 
 // ── Element blocks ────────────────────────────────────────────────────────────

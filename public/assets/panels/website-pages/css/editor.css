@@ -1,439 +1,119 @@
-/* ── Base ─────────────────────────────────────────────────────────────────── */
+/* ── Editor Layout ── */
+.of-master-frame { display: flex; flex-direction: column; width: 100%; height: 100vh; background: #f8f9fa; }
+.canvas-left { flex-grow: 1; overflow: auto; background: #f8f9fa; padding: 40px; }
 
-body {
-  background-color: #f4f7f6;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.bg-lighter {
-  background-color: #f8f9fa;
-}
-
-/* ── Page Title input group ──────────────────────────────────────────────── */
-
-.input-group.shadow-sm {
-  transition: box-shadow 0.2s;
-}
-
-.input-group.shadow-sm:focus-within {
-  box-shadow: none !important;
-}
-
-.input-group.shadow-sm:focus-within .input-group-text,
-.input-group.shadow-sm:focus-within .form-control {
-  border-color: #333 !important;
-}
-
-.input-group.shadow-sm .form-control:focus,
-.input-group.shadow-sm .form-control:focus-visible {
-  outline: none;
-  box-shadow: none;
-}
-
-/* ── Right Sidebar ───────────────────────────────────────────────────────── */
-
-.sidebar-right {
-  background: #ffffff;
-  border-left: 1px solid #e0e0e0;
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  overflow-y: auto;
-  padding: 20px;
-}
-
-.section-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: #adb5bd;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-top: 20px;
-  margin-bottom: 15px;
-}
-
-/* ── Block Grid (sidebar items) ──────────────────────────────────────────── */
-
-.block-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.block-item {
-  background: #fff;
-  border: 1px solid #eee;
-  padding: 12px 4px;
-  text-align: center;
-  font-size: 11px;
-  color: #555;
-  border-radius: 4px;
-  cursor: grab;
-  transition: 0.2s;
-  user-select: none;
-}
-
-.block-item:hover {
-  border-color: #ef4444;
-  color: #ef4444;
-}
-
-.block-item i {
-  display: block;
-  font-size: 18px;
-  margin-bottom: 6px;
-  color: #ef4444;
-}
-
-.block-item:active {
-  cursor: grabbing;
-}
-
-.block-item.dragging {
-  opacity: 0.5;
-}
-
-/* ── Floating navigator ──────────────────────────────────────────────────── */
-
-.floating-navigator {
-  position: fixed;
-  right: 271px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1051;
-}
-
-/* ── Content Editor drop zone ────────────────────────────────────────────── */
-
-#content-editor-zone {
-  min-height: 400px;
-  position: relative;
-  border: 1px solid #dee2e6;
-  padding: 16px;
-  background: #fff;
-  transition: background 0.2s;
-}
-
-#content-editor-zone.drag-over {
-  background: #fff5f5;
-  border-color: #ef4444;
-  border-style: dashed;
-}
-
-#drop-indicator {
-  height: 4px;
-  background-color: #f97316;
-  margin: 8px 0;
-  border-radius: 2px;
-  position: relative;
-  transition: all 0.1s ease;
-}
-
-#drop-indicator::before {
-  content: '';
-  position: absolute;
-  left: -6px;
-  top: -4px;
-  width: 12px;
-  height: 12px;
-  background-color: #f97316;
-  border-radius: 50%;
-}
-
-#drop-indicator::after {
-  content: '';
-  position: absolute;
-  right: -6px;
-  top: -4px;
-  width: 12px;
-  height: 12px;
-  background-color: #f97316;
-  border-radius: 50%;
-}
-
-/* ── Empty state ─────────────────────────────────────────────────────────── */
-
-.editor-empty-state {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.editor-empty-badge {
-  background: #ef4444;
-  color: white;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 2px 2px 0 0;
-  display: inline-block;
-  width: fit-content;
-}
-
-.editor-empty-input {
-  border: 2px solid #ef4444;
-  outline: none;
-  padding: 8px 12px;
-  font-size: 14px;
-  color: #aaa;
-  width: 100%;
-  box-sizing: border-box;
-  background: #fff;
-}
-
-/* ── Shared dropped-block styles ─────────────────────────────────────────── */
-
+/* ── Dropped Block Styles ── */
 .dropped-block {
-  margin-bottom: 12px;
-  position: relative;
+    position: relative;
+    margin-bottom: 5px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    background: transparent;
 }
 
+.dropped-block:hover {
+    border: 1px dashed #c0392b;
+}
+
+.dropped-block.selected {
+    border: 2px solid #c0392b !important;
+}
+
+/* Badge and Tools Overlay */
 .dropped-block-badge {
-  background: #ef4444;
-  color: white;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 2px 2px 0 0;
-  display: none;
-  /* hidden when not selected */
-  align-items: center;
-  gap: 6px;
-  width: fit-content;
-}
-
-.dropped-block-inner {
-  border: 1px dashed #d1d5db;
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #fff;
-  transition: border 0.15s;
-}
-
-.dropped-block.selected .dropped-block-inner {
-  border: 2px dashed #f97316 !important;
+    position: absolute;
+    top: -24px;
+    left: -2px;
+    background: #c0392b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 10px;
+    border-radius: 2px 2px 0 0;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    z-index: 100;
 }
 
 .dropped-block.selected .dropped-block-badge {
-  background: #f97316;
-  display: inline-flex;
+    display: inline-flex;
 }
-
-/* ── Copy / duplicate button ─────────────────────────────────────────────── */
-
-.copy-btn {
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s;
-}
-
-.dropped-block.selected .copy-btn {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.dropped-block.selected .copy-btn:hover {
-  opacity: 0.75;
-}
-
-/* ── Block Reorder Tools ─────────────────────────────────────────────────── */
 
 .block-reorder-tools {
-  position: absolute;
-  right: -35px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: none;
-  flex-direction: column;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+    position: absolute;
+    right: -40px;
+    top: 0;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #e0e6ed;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    z-index: 100;
 }
 
 .dropped-block.selected .block-reorder-tools {
-  display: flex;
+    display: flex;
 }
 
 .reorder-btn {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  color: #555;
-  cursor: pointer;
-  font-size: 12px;
-  transition: background 0.2s, color 0.2s;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    color: #4f566b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f3f5;
 }
 
-.reorder-btn:hover {
-  background: #f8f9fa;
-  color: #ef4444;
+.reorder-btn:hover { color: #c0392b; background: #fcfdfe; }
+
+/* ── ContentEditable Styles ── */
+.dropped-block-inner {
+    padding: 10px;
+    min-height: 20px;
+    outline: none;
 }
 
-.reorder-btn:not(:last-child) {
-  border-bottom: 1px solid #eee;
+[contenteditable="true"] {
+    outline: none;
+    min-height: 1.2em;
 }
 
-.reorder-btn.drag-handle {
-  cursor: grab;
+[contenteditable="true"]:empty:before {
+    content: attr(data-placeholder);
+    color: #adb5bd;
+    font-style: italic;
+    pointer-events: none;
 }
 
-/* ── Block action tool buttons (AI, Grammar) ─────────────────────────────── */
-
-.dropped-block-tools {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: 12px;
+/* ── Drop Indicator ── */
+#drop-indicator {
+    height: 4px;
+    background: #c0392b;
+    margin: 8px 0;
+    border-radius: 2px;
+    width: 100%;
 }
 
-.dropped-block-tools .tool-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 13px;
-  transition: opacity 0.15s;
+/* ── Layout Zones ── */
+.col-drop-zone {
+    min-height: 80px;
+    background: rgba(248, 249, 250, 0.5);
+    border: 1px dashed #e0e6ed;
+    padding: 15px;
+    margin: 5px;
 }
 
-.dropped-block-tools .tool-btn:hover {
-  opacity: 0.8;
+.col-drop-zone:hover {
+    background: rgba(192, 57, 43, 0.02);
+    border-color: #c0392b;
 }
 
-.tool-btn-green {
-  background: #16a34a;
-  color: #fff;
-}
-
-.tool-btn-teal {
-  background: #0d9488;
-  color: #fff;
-}
-
-/* ── Block-Specific styles ───────────────────────────────────────────────── */
-
-.editor-divider {
-  width: 100%;
-  border: 0;
-  border-top: 1px solid #e2e8f0;
-  margin: 1rem 0;
-}
-
-.editor-image {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  cursor: pointer;
-}
-
-.editor-card {
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.editor-card:hover {
-  transform: translateY(-2px);
-}
-
-.spacer-block .dropped-block-inner {
-  padding: 0 !important;
-}
-
-.editor-spacer {
-  width: 100%;
-  transition: height 0.2s;
-  background: transparent;
-}
-
-/* ── Accordion Styles ────────────────────────────────────────────────────── */
-
-.editor-accordion {
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.acc-item {
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.acc-item:last-child {
-  border-bottom: none;
-}
-
-.acc-header {
-  background: #f8fafc;
-  padding: 12px 16px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.acc-header::after {
-  content: '\f078';
-  /* fa-chevron-down */
-  font-family: 'Font Awesome 6 Free';
-  font-weight: 900;
-  font-size: 12px;
-  transition: transform 0.2s;
-}
-
-.acc-item.open .acc-header::after {
-  transform: rotate(180deg);
-}
-
-.acc-content {
-  padding: 0;
-  max-height: 0;
-  overflow: hidden;
-  background: #fff;
-  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-}
-
-.acc-item.open .acc-content {
-  padding: 12px 16px;
-  max-height: 500px;
-  /* high enough to show content */
-}
-
-
-
-/* ── Icon Block Compact Mode ─────────────────────────────────────────────── */
-
-.is-icon-block {
-  display: inline-block;
-  margin-right: 10px;
-  vertical-align: top;
-}
-
-.is-icon-block .dropped-block-inner {
-  padding: 8px !important;
-  width: fit-content !important;
-  min-width: 40px;
-  justify-content: center;
-}
-
-.is-icon-block .dropped-block-badge {
-  position: absolute;
-  top: -22px;
-  left: 0;
-  white-space: nowrap;
-}
-
-.is-icon-block .block-reorder-tools {
-  right: -32px;
-}
+/* ── Block Specifics ── */
+.editor-heading h1 { margin: 0; font-weight: 800; color: #1a1f36; font-size: 32px; }
+.editor-text p { margin: 0; color: #4f566b; font-size: 16px; line-height: 1.6; }
