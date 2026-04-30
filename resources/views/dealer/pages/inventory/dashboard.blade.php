@@ -527,9 +527,12 @@
 
                         <div class="inv-table-header">
                             <h3>Inventory: Units Sold</h3>
-                            <button class="btn-export-all">
+                            <a id="exportAllBtn"
+                               href="{{ route('dealer.inventory.dashboard.export-sold', ['dealer_id' => $currentDealerId, 'date_range' => $dateRange]) }}"
+                               class="btn-export-all"
+                               title="Download CSV of sold inventory">
                                 <i class="bi bi-cloud-arrow-down"></i> Export All
-                            </button>
+                            </a>
                         </div>
 
                         <div class="inv-table-wrapper">
