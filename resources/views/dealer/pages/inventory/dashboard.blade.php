@@ -648,7 +648,33 @@
                             </div>
                         </div>
 
-                        <div class="inv-card-box-title border-0 bg-transparent ps-0 pb-0" style="font-size: 15px; font-weight: 600;">Inventory by Location</div>
+                        <div class="inv-card-box border-0 bg-transparent p-0 mb-2">
+                            <div class="inv-card-box-title bg-transparent ps-0 pb-1" style="font-size: 15px; font-weight: 600; border-bottom: 0;">Inventory by Location</div>
+                        </div>
+
+                        <div class="inv-card-box">
+                            <table class="inv-mini-table">
+                                <thead>
+                                    <tr>
+                                        <th>Units</th>
+                                        <th>Total</th>
+                                        <th>Average</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($locationStats as $stat)
+                                    <tr class="bg-light">
+                                        <td colspan="3" class="fw-bold py-2" style="font-size: 14px; color: #333;">{{ $stat['name'] }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $stat['units'] }}</td>
+                                        <td>${{ number_format($stat['total']) }}</td>
+                                        <td>${{ number_format($stat['avg']) }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </aside>
                 </div>
             </div>

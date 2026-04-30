@@ -816,7 +816,8 @@ class InventoryController extends Controller
         $vehicles = Vehicle::whereIn('dealer_id', $targetDealerIds)
             ->whereIn('status', ['active', 'sold'])
             ->whereNotNull('listed_at')
-            ->get(['listed_at', 'sold_at']);
+            ->with('prices')
+            ->get();
 
         for ($i = 29; $i >= 0; $i--) {
             $date = now()->subDays($i);
@@ -852,7 +853,7 @@ class InventoryController extends Controller
                 elseif ($days <= 90) $bucket = '61-90';
                 elseif ($days <= 120) $bucket = '91-120';
                 
-                $price = $v->prices->internet_price ?? 0;
+                $price = $v->prices->internet_price ?? $v->prices->msrp ?? 0;
                 $daysStats[$bucket]['units']++;
                 $daysStats[$bucket]['total'] += $price;
             }
@@ -866,12 +867,34 @@ class InventoryController extends Controller
 
         $chartDays = array_column($daysStats, 'units');
 
+        // ─── Inventory by Location (Per Dealer) ──────────────────────────────
+        $locationStats = [];
+        $allVehicles = Vehicle::whereIn('dealer_id', $dealerIds)
+            ->active()
+            ->with('prices')
+            ->get();
+
+        foreach ($dealers as $dealer) {
+            $dealerVehicles = $allVehicles->where('dealer_id', $dealer->id);
+            $units = $dealerVehicles->count();
+            $total = $dealerVehicles->sum(fn($v) => $v->prices->internet_price ?? 0);
+            $avg = $units > 0 ? $total / $units : 0;
+
+            $locationStats[] = [
+                'name'  => $dealer->name,
+                'units' => $units,
+                'total' => $total,
+                'avg'   => $avg
+            ];
+        }
+
         return view('dealer.pages.inventory.dashboard', compact(
             'inStockCount', 'inStockCost', 'inStockValue',
             'soldCount', 'soldValue',
             'noPhotosCount', 'noPriceCount',
             'soldMakes', 'dealers', 'currentDealerId', 'dateRange',
-            'chartLabels', 'chartViews', 'chartStock', 'chartDays', 'daysStats'
+            'chartLabels', 'chartViews', 'chartStock', 'chartDays', 'daysStats',
+            'locationStats'
         ));
     }
 
