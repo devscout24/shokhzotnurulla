@@ -2,7 +2,9 @@ import flatpickr from "flatpickr";
 
 window.flatpickr = flatpickr;
 
-import Chart from 'chart.js/auto';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
+window.Chart = Chart;
 
 
 // Nav active switch & view switching
