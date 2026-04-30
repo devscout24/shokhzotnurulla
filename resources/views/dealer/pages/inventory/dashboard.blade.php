@@ -215,63 +215,67 @@
         }
 
         .model-data-wrapper {
-            background: #f8fafc;
-            padding: 24px;
-            border-bottom: 1px solid #e2e8f0;
+            background: #f1f1f1;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
         }
 
         .model-table-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 15px;
         }
 
         .model-table-header h4 {
             margin: 0;
-            font-size: 14px;
-            font-weight: 600;
-            color: #334155;
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
         }
 
         .btn-export-make {
             background: #ce4f4b;
             color: #fff;
             border: none;
-            padding: 6px 12px;
+            padding: 5px 12px;
             border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: background 0.2s;
-        }
-
-        .btn-export-make:hover {
-            background: #ce4f4b;
         }
 
         .model-table {
             width: 100%;
             background: #fff;
-            border-radius: 6px;
-            overflow: hidden;
+            border-collapse: collapse;
             border: 1px solid #e2e8f0;
         }
 
         .model-table th {
-            background: #f1f5f9;
-            padding: 10px 16px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #475569;
+            background: #fff;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .model-table th.text-center {
+            text-align: center;
         }
 
         .model-table td {
             padding: 12px 16px;
             font-size: 13px;
-            border-bottom: 1px solid #f1f5f9;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+        }
+
+        .model-table td.text-center {
+            text-align: center;
         }
 
         .inv-sidebar {
@@ -546,12 +550,12 @@
                                     @forelse($soldMakes as $makeData)
                                         <tr class="make-row" data-make-id="{{ $makeData['make_id'] }}"
                                             data-make-name="{{ $makeData['make_name'] }}">
-                                            <td>{{ strtoupper($makeData['make_name']) }}</td>
+                                            <td>{{ $makeData['make_name'] }}</td>
                                             <td class="text-center">{{ $makeData['units_sold'] }}</td>
                                             <td class="text-center">{{ $makeData['avg_days'] }}</td>
                                             <td class="text-center text-success">
                                                 ${{ number_format($makeData['est_sales']) }}</td>
-                                            <td class="text-center text-success">
+                                            <td class="text-center">
                                                 ${{ number_format($makeData['avg_price']) }}</td>
                                             <td class="text-center">{{ $makeData['changes_count'] }}</td>
                                             <td class="text-center">{{ $makeData['avg_change'] }}</td>
@@ -564,11 +568,11 @@
                                             <td colspan="8" class="p-0">
                                                 <div class="model-data-wrapper">
                                                     <div class="model-table-header">
-                                                        <h4>{{ strtoupper($makeData['make_name']) }} Units sold by model
+                                                        <h4>{{ $makeData['make_name'] }} Units sold by model
                                                         </h4>
                                                         <button class="btn-export-make">
                                                             <i class="bi bi-cloud-arrow-down"></i> Export
-                                                            {{ strtoupper($makeData['make_name']) }}
+                                                            {{ $makeData['make_name'] }}
                                                         </button>
                                                     </div>
                                                     <table class="model-table">
@@ -759,23 +763,42 @@
                         });
                     }
 
-                    // Expandable Rows
-                    document.querySelectorAll('.make-row').forEach(row => {
-                        const expandBtn = row.querySelector('.table-expand');
-                        const makeId = row.getAttribute('data-make-id');
-                        const modelRow = document.getElementById(`model-row-${makeId}`);
-                        const tbody = modelRow.querySelector('.model-tbody');
+                });
+            </script>
 
-                        expandBtn.addEventListener('click', function(e) {
+            <script>
+                // Independent Expandable Rows Logic
+                (function() {
+                    function initExpandableRows() {
+                        document.addEventListener('click', function(e) {
+                            const expandBtn = e.target.closest('.table-expand');
+                            if (!expandBtn) return;
+
+                            e.preventDefault();
                             e.stopPropagation();
-                            const isExpanded = modelRow.style.display !== 'none';
 
-                            if (!isExpanded) {
+                            const row = expandBtn.closest('.make-row');
+                            if (!row) return;
+
+                            const makeId = row.getAttribute('data-make-id');
+                            const modelRow = document.getElementById('model-row-' + makeId);
+                            if (!modelRow) return;
+
+                            const tbody = modelRow.querySelector('.model-tbody');
+                            const isCollapsed = window.getComputedStyle(modelRow).display === 'none';
+
+                            if (isCollapsed) {
                                 modelRow.style.display = 'table-row';
-                                this.innerHTML = '<i class="bi bi-dash-lg"></i>';
-                                if (tbody.children.length === 0) {
-                                    tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border spinner-border-sm text-danger" role="status"></div> Loading...</td></tr>';
-                                    fetch(`{{ route('dealer.inventory.dashboard.sold-models') }}?make_id=${makeId}&dealer_id={{ $currentDealerId }}&date_range={{ $dateRange }}`)
+                                expandBtn.innerHTML = '<i class="bi bi-dash-lg"></i>';
+
+                                if (tbody && tbody.children.length === 0) {
+                                    tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4"><div class="spinner-border spinner-border-sm text-danger"></div> Loading...</td></tr>';
+                                    
+                                    const dealerId = "{{ $currentDealerId }}";
+                                    const dateRange = "{{ $dateRange }}";
+                                    const url = `{{ route('dealer.inventory.dashboard.sold-models') }}?make_id=${makeId}&dealer_id=${dealerId}&date_range=${encodeURIComponent(dateRange)}`;
+
+                                    fetch(url)
                                         .then(response => response.json())
                                         .then(data => {
                                             tbody.innerHTML = '';
@@ -785,18 +808,39 @@
                                             }
                                             data.forEach(model => {
                                                 const tr = document.createElement('tr');
-                                                tr.innerHTML = `<td>${model.model_name}</td><td class="text-center">${model.sold}</td><td class="text-center text-success">$${model.est_sales}</td><td class="text-center text-success">$${model.avg_price}</td><td class="text-center">${model.avg_days}</td><td class="text-center">${model.min_days}</td><td class="text-center">${model.max_days}</td><td class="text-center">${model.changes_count}</td>`;
+                                                tr.innerHTML = `
+                                                    <td>${model.model_name}</td>
+                                                    <td class="text-center">${model.sold}</td>
+                                                    <td class="text-center text-success">$${model.est_sales}</td>
+                                                    <td class="text-center">$${model.avg_price}</td>
+                                                    <td class="text-center">${model.avg_days}</td>
+                                                    <td class="text-center">${model.min_days}</td>
+                                                    <td class="text-center">${model.max_days}</td>
+                                                    <td class="text-center">${model.changes_count}</td>
+                                                `;
                                                 tbody.appendChild(tr);
                                             });
+                                        })
+                                        .catch(error => {
+                                            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger py-4">Error loading data</td></tr>';
                                         });
                                 }
                             } else {
                                 modelRow.style.display = 'none';
-                                this.innerHTML = '<i class="bi bi-plus-lg"></i>';
+                                expandBtn.innerHTML = '<i class="bi bi-plus-lg"></i>';
                             }
                         });
-                    });
-                });
+                    }
+
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', initExpandableRows);
+                    } else {
+                        initExpandableRows();
+                    }
+                })();
+            </script>
+
+            <script>
 
                 // Separate Chart Initialization
                 (function() {
