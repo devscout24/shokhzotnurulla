@@ -113,24 +113,9 @@ function updateHistoryButtons() {
 
 // Observe changes
 function initHistoryObserver() {
-  const container = document.getElementById('blocks-container');
-  if (!container) return;
-
-  let timer;
-  const observer = new MutationObserver(() => {
-    if (isRestoring) return;
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      saveHistory();
-    }, 500); 
-  });
-
-  observer.observe(container, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    characterData: true
-  });
+  // Background observer disabled to prevent "automatic updates"
+  // Now only manual saveHistory() calls will be used
+  return;
 }
 
 // Initialization

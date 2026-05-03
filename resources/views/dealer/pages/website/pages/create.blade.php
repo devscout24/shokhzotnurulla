@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/heading.css') }}?v=1.2"/>
 <link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/p.css') }}?v=1.2"/>
 <link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/button.css') }}?v=1.2"/>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
 .layout{display:flex!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;height:100vh;overflow:hidden}
 .of-master-frame{display:flex;flex-direction:column;width:100%;height:100vh;background:#f8f9fa}
@@ -255,8 +256,8 @@
         <div class="ps-section-title">Post Metadata</div>
         <div class="hs-row"><label>Status</label>
             <select class="hs-select" name="is_active" id="ps-status" onchange="updateTopStatus(this)">
-                <option value="1">Published</option>
-                <option value="0" selected>Draft</option>
+                <option value="1" selected>Published</option>
+                <option value="0">Draft</option>
                 <option value="pending">Pending Review</option>
             </select>
         </div>
@@ -340,48 +341,38 @@
 </div>
 @endsection
 @push('pannel-scripts')
+<script>
+    window.CMS_CONFIG = {
+        upload_url: "{{ route('dealer.website.media.upload') }}",
+        csrf_token: "{{ csrf_token() }}"
+    };
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/html-css.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/inventory.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/carousel.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/tabs.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/search.js') }}?v=1.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/html-css.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=2.1"></script>
+
+<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=2.1"></script>
 <script>
 // Sync Top Bar Status
-function updateTopStatus(select) {
-    const badge = document.getElementById('top-status-badge');
-    const dot = badge.querySelector('i');
-    const text = select.options[select.selectedIndex].text;
-    
-    if (select.value === '1') {
-        dot.style.color = '#27ae60';
-    } else {
-        dot.style.color = '#ced4da';
-    }
-    badge.innerHTML = `<i class="fa-solid fa-circle me-2" style="font-size:8px;color:${dot.style.color}"></i> Status: ${text}`;
-}
-
 // Toggle Side Panels
 function toggleSidePanel(id) {
     const panels = ['page-settings', 'page-revisions'];
@@ -460,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fix layout overflow
     var layout = document.querySelector('.layout');
-    if (layout) { layout.style.display = 'flex'; layout.style.width = '100%'; layout.style.maxWidth = '100%'; layout.style.flex = '1'; layout.style.overflow = 'hidden'; }
+    if (layout) { layout.style.display = 'flex'; layout.style.width = '100%'; layout.style.maxWidth = '100%'; layout.style.flex = '1'; layout.style.overflow = 'visible'; }
 });
 </script>
 @endpush

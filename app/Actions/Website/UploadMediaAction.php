@@ -55,7 +55,7 @@ class UploadMediaAction
             'name'          => $unique,
             'path'          => $path,
             'disk'          => 'public',
-            'url'           => Storage::disk('public')->url($path),
+            'url'           => '/storage/' . $path,
             'type'          => $type,
             'mime_type'     => $mime,
             'size'          => $file->getSize(),

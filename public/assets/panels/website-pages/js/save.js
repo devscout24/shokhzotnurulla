@@ -118,6 +118,7 @@ function extractBlockData(el, index) {
       src: currentSrc,
       alt: target.alt || '',
       width: target.style.width || '100%',
+      height: target.style.height || 'auto',
       align: currentAlign,
       cssClasses: target.dataset.cssClasses || '',
     };
@@ -192,6 +193,20 @@ function extractBlockData(el, index) {
     };
   }
 
+  // 11. Video
+  if (target.classList.contains('editor-video')) {
+    return {
+      index,
+      type: 'video',
+      host: target.dataset.host || 'youtube',
+      url: target.dataset.url || '',
+      poster: target.dataset.poster || '',
+      autoplay: target.dataset.autoplay === 'true',
+      loop: target.dataset.loop === 'true',
+      controls: target.dataset.controls !== 'false'
+    };
+  }
+
   // 11. Icon
   if (target.classList.contains('editor-icon')) {
     const i = target.querySelector('i');
@@ -242,8 +257,10 @@ function extractBlockData(el, index) {
       alignItems: wrapper ? wrapper.style.alignItems : 'stretch',
       gap: wrapper ? wrapper.style.gap : '0px',
       image: cardImg ? {
-        src: cardImg.src,
-        alt: cardImg.alt
+        src: cardImg.getAttribute('src') || cardImg.src,
+        alt: cardImg.alt || '',
+        width: cardImg.style.width || '100%',
+        height: cardImg.style.height || 'auto'
       } : null,
       blocks: collectBlocksFromContainer(cardBody)
     };

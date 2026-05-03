@@ -3,29 +3,41 @@
 function open2ColSettings(el) {
   closeAllPanels();
   activeEl = el;
-  el.closest('.dropped-block').classList.add('selected');
+  const block = el.closest('.dropped-block');
+  block.classList.add('selected');
   const panel = document.getElementById('2col-settings-panel');
   if (panel) panel.style.display = 'block';
 
+  // Sync Visibility
+  if (typeof syncVisibilityToggles === 'function') syncVisibilityToggles(block);
+
   // Sync gap field
   const gapValue = el.style.gap ? parseInt(el.style.gap) : 20;
-  document.getElementById('col2-gap').value = gapValue;
+  const gapInput = document.getElementById('col2-gap');
+  if (gapInput) gapInput.value = gapValue;
 }
 
-// Settings panel event listeners
-document.getElementById('col2-back-btn').addEventListener('click', closeAllPanels);
-document.getElementById('col2-cancel-btn').addEventListener('click', closeAllPanels);
+// Back / Cancel
+document.getElementById('col2-back-btn')?.addEventListener('click', closeAllPanels);
+document.getElementById('col2-cancel-btn')?.addEventListener('click', closeAllPanels);
 
-document.getElementById('col2-gap').addEventListener('input', e => {
-  if (activeEl && activeEl.classList.contains('editor-2col')) {
-    activeEl.style.gap = (parseInt(e.target.value) || 0) + 'px';
+// Gap Input
+document.getElementById('col2-gap')?.addEventListener('input', e => {
+  if (activeEl) {
+    activeEl.style.gap = (e.target.value || 0) + 'px';
+    if (typeof saveHistory === 'function') saveHistory();
   }
 });
 
-document.getElementById('col2-remove-btn').addEventListener('click', () => {
+// Remove block
+document.getElementById('col2-remove-btn')?.addEventListener('click', () => {
   if (activeEl) {
-    activeEl.closest('.dropped-block').remove();
-    if (typeof checkEmptyBlocks === 'function') checkEmptyBlocks();
+    const block = activeEl.closest('.dropped-block');
+    if (block) {
+      block.remove();
+      checkEmptyBlocks();
+      if (typeof saveHistory === 'function') saveHistory();
+    }
   }
   closeAllPanels();
 });
@@ -44,33 +56,26 @@ function drop2ColBlock(returnBlock = false) {
       2-Column <i class="fa-solid fa-copy copy-btn" title="Duplicate"></i>
     </span>
     <div class="block-reorder-tools">
-      <button class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
-      <button class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
-      <button class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
+      <button type="button" class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
+      <button type="button" class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
+      <button type="button" class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
-    <div class="dropped-block-inner" style="background: transparent; border: none; padding: 0;">
-      <div class="editor-2col" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%;">
-        <div class="col-drop-zone"></div>
-        <div class="col-drop-zone"></div>
+    <div class="dropped-block-inner">
+      <div class="editor-2col" style="display: flex; gap: 20px; width: 100%;">
+        <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;"></div>
+        <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;"></div>
       </div>
     </div>`;
 
-  // Attach nested drop zone listeners to columns and add default text
-  const cols = block.querySelectorAll('.col-drop-zone');
-  cols.forEach(col => {
-      attachDropZoneListeners(col);
-      if (typeof dropTextBlock === 'function') {
-          const defaultText = dropTextBlock(true);
-          col.appendChild(defaultText);
-          attachBlockListeners(defaultText);
-      }
-  });
+  const col2 = block.querySelector('.editor-2col');
+  const zones = block.querySelectorAll('.col-drop-zone');
+  zones.forEach(zone => attachDropZoneListeners(zone));
 
   if (returnBlock) return block;
 
   blocksContainer.appendChild(block);
   attachBlockListeners(block);
 
-  const colBlock = block.querySelector('.editor-2col');
-  if (colBlock) open2ColSettings(colBlock);
+  if (col2) open2ColSettings(col2);
+  if (typeof saveHistory === 'function') saveHistory();
 }
