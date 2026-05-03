@@ -1,10 +1,13 @@
 // ── Heading (H1) Settings Panel ───────────────────────────────────────────────
 
 function openHeadingSettings(el) {
-  closeAllPanels();
+  openPanel('heading-settings-panel');
   activeEl = el;
-  el.closest('.dropped-block').classList.add('selected');
-  document.getElementById('heading-settings-panel').style.display = 'block';
+  const block = el.closest('.dropped-block');
+  block.classList.add('selected');
+
+  // Sync Visibility
+  if (typeof syncVisibilityToggles === 'function') syncVisibilityToggles(block);
 
   // Sync align buttons
   const cur = el.style.textAlign || 'left';
@@ -13,17 +16,14 @@ function openHeadingSettings(el) {
   );
 
   // Sync fields
-  document.getElementById('hs-color').value = el.style.color || '';
+  document.getElementById('hs-color').value = rgbToHex(el.style.color) || '#111827';
   document.getElementById('hs-size').value = el.style.fontSize ? parseInt(el.style.fontSize) : '';
-  document.getElementById('hs-weight').value = el.style.fontWeight || 'normal';
-  document.getElementById('hs-margin-top').value = el.style.marginTop ? parseInt(el.style.marginTop) : '';
-  document.getElementById('hs-margin-bottom').value = el.style.marginBottom ? parseInt(el.style.marginBottom) : '';
   document.getElementById('hs-classes').value = el.dataset.cssClasses || '';
 }
 
 // Back / Cancel
-document.getElementById('hs-back-btn').addEventListener('click', closeAllPanels);
-document.getElementById('hs-cancel-btn').addEventListener('click', closeAllPanels);
+document.getElementById('hs-back-btn')?.addEventListener('click', closeAllPanels);
+document.getElementById('hs-cancel-btn')?.addEventListener('click', closeAllPanels);
 
 // Align
 document.querySelectorAll('.hs-align-btn').forEach(btn => {
@@ -31,59 +31,40 @@ document.querySelectorAll('.hs-align-btn').forEach(btn => {
     document.querySelectorAll('.hs-align-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     if (activeEl) activeEl.style.textAlign = btn.dataset.align;
+    if (typeof saveHistory === 'function') saveHistory();
   });
 });
 
 // Text color
-document.getElementById('hs-color').addEventListener('change', e => {
+document.getElementById('hs-color')?.addEventListener('change', e => {
   if (activeEl) activeEl.style.color = e.target.value || '';
+  if (typeof saveHistory === 'function') saveHistory();
 });
 
 // Text size
-document.getElementById('hs-size').addEventListener('input', e => {
+document.getElementById('hs-size')?.addEventListener('input', e => {
   if (activeEl && e.target.value) activeEl.style.fontSize = e.target.value + 'px';
   else if (activeEl) activeEl.style.fontSize = '';
-});
-
-// Font weight
-document.getElementById('hs-weight').addEventListener('change', e => {
-  if (activeEl) {
-    if (e.target.value === 'normal') {
-      activeEl.style.fontWeight = '';
-    } else {
-      activeEl.style.fontWeight = e.target.value;
-    }
-  }
-});
-
-// Margin top
-document.getElementById('hs-margin-top').addEventListener('input', e => {
-  if (activeEl && e.target.value) activeEl.style.marginTop = e.target.value + 'px';
-  else if (activeEl) activeEl.style.marginTop = '';
-});
-
-// Margin bottom
-document.getElementById('hs-margin-bottom').addEventListener('input', e => {
-  if (activeEl && e.target.value) activeEl.style.marginBottom = e.target.value + 'px';
-  else if (activeEl) activeEl.style.marginBottom = '';
+  if (typeof saveHistory === 'function') saveHistory();
 });
 
 // CSS classes
-document.getElementById('hs-classes').addEventListener('input', e => {
+document.getElementById('hs-classes')?.addEventListener('input', e => {
   if (activeEl) {
     activeEl.dataset.cssClasses = e.target.value;
     activeEl.className = e.target.value;
   }
+  if (typeof saveHistory === 'function') saveHistory();
 });
 
 // Remove block
-document.getElementById('hs-remove-btn').addEventListener('click', () => {
+document.getElementById('hs-remove-btn')?.addEventListener('click', () => {
   if (activeEl) {
-    if (activeEl.closest('.editor-card')) {
-      activeEl.remove();
-    } else {
-      activeEl.closest('.dropped-block').remove();
+    const block = activeEl.closest('.dropped-block');
+    if (block) {
+      block.remove();
       checkEmptyBlocks();
+      if (typeof saveHistory === 'function') saveHistory();
     }
   }
   closeAllPanels();
@@ -103,9 +84,9 @@ function dropHeadingBlock(returnBlock = false) {
       Heading <i class="fa-solid fa-copy copy-btn" title="Duplicate"></i>
     </span>
     <div class="block-reorder-tools">
-      <button class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
-      <button class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
-      <button class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
+      <button type="button" class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
+      <button type="button" class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
+      <button type="button" class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner">
       <h1 contenteditable="true" spellcheck="false" data-placeholder="Enter Heading..."></h1>
@@ -120,4 +101,5 @@ function dropHeadingBlock(returnBlock = false) {
   h1.focus();
   openHeadingSettings(h1);
   placeCursorAtEnd(h1);
+  if (typeof saveHistory === 'function') saveHistory();
 }

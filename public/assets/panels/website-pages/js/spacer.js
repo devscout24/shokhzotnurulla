@@ -1,90 +1,56 @@
-// ── Spacer Settings Panel ───────────────────────────────────────────────────
+// ── Spacer Settings Panel ────────────────────────────────────────────────────
 
 function openSpacerSettings(el) {
   closeAllPanels();
   activeEl = el;
-  el.closest('.dropped-block').classList.add('selected');
+  const block = el.closest('.dropped-block');
+  block.classList.add('selected');
   document.getElementById('spacer-settings-panel').style.display = 'block';
 
-  // Sync fields
-  document.getElementById('ss-display').value = el.dataset.display || 'all';
-  document.getElementById('ss-height-desktop').value = el.dataset.heightDesktop || '10';
-  document.getElementById('ss-height-mobile').value = el.dataset.heightMobile || '10';
+  // Sync Visibility
+  if (typeof syncVisibilityToggles === 'function') syncVisibilityToggles(block);
+
+  // Sync Height
+  document.getElementById('ss-height').value = parseInt(el.style.height) || 40;
 }
 
 // Back / Cancel
-document.getElementById('ss-back-btn').addEventListener('click', closeAllPanels);
-document.getElementById('ss-cancel-btn').addEventListener('click', closeAllPanels);
+document.getElementById('ss-back-btn')?.addEventListener('click', closeAllPanels);
+document.getElementById('ss-cancel-btn')?.addEventListener('click', closeAllPanels);
 
-// Display
-document.getElementById('ss-display').addEventListener('change', e => {
+// Height
+document.getElementById('ss-height')?.addEventListener('input', e => {
   if (activeEl) {
-    activeEl.dataset.display = e.target.value;
-    updateSpacerStyles(activeEl);
+    activeEl.style.height = (e.target.value || 40) + 'px';
+    if (typeof saveHistory === 'function') saveHistory();
   }
 });
 
-// Height Desktop
-document.getElementById('ss-height-desktop').addEventListener('input', e => {
-  if (activeEl) {
-    activeEl.dataset.heightDesktop = e.target.value;
-    updateSpacerStyles(activeEl);
-  }
-});
-
-// Height Mobile
-document.getElementById('ss-height-mobile').addEventListener('input', e => {
-  if (activeEl) {
-    activeEl.dataset.heightMobile = e.target.value;
-    updateSpacerStyles(activeEl);
-  }
-});
-
-function updateSpacerStyles(el) {
-  const hDesktop = el.dataset.heightDesktop || '10';
-  // We use CSS variables or direct style for desktop height
-  el.style.height = hDesktop + 'px';
-  
-  // Note: Mobile height would usually be handled via a <style> tag or CSS media queries
-  // For the editor, we mostly care about the desktop view, but we store the mobile value in dataset.
-}
-
-// Remove block
-document.getElementById('ss-remove-btn').addEventListener('click', () => {
-  if (activeEl) {
-    activeEl.closest('.dropped-block').remove();
-    checkEmptyBlocks();
-  }
+// Remove
+document.getElementById('ss-remove-btn')?.addEventListener('click', () => {
+  if (activeEl) { activeEl.closest('.dropped-block').remove(); checkEmptyBlocks(); if (typeof saveHistory === 'function') saveHistory(); }
   closeAllPanels();
 });
 
-// ── Drop Spacer Block ────────────────────────────────────────────────────────
-
+// ── Drop ─────────────────────────────────────────────────────────────────────
 function dropSpacerBlock(returnBlock = false) {
-  const emptyState = document.getElementById('empty-state');
-  const blocksContainer = document.getElementById('blocks-container');
-  if (emptyState) emptyState.style.display = 'none';
-
   const block = document.createElement('div');
-  block.className = 'dropped-block spacer-block';
+  block.className = 'dropped-block';
   block.innerHTML = `
-    <span class="dropped-block-badge">
-      Spacer <i class="fa-solid fa-copy copy-btn" title="Duplicate"></i>
-    </span>
+    <span class="dropped-block-badge">Spacer <i class="fa-solid fa-copy copy-btn"></i></span>
     <div class="block-reorder-tools">
-      <button class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
-      <button class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
-      <button class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
+      <button type="button" class="reorder-btn drag-handle"><i class="fa-solid fa-grip-vertical"></i></button>
+      <button type="button" class="reorder-btn move-up-btn"><i class="fa-solid fa-chevron-up"></i></button>
+      <button type="button" class="reorder-btn move-down-btn"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner">
-      <div class="editor-spacer" data-height-desktop="10" data-height-mobile="10" data-display="all" style="height: 10px; width: 100%;"></div>
+      <div class="editor-spacer" style="width:100%;height:40px;background:repeating-linear-gradient(45deg, #f8f9fa, #f8f9fa 10px, #ffffff 10px, #ffffff 20px);opacity:0.6;cursor:pointer;border:1px dashed #dee2e6;"></div>
     </div>`;
 
   if (returnBlock) return block;
-
-  blocksContainer.appendChild(block);
+  document.getElementById('blocks-container').appendChild(block);
   attachBlockListeners(block);
-
-  const spacer = block.querySelector('.editor-spacer');
-  openSpacerSettings(spacer);
+  const s = block.querySelector('.editor-spacer');
+  openSpacerSettings(s);
+  if (typeof saveHistory === 'function') saveHistory();
 }
