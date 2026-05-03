@@ -679,10 +679,182 @@ class InventoryController extends Controller
                     'min_days' => $minDays,
                     'max_days' => $maxDays,
                     'changes_count' => '--',
+                    'avg_change' => '--',
                 ];
             })->sortByDesc('sold')->values();
 
         return response()->json($models);
+    }
+
+    public function exportSoldInventory(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $user            = $request->user();
+        $dealerIds       = $user->dealers()->pluck('dealers.id')->toArray();
+        $currentDealerId = $request->integer('dealer_id');
+        $targetDealerIds = ($currentDealerId && in_array($currentDealerId, $dealerIds))
+            ? [$currentDealerId]
+            : $dealerIds;
+
+        $dateRange = $request->input('date_range');
+        $startDate = $endDate = null;
+        if ($dateRange) {
+            $dates = explode(' - ', $dateRange);
+            if (count($dates) === 2) {
+                try {
+                    $startDate = \Carbon\Carbon::parse($dates[0])->startOfDay();
+                    $endDate   = \Carbon\Carbon::parse($dates[1])->endOfDay();
+                } catch (\Exception $e) {}
+            }
+        }
+
+        $query = Vehicle::whereIn('dealer_id', $targetDealerIds)
+            ->sold()
+            ->with(['make', 'makeModel', 'prices']);
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('sold_at', [$startDate, $endDate]);
+        }
+
+        // Group by make → model
+        $rows = $query->get()
+            ->groupBy('make_id')
+            ->flatMap(function ($makeVehicles) {
+                $make = $makeVehicles->first()->make;
+                return $makeVehicles->groupBy('make_model_id')
+                    ->map(function ($vehicles) use ($make) {
+                        $model    = $vehicles->first()->makeModel;
+                        $prices   = $vehicles->map(fn($v) => $v->prices->sold_price
+                                        ?? $v->prices->internet_price
+                                        ?? $v->prices->msrp
+                                        ?? 0);
+                        $days     = $vehicles->map(fn($v) => $v->days_on_lot ?? 0);
+                        $soldCount = $vehicles->count();
+                        $totalPrice = $prices->sum();
+
+                        return [
+                            'make'               => $make->name ?? '',
+                            'model'              => $model->name ?? '',
+                            'avg_days'           => $soldCount > 0 ? round($days->avg(), 2) : 0,
+                            'avg_price'          => $soldCount > 0 ? round($totalPrice / $soldCount, 2) : 0,
+                            'count_pricechanges' => '--',
+                            'max_days'           => $days->max() ?? 0,
+                            'max_price'          => $prices->max() ?? 0,
+                            'min_days'           => $days->min() ?? 0,
+                            'min_price'          => $prices->min() ?? 0,
+                            'pct_pricechanges'   => '--',
+                            'soldcount'          => $soldCount,
+                            'total_price'        => $totalPrice,
+                            'total_pricechanges' => '--',
+                        ];
+                    });
+            });
+
+        $headers = [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="inventory-sold-export-' . now()->format('Ymd-His') . '.csv"',
+            'Cache-Control'       => 'no-cache, no-store, must-revalidate',
+        ];
+
+        $columns = [
+            'make', 'model', 'avg_days', 'avg_price', 'count_pricechanges',
+            'max_days', 'max_price', 'min_days', 'min_price',
+            'pct_pricechanges', 'soldcount', 'total_price', 'total_pricechanges',
+        ];
+
+        return response()->stream(function () use ($rows, $columns) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, $columns);
+            foreach ($rows as $row) {
+                fputcsv($handle, array_map(fn($col) => $row[$col] ?? '', $columns));
+            }
+            fclose($handle);
+        }, 200, $headers);
+    }
+
+    public function exportSoldModelsByMake(Request $request, int $make_id): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $user            = $request->user();
+        $dealerIds       = $user->dealers()->pluck('dealers.id')->toArray();
+        $currentDealerId = $request->integer('dealer_id');
+        $targetDealerIds = ($currentDealerId && in_array($currentDealerId, $dealerIds))
+            ? [$currentDealerId]
+            : $dealerIds;
+
+        $dateRange = $request->input('date_range');
+        $startDate = $endDate = null;
+        if ($dateRange) {
+            $dates = explode(' - ', $dateRange);
+            if (count($dates) === 2) {
+                try {
+                    $startDate = \Carbon\Carbon::parse($dates[0])->startOfDay();
+                    $endDate   = \Carbon\Carbon::parse($dates[1])->endOfDay();
+                } catch (\Exception $e) {}
+            }
+        }
+
+        $makeName = \App\Models\Catalog\Make::find($make_id)?->name ?? 'make';
+
+        $query = Vehicle::whereIn('dealer_id', $targetDealerIds)
+            ->where('make_id', $make_id)
+            ->sold()
+            ->with(['makeModel', 'make', 'prices']);
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('sold_at', [$startDate, $endDate]);
+        }
+
+        $rows = $query->get()
+            ->groupBy('make_model_id')
+            ->map(function ($vehicles) use ($makeName) {
+                $model      = $vehicles->first()->makeModel;
+                $prices     = $vehicles->map(fn($v) => $v->prices->sold_price
+                                    ?? $v->prices->internet_price
+                                    ?? $v->prices->msrp
+                                    ?? 0);
+                $days       = $vehicles->map(fn($v) => $v->days_on_lot ?? 0);
+                $soldCount  = $vehicles->count();
+                $totalPrice = $prices->sum();
+
+                return [
+                    'make'               => $makeName,
+                    'model'              => $model->name ?? '',
+                    'avg_days'           => $soldCount > 0 ? round($days->avg(), 2) : 0,
+                    'avg_price'          => $soldCount > 0 ? round($totalPrice / $soldCount, 2) : 0,
+                    'count_pricechanges' => '--',
+                    'max_days'           => $days->max() ?? 0,
+                    'max_price'          => $prices->max() ?? 0,
+                    'min_days'           => $days->min() ?? 0,
+                    'min_price'          => $prices->min() ?? 0,
+                    'pct_pricechanges'   => '--',
+                    'soldcount'          => $soldCount,
+                    'total_price'        => $totalPrice,
+                    'total_pricechanges' => '--',
+                ];
+            })->values();
+
+        $safeMake = preg_replace('/[^a-z0-9]+/i', '-', strtolower($makeName));
+        $filename = "inventory-{$safeMake}-models-" . now()->format('Ymd-His') . '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            'Cache-Control'       => 'no-cache, no-store, must-revalidate',
+        ];
+
+        $columns = [
+            'make', 'model', 'avg_days', 'avg_price', 'count_pricechanges',
+            'max_days', 'max_price', 'min_days', 'min_price',
+            'pct_pricechanges', 'soldcount', 'total_price', 'total_pricechanges',
+        ];
+
+        return response()->stream(function () use ($rows, $columns) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, $columns);
+            foreach ($rows as $row) {
+                fputcsv($handle, array_map(fn($col) => $row[$col] ?? '', $columns));
+            }
+            fclose($handle);
+        }, 200, $headers);
     }
 
     // ─── Destroy ──────────────────────────────────────────────────────────────
@@ -801,11 +973,99 @@ class InventoryController extends Controller
 
         $dealers = $user->dealers;
 
+        // ─── Inventory Activity Chart Data (Last 30 Days) ─────────────────────
+        $chartLabels = [];
+        $chartViews = [];
+        $chartStock = [];
+        
+        $stats = \App\Models\Inventory\VehicleDailyStat::whereIn('dealer_id', $targetDealerIds)
+            ->where('date', '>=', now()->subDays(29)->format('Y-m-d'))
+            ->select('date', DB::raw('SUM(views) as total_views'))
+            ->groupBy('date')
+            ->pluck('total_views', 'date');
+
+        $vehicles = Vehicle::whereIn('dealer_id', $targetDealerIds)
+            ->whereIn('status', ['active', 'sold'])
+            ->whereNotNull('listed_at')
+            ->with('prices')
+            ->get();
+
+        for ($i = 29; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $dateStr = $date->format('Y-m-d');
+            $chartLabels[] = $date->format('n/j');
+            
+            // Views
+            $chartViews[] = (int) ($stats[$dateStr] ?? 0);
+            
+            // Stock
+            $endOfDay = $date->copy()->endOfDay();
+            $stockCount = $vehicles->filter(function($v) use ($endOfDay) {
+                return $v->listed_at <= $endOfDay && ($v->sold_at === null || $v->sold_at > $endOfDay);
+            })->count();
+            $chartStock[] = $stockCount;
+        }
+
+        // ─── Days in Inventory Chart Data (Active Vehicles Only) ──────────────
+        $daysStats = [
+            '0-30' => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '31-60' => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '61-90' => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '91-120' => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '120+' => ['units' => 0, 'total' => 0, 'avg' => 0],
+        ];
+
+        foreach ($vehicles as $v) {
+            if ($v->sold_at === null) {
+                $days = (int) $v->listed_at->diffInDays(now());
+                $bucket = '120+';
+                if ($days <= 30) $bucket = '0-30';
+                elseif ($days <= 60) $bucket = '31-60';
+                elseif ($days <= 90) $bucket = '61-90';
+                elseif ($days <= 120) $bucket = '91-120';
+                
+                $price = $v->prices->internet_price ?? $v->prices->msrp ?? 0;
+                $daysStats[$bucket]['units']++;
+                $daysStats[$bucket]['total'] += $price;
+            }
+        }
+
+        foreach ($daysStats as $key => $stat) {
+            if ($stat['units'] > 0) {
+                $daysStats[$key]['avg'] = $stat['total'] / $stat['units'];
+            }
+        }
+
+        $chartDays = array_column($daysStats, 'units');
+
+        // ─── Inventory by Location (Per Dealer) ──────────────────────────────
+        $locationStats = [];
+        $allVehicles = Vehicle::whereIn('dealer_id', $dealerIds)
+            ->active()
+            ->with('prices')
+            ->get();
+
+        foreach ($dealers as $dealer) {
+            $dealerVehicles = $allVehicles->where('dealer_id', $dealer->id);
+            $units = $dealerVehicles->count();
+            $total = $dealerVehicles->sum(fn($v) => $v->prices->internet_price ?? 0);
+            $avg = $units > 0 ? $total / $units : 0;
+
+            $locationStats[] = [
+                'name'  => $dealer->name,
+                'units' => $units,
+                'total' => $total,
+                'avg'   => $avg
+            ];
+        }
+
         return view('dealer.pages.inventory.dashboard', compact(
             'inStockCount', 'inStockCost', 'inStockValue',
             'soldCount', 'soldValue',
             'noPhotosCount', 'noPriceCount',
-            'soldMakes', 'dealers', 'currentDealerId', 'dateRange'
+            'soldMakes', 'dealers', 'currentDealerId', 'dateRange',
+            'chartLabels', 'chartViews', 'chartStock', 'chartDays', 'daysStats',
+            'locationStats'
         ));
     }
 
