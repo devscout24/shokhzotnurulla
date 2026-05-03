@@ -3,65 +3,54 @@
 function openContainerSettings(el) {
   closeAllPanels();
   activeEl = el;
-  el.closest('.dropped-block').classList.add('selected');
+  const block = el.closest('.dropped-block');
+  block.classList.add('selected');
   const panel = document.getElementById('container-settings-panel');
   if (panel) panel.style.display = 'block';
 
+  // Sync Visibility
+  if (typeof syncVisibilityToggles === 'function') syncVisibilityToggles(block);
+
   // Sync inputs
-  document.getElementById('container-padding-top').value = el.style.paddingTop ? parseInt(el.style.paddingTop) : 20;
-  document.getElementById('container-padding-bottom').value = el.style.paddingBottom ? parseInt(el.style.paddingBottom) : 20;
-  // Sync background color
+  document.getElementById('container-padding').value = el.style.paddingTop ? parseInt(el.style.paddingTop) : 40;
+  
   const curBg = el.style.backgroundColor;
   if (curBg) {
     document.getElementById('container-bg').value = rgbToHex(curBg) || '#ffffff';
   }
-
-  // Sync Flex
-  document.getElementById('container-flex-direction').value = el.style.flexDirection || 'column';
-  document.getElementById('container-justify-content').value = el.style.justifyContent || 'flex-start';
-  document.getElementById('container-align-items').value = el.style.alignItems || 'stretch';
 }
 
 // Back / Cancel
 document.getElementById('container-back-btn')?.addEventListener('click', closeAllPanels);
 document.getElementById('container-cancel-btn')?.addEventListener('click', closeAllPanels);
 
-// Padding Top
-document.getElementById('container-padding-top')?.addEventListener('input', e => {
-  if (activeEl) activeEl.style.paddingTop = (e.target.value || 0) + 'px';
-});
-
-// Padding Bottom
-document.getElementById('container-padding-bottom')?.addEventListener('input', e => {
-  if (activeEl) activeEl.style.paddingBottom = (e.target.value || 0) + 'px';
+// Padding Vertical
+document.getElementById('container-padding')?.addEventListener('input', e => {
+  if (activeEl) {
+    const val = (e.target.value || 0) + 'px';
+    activeEl.style.paddingTop = val;
+    activeEl.style.paddingBottom = val;
+    if (typeof saveHistory === 'function') saveHistory();
+  }
 });
 
 // Background Color
 document.getElementById('container-bg')?.addEventListener('input', e => {
-  if (activeEl) activeEl.style.backgroundColor = e.target.value;
-});
-
-// Flex Controls
-document.getElementById('container-flex-direction')?.addEventListener('change', e => {
   if (activeEl) {
-    activeEl.style.display = 'flex';
-    activeEl.style.flexDirection = e.target.value;
+    activeEl.style.backgroundColor = e.target.value;
+    if (typeof saveHistory === 'function') saveHistory();
   }
 });
 
-document.getElementById('container-justify-content')?.addEventListener('change', e => {
-  if (activeEl) activeEl.style.justifyContent = e.target.value;
-});
-
-document.getElementById('container-align-items')?.addEventListener('change', e => {
-  if (activeEl) activeEl.style.alignItems = e.target.value;
-});
-
-// Remove
+// Remove block
 document.getElementById('container-remove-btn')?.addEventListener('click', () => {
   if (activeEl) {
-    activeEl.closest('.dropped-block').remove();
-    if (typeof checkEmptyBlocks === 'function') checkEmptyBlocks();
+    const block = activeEl.closest('.dropped-block');
+    if (block) {
+      block.remove();
+      checkEmptyBlocks();
+      if (typeof saveHistory === 'function') saveHistory();
+    }
   }
   closeAllPanels();
 });
@@ -80,24 +69,18 @@ function dropContainerBlock(returnBlock = false) {
       Container <i class="fa-solid fa-copy copy-btn" title="Duplicate"></i>
     </span>
     <div class="block-reorder-tools">
-      <button class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
-      <button class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
-      <button class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
+      <button type="button" class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
+      <button type="button" class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
+      <button type="button" class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner" style="background: transparent; border: none; padding: 0;">
-      <div class="editor-container col-drop-zone" style="min-height: 100px; padding: 20px; background: #ffffff; width: 100%;">
+      <div class="editor-container col-drop-zone" style="min-height: 100px; padding: 40px; background: #ffffff; width: 100%;">
       </div>
     </div>`;
 
   const containerEl = block.querySelector('.editor-container');
   if (containerEl) {
-    setupContainerListeners(containerEl);
-    // Add default Heading inside for immediate editing
-    if (typeof dropHeadingBlock === 'function') {
-        const defaultHeading = dropHeadingBlock(true);
-        containerEl.appendChild(defaultHeading);
-        attachBlockListeners(defaultHeading);
-    }
+    attachDropZoneListeners(containerEl);
   }
 
   if (returnBlock) return block;
@@ -106,10 +89,5 @@ function dropContainerBlock(returnBlock = false) {
   attachBlockListeners(block);
 
   if (containerEl) openContainerSettings(containerEl);
-}
-
-function setupContainerListeners(col) {
-  attachDropZoneListeners(col);
-  // Optional: keep specialized border color logic if desired, 
-  // but for now, global one is fine.
+  if (typeof saveHistory === 'function') saveHistory();
 }

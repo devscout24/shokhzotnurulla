@@ -42,8 +42,17 @@ zone.addEventListener('drop', e => {
   zone.classList.remove('drag-over');
   dropIndicator.style.display = 'none';
   const after = getDragAfterElement(blocksContainer, e.clientY, e.clientX);
-  if (window.dragType) createAndInsertBlock(window.dragType, blocksContainer, after);
+  
+  if (window.dragType) {
+    createAndInsertBlock(window.dragType, blocksContainer, after);
+  } else if (window.reorderBlock) {
+    if (after == null) blocksContainer.appendChild(window.reorderBlock);
+    else blocksContainer.insertBefore(window.reorderBlock, after);
+    if (typeof saveHistory === 'function') saveHistory();
+  }
+  
   window.dragType = null;
+  window.reorderBlock = null;
 });
 
 function createAndInsertBlock(type, container, afterElement) {
@@ -63,27 +72,30 @@ function createAndInsertBlock(type, container, afterElement) {
     'container': typeof dropContainerBlock !== 'undefined' ? dropContainerBlock : null,
     'icon': typeof dropIconBlock !== 'undefined' ? dropIconBlock : null,
     'cart': typeof dropCartBlock !== 'undefined' ? dropCartBlock : null,
-    'overlay': window.dropOverlayBlock,
-    'html': window.dropHTMLBlock,
-    'css': window.dropCSSBlock,
-    'video': window.dropVideoBlock,
-    'carousel': window.dropCarouselBlock,
-    'tabs': window.dropTabsBlock,
-    'check': window.dropCheckBlock,
-    'map': window.dropMapBlock,
-    'modal': window.dropModalBlock,
-    'inventory': window.dropInventoryBlock,
-    'plugin': window.dropPluginBlock,
-    'form': window.dropFormBlock,
-    'blog': window.dropBlogBlock,
-    'content_block': window.dropContentBlockBlock,
-    'body_types': window.dropBodyTypesBlock,
-    'search': window.dropSearchBlock,
-    'map_hours': window.dropMapHoursBlock,
+    'overlay': typeof dropOverlayBlock !== 'undefined' ? dropOverlayBlock : null,
+    'html': typeof dropHTMLBlock !== 'undefined' ? dropHTMLBlock : null,
+    'css': typeof dropCSSBlock !== 'undefined' ? dropCSSBlock : null,
+    'video': typeof dropVideoBlock !== 'undefined' ? dropVideoBlock : null,
+    'carousel': typeof dropCarouselBlock !== 'undefined' ? dropCarouselBlock : null,
+    'tabs': typeof dropTabsBlock !== 'undefined' ? dropTabsBlock : null,
+    'check': typeof dropCheckBlock !== 'undefined' ? dropCheckBlock : null,
+    'map': typeof dropMapBlock !== 'undefined' ? dropMapBlock : null,
+    'modal': typeof dropModalBlock !== 'undefined' ? dropModalBlock : null,
+    'inventory': typeof dropInventoryBlock !== 'undefined' ? dropInventoryBlock : null,
+    'plugin': typeof dropPluginBlock !== 'undefined' ? dropPluginBlock : null,
+    'form': typeof dropFormBlock !== 'undefined' ? dropFormBlock : null,
+    'blog': typeof dropBlogBlock !== 'undefined' ? dropBlogBlock : null,
+    'content_block': typeof dropContentBlockBlock !== 'undefined' ? dropContentBlockBlock : null,
+    'body_types': typeof dropBodyTypesBlock !== 'undefined' ? dropBodyTypesBlock : null,
+    'search': typeof dropSearchBlock !== 'undefined' ? dropSearchBlock : null,
+    'map_hours': typeof dropMapHoursBlock !== 'undefined' ? dropMapHoursBlock : null,
   };
 
   const fn = map[type];
-  if (!fn) return;
+  if (!fn) {
+    console.error(`Block type "${type}" function not found.`);
+    return;
+  }
 
   const block = fn(true);
   if (!block) return;
@@ -96,42 +108,46 @@ function createAndInsertBlock(type, container, afterElement) {
   // Hide empty state
   if (emptyState) emptyState.style.display = 'none';
 
-  // Open settings panel for supported types
-  const el = block.querySelector('h1[contenteditable], p[contenteditable], span[contenteditable], .dropped-btn, .editor-divider, .editor-image, .editor-accordion, .editor-spacer, .editor-card, .editor-3col, .editor-2col, .editor-container, .editor-icon, .editor-cart, .editor-iframe, .editor-video, .editor-carousel, .editor-tabs, .editor-inventory');
-  if (el) {
-    if (type==='heading') openHeadingSettings(el);
-    else if (type==='text') openTextSettings(el);
-    else if (type==='button') openButtonSettings(el);
-    else if (type==='divider') openDividerSettings(el);
-    else if (type==='image') openImageSettings(el);
-    else if (type==='accordion') { setupAccordionListeners(el); openAccordionSettings(el); }
-    else if (type==='spacer') openSpacerSettings(el);
-    else if (type==='card') openCardSettings(el);
-    else if (type==='span') openSpanSettings(el);
-    else if (type==='iframe') openIFrameSettings(el);
-    else if (type==='2col') open2ColSettings(el);
-    else if (type==='3col' && typeof open3ColSettings==='function') open3ColSettings(el);
-    else if (type==='container') openContainerSettings(el);
-    else if (type==='icon') openIconSettings(el);
-    else if (type==='cart') openCartSettings(el);
-    else if (type==='video' && typeof openVideoSettings==='function') openVideoSettings(el);
-    else if (type==='carousel' && typeof openCarouselSettings==='function') openCarouselSettings(el);
-    else if (type==='tabs' && typeof openTabsSettings==='function') openTabsSettings(el);
-    else if (type==='inventory' && typeof openInventorySettings==='function') openInventorySettings(el);
-  }
-
   if (typeof saveHistory === 'function') saveHistory();
+
+  // Auto-open settings for the new block
+  const img = block.querySelector('.editor-image');
+  if (img && typeof openImageSettings === 'function') openImageSettings(img);
+  
+  const h1 = block.querySelector('h1[contenteditable]');
+  if (h1 && typeof openHeadingSettings === 'function') { h1.focus(); openHeadingSettings(h1); }
+  
+  const p = block.querySelector('p[contenteditable]');
+  if (p && typeof openTextSettings === 'function') { p.focus(); openTextSettings(p); }
+  
+  const btn = block.querySelector('.dropped-btn');
+  if (btn && typeof openButtonSettings === 'function') openButtonSettings(btn);
+  
+  const div = block.querySelector('.editor-divider');
+  if (div && typeof openDividerSettings === 'function') openDividerSettings(div);
+
+  const spacer = block.querySelector('.editor-spacer');
+  if (spacer && typeof openSpacerSettings === 'function') openSpacerSettings(spacer);
+
+  const icon = block.querySelector('.editor-icon');
+  if (icon && typeof openIconSettings === 'function') openIconSettings(icon);
 }
 
 function getDragAfterElement(container, y, x) {
-  const els = [...container.querySelectorAll(':scope > .dropped-block:not(.dragging)')];
-  const style = window.getComputedStyle(container);
-  const isH = style.flexDirection === 'row';
-  return els.reduce((closest, child) => {
+  const draggableElements = [...container.querySelectorAll(':scope > .dropped-block:not(.dragging)')];
+  
+  const computedStyle = getComputedStyle(container);
+  const isH = computedStyle.flexDirection === 'row' || (computedStyle.display === 'flex' && computedStyle.flexDirection === 'row');
+
+  return draggableElements.reduce((closest, child) => {
     const box = child.getBoundingClientRect();
     const offset = isH ? x - box.left - box.width/2 : y - box.top - box.height/2;
-    if (offset < 0 && offset > closest.offset) return { offset, element: child };
-    return closest;
+
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
   }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 

@@ -325,10 +325,21 @@ class FrontendController extends Controller
     {
         $dealerId = $this->dealerResolver->resolve();
         
-        $page = \App\Models\Website\Page::where('slug', $slug)
-            ->where('dealer_id', $dealerId)
-            ->where('is_active', true)
-            ->firstOrFail();
+        $query = \App\Models\Website\Page::where('slug', $slug)
+            ->where('dealer_id', $dealerId);
+
+        // Allow authenticated admins/dealers for THIS dealer to see drafts
+        $canPreview = auth()->check() && auth()->user()->current_dealer_id === $dealerId;
+
+        if (!$canPreview) {
+            $query->where('is_active', true)
+                ->where(function($q) {
+                    $q->whereNull('published_at')
+                      ->orWhere('published_at', '<=', now());
+                });
+        }
+
+        $page = $query->firstOrFail();
 
         return view('frontend.pages.dynamic-page', compact('page'));
     }

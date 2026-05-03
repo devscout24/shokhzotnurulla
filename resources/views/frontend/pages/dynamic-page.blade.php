@@ -58,7 +58,10 @@
                 const h = document.createElement('h1');
                 h.innerText = data.text || '';
                 if (data.color) h.style.color = data.color;
-                if (data.fontSize) h.style.fontSize = data.fontSize + 'px';
+                if (data.fontSize) {
+                    const size = String(data.fontSize);
+                    h.style.fontSize = size.endsWith('px') || size.endsWith('%') || size.endsWith('rem') ? size : size + 'px';
+                }
                 if (data.textAlign) h.style.textAlign = data.textAlign;
                 div.appendChild(h);
                 break;
@@ -67,7 +70,10 @@
                 const p = document.createElement('p');
                 p.innerText = data.text || '';
                 if (data.color) p.style.color = data.color;
-                if (data.fontSize) p.style.fontSize = data.fontSize + 'px';
+                if (data.fontSize) {
+                    const size = String(data.fontSize);
+                    p.style.fontSize = size.endsWith('px') || size.endsWith('%') || size.endsWith('rem') ? size : size + 'px';
+                }
                 if (data.textAlign) p.style.textAlign = data.textAlign;
                 div.appendChild(p);
                 break;
@@ -89,7 +95,16 @@
                 const img = document.createElement('img');
                 img.className = 'rendered-img';
                 img.src = data.src || '';
-                if (data.width) img.style.width = data.width + (typeof data.width === 'string' && data.width.includes('%') ? '' : 'px');
+                if (data.width) {
+                    const w = String(data.width);
+                    img.style.width = w.endsWith('%') || w.endsWith('px') || w.endsWith('vw') ? w : w + 'px';
+                }
+                if (data.height && data.height !== 'auto') {
+                    const h = String(data.height);
+                    img.style.height = h.endsWith('px') || h.endsWith('%') ? h : h + 'px';
+                } else {
+                    img.style.height = 'auto';
+                }
                 if (data.borderRadius) img.style.borderRadius = data.borderRadius + 'px';
                 div.appendChild(img);
                 break;
@@ -103,8 +118,9 @@
                 div.style.alignItems = data.alignItems || 'stretch';
                 div.style.justifyContent = data.justifyContent || 'flex-start';
                 
-                if (data.content && Array.isArray(data.content)) {
-                    renderContent(data.content, div);
+                const containerBlocks = data.blocks || data.content || [];
+                if (Array.isArray(containerBlocks)) {
+                    renderContent(containerBlocks, div);
                 }
                 break;
 
@@ -148,6 +164,52 @@
                 if (data.color) icon.style.color = data.color;
                 if (data.fontSize) icon.style.fontSize = data.fontSize + 'px';
                 div.appendChild(icon);
+                break;
+
+            case 'video':
+                const videoWrapper = document.createElement('div');
+                videoWrapper.className = 'rendered-video';
+                videoWrapper.style.position = 'relative';
+                videoWrapper.style.paddingBottom = '56.25%'; // 16:9
+                videoWrapper.style.height = '0';
+                videoWrapper.style.overflow = 'hidden';
+                videoWrapper.style.borderRadius = '8px';
+                videoWrapper.style.background = '#000';
+
+                if (data.host === 'youtube') {
+                    const iframe = document.createElement('iframe');
+                    let ytId = data.url;
+                    // Extract ID if full URL
+                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                    const match = data.url.match(regExp);
+                    if (match && match[2].length === 11) ytId = match[2];
+                    
+                    iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=${data.autoplay ? 1 : 0}&loop=${data.loop ? 1 : 0}&controls=${data.controls ? 1 : 0}`;
+                    iframe.style.position = 'absolute';
+                    iframe.style.top = '0';
+                    iframe.style.left = '0';
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                    iframe.style.border = '0';
+                    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                    iframe.allowFullscreen = true;
+                    videoWrapper.appendChild(iframe);
+                } else {
+                    const video = document.createElement('video');
+                    video.src = data.url || '';
+                    video.style.position = 'absolute';
+                    video.style.top = '0';
+                    video.style.left = '0';
+                    video.style.width = '100%';
+                    video.style.height = '100%';
+                    video.controls = data.controls !== false;
+                    video.autoplay = data.autoplay === true;
+                    video.loop = data.loop === true;
+                    video.muted = data.autoplay === true; // Autoplay requires mute in many browsers
+                    if (data.poster) video.poster = data.poster;
+                    videoWrapper.appendChild(video);
+                }
+                div.appendChild(videoWrapper);
                 break;
 
             default:

@@ -3,9 +3,13 @@
 function openSpanSettings(el) {
     closeAllPanels();
     activeEl = el;
-    el.closest('.dropped-block').classList.add('selected');
+    const block = el.closest('.dropped-block');
+    block.classList.add('selected');
     const panel = document.getElementById('span-settings-panel');
     if (panel) panel.style.display = 'block';
+
+    // Sync Visibility
+    if (typeof syncVisibilityToggles === 'function') syncVisibilityToggles(block);
 
     // Load current values
     document.getElementById('span-color').value = el.style.color || '';
@@ -25,9 +29,6 @@ function openSpanSettings(el) {
     );
 
     document.getElementById('span-weight').value = el.style.fontWeight || 'normal';
-    document.getElementById('span-italic').checked = el.style.fontStyle === 'italic';
-    document.getElementById('span-margin-top').value = el.style.marginTop ? parseInt(el.style.marginTop) : '';
-    document.getElementById('span-margin-bottom').value = el.style.marginBottom ? parseInt(el.style.marginBottom) : '';
 }
 
 // Back and Cancel Buttons
@@ -109,9 +110,9 @@ function dropSpanBlock(returnBlock = false) {
       Span <i class="fa-solid fa-copy copy-btn" title="Duplicate"></i>
     </span>
     <div class="block-reorder-tools">
-      <button class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
-      <button class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
-      <button class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
+      <button type="button" class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
+      <button type="button" class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
+      <button type="button" class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner" style="display: flex; align-items: flex-start; gap: 8px;">
       <i class="fa-solid fa-quote-left" style="color: #ef4444; font-size: 14px; opacity: 0.6;"></i>

@@ -326,27 +326,34 @@
 </div>
 @endsection
 @push('pannel-scripts')
+<script>
+    window.CMS_CONFIG = {
+        upload_url: "{{ route('dealer.website.media.upload') }}",
+        csrf_token: "{{ csrf_token() }}"
+    };
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=2.0"></script>
-<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=2.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=2.1"></script>
 <script>
 // Sync Top Bar Status
 function updateTopStatus(select) {
