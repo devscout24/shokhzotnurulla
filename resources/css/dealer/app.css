@@ -431,21 +431,33 @@ body {
     }
 
     .topbar-secondary {
-        flex-wrap: wrap;
+        display: flex;
+        width: 100%;
+        flex-wrap: nowrap;
         height: auto;
-        padding: 8px 12px
+        padding: 8px 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .topbar-secondary .nav-links {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 12px;
-        overflow-x: auto
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+        padding-bottom: 4px;
+    }
+
+    .topbar-secondary .nav-links::-webkit-scrollbar {
+        display: none;
     }
 
     .topbar-secondary .top-search {
         width: 100%;
         margin-top: 8px;
-        justify-content: flex-end
+        justify-content: flex-start;
+        display: none; /* Hide search on mobile secondary nav to save space, or keep it if needed. Let's keep it but flex-shrink: 0 */
     }
 
     .topbar-secondary .top-search input {
@@ -459,7 +471,33 @@ body {
     }
 
     .topbar-inner {
-        display: none
+        height: auto;
+        padding: 0 10px 5px 10px;
+        display: block; /* Show on mobile */
+    }
+    
+    .topbar-inner .logo-wrapper,
+    .topbar-inner .topbar-right {
+        display: none; /* Hide logo and right section */
+    }
+    
+    .topbar-inner .topbar-left {
+        gap: 0;
+    }
+
+    .topbar-inner .nav-links {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 15px;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 5px;
+        width: 100%;
+    }
+    
+    .topbar-inner .nav-item {
+        padding: 10px 0;
+        white-space: nowrap;
     }
 
     .mobile-top {
@@ -485,7 +523,8 @@ body {
     }
 
     .main-content {
-        padding: 20px
+        padding: 20px;
+        overflow-x: hidden;
     }
 
     .mobile-top .logo-wrapper img {

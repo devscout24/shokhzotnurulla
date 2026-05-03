@@ -440,6 +440,98 @@
         .daterangepicker .calendar-table .prev span {
             border-color: #9ca3af;
         }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 1199.98px) {
+            .inv-cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .inv-main-content.row {
+                margin-left: 0;
+                margin-right: 0;
+                gap: 0 !important;
+            }
+            .inv-main-content > .col-xl-8, .inv-main-content > .col-xl-4 {
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .inv-cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .inv-top-bar {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 15px;
+            }
+            
+            .inv-date-range {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            
+            .inv-location-dropdown-wrapper, .inv-location-dropdown {
+                width: 100%;
+                min-width: 100% !important;
+            }
+            
+            .inv-location-dropdown {
+                justify-content: space-between;
+            }
+            
+            .inv-table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .inv-table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .model-data-wrapper {
+                padding: 10px;
+            }
+            
+            .model-table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .model-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .inv-card-box {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .inv-mini-table {
+                width: 100%;
+                min-width: 300px; /* Optional, just ensure it scrolls if needed */
+            }
+            
+            .daterangepicker {
+                flex-direction: column !important;
+                width: 100% !important;
+                right: 0 !important;
+                left: 0 !important;
+            }
+            
+            .daterangepicker .ranges {
+                width: 100% !important;
+                border-right: none !important;
+                border-bottom: 1px solid #f3f4f6;
+            }
+        }
     </style>
 @endpush
 
