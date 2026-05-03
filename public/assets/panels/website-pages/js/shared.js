@@ -7,14 +7,51 @@ function clearSelected() {
     .forEach(b => b.classList.remove('selected'));
 }
 
+function openPanel(id) {
+  closeAllPanels();
+  const panel = document.getElementById(id);
+  if (panel) panel.style.display = 'block';
+  const defaultContent = document.getElementById('sidebar-default-content');
+  if (defaultContent) defaultContent.style.display = 'none';
+}
+
 function closeAllPanels() {
   // Close every settings panel by ID
-  ['heading-settings-panel', 'text-settings-panel', 'button-settings-panel', 'divider-settings-panel', 'image-settings-panel', 'accordion-settings-panel', 'spacer-settings-panel', 'card-settings-panel', '3col-settings-panel', '2col-settings-panel', 'container-settings-panel', 'icon-settings-panel', 'cart-settings-panel', 'span-settings-panel', 'iframe-settings-panel'].forEach(id => {
+  const panels = ['heading-settings-panel', 'text-settings-panel', 'button-settings-panel', 'divider-settings-panel', 'image-settings-panel', 'accordion-settings-panel', 'spacer-settings-panel', 'card-settings-panel', '3col-settings-panel', '2col-settings-panel', 'container-settings-panel', 'icon-settings-panel', 'cart-settings-panel', 'span-settings-panel', 'iframe-settings-panel', 'video-settings-panel', 'inventory-settings-panel', 'form-settings-panel', 'search-settings-panel', 'carousel-settings-panel', 'tabs-settings-panel', 'map-settings-panel', 'overlay-settings-panel', 'html-settings-panel', 'css-settings-panel'];
+  
+  panels.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
+
+  const defaultContent = document.getElementById('sidebar-default-content');
+  if (defaultContent) defaultContent.style.display = 'block';
+
   activeEl = null;
   clearSelected();
+}
+
+// ── Visibility Toggle Logic ──────────────────────────────────────────────────
+document.addEventListener('change', e => {
+  if (e.target.classList.contains('visibility-toggle')) {
+    if (!activeEl) return;
+    const block = activeEl.closest('.dropped-block');
+    if (!block) return;
+    
+    const device = e.target.dataset.device; // "desktop" or "mobile"
+    const isVisible = e.target.checked;
+    
+    block.dataset[`visibility${device.charAt(0).toUpperCase() + device.slice(1)}`] = isVisible ? 'visible' : 'hidden';
+    if (typeof saveHistory === 'function') saveHistory();
+  }
+});
+
+function syncVisibilityToggles(block) {
+  const desktopToggle = document.querySelector('.visibility-toggle[data-device="desktop"]');
+  const mobileToggle = document.querySelector('.visibility-toggle[data-device="mobile"]');
+  
+  if (desktopToggle) desktopToggle.checked = block.dataset.visibilityDesktop !== 'hidden';
+  if (mobileToggle) mobileToggle.checked = block.dataset.visibilityMobile !== 'hidden';
 }
 
 function checkEmptyBlocks() {
@@ -80,23 +117,31 @@ function attachBlockListeners(block) {
   // Drag handle
   const handle = block.querySelector('.drag-handle');
   if (handle) {
-    handle.addEventListener('mousedown', () => { block.setAttribute('draggable', 'true'); });
-    handle.addEventListener('mouseup', () => { block.removeAttribute('draggable'); });
-    block.addEventListener('dragstart', e => {
-      if (!block.hasAttribute('draggable')) return;
-      window.reorderBlock = block;
-      window.dragType = null;
-      e.dataTransfer.effectAllowed = 'move';
-      handle.classList.add('grabbing');
-      setTimeout(() => block.classList.add('reorder-dragging'), 0);
+    // ── Drag & Drop Reordering (Handle Based) ──────────────────────────
+    handle.addEventListener('mousedown', () => { 
+        block.setAttribute('draggable', 'true'); 
     });
+    handle.addEventListener('mouseup', () => { 
+        block.removeAttribute('draggable'); 
+    });
+
+    block.addEventListener('dragstart', e => {
+      if (!block.hasAttribute('draggable')) {
+        e.preventDefault();
+        return;
+      }
+      block.classList.add('dragging');
+      window.reorderBlock = block;
+      e.dataTransfer.setData('text/plain', '');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
     block.addEventListener('dragend', () => {
+      block.classList.remove('dragging');
       block.removeAttribute('draggable');
-      block.classList.remove('reorder-dragging');
-      handle.classList.remove('grabbing');
       window.reorderBlock = null;
-      const ind = document.getElementById('drop-indicator');
-      if (ind) ind.style.display = 'none';
+      const indicator = document.getElementById('drop-indicator');
+      if (indicator) indicator.style.display = 'none';
     });
   }
 
@@ -142,6 +187,18 @@ function attachBlockListeners(block) {
 
   const img = block.querySelector('.editor-image');
   if (img) img.addEventListener('click', (e) => { e.stopPropagation(); openImageSettings(img); });
+
+  const video = block.querySelector('.editor-video');
+  if (video) video.addEventListener('click', (e) => { e.stopPropagation(); openVideoSettings(video); });
+
+  const inventory = block.querySelector('.editor-inventory');
+  if (inventory) inventory.addEventListener('click', (e) => { e.stopPropagation(); openInventorySettings(inventory); });
+
+  const search = block.querySelector('.editor-search');
+  if (search) search.addEventListener('click', (e) => { e.stopPropagation(); openSearchSettings(search); });
+
+  const form = block.querySelector('.editor-form');
+  if (form) form.addEventListener('click', (e) => { e.stopPropagation(); openFormSettings(form); });
 
   const acc = block.querySelector('.editor-accordion');
   if (acc) acc.addEventListener('click', (e) => { e.stopPropagation(); openAccordionSettings(acc); });
@@ -319,13 +376,20 @@ function attachDropZoneListeners(col) {
     const indicator = document.getElementById('drop-indicator');
     if (indicator) indicator.style.display = 'none';
 
+    const afterElement = getDragAfterElement(col, e.clientY, e.clientX);
+
     if (window.dragType) {
-      const afterElement = getDragAfterElement(col, e.clientY, e.clientX);
       if (typeof createAndInsertBlock === 'function') {
         createAndInsertBlock(window.dragType, col, afterElement);
       }
+    } else if (window.reorderBlock) {
+      if (afterElement == null) col.appendChild(window.reorderBlock);
+      else col.insertBefore(window.reorderBlock, afterElement);
+      if (typeof saveHistory === 'function') saveHistory();
     }
+
     window.dragType = null;
+    window.reorderBlock = null;
   });
 }
 
@@ -359,13 +423,10 @@ window.renderExistingContent = function(content) {
 
   if (Array.isArray(content)) {
     content.forEach((data, index) => {
-      console.log(`Rendering block ${index}:`, data.type);
       const block = renderBlockData(data);
       if (block) {
         container.appendChild(block);
         attachBlockListeners(block);
-      } else {
-        console.warn(`Failed to render block of type: ${data.type}`);
       }
     });
   }
@@ -433,11 +494,14 @@ function renderBlockData(data) {
         img.src = data.src || '';
         img.alt = data.alt || '';
         img.style.width = data.width || '100%';
+        img.style.height = data.height || 'auto';
+        img.dataset.cssClasses = data.cssClasses || '';
         
         const wrapper = img.closest('.dropped-block-inner');
         if (wrapper) {
+            wrapper.style.display = 'flex';
             const alignMap = { 'left': 'flex-start', 'center': 'center', 'right': 'flex-end' };
-            wrapper.style.justifyContent = alignMap[data.align] || 'left';
+            wrapper.style.justifyContent = alignMap[data.align] || 'flex-start';
         }
       }
       break;
@@ -518,13 +582,48 @@ function renderBlockData(data) {
       if (typeof dropAccordionBlock === 'function') block = dropAccordionBlock(true);
       break;
     case 'card':
-      if (typeof dropCardBlock === 'function') block = dropCardBlock(true);
+      if (typeof dropCardBlock === 'function') {
+        block = dropCardBlock(true);
+        const card = block.querySelector('.editor-card');
+        card.style.backgroundColor = data.backgroundColor || 'transparent';
+        card.style.width = data.width || '100%';
+        
+        const cardImg = card.querySelector('.editor-image');
+        if (cardImg && data.image) {
+            cardImg.src = data.image.src || '';
+            cardImg.alt = data.image.alt || '';
+            cardImg.style.width = data.image.width || '100%';
+            cardImg.style.height = data.image.height || 'auto';
+        }
+        
+        const cardBody = card.querySelector('.card-body');
+        if (cardBody && data.blocks) {
+            cardBody.innerHTML = '';
+            data.blocks.forEach(childData => {
+                const childBlock = renderBlockData(childData);
+                if (childBlock) {
+                    cardBody.appendChild(childBlock);
+                    attachBlockListeners(childBlock);
+                }
+            });
+        }
+      }
       break;
     case 'inventory':
       if (typeof dropInventoryBlock === 'function') block = dropInventoryBlock(true);
       break;
     case 'video':
-      if (typeof dropVideoBlock === 'function') block = dropVideoBlock(true);
+      if (typeof dropVideoBlock === 'function') {
+        block = dropVideoBlock(true);
+        const v = block.querySelector('.editor-video');
+        v.dataset.host = data.host || 'youtube';
+        v.dataset.url = data.url || '';
+        v.dataset.poster = data.poster || '';
+        v.dataset.autoplay = data.autoplay || false;
+        v.dataset.loop = data.loop || false;
+        v.dataset.controls = data.controls !== undefined ? data.controls : true;
+        if (typeof updateVideoPreview === 'function') updateVideoPreview(v);
+      }
       break;
     case 'carousel':
       if (typeof dropCarouselBlock === 'function') block = dropCarouselBlock(true);

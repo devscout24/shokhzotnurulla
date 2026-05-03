@@ -1,6 +1,18 @@
 /* ── Editor Layout ── */
-.of-master-frame { display: flex; flex-direction: column; width: 100%; height: 100vh; background: #f8f9fa; }
-.canvas-left { flex-grow: 1; overflow: auto; background: #f8f9fa; padding: 40px; }
+.of-master-frame {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+.canvas-left {
+    flex-grow: 1;
+    background: #f8f9fa;
+    padding: 40px;
+    padding-bottom: 200px; /* Extra space at the bottom */
+}
 
 /* ── Dropped Block Styles ── */
 .dropped-block {
@@ -49,7 +61,7 @@
     background: #fff;
     border: 1px solid #e0e6ed;
     border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     z-index: 100;
 }
 
@@ -70,7 +82,10 @@
     border-bottom: 1px solid #f1f3f5;
 }
 
-.reorder-btn:hover { color: #c0392b; background: #fcfdfe; }
+.reorder-btn:hover {
+    color: #c0392b;
+    background: #fcfdfe;
+}
 
 /* ── ContentEditable Styles ── */
 .dropped-block-inner {
@@ -115,5 +130,48 @@
 }
 
 /* ── Block Specifics ── */
-.editor-heading h1 { margin: 0; font-weight: 800; color: #1a1f36; font-size: 32px; }
-.editor-text p { margin: 0; color: #4f566b; font-size: 16px; line-height: 1.6; }
+.editor-heading h1 {
+    margin: 0;
+    font-weight: 800;
+    color: #1a1f36;
+    font-size: 32px;
+}
+
+.editor-text p {
+    margin: 0;
+    color: #4f566b;
+    font-size: 16px;
+    line-height: 1.6;
+}
+/* -- Visibility Indicators -- */
+.dropped-block[data-visibility-desktop="hidden"] {
+    opacity: 0.6;
+    outline: 2px dashed #ce4f4b !important;
+}
+.dropped-block[data-visibility-mobile="hidden"] {
+    opacity: 0.8;
+}
+.dropped-block[data-visibility-desktop="hidden"]::before {
+    content: "Hidden on Desktop";
+    position: absolute;
+    top: -20px;
+    right: 10px;
+    background: #ce4f4b;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    z-index: 10;
+}
+.dropped-block[data-visibility-mobile="hidden"]::after {
+    content: "Hidden on Mobile";
+    position: absolute;
+    bottom: -20px;
+    right: 10px;
+    background: #6b7280;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    z-index: 10;
+}

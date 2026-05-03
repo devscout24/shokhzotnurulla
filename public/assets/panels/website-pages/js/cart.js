@@ -3,130 +3,46 @@
 function openCartSettings(el) {
   closeAllPanels();
   activeEl = el;
-  el.closest('.dropped-block').classList.add('selected');
-  const panel = document.getElementById('cart-settings-panel');
-  if (panel) panel.style.display = 'block';
+  const block = el.closest('.dropped-block');
+  block.classList.add('selected');
+  document.getElementById('cart-settings-panel').style.display = 'block';
 
-  // Sync inputs
-  const cartTextEl = el.querySelector('.cart-text');
-  const cartLinkEl = el.querySelector('a');
-  
-  if (cartTextEl) {
-    document.getElementById('cart-text').value = cartTextEl.textContent || '';
-  }
-  if (cartLinkEl) {
-    document.getElementById('cart-link').value = cartLinkEl.getAttribute('href') || '#';
-  }
-
-  // Sync floating
-  const isFloating = activeEl.closest('.dropped-block').classList.contains('free-moving');
-  const floatSwitch = document.getElementById('cart-floating');
-  if (floatSwitch) floatSwitch.checked = isFloating;
-
-  // Sync align
-  const curAlign = el.style.justifyContent || 'flex-start';
-  let btnAlign = 'left';
-  if (curAlign === 'center') btnAlign = 'center';
-  else if (curAlign === 'flex-end') btnAlign = 'right';
-
-  document.querySelectorAll('.cart-align-btn').forEach(b =>
-    b.classList.toggle('active', b.dataset.align === btnAlign)
-  );
+  // Sync Visibility
+  if (typeof syncVisibilityToggles === 'function') syncVisibilityToggles(block);
 }
 
 // Back / Cancel
 document.getElementById('cart-back-btn')?.addEventListener('click', closeAllPanels);
 document.getElementById('cart-cancel-btn')?.addEventListener('click', closeAllPanels);
 
-// Cart Text Change
-document.getElementById('cart-text')?.addEventListener('input', e => {
-  if (activeEl) {
-    const textEl = activeEl.querySelector('.cart-text');
-    if (textEl) textEl.textContent = e.target.value || 'Items (0)';
-  }
-});
-
-// Cart Link Change
-document.getElementById('cart-link')?.addEventListener('input', e => {
-  if (activeEl) {
-    const linkEl = activeEl.querySelector('a');
-    if (linkEl) linkEl.setAttribute('href', e.target.value || '#');
-  }
-});
-
-// Floating Mode Toggle
-document.getElementById('cart-floating')?.addEventListener('change', e => {
-  if (activeEl) {
-    const block = activeEl.closest('.dropped-block');
-    if (e.target.checked) {
-      block.classList.add('free-moving');
-      block.style.position = 'absolute';
-      block.style.zIndex = '100';
-      if (!block.style.left) {
-          block.style.left = '20px';
-          block.style.top = '20px';
-      }
-    } else {
-      block.classList.remove('free-moving');
-      block.style.position = 'relative';
-      block.style.left = '';
-      block.style.top = '';
-      block.style.zIndex = '';
-    }
-  }
-});
-
-// Align
-document.querySelectorAll('.cart-align-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.cart-align-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    if (activeEl) {
-      if (btn.dataset.align === 'left') activeEl.style.justifyContent = 'flex-start';
-      else if (btn.dataset.align === 'center') activeEl.style.justifyContent = 'center';
-      else if (btn.dataset.align === 'right') activeEl.style.justifyContent = 'flex-end';
-    }
-  });
-});
-
 // Remove
 document.getElementById('cart-remove-btn')?.addEventListener('click', () => {
-  if (activeEl) {
-    activeEl.closest('.dropped-block').remove();
-    checkEmptyBlocks();
-  }
+  if (activeEl) { activeEl.closest('.dropped-block').remove(); checkEmptyBlocks(); if (typeof saveHistory === 'function') saveHistory(); }
   closeAllPanels();
 });
 
-// ── Drop Cart Block ───────────────────────────────────────────────────────────
-
+// ── Drop ─────────────────────────────────────────────────────────────────────
 function dropCartBlock(returnBlock = false) {
-  const emptyState = document.getElementById('empty-state');
-  const blocksContainer = document.getElementById('blocks-container');
-  if (emptyState) emptyState.style.display = 'none';
-
   const block = document.createElement('div');
   block.className = 'dropped-block';
   block.innerHTML = `
-    <span class="dropped-block-badge">
-      Cart <i class="fa-solid fa-copy copy-btn" title="Duplicate"></i>
-    </span>
+    <span class="dropped-block-badge">Cart <i class="fa-solid fa-copy copy-btn"></i></span>
     <div class="block-reorder-tools">
-      <button class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
-      <button class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
-      <button class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
+      <button type="button" class="reorder-btn drag-handle"><i class="fa-solid fa-grip-vertical"></i></button>
+      <button type="button" class="reorder-btn move-up-btn"><i class="fa-solid fa-chevron-up"></i></button>
+      <button type="button" class="reorder-btn move-down-btn"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
-    <div class="dropped-block-inner editor-cart" style="display: flex; justify-content: flex-start; padding: 10px;">
-      <a href="#" style="text-decoration: none; color: #000; display: flex; align-items: center; gap: 8px; border: 1px solid #ccc; padding: 8px 15px; rounded: 4px;">
+    <div class="dropped-block-inner" style="justify-content:flex-end;padding:10px 20px;">
+      <div class="editor-cart" style="display:flex;align-items:center;gap:10px;cursor:pointer;background:#f8f9fa;padding:8px 15px;border-radius:20px;border:1px solid #dee2e6;">
         <i class="fa-solid fa-cart-shopping"></i>
-        <span class="cart-text">Items (0)</span>
-      </a>
+        <span style="font-weight:600;font-size:14px;">0 Items</span>
+      </div>
     </div>`;
 
   if (returnBlock) return block;
-  blocksContainer.appendChild(block);
+  document.getElementById('blocks-container').appendChild(block);
   attachBlockListeners(block);
-
-  const inner = block.querySelector('.editor-cart');
-  if (inner) openCartSettings(inner);
+  const c = block.querySelector('.editor-cart');
+  openCartSettings(c);
+  if (typeof saveHistory === 'function') saveHistory();
 }

@@ -3,38 +3,57 @@
 function openDividerSettings(el) {
   closeAllPanels();
   activeEl = el;
-  el.closest('.dropped-block').classList.add('selected');
-  document.getElementById('divider-settings-panel').style.display = 'block';
+  const block = el.closest('.dropped-block');
+  block.classList.add('selected');
+  const panel = document.getElementById('divider-settings-panel');
+  if (panel) panel.style.display = 'block';
+
+  // Sync Visibility
+  if (typeof syncVisibilityToggles === 'function') syncVisibilityToggles(block);
 
   // Sync fields
-  document.getElementById('ds-classes').value = el.dataset.cssClasses || '';
-  document.getElementById('ds-color').value = el.style.borderColor || '';
+  document.getElementById('ds-color').value = rgbToHex(el.style.backgroundColor) || '#ced4da';
+  document.getElementById('ds-width').value = el.style.width ? parseInt(el.style.width) : 100;
+  document.getElementById('ds-height').value = el.style.height ? parseInt(el.style.height) : 2;
 }
 
 // Back / Cancel
-document.getElementById('ds-back-btn').addEventListener('click', closeAllPanels);
-document.getElementById('ds-cancel-btn').addEventListener('click', closeAllPanels);
+document.getElementById('ds-back-btn')?.addEventListener('click', closeAllPanels);
+document.getElementById('ds-cancel-btn')?.addEventListener('click', closeAllPanels);
 
-// CSS classes
-document.getElementById('ds-classes').addEventListener('input', e => {
+// Color
+document.getElementById('ds-color')?.addEventListener('input', e => {
   if (activeEl) {
-    activeEl.dataset.cssClasses = e.target.value;
-    activeEl.className = 'editor-divider ' + e.target.value;
+    activeEl.style.backgroundColor = e.target.value;
+    if (typeof saveHistory === 'function') saveHistory();
   }
 });
 
-// Color
-document.getElementById('ds-color').addEventListener('change', e => {
+// Width
+document.getElementById('ds-width')?.addEventListener('input', e => {
   if (activeEl) {
-    activeEl.style.borderColor = e.target.value || '';
+    activeEl.style.width = (e.target.value || 100) + '%';
+    if (typeof saveHistory === 'function') saveHistory();
+  }
+});
+
+// Height
+document.getElementById('ds-height')?.addEventListener('input', e => {
+  if (activeEl) {
+    activeEl.style.height = (e.target.value || 2) + 'px';
+    if (typeof saveHistory === 'function') saveHistory();
   }
 });
 
 // Remove block
-document.getElementById('ds-remove-btn').addEventListener('click', () => {
+document.getElementById('ds-remove-btn')?.addEventListener('click', () => {
   if (activeEl) {
-    activeEl.closest('.dropped-block').remove();
-    checkEmptyBlocks();
+    const block = activeEl.closest('.dropped-block');
+    if (block) {
+      block.remove();
+      checkEmptyBlocks();
+      if (typeof saveHistory === 'function') saveHistory();
+    }
   }
   closeAllPanels();
 });
@@ -53,12 +72,12 @@ function dropDividerBlock(returnBlock = false) {
       Divider <i class="fa-solid fa-copy copy-btn" title="Duplicate"></i>
     </span>
     <div class="block-reorder-tools">
-      <button class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
-      <button class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
-      <button class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
+      <button type="button" class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
+      <button type="button" class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
+      <button type="button" class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
-    <div class="dropped-block-inner">
-      <hr class="editor-divider" />
+    <div class="dropped-block-inner" style="padding: 20px 0; justify-content: center;">
+      <div class="editor-divider" style="width: 100%; height: 2px; background-color: #ced4da; margin: 0 auto;"></div>
     </div>`;
 
   if (returnBlock) return block;
@@ -66,6 +85,7 @@ function dropDividerBlock(returnBlock = false) {
   blocksContainer.appendChild(block);
   attachBlockListeners(block);
 
-  const hr = block.querySelector('hr');
-  openDividerSettings(hr);
+  const divider = block.querySelector('.editor-divider');
+  openDividerSettings(divider);
+  if (typeof saveHistory === 'function') saveHistory();
 }

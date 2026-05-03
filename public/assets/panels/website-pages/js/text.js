@@ -1,10 +1,13 @@
 // ── Text (P) Settings Panel ───────────────────────────────────────────────────
 
 function openTextSettings(el) {
-  closeAllPanels();
+  openPanel('text-settings-panel');
   activeEl = el;
-  el.closest('.dropped-block').classList.add('selected');
-  document.getElementById('text-settings-panel').style.display = 'block';
+  const block = el.closest('.dropped-block');
+  block.classList.add('selected');
+
+  // Sync Visibility
+  if (typeof syncVisibilityToggles === 'function') syncVisibilityToggles(block);
 
   // Sync align buttons
   const cur = el.style.textAlign || 'left';
@@ -13,14 +16,13 @@ function openTextSettings(el) {
   );
 
   // Sync fields
-  document.getElementById('ts-color').value = el.style.color || '';
+  document.getElementById('ts-color').value = rgbToHex(el.style.color) || '#111827';
   document.getElementById('ts-size').value = el.style.fontSize ? parseInt(el.style.fontSize) : '';
-  document.getElementById('ts-classes').value = el.dataset.cssClasses || '';
 }
 
 // Back / Cancel
-document.getElementById('ts-back-btn').addEventListener('click', closeAllPanels);
-document.getElementById('ts-cancel-btn').addEventListener('click', closeAllPanels);
+document.getElementById('ts-back-btn')?.addEventListener('click', closeAllPanels);
+document.getElementById('ts-cancel-btn')?.addEventListener('click', closeAllPanels);
 
 // Align
 document.querySelectorAll('.ts-align-btn').forEach(btn => {
@@ -28,36 +30,31 @@ document.querySelectorAll('.ts-align-btn').forEach(btn => {
     document.querySelectorAll('.ts-align-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     if (activeEl) activeEl.style.textAlign = btn.dataset.align;
+    if (typeof saveHistory === 'function') saveHistory();
   });
 });
 
 // Text color
-document.getElementById('ts-color').addEventListener('change', e => {
+document.getElementById('ts-color')?.addEventListener('change', e => {
   if (activeEl) activeEl.style.color = e.target.value || '';
+  if (typeof saveHistory === 'function') saveHistory();
 });
 
 // Text size
-document.getElementById('ts-size').addEventListener('input', e => {
+document.getElementById('ts-size')?.addEventListener('input', e => {
   if (activeEl && e.target.value) activeEl.style.fontSize = e.target.value + 'px';
   else if (activeEl) activeEl.style.fontSize = '';
-});
-
-// CSS classes
-document.getElementById('ts-classes').addEventListener('input', e => {
-  if (activeEl) {
-    activeEl.dataset.cssClasses = e.target.value;
-    activeEl.className = e.target.value;
-  }
+  if (typeof saveHistory === 'function') saveHistory();
 });
 
 // Remove block
-document.getElementById('ts-remove-btn').addEventListener('click', () => {
+document.getElementById('ts-remove-btn')?.addEventListener('click', () => {
   if (activeEl) {
-    if (activeEl.closest('.editor-card')) {
-      activeEl.remove();
-    } else {
-      activeEl.closest('.dropped-block').remove();
+    const block = activeEl.closest('.dropped-block');
+    if (block) {
+      block.remove();
       checkEmptyBlocks();
+      if (typeof saveHistory === 'function') saveHistory();
     }
   }
   closeAllPanels();
@@ -77,12 +74,12 @@ function dropTextBlock(returnBlock = false) {
       Text <i class="fa-solid fa-copy copy-btn" title="Duplicate"></i>
     </span>
     <div class="block-reorder-tools">
-      <button class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
-      <button class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
-      <button class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
+      <button type="button" class="reorder-btn drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></button>
+      <button type="button" class="reorder-btn move-up-btn" title="Move Up"><i class="fa-solid fa-chevron-up"></i></button>
+      <button type="button" class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner">
-      <p contenteditable="true" spellcheck="false" data-placeholder="Enter text details..." style="margin:0;font-size:15px;color:#444;width:100%;"></p>
+      <p contenteditable="true" spellcheck="false" data-placeholder="Enter text details..." style="margin:0;font-size:16px;color:#4f566b;width:100%;"></p>
     </div>`;
 
   if (returnBlock) return block;
@@ -94,4 +91,5 @@ function dropTextBlock(returnBlock = false) {
   p.focus();
   openTextSettings(p);
   placeCursorAtEnd(p);
+  if (typeof saveHistory === 'function') saveHistory();
 }
