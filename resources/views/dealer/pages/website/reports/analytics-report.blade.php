@@ -221,9 +221,9 @@
                         </div>
                     </form>
 
-                    <button class="btn-export">
+                    <a href="{{ route('dealer.website.reports.analytics.export', ['type' => $type, 'from' => $from, 'to' => $to]) }}" class="btn-export">
                         <i class="bi bi-cloud-download"></i> {{ __('Export') }}
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -274,6 +274,8 @@
                                                         <i class="bi bi-tablet"></i>
                                                     @endif
                                                 </div>
+                                            @elseif($type === 'languages')
+                                                <div class="value-icon"><i class="bi bi-translate"></i></div>
                                             @elseif($type === 'countries')
                                                 @php
                                                     // Map country names to codes for flags if possible, 

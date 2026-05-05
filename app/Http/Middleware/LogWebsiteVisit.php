@@ -57,9 +57,38 @@ class LogWebsiteVisit
                 'utm_medium'   => $request->get('utm_medium'),
                 'utm_campaign' => $request->get('utm_campaign'),
                 'session_id'   => session()->getId(),
+                'language'     => $this->getBrowserLanguage($request),
             ]);
         }
 
         return $next($request);
+    }
+
+    private function getBrowserLanguage($request)
+    {
+        $lang = $request->header('Accept-Language');
+        if (!$lang) return 'Unknown';
+        
+        $primary = explode(',', $lang)[0];
+        $code = explode('-', $primary)[0];
+
+        $languages = [
+            'en' => 'English',
+            'es' => 'Spanish',
+            'fr' => 'French',
+            'de' => 'German',
+            'it' => 'Italian',
+            'pt' => 'Portuguese',
+            'ru' => 'Russian',
+            'zh' => 'Chinese',
+            'ja' => 'Japanese',
+            'ko' => 'Korean',
+            'ar' => 'Arabic',
+            'vi' => 'Vietnamese',
+            'fa' => 'Persian (Farsi)',
+            'nl' => 'Dutch',
+        ];
+
+        return $languages[$code] ?? 'Unknown';
     }
 }

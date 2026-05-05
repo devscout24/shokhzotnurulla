@@ -395,6 +395,78 @@ class WebsiteReportController extends Controller
         ]);
     }
 
+    public function languages(Request $request)
+    {
+        [$stats, $from, $to] = $this->getLogStats($request, 'language');
+        return view('dealer.pages.website.reports.analytics-report', [
+            'stats' => $stats,
+            'from' => $from,
+            'to' => $to,
+            'title' => 'Languages',
+            'type' => 'languages'
+        ]);
+    }
+
+    public function exportAnalytics(Request $request)
+    {
+        $type = $request->get('type', 'devices');
+        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $dealerId = $request->user()->current_dealer_id;
+
+        $field = match($type) {
+            'devices' => 'CONCAT(device_brand, " ", device_model)',
+            'languages' => 'language',
+            'platforms' => 'device_type',
+            'countries' => 'country',
+            'states' => 'state',
+            'cities' => 'city',
+            'top-pages' => 'url',
+            'top-entry-pages' => 'url',
+            'top-exit-pages' => 'url',
+            'traffic-referrers' => 'referrer',
+            'utm-campaigns' => 'utm_campaign',
+            default => 'url'
+        };
+
+        $query = WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
+
+        if ($type === 'traffic-channels') {
+            $logs = $query->get();
+            $channels = ['Organic Search' => 0, 'Social' => 0, 'Paid Search' => 0, 'Direct' => 0, 'Referral' => 0, 'Other' => 0];
+            foreach ($logs as $log) {
+                $ref = strtolower($log->referrer ?? '');
+                $utm = strtolower($log->utm_source ?? '');
+                if (Str::contains($utm, ['google', 'bing', 'yahoo']) && Str::contains($utm, 'cpc')) $channels['Paid Search']++;
+                elseif (Str::contains($ref, ['google', 'bing', 'yahoo', 'duckduckgo'])) $channels['Organic Search']++;
+                elseif (Str::contains($ref, ['facebook', 'instagram', 'twitter', 'linkedin', 't.co'])) $channels['Social']++;
+                elseif (!$log->referrer) $channels['Direct']++;
+                else $channels['Referral']++;
+            }
+            $stats = collect($channels)->map(function($count, $name) {
+                return (object) ['value' => $name, 'page_views' => $count];
+            })->values();
+        } else {
+            $stats = $query->selectRaw($field . ' as value, COUNT(*) as page_views')
+                ->groupBy('value')
+                ->orderByDesc('page_views')
+                ->get();
+        }
+
+        $filename = "analytics-{$type}-" . now()->format('Y-m-d') . ".csv";
+
+        return response()->streamDownload(function () use ($stats, $type) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [ucfirst($type), 'Page Views']);
+
+            foreach ($stats as $s) {
+                fputcsv($handle, [$s->value, $s->page_views]);
+            }
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
+
     public function devices(Request $request)
     {
         [$stats, $from, $to] = $this->getLogStats($request, 'CONCAT(device_brand, " ", device_model)');

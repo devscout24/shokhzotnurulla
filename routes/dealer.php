@@ -190,6 +190,8 @@ Route::prefix('dealer')->name('dealer.')
             Route::get('/top-entry-pages', [WebsiteReportController::class, 'topEntryPages'])->name('top-entry-pages');
             Route::get('/top-exit-pages', [WebsiteReportController::class, 'topExitPages'])->name('top-exit-pages');
             Route::get('/platforms', [WebsiteReportController::class, 'platforms'])->name('platforms');
+            Route::get('/languages', [WebsiteReportController::class, 'languages'])->name('languages');
+            Route::get('/analytics/export', [WebsiteReportController::class, 'exportAnalytics'])->name('analytics.export');
             Route::get('/locations/countries', [WebsiteReportController::class, 'locationsCountries'])->name('locations.countries');
             Route::get('/locations/states', [WebsiteReportController::class, 'locationsStates'])->name('locations.states');
             Route::get('/locations/cities', [WebsiteReportController::class, 'locationsCities'])->name('locations.cities');

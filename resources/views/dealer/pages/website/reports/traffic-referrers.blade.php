@@ -181,9 +181,9 @@
                         </div>
                     </form>
 
-                    <button class="btn-export">
+                    <a href="{{ route('dealer.website.reports.analytics.export', ['type' => 'traffic-referrers', 'from' => $from, 'to' => $to]) }}" class="btn-export">
                         <i class="bi bi-cloud-download"></i> {{ __('Export') }}
-                    </button>
+                    </a>
                 </div>
             </div>
 

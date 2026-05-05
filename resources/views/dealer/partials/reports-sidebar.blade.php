@@ -38,7 +38,7 @@
     <a href="{{ route('dealer.website.reports.locations.cities') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.locations.cities') ? 'active' : '' }}">
         <i class="bi bi-pin-map"></i> Locations: Cities
     </a>
-    <a href="#" class="rc-sidebar-item">
+    <a href="{{ route('dealer.website.reports.languages') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.languages') ? 'active' : '' }}">
         <i class="bi bi-translate"></i> Languages
     </a>
 </div>
