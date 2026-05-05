@@ -16,7 +16,7 @@ Auth::routes(['verify' => true]);
 require __DIR__ . '/dealer.php';
 require __DIR__ . '/admin.php';
 
-Route::name('frontend.')->group(function () {
+Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class])->name('frontend.')->group(function () {
 
     // Pages
     Route::get('/', [FrontendController::class, 'home'])->name('home');

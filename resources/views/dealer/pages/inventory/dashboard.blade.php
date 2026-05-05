@@ -454,78 +454,83 @@
                 margin-right: 0;
                 gap: 0 !important;
             }
-            .inv-main-content > .col-xl-8, .inv-main-content > .col-xl-4 {
+
+            .inv-main-content>.col-xl-8,
+            .inv-main-content>.col-xl-4 {
                 padding-left: 0;
                 padding-right: 0;
             }
+
             .inv-cards-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .inv-top-bar {
                 flex-direction: column;
                 align-items: stretch !important;
                 gap: 15px;
             }
-            
+
             .inv-date-range {
                 margin-left: 0 !important;
                 width: 100% !important;
             }
-            
-            .inv-location-dropdown-wrapper, .inv-location-dropdown {
+
+            .inv-location-dropdown-wrapper,
+            .inv-location-dropdown {
                 width: 100%;
                 min-width: 100% !important;
             }
-            
+
             .inv-location-dropdown {
                 justify-content: space-between;
             }
-            
+
             .inv-table-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
             }
-            
+
             .inv-table-wrapper {
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
             }
-            
+
             .model-data-wrapper {
                 padding: 10px;
             }
-            
+
             .model-table-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
             }
-            
+
             .model-table {
                 display: block;
                 overflow-x: auto;
                 white-space: nowrap;
             }
-            
+
             .inv-card-box {
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
             }
-            
+
             .inv-mini-table {
                 width: 100%;
-                min-width: 300px; /* Optional, just ensure it scrolls if needed */
+                min-width: 300px;
+                /* Optional, just ensure it scrolls if needed */
             }
-            
+
             .daterangepicker {
                 flex-direction: column !important;
                 width: 100% !important;
                 right: 0 !important;
                 left: 0 !important;
             }
-            
+
             .daterangepicker .ranges {
                 width: 100% !important;
                 border-right: none !important;
@@ -811,10 +816,7 @@
         </div>
     </main>
 
-    <form id="filterForm" method="GET" style="display: none;">
-        <input type="hidden" name="dealer_id" id="filterDealerId" value="{{ $currentDealerId }}">
-        <input type="hidden" name="date_range" id="filterDateRange" value="{{ $dateRange }}">
-    </form>
+
 @endsection
 
 @push('page-scripts')
@@ -826,8 +828,6 @@
             // Location Dropdown
             const toggle = document.getElementById('locationDropdownToggle');
             const menu = document.getElementById('locationMenu');
-            const filterForm = document.getElementById('filterForm');
-            const dealerIdInput = document.getElementById('filterDealerId');
 
             if (toggle) {
                 toggle.addEventListener('click', function(e) {
@@ -843,8 +843,13 @@
             document.querySelectorAll('.inv-location-item').forEach(item => {
                 item.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
-                    dealerIdInput.value = id;
-                    filterForm.submit();
+                    const url = new URL(window.location.href);
+                    if (id && id !== '0') {
+                        url.searchParams.set('dealer_id', id);
+                    } else {
+                        url.searchParams.delete('dealer_id');
+                    }
+                    window.location.href = url.toString();
                 });
             });
 
@@ -891,10 +896,14 @@
                         ],
                         firstDay: 1
                     }
-                }, function(start, end, label) {
-                    const dateStr = start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY');
-                    document.getElementById('filterDateRange').value = dateStr;
-                    filterForm.submit();
+                });
+
+                dateInput.on('apply.daterangepicker', function(ev, picker) {
+                    const dateStr = picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format(
+                        'MM/DD/YYYY');
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('date_range', dateStr);
+                    window.location.href = url.toString();
                 });
             }
 

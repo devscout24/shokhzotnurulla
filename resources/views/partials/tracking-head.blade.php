@@ -1,5 +1,9 @@
-@php $scripts = $scripts ?? collect(); @endphp
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4YFFF8T30G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-@foreach(($scripts['head'] ?? []) as $script)
-    {!! $script->code !!}
-@endforeach
+  gtag('config', 'G-4YFFF8T30G');
+</script>
