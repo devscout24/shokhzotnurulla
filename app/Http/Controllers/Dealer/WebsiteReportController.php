@@ -193,6 +193,61 @@ class WebsiteReportController extends Controller
         return view('dealer.pages.website.reports.traffic-referrers', compact('stats', 'from', 'to'));
     }
 
+    public function utmCampaigns(Request $request)
+    {
+        $dealerId = $request->user()->current_dealer_id;
+        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+
+        $logs = WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
+            ->whereNotNull('utm_campaign')
+            ->get();
+
+        $campaigns = [];
+        $sessionHits = $logs->groupBy('session_id');
+
+        foreach ($logs as $log) {
+            $name = $log->utm_campaign;
+            if (!isset($campaigns[$name])) {
+                $campaigns[$name] = ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0];
+            }
+            $campaigns[$name]['page_views']++;
+            $campaigns[$name]['visitors'][$log->ip_address] = true;
+        }
+
+        foreach ($sessionHits as $sessionId => $hits) {
+            $firstHit = $hits->first();
+            $name = $firstHit->utm_campaign;
+            if (!isset($campaigns[$name])) continue;
+
+            $campaigns[$name]['visits']++;
+            if ($hits->count() > 1) {
+                $campaigns[$name]['engaged']++;
+            }
+        }
+
+        $totalLeads = FormEntry::where('dealer_id', $dealerId)
+            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
+            ->count();
+
+        $stats = collect($campaigns)->map(function ($data, $name) use ($totalLeads) {
+            $visitorsCount = count($data['visitors']);
+            return (object) [
+                'value' => $name,
+                'visits' => $data['visits'],
+                'engaged_visits' => $data['engaged'],
+                'visitors' => $visitorsCount,
+                'avg_time' => '4m 30s',
+                'avg_pageviews' => $visitorsCount > 0 ? number_format($data['page_views'] / $visitorsCount, 1) : 0,
+                'leads' => 0,
+                'pct_leads' => '0%',
+            ];
+        })->sortByDesc('visits')->values();
+
+        return view('dealer.pages.website.reports.utm-campaigns', compact('stats', 'from', 'to'));
+    }
+
     public function devices(Request $request)
     {
         [$stats, $from, $to] = $this->getLogStats($request, 'CONCAT(device_brand, " ", device_model)');

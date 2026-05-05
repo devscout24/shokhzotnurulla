@@ -11,7 +11,7 @@
     <a href="{{ route('dealer.website.reports.traffic-referrers') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.traffic-referrers') ? 'active' : '' }}">
         <i class="bi bi-reply-all"></i> Traffic Referrers
     </a>
-    <a href="#" class="rc-sidebar-item">
+    <a href="{{ route('dealer.website.reports.utm-campaigns') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.utm-campaigns') ? 'active' : '' }}">
         <i class="bi bi-bullseye"></i> UTM Campaigns
     </a>
     <a href="#" class="rc-sidebar-item">
