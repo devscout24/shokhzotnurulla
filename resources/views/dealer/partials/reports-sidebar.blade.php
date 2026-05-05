@@ -20,7 +20,7 @@
     <a href="{{ route('dealer.website.reports.top-entry-pages') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.top-entry-pages') ? 'active' : '' }}">
         <i class="bi bi-box-arrow-in-right"></i> Top Entry Pages
     </a>
-    <a href="#" class="rc-sidebar-item">
+    <a href="{{ route('dealer.website.reports.top-exit-pages') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.top-exit-pages') ? 'active' : '' }}">
         <i class="bi bi-box-arrow-right"></i> Top Exit Pages
     </a>
     <a href="#" class="rc-sidebar-item">
