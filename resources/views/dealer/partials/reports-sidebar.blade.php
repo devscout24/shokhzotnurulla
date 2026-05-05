@@ -14,7 +14,7 @@
     <a href="{{ route('dealer.website.reports.utm-campaigns') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.utm-campaigns') ? 'active' : '' }}">
         <i class="bi bi-bullseye"></i> UTM Campaigns
     </a>
-    <a href="#" class="rc-sidebar-item">
+    <a href="{{ route('dealer.website.reports.top-pages') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.top-pages') ? 'active' : '' }}">
         <i class="bi bi-file-earmark-bar-graph"></i> Top Pages
     </a>
     <a href="#" class="rc-sidebar-item">

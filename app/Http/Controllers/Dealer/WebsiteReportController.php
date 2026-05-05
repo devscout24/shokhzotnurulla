@@ -248,6 +248,46 @@ class WebsiteReportController extends Controller
         return view('dealer.pages.website.reports.utm-campaigns', compact('stats', 'from', 'to'));
     }
 
+    public function topPages(Request $request)
+    {
+        $dealerId = $request->user()->current_dealer_id;
+        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+
+        $query = WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
+
+        $totalHits = (clone $query)->count() ?: 1;
+
+        $stats = $query->selectRaw('url as value, COUNT(*) as page_views')
+            ->groupBy('url')
+            ->orderByDesc('page_views')
+            ->get()
+            ->map(function ($item) use ($totalHits) {
+                // Clean URL to show only path
+                $path = parse_url($item->value, PHP_URL_PATH) ?: '/';
+                $item->value = $path;
+                $item->pct = ($item->page_views / $totalHits) * 100;
+                return $item;
+            });
+
+        // Group by path again in case multiple full URLs point to same path (e.g. diff query params)
+        $stats = $stats->groupBy('value')->map(function($group) {
+            $first = $group->first();
+            $first->page_views = $group->sum('page_views');
+            $first->pct = $group->sum('pct');
+            return $first;
+        })->sortByDesc('page_views')->values();
+
+        return view('dealer.pages.website.reports.analytics-report', [
+            'stats' => $stats,
+            'from' => $from,
+            'to' => $to,
+            'title' => 'Top Pages',
+            'type' => 'top-pages'
+        ]);
+    }
+
     public function devices(Request $request)
     {
         [$stats, $from, $to] = $this->getLogStats($request, 'CONCAT(device_brand, " ", device_model)');
