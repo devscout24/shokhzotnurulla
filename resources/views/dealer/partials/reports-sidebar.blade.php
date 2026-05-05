@@ -2,7 +2,7 @@
     <a href="{{ route('dealer.website.reports.hot-vehicles') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.hot-vehicles') ? 'active' : '' }}">
         <i class="bi bi-speedometer2"></i> Hot Vehicles
     </a>
-    <a href="#" class="rc-sidebar-item">
+    <a href="{{ route('dealer.website.reports.cold-vehicles') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.cold-vehicles') ? 'active' : '' }}">
         <i class="bi bi-snow"></i> Cold Vehicles
     </a>
     <a href="#" class="rc-sidebar-item">

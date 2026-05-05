@@ -180,6 +180,8 @@ Route::prefix('dealer')->name('dealer.')
             Route::get('/', [WebsiteReportController::class, 'index'])->name('index');
             Route::get('/hot-vehicles', [WebsiteReportController::class, 'hotVehicles'])->name('hot-vehicles');
             Route::get('/hot-vehicles/export', [WebsiteReportController::class, 'exportHotVehicles'])->name('hot-vehicles.export');
+            Route::get('/cold-vehicles', [WebsiteReportController::class, 'coldVehicles'])->name('cold-vehicles');
+            Route::get('/cold-vehicles/export', [WebsiteReportController::class, 'exportColdVehicles'])->name('cold-vehicles.export');
         });
 
         // ── Form Entries ──────────────────────────────────────────────────────────────
