@@ -79,6 +79,7 @@ function dropHeadingBlock(returnBlock = false) {
 
   const block = document.createElement('div');
   block.className = 'dropped-block';
+  block.dataset.blockType = 'Heading';
   block.innerHTML = `
     <span class="dropped-block-badge">
       Heading <i class="fa-solid fa-copy copy-btn" title="Duplicate"></i>
@@ -89,7 +90,7 @@ function dropHeadingBlock(returnBlock = false) {
       <button type="button" class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner">
-      <h1 contenteditable="true" spellcheck="false" data-placeholder="Enter Heading..."></h1>
+      <h1 contenteditable="true" spellcheck="false" data-placeholder="Enter Heading..." style="min-height:40px; padding:5px; margin:0; width:100%; display:block; outline:none;"></h1>
     </div>`;
 
   if (returnBlock) return block;
@@ -98,8 +99,10 @@ function dropHeadingBlock(returnBlock = false) {
   attachBlockListeners(block);
 
   const h1 = block.querySelector('h1');
-  h1.focus();
-  openHeadingSettings(h1);
-  placeCursorAtEnd(h1);
+  setTimeout(() => {
+    h1.focus();
+    placeCursorAtEnd(h1);
+    openHeadingSettings(h1);
+  }, 100);
   if (typeof saveHistory === 'function') saveHistory();
 }

@@ -62,14 +62,46 @@ function drop2ColBlock(returnBlock = false) {
     </div>
     <div class="dropped-block-inner">
       <div class="editor-2col" style="display: flex; gap: 20px; width: 100%;">
-        <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;"></div>
-        <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;"></div>
+        <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;">
+          <p contenteditable="true" spellcheck="false" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none;">Column 1</p>
+        </div>
+        <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;">
+          <p contenteditable="true" spellcheck="false" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none;">Column 2</p>
+        </div>
       </div>
     </div>`;
 
   const col2 = block.querySelector('.editor-2col');
   const zones = block.querySelectorAll('.col-drop-zone');
-  zones.forEach(zone => attachDropZoneListeners(zone));
+  const placeholders = block.querySelectorAll('[contenteditable]');
+  
+  zones.forEach((zone, idx) => {
+    attachDropZoneListeners(zone);
+    
+    // Handle placeholder text in each column
+    if (placeholders[idx]) {
+      const placeholder = placeholders[idx];
+      
+      placeholder.addEventListener('beforeinput', () => {
+        if (placeholder.textContent.trim().match(/^Column \d+$/)) {
+          placeholder.textContent = '';
+        }
+      });
+      
+      // Hide placeholder when blocks are added
+      const observer = new MutationObserver(() => {
+        const hasBlocks = zone.querySelector('.dropped-block') !== null;
+        if (hasBlocks) {
+          placeholder.style.display = 'none';
+        } else if (!placeholder.textContent.trim()) {
+          placeholder.textContent = placeholder.dataset.originalText || `Column ${idx + 1}`;
+          placeholder.style.display = 'block';
+        }
+      });
+      observer.observe(zone, { childList: true, subtree: true });
+      placeholder.dataset.originalText = placeholder.textContent;
+    }
+  });
 
   if (returnBlock) return block;
 

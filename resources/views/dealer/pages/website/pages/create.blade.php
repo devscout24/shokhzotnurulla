@@ -3,10 +3,10 @@
 @push('page-assets')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/editor.css') }}?v=1.2"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/heading.css') }}?v=1.2"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/p.css') }}?v=1.2"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/button.css') }}?v=1.2"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/editor.css') }}?v=5.1"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/heading.css') }}?v=5.1"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/p.css') }}?v=5.1"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/button.css') }}?v=5.1"/>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
 .layout{display:flex!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;height:100vh;overflow:hidden}
@@ -17,8 +17,8 @@
 .section-title{font-size:11px;font-weight:800;color:#adb5bd;text-transform:uppercase;letter-spacing:1.2px;margin:25px 0 15px}
 .block-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .block-item{border:1px solid #f1f3f5;border-radius:8px;padding:18px 5px;text-align:center;cursor:grab;background:#fff;transition:all .15s ease}
-.block-item:hover{border-color:#c0392b;background:#fffcfc;transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,0,0,.06)}
-.block-item i{font-size:22px;display:block;margin-bottom:10px;color:#c0392b}
+.block-item:hover{border-color:#e0e6ed;background:#fffcfc;transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,0,0,.06)}
+.block-item i{font-size:22px;display:block;margin-bottom:10px;color:#adb5bd}
 .block-item span{font-size:11px;font-weight:700;color:#4f566b;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .canvas-left{flex-grow:1;overflow:auto;background:#f8f9fa;padding:40px}
 .hs-row{margin-bottom:22px}
@@ -74,7 +74,7 @@
     transition: all 0.2s;
     background: #fcfdfe;
 }
-.featured-image-box:hover { border-color: #c0392b; background: #fffcfc; }
+.featured-image-box:hover { border-color: #adb5bd; background: #fffcfc; }
 .featured-image-box i { font-size: 32px; color: #adb5bd; margin-bottom: 12px; }
 .featured-image-box p { font-size: 13px; color: #4f566b; margin: 0; font-weight: 600; }
 
@@ -113,16 +113,16 @@
 
 #drop-indicator {
     height: 4px;
-    background: #c0392b;
+    background: #adb5bd;
     border-radius: 2px;
     margin: 10px 0;
     width: 100%;
     transition: all 0.2s ease;
-    box-shadow: 0 0 10px rgba(192, 57, 43, 0.4);
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 .drag-over {
-    background-color: rgba(192, 57, 43, 0.02) !important;
-    outline: 2px dashed #c0392b !important;
+    background-color: rgba(0,0,0,0.02) !important;
+    outline: 2px dashed #adb5bd !important;
     outline-offset: -2px;
 }
 
@@ -152,6 +152,18 @@
     color: #adb5bd;
     width: 100%;
     outline: none;
+}
+/* Layout columns are always interactive */
+.col-drop-zone {
+    pointer-events: auto !important;
+}
+/* Blocks and editables are always interactive */
+.dropped-block,
+.dropped-block-inner,
+[contenteditable="true"],
+[contenteditable="true"] * {
+    pointer-events: auto !important;
+    user-select: text !important;
 }
 </style>
 @endpush
@@ -342,35 +354,41 @@
 @endsection
 @push('pannel-scripts')
 <script>
-    window.CMS_CONFIG = {
-        upload_url: "{{ route('dealer.website.media.upload') }}",
-        csrf_token: "{{ csrf_token() }}"
-    };
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/html-css.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=2.1"></script>
+// Error Catcher
+window.onerror = function(msg, url, lineNo, columnNo, error) {
+    alert("Error: " + msg + "\nLine: " + lineNo + "\nFile: " + url);
+    return false;
+};
 
-<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=2.1"></script>
+window.CMS_CONFIG = {
+    upload_url: "{{ route('dealer.website.media.upload') }}",
+    csrf_token: "{{ csrf_token() }}"
+};
+</script>
+<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=6.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/html-css.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=6.0"></script>
+<script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=6.0"></script>
+
 <script>
 // Sync Top Bar Status
 // Toggle Side Panels

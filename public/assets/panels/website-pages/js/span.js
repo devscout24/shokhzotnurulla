@@ -116,7 +116,7 @@ function dropSpanBlock(returnBlock = false) {
     </div>
     <div class="dropped-block-inner" style="display: flex; align-items: flex-start; gap: 8px;">
       <i class="fa-solid fa-quote-left" style="color: #ef4444; font-size: 14px; opacity: 0.6;"></i>
-      <span contenteditable="true" spellcheck="false" style="display:inline-block; outline:none; min-width:50px; font-style: italic; color: #555;">
+      <span contenteditable="true" spellcheck="false" style="display:inline-block; outline:none; min-width:100px; min-height:24px; padding:2px 5px; font-style: italic; color: #555;">
         Inline span text
       </span>
       <i class="fa-solid fa-quote-right" style="color: #ef4444; font-size: 14px; opacity: 0.6; align-self: flex-end;"></i>

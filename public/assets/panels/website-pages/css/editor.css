@@ -18,13 +18,52 @@
 .dropped-block {
     position: relative;
     margin-bottom: 5px;
-    border: 1px solid transparent;
-    transition: all 0.2s;
-    background: transparent;
+    border: 1px dashed #e0e6ed; /* Default dashed border like reference */
+    transition: all 0.1s;
+    background: #fff;
+    z-index: 1;
+    cursor: default;
 }
 
 .dropped-block:hover {
-    border: 1px dashed #c0392b;
+    border-color: #ce4f4b;
+}
+
+/* SELECTED STATE (Overfuel Style) */
+.dropped-block.is-selected {
+    border: 2px solid #ce4f4b !important;
+    z-index: 10;
+}
+
+/* Red Label for Selected Block */
+.dropped-block.is-selected::before {
+    content: attr(data-block-type);
+    position: absolute;
+    top: -22px;
+    left: -2px;
+    background: #ce4f4b;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    text-transform: uppercase;
+    border-radius: 2px 2px 0 0;
+    z-index: 11;
+}
+
+.dropped-block-inner {
+    padding: 10px;
+    min-height: 20px;
+    outline: none;
+}
+
+/* Layout Zones */
+.col-drop-zone {
+    min-height: 80px;
+    background: rgba(248, 249, 250, 0.5);
+    border: 1px dashed #ced4da;
+    padding: 15px;
+    margin: 5px;
 }
 
 .dropped-block.selected {
@@ -99,11 +138,28 @@
     min-height: 1.2em;
 }
 
+[contenteditable="true"] {
+    outline: none !important;
+    min-height: 1.2em;
+    cursor: text !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 999 !important;
+}
+
+[contenteditable="true"]:focus {
+    box-shadow: 0 0 0 2px rgba(206, 79, 75, 0.2) !important;
+    background-color: rgba(206, 79, 75, 0.02) !important;
+}
+
 [contenteditable="true"]:empty:before {
     content: attr(data-placeholder);
     color: #adb5bd;
     font-style: italic;
-    pointer-events: none;
+    pointer-events: none !important;
+    display: block;
 }
 
 /* ── Drop Indicator ── */
@@ -113,20 +169,6 @@
     margin: 8px 0;
     border-radius: 2px;
     width: 100%;
-}
-
-/* ── Layout Zones ── */
-.col-drop-zone {
-    min-height: 80px;
-    background: rgba(248, 249, 250, 0.5);
-    border: 1px dashed #e0e6ed;
-    padding: 15px;
-    margin: 5px;
-}
-
-.col-drop-zone:hover {
-    background: rgba(192, 57, 43, 0.02);
-    border-color: #c0392b;
 }
 
 /* ── Block Specifics ── */

@@ -69,70 +69,83 @@ document.querySelectorAll('.is-align-btn').forEach(btn => {
 // ── Upload ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const uploadBtn = document.getElementById('is-upload-btn');
-  if (uploadBtn) {
+  const uploadInput = document.getElementById('is-upload-input');
+
+  if (uploadBtn && uploadInput) {
+    // Store the target element at click time so file dialog doesn't lose it
+    let targetEl = null;
+
     uploadBtn.onclick = (e) => {
       e.preventDefault();
-      const currentTarget = activeEl;
+      e.stopPropagation();
+      targetEl = activeEl; // capture NOW, before file dialog opens
+      if (!targetEl) {
+        alert('Please select an image block first by clicking on it.');
+        return;
+      }
+      uploadInput.value = '';
+      uploadInput.click();
+    };
+
+    uploadInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Use targetEl captured at click time — NOT activeEl (may be null after dialog)
+      const currentTarget = targetEl;
       if (!currentTarget) {
-        alert('Please select an image block first.');
+        alert('Image block not found. Please click the image block and try again.');
         return;
       }
 
-      let input = document.getElementById('is-upload-input-dynamic');
-      if (!input) {
-        input = document.createElement('input');
-        input.type = 'file';
-        input.id = 'is-upload-input-dynamic';
-        input.style.display = 'none';
-        input.accept = 'image/*';
-        document.body.appendChild(input);
-      }
+      const formData = new FormData();
+      formData.append('files[]', file);
+      uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+      uploadBtn.disabled = true;
 
-      input.onchange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const formData = new FormData();
-          formData.append('files[]', file);
-          uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+      const uploadUrl = (window.CMS_CONFIG && window.CMS_CONFIG.upload_url)
+        ? window.CMS_CONFIG.upload_url
+        : '/dealer/website/media/upload';
 
-          const uploadUrl = (window.CMS_CONFIG && window.CMS_CONFIG.upload_url) ? window.CMS_CONFIG.upload_url : '/dealer/website/media/upload';
-          fetch(uploadUrl, {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content }
-          })
-          .then(r => {
-            if (!r.ok) throw new Error('Upload failed with status ' + r.status);
-            return r.json();
-          })
-          .then(data => {
-            console.log('Upload Success:', data);
-            if (data.success && data.media?.[0]?.url) {
-              const url = data.media[0].url;
-              console.log('Setting image src to:', url);
-              document.getElementById('is-url').value = url;
-              if (currentTarget) {
-                currentTarget.src = url;
-                currentTarget.setAttribute('src', url);
-                console.log('Element updated:', currentTarget);
-              }
-              if (typeof saveHistory === 'function') saveHistory();
-            } else {
-              alert('Upload failed: ' + (data.message || 'Unknown error'));
-            }
-          })
-          .catch(err => {
-            console.error('Upload Error:', err);
-            alert('Error uploading image. Please check your connection or file size.');
-          })
-          .finally(() => { 
-            uploadBtn.innerHTML = '<i class="fa-solid fa-upload"></i>'; 
-            input.value = ''; 
-          });
+      console.log('[Image Upload] Uploading to:', uploadUrl);
+
+      fetch(uploadUrl, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-CSRF-TOKEN': csrfToken }
+      })
+      .then(r => {
+        if (!r.ok) throw new Error('Server error: HTTP ' + r.status);
+        return r.json();
+      })
+      .then(data => {
+        console.log('[Image Upload] Response:', data);
+        if (data.success && data.media && data.media[0] && data.media[0].url) {
+          const url = data.media[0].url;
+          // Update the settings panel URL input
+          const urlInput = document.getElementById('is-url');
+          if (urlInput) urlInput.value = url;
+          // Update the actual image element on canvas
+          currentTarget.src = url;
+          currentTarget.setAttribute('src', url);
+          if (typeof saveHistory === 'function') saveHistory();
+        } else {
+          alert('Upload failed: ' + (data.message || JSON.stringify(data)));
         }
-      };
-      input.click();
-    };
+      })
+      .catch(err => {
+        console.error('[Image Upload] Error:', err);
+        alert('Upload error: ' + err.message + '\n\nCheck browser console (F12) for details.');
+      })
+      .finally(() => {
+        uploadBtn.innerHTML = '<i class="fa-solid fa-upload"></i>';
+        uploadBtn.disabled = false;
+        uploadInput.value = '';
+      });
+    });
+  } else {
+    console.warn('[Image Upload] uploadBtn or uploadInput not found in DOM');
   }
 });
 

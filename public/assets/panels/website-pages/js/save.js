@@ -1,11 +1,19 @@
-// ── Save: collect all block data and console.log ─────────────────────────────
-
-document.querySelector('.btn.btn-danger.btn-sm.px-4').addEventListener('click', () => {
-  const blocksContainer = document.getElementById('blocks-container');
-  const payload = collectBlocksFromContainer(blocksContainer);
-
-  console.log('📄 Page Content Data:', payload);
-  console.log('📦 Full JSON String:', JSON.stringify(payload, null, 2));
+// ── Save: collect all block data ─────────────────────────────────────────────
+// Debug helper: log page content when save button is clicked
+document.addEventListener('DOMContentLoaded', function() {
+  // Target the submit button inside the page-builder-form (works for both create & edit)
+  const form = document.getElementById('page-builder-form');
+  if (form) {
+    const saveBtn = form.querySelector('[type="submit"]');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        const blocksContainer = document.getElementById('blocks-container');
+        const payload = collectBlocksFromContainer(blocksContainer);
+        console.log('📄 Page Content Data:', payload);
+        console.log('📦 Full JSON String:', JSON.stringify(payload, null, 2));
+      });
+    }
+  }
 });
 
 function collectBlocksFromContainer(container) {

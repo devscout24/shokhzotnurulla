@@ -3,10 +3,10 @@
 @push('page-assets')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/editor.css') }}?v=1.2"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/heading.css') }}?v=1.2"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/p.css') }}?v=1.2"/>
-<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/button.css') }}?v=1.2"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/editor.css') }}?v=5.1"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/heading.css') }}?v=5.1"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/p.css') }}?v=5.1"/>
+<link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/button.css') }}?v=5.1"/>
 <style>
 .layout{display:flex!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;height:100vh;overflow:hidden}
 .of-master-frame{display:flex;flex-direction:column;width:100%;height:100vh;background:#f8f9fa}
@@ -149,6 +149,18 @@
     color: #adb5bd;
     width: 100%;
     outline: none;
+}
+/* Layout columns are always interactive */
+.col-drop-zone {
+    pointer-events: auto !important;
+}
+/* Blocks and editables are always interactive */
+.dropped-block,
+.dropped-block-inner,
+[contenteditable="true"],
+[contenteditable="true"] * {
+    pointer-events: auto !important;
+    user-select: text !important;
 }
 </style>
 @endpush
@@ -327,33 +339,57 @@
 @endsection
 @push('pannel-scripts')
 <script>
+// Error Catcher
+window.onerror = function(msg, url, lineNo, columnNo, error) {
+    alert("Error: " + msg + "\nLine: " + lineNo + "\nFile: " + url);
+    return false;
+};
+
+// Brute Force Pointer Events Fix
+setInterval(() => {
     window.CMS_CONFIG = {
         upload_url: "{{ route('dealer.website.media.upload') }}",
         csrf_token: "{{ csrf_token() }}"
     };
 </script>
+<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=5.3"></script>
+<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=5.3"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=2.1"></script>
-<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=2.1"></script>
+<script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=5.3"></script>
+<script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=5.3"></script>
+<script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=5.3"></script>
+<script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/html-css.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=5.4"></script>
+
+<script>
+// NUCLEAR FOCUS FIX: High-priority mousedown listener
+document.addEventListener('mousedown', function(e) {
+    const editable = e.target.closest('[contenteditable="true"]');
+    if (editable) {
+        console.log('Nuclear focus triggered for:', editable.tagName);
+        setTimeout(() => {
+            editable.focus();
+            // Re-enable typing just in case
+            editable.style.webkitUserModify = 'read-write';
+        }, 0);
+    }
+}, true);
+</script>
 <script>
 // Sync Top Bar Status
 function updateTopStatus(select) {
@@ -438,7 +474,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     var layout = document.querySelector('.layout');
-    if (layout) { layout.style.display = 'flex'; layout.style.width = '100%'; layout.style.maxWidth = '100%'; layout.style.flex = '1'; layout.style.overflow = 'hidden'; }
+    if (layout) { layout.style.display = 'flex'; layout.style.width = '100%'; layout.style.maxWidth = '100%'; layout.style.flex = '1'; layout.style.overflow = 'visible'; }
+
+    // ── GUARANTEED TEXT EDITING FIX ──────────────────────────────────────
+    document.addEventListener('click', function(e) {
+        var el = e.target;
+        while (el && el !== document.body) {
+            if (el.isContentEditable) {
+                el.focus();
+                try {
+                    if (document.caretRangeFromPoint) {
+                        var range = document.caretRangeFromPoint(e.clientX, e.clientY);
+                        if (range) { var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); }
+                    } else if (document.caretPositionFromPoint) {
+                        var pos = document.caretPositionFromPoint(e.clientX, e.clientY);
+                        if (pos) { var range = document.createRange(); range.setStart(pos.offsetNode, pos.offset); range.collapse(true); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); }
+                    }
+                } catch(err) {}
+                break;
+            }
+            el = el.parentElement;
+        }
+    }, true);
 });
 </script>
 @endpush

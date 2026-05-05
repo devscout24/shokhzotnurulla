@@ -8,11 +8,20 @@ function clearSelected() {
 }
 
 function openPanel(id) {
+  // Save currently focused element so focus isn't stolen by panel DOM changes
+  const previouslyFocused = document.activeElement;
+  const wasContentEditable = previouslyFocused && previouslyFocused.isContentEditable;
+
   closeAllPanels();
   const panel = document.getElementById(id);
   if (panel) panel.style.display = 'block';
   const defaultContent = document.getElementById('sidebar-default-content');
   if (defaultContent) defaultContent.style.display = 'none';
+
+  // Restore focus to the contenteditable element after panel opens
+  if (wasContentEditable) {
+    setTimeout(() => { previouslyFocused.focus(); }, 0);
+  }
 }
 
 function closeAllPanels() {
@@ -86,17 +95,24 @@ function rgbToHex(rgb) {
 // ── Attach listeners to any block (h1 / p / button) ──────────────────────────
 
 function attachBlockListeners(block) {
-  // Selection Logic
+  // ── Selection: Click anywhere on block to select it ──────────────────
   block.addEventListener('click', (e) => {
+    // If clicking directly on a contenteditable element,
+    // let the browser handle focus natively — do NOT call stopPropagation or focus()
+    const editable = e.target.closest('[contenteditable="true"]');
+    if (editable) {
+      // Just mark as selected — browser handles the rest
+      clearSelected();
+      block.classList.add('selected');
+      block.classList.add('is-selected');
+      return;
+    }
+
+    // Clicking on non-text parts: select block and open settings
     e.stopPropagation();
     clearSelected();
     block.classList.add('selected');
-    
-    // Auto-focus editable if it's a text/heading block
-    const editable = block.querySelector('[contenteditable="true"]');
-    if (editable && (e.target === block || e.target.classList.contains('dropped-block-inner'))) {
-      editable.focus();
-    }
+    block.classList.add('is-selected');
   });
 
   // Copy / duplicate icon
@@ -124,14 +140,21 @@ function attachBlockListeners(block) {
     handle.addEventListener('mouseup', () => { 
         block.removeAttribute('draggable'); 
     });
+    // Fallback if mouse leaves handle
+    handle.addEventListener('mouseleave', () => {
+        if (!block.classList.contains('dragging')) {
+            block.removeAttribute('draggable');
+        }
+    });
 
     block.addEventListener('dragstart', e => {
+      // Only allow drag if the handle was mousedown-ed
       if (!block.hasAttribute('draggable')) {
-        e.preventDefault();
         return;
       }
       block.classList.add('dragging');
       window.reorderBlock = block;
+      // Required for Firefox
       e.dataTransfer.setData('text/plain', '');
       e.dataTransfer.effectAllowed = 'move';
     });
@@ -145,36 +168,7 @@ function attachBlockListeners(block) {
     });
   }
 
-  // Individual Settings Handlers
-  const h1 = block.querySelector('h1[contenteditable]');
-  if (h1) {
-    h1.addEventListener('click', (e) => { e.stopPropagation(); openHeadingSettings(h1); });
-    h1.addEventListener('focus', (e) => { 
-        clearSelected(); 
-        block.classList.add('selected'); 
-        openHeadingSettings(h1); 
-    });
-  }
 
-  const p = block.querySelector('p[contenteditable]');
-  if (p) {
-    p.addEventListener('click', (e) => { e.stopPropagation(); openTextSettings(p); });
-    p.addEventListener('focus', (e) => { 
-        clearSelected(); 
-        block.classList.add('selected'); 
-        openTextSettings(p); 
-    });
-  }
-
-  const spanEl = block.querySelector('span[contenteditable]');
-  if (spanEl) {
-    spanEl.addEventListener('click', (e) => { e.stopPropagation(); openSpanSettings(spanEl); });
-    spanEl.addEventListener('focus', (e) => { 
-        clearSelected(); 
-        block.classList.add('selected'); 
-        openSpanSettings(spanEl); 
-    });
-  }
 
   const btn = block.querySelector('.dropped-btn');
   if (btn) btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); openButtonSettings(btn); });
@@ -223,15 +217,104 @@ function attachBlockListeners(block) {
     attachDropZoneListeners(zone);
   });
 
-  const col3 = block.querySelector('.editor-3col');
-  if (col3) col3.addEventListener('click', (e) => { if (e.target === col3 || e.target.classList.contains('col-drop-zone')) { e.stopPropagation(); open3ColSettings(col3); } });
-
-  const col2 = block.querySelector('.editor-2col');
-  if (col2) col2.addEventListener('click', (e) => { if (e.target === col2 || e.target.classList.contains('col-drop-zone')) { e.stopPropagation(); open2ColSettings(col2); } });
-
-  const container = block.querySelector('.editor-container');
-  if (container) container.addEventListener('click', (e) => { if (e.target === container) { e.stopPropagation(); openContainerSettings(container); } });
+  // Layout Block Settings Handlers (Container, 2Col, 3Col)
+  const layoutEl = block.querySelector('.editor-3col, .editor-2col, .editor-container');
+  if (layoutEl) {
+    block.addEventListener('click', (e) => {
+        // If clicking exactly on the layout block or its drop zone (but not a nested block)
+        if (e.target === layoutEl || e.target.classList.contains('col-drop-zone')) {
+            e.stopPropagation();
+            clearSelected();
+            block.classList.add('selected');
+            
+            if (layoutEl.classList.contains('editor-3col')) if (typeof open3ColSettings === 'function') open3ColSettings(layoutEl);
+            if (layoutEl.classList.contains('editor-2col')) if (typeof open2ColSettings === 'function') open2ColSettings(layoutEl);
+            if (layoutEl.classList.contains('editor-container')) if (typeof openContainerSettings === 'function') openContainerSettings(layoutEl);
+        }
+    });
+  }
 }
+
+// ── Selection Highlight Engine ──────────────────
+// Only handles visual selection — settings panels are opened by individual block listeners
+document.addEventListener('mousedown', (e) => {
+    const block = e.target.closest('.dropped-block');
+
+    if (block) {
+        // Visual selection only
+        document.querySelectorAll('.dropped-block').forEach(b => b.classList.remove('is-selected', 'selected'));
+        block.classList.add('is-selected');
+    } else if (
+        !e.target.closest('[contenteditable="true"]') &&
+        !e.target.closest('[id$="-settings-panel"]') &&
+        !e.target.closest('.sidebar-right') &&
+        !e.target.closest('.side-panel') &&
+        !e.target.closest('.offcanvas')
+    ) {
+        // Clicked completely outside — deselect and close panels
+        document.querySelectorAll('.dropped-block').forEach(b => b.classList.remove('is-selected', 'selected'));
+        if (typeof closeAllPanels === 'function') closeAllPanels();
+    }
+});
+
+// Trigger settings based on block content
+function triggerBlockSettings(block) {
+    const h1 = block.querySelector('h1');
+    const p = block.querySelector('p');
+    const btn = block.querySelector('.dropped-btn');
+    const img = block.querySelector('.editor-image');
+    const video = block.querySelector('.editor-video');
+    const col2 = block.querySelector('.editor-2col');
+    const col3 = block.querySelector('.editor-3col');
+    const container = block.querySelector('.editor-container');
+
+    if (h1 && typeof openHeadingSettings === 'function') openHeadingSettings(h1);
+    else if (p && typeof openTextSettings === 'function') openTextSettings(p);
+    else if (btn && typeof openButtonSettings === 'function') openButtonSettings(btn);
+    else if (img && typeof openImageSettings === 'function') openImageSettings(img);
+    else if (video && typeof openVideoSettings === 'function') openVideoSettings(video);
+    else if (col2 && typeof open2ColSettings === 'function') open2ColSettings(col2);
+    else if (col3 && typeof open3ColSettings === 'function') open3ColSettings(col3);
+    else if (container && typeof openContainerSettings === 'function') openContainerSettings(container);
+}
+
+document.addEventListener('dragend', (e) => {
+    const block = e.target.closest('.dropped-block');
+    if (block) block.setAttribute('draggable', 'false');
+});
+
+// Prevent drag starting when clicking inside editable areas
+document.addEventListener('dragstart', (e) => {
+    if (e.target.closest('[contenteditable="true"]')) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+}, true);
+
+// Capture-phase: open settings panel when contenteditable is clicked.
+// We do NOT call stopPropagation or preventDefault so the browser
+// naturally places the cursor. Focus is restored by openPanel().
+document.addEventListener('click', (e) => {
+    const el = e.target.closest('[contenteditable="true"]');
+    if (!el) return;
+
+    const block = el.closest('.dropped-block');
+    if (block) {
+        clearSelected();
+        block.classList.add('selected', 'is-selected');
+    }
+
+    if (el.tagName === 'H1') {
+        if (typeof openHeadingSettings === 'function') openHeadingSettings(el);
+    } else if (el.tagName === 'P') {
+        if (typeof openTextSettings === 'function') openTextSettings(el);
+    } else if (el.tagName === 'SPAN') {
+        if (typeof openSpanSettings === 'function') openSpanSettings(el);
+    } else if (el.classList.contains('acc-header')) {
+        if (typeof openAccordionSettings === 'function') openAccordionSettings(el);
+    }
+}, true); // capture phase
+
 
 // ── Duplicate a block (with existing content) ─────────────────────────────────
 
@@ -298,6 +381,9 @@ let isManualDragging = false;
 let dragStartX, dragStartY, initialTop, initialLeft, manualDragBlock;
 
 document.addEventListener('mousedown', e => {
+  // Skip if clicking inside a contenteditable element — must not block text focus
+  if (e.target.closest('[contenteditable="true"]')) return;
+
   const handle = e.target.closest('.free-moving .drag-handle');
   if (handle) {
     isManualDragging = true;
@@ -644,3 +730,5 @@ function renderBlockData(data) {
   
   return block;
 }
+
+// End of Shared JS
