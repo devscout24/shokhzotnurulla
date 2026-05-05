@@ -187,6 +187,7 @@ Route::prefix('dealer')->name('dealer.')
             Route::get('/traffic-referrers', [WebsiteReportController::class, 'trafficReferrers'])->name('traffic-referrers');
             Route::get('/utm-campaigns', [WebsiteReportController::class, 'utmCampaigns'])->name('utm-campaigns');
             Route::get('/top-pages', [WebsiteReportController::class, 'topPages'])->name('top-pages');
+            Route::get('/top-entry-pages', [WebsiteReportController::class, 'topEntryPages'])->name('top-entry-pages');
             Route::get('/locations/countries', [WebsiteReportController::class, 'locationsCountries'])->name('locations.countries');
             Route::get('/locations/states', [WebsiteReportController::class, 'locationsStates'])->name('locations.states');
             Route::get('/locations/cities', [WebsiteReportController::class, 'locationsCities'])->name('locations.cities');

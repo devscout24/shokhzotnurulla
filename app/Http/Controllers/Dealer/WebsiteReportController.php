@@ -288,6 +288,42 @@ class WebsiteReportController extends Controller
         ]);
     }
 
+    public function topEntryPages(Request $request)
+    {
+        $dealerId = $request->user()->current_dealer_id;
+        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+
+        $logs = WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        // Group by session and take the first hit's URL
+        $entryPages = $logs->groupBy('session_id')->map(function($hits) {
+            return parse_url($hits->first()->url, PHP_URL_PATH) ?: '/';
+        });
+
+        $totalSessions = $entryPages->count() ?: 1;
+
+        $stats = $entryPages->countBy()
+            ->map(function ($count, $path) use ($totalSessions) {
+                return (object) [
+                    'value' => $path,
+                    'page_views' => $count,
+                    'pct' => ($count / $totalSessions) * 100
+                ];
+            })->sortByDesc('page_views')->values();
+
+        return view('dealer.pages.website.reports.analytics-report', [
+            'stats' => $stats,
+            'from' => $from,
+            'to' => $to,
+            'title' => 'Top Entry Pages',
+            'type' => 'top-entry-pages'
+        ]);
+    }
+
     public function devices(Request $request)
     {
         [$stats, $from, $to] = $this->getLogStats($request, 'CONCAT(device_brand, " ", device_model)');

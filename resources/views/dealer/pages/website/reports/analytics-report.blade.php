@@ -236,8 +236,8 @@
                     <table class="analytics-table">
                         <thead>
                             <tr>
-                                <th style="width: 60%;">{{ $type === 'top-pages' ? __('URL') : __('Value') }}</th>
-                                <th style="width: 20%;">{{ $type === 'top-pages' ? __('Page Views') : __('Page Views') }}</th>
+                                <th style="width: 60%;">{{ in_array($type, ['top-pages', 'top-entry-pages']) ? __('URL') : __('Value') }}</th>
+                                <th style="width: 20%;">{{ in_array($type, ['top-pages', 'top-entry-pages']) ? __('Page Views') : __('Page Views') }}</th>
                                 <th style="width: 20%;">{{ __('%') }}</th>
                             </tr>
                         </thead>
@@ -260,6 +260,8 @@
                                                 </div>
                                             @elseif($type === 'top-pages')
                                                 <div class="value-icon"><i class="bi bi-file-earmark-text"></i></div>
+                                            @elseif($type === 'top-entry-pages')
+                                                <div class="value-icon"><i class="bi bi-box-arrow-in-right"></i></div>
                                             @elseif($type === 'countries')
                                                 @php
                                                     // Map country names to codes for flags if possible, 
