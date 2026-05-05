@@ -264,6 +264,16 @@
                                                 <div class="value-icon"><i class="bi bi-box-arrow-in-right"></i></div>
                                             @elseif($type === 'top-exit-pages')
                                                 <div class="value-icon"><i class="bi bi-box-arrow-right"></i></div>
+                                            @elseif($type === 'platforms')
+                                                <div class="value-icon">
+                                                    @if($item->value === 'Smartphone')
+                                                        <i class="bi bi-phone"></i>
+                                                    @elseif($item->value === 'Desktop')
+                                                        <i class="bi bi-display"></i>
+                                                    @else
+                                                        <i class="bi bi-tablet"></i>
+                                                    @endif
+                                                </div>
                                             @elseif($type === 'countries')
                                                 @php
                                                     // Map country names to codes for flags if possible, 

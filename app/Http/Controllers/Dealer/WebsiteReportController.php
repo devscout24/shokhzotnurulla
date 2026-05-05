@@ -360,6 +360,41 @@ class WebsiteReportController extends Controller
         ]);
     }
 
+    public function platforms(Request $request)
+    {
+        $dealerId = $request->user()->current_dealer_id;
+        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+
+        $query = WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
+
+        $totalHits = (clone $query)->count() ?: 1;
+
+        $stats = $query->selectRaw('device_type as value, COUNT(*) as page_views')
+            ->groupBy('device_type')
+            ->orderByDesc('page_views')
+            ->get()
+            ->map(function ($item) use ($totalHits) {
+                $item->pct = ($item->page_views / $totalHits) * 100;
+                $item->value = match($item->value) {
+                    'mobile' => 'Smartphone',
+                    'tablet' => 'Tablet',
+                    'desktop' => 'Desktop',
+                    default => ucfirst($item->value)
+                };
+                return $item;
+            });
+
+        return view('dealer.pages.website.reports.analytics-report', [
+            'stats' => $stats,
+            'from' => $from,
+            'to' => $to,
+            'title' => 'Platforms',
+            'type' => 'platforms'
+        ]);
+    }
+
     public function devices(Request $request)
     {
         [$stats, $from, $to] = $this->getLogStats($request, 'CONCAT(device_brand, " ", device_model)');
