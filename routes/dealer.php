@@ -182,6 +182,12 @@ Route::prefix('dealer')->name('dealer.')
             Route::get('/hot-vehicles/export', [WebsiteReportController::class, 'exportHotVehicles'])->name('hot-vehicles.export');
             Route::get('/cold-vehicles', [WebsiteReportController::class, 'coldVehicles'])->name('cold-vehicles');
             Route::get('/cold-vehicles/export', [WebsiteReportController::class, 'exportColdVehicles'])->name('cold-vehicles.export');
+            Route::get('/devices', [WebsiteReportController::class, 'devices'])->name('devices');
+            Route::get('/traffic-channels', [WebsiteReportController::class, 'trafficChannels'])->name('traffic-channels');
+            Route::get('/traffic-referrers', [WebsiteReportController::class, 'trafficReferrers'])->name('traffic-referrers');
+            Route::get('/locations/countries', [WebsiteReportController::class, 'locationsCountries'])->name('locations.countries');
+            Route::get('/locations/states', [WebsiteReportController::class, 'locationsStates'])->name('locations.states');
+            Route::get('/locations/cities', [WebsiteReportController::class, 'locationsCities'])->name('locations.cities');
         });
 
         // ── Form Entries ──────────────────────────────────────────────────────────────
