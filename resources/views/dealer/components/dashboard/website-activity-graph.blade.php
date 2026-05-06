@@ -3,16 +3,18 @@
     <div class="activity-header">
         <div class="activity-title">Website Activity</div>
         <div class="activity-actions">
-            <div class="dropdown listing-dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="exportDropdown"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-download"></i> Export <i class="bi bi-chevron-down"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
-                    <li><a class="dropdown-item"
-                            href="{{ route('dealer.website.dashboard.export-activity', ['from' => $from, 'to' => $to]) }}">Download
-                            CSV</a></li>
-                </ul>
+            <div class="analytics-export-wrapper">
+                <div class="analytics-dropdown">
+                    <button class="export-btn" type="button">
+                        <i class="bi bi-download"></i> Export <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-content shadow border">
+                        <a href="{{ route('dealer.website.export-activity', ['from' => $from, 'to' => $to]) }}">
+                            <i class="bi bi-bar-chart-fill me-2 text-primary"></i> 
+                            Activity by Day
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -110,16 +112,55 @@
         border-top: 2px dashed #95a5a6;
     }
 
-    .listing-dropdown .btn {
-        font-size: 13px;
-        padding: 6px 12px;
-        border-color: #ddd;
-        color: #555;
+    .analytics-dropdown {
+        position: relative;
+        display: inline-block;
     }
 
-    .listing-dropdown .btn:hover {
+    .export-btn {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 13px;
+        color: #555;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .export-btn:hover {
         background: #f8f9fa;
         border-color: #ccc;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #fff;
+        min-width: 160px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        z-index: 9999;
+        border-radius: 6px;
+        margin-top: 5px;
+        overflow: hidden;
+    }
+
+    .dropdown-content a {
+        color: #444;
+        padding: 10px 16px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #f8f9fa;
+    }
+
+    .analytics-dropdown:hover .dropdown-content {
+        display: block;
     }
 </style>
 
