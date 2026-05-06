@@ -36,6 +36,9 @@ Route::prefix('dealer')->name('dealer.')
     Route::prefix('website')->name('website.')->group(function () {
 
         Route::get('/dashboard', [WebsiteDashboardController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard/export-activity', [WebsiteDashboardController::class, 'exportWebsiteActivity'])->name('dashboard.export-activity');
+        Route::get('/dashboard/export-traffic-day', [WebsiteDashboardController::class, 'exportTrafficDay'])->name('dashboard.export-traffic-day');
+        Route::get('/dashboard/export-traffic-channel', [WebsiteDashboardController::class, 'exportTrafficChannel'])->name('dashboard.export-traffic-channel');
         Route::get('/media',     [WebsiteMediaController::class, 'index'])->name('media');
 
         // ── Media Library ──────────────────────────────────────────────────────

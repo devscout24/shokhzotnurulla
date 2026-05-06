@@ -1,17 +1,15 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Inventory\Vehicle;
 use App\Models\Inventory\VehicleDailyStat;
-use Carbon\Carbon;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Illuminate\Support\Str;
-
 use App\Models\WebsiteVisitorLog;
 use App\Models\Website\FormEntry;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class WebsiteReportController extends Controller
 {
@@ -26,8 +24,8 @@ class WebsiteReportController extends Controller
     private function getLogStats(Request $request, string $field)
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $query = WebsiteVisitorLog::where('dealer_id', $dealerId)
             ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
@@ -49,30 +47,30 @@ class WebsiteReportController extends Controller
     public function trafficChannels(Request $request)
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $logs = WebsiteVisitorLog::where('dealer_id', $dealerId)
             ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
             ->get();
 
         $channels = [
-            'direct' => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
+            'direct'         => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
             'organic search' => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
-            'social' => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
-            'referral' => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
-            'email' => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
-            'paid search' => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
-            'display' => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
+            'social'         => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
+            'referral'       => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
+            'email'          => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
+            'paid search'    => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
+            'display'        => ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0],
         ];
 
         $sessionHits = $logs->groupBy('session_id');
 
         foreach ($logs as $log) {
             $channel = 'direct';
-            $ref = strtolower($log->referrer ?? '');
-            $source = strtolower($log->utm_source ?? '');
-            $medium = strtolower($log->utm_medium ?? '');
+            $ref     = strtolower($log->referrer ?? '');
+            $source  = strtolower($log->utm_source ?? '');
+            $medium  = strtolower($log->utm_medium ?? '');
 
             if ($source == 'google' && in_array($medium, ['cpc', 'ppc', 'paidsearch'])) {
                 $channel = 'paid search';
@@ -84,11 +82,11 @@ class WebsiteReportController extends Controller
                 $channel = 'email';
             } elseif ($medium == 'display' || $medium == 'banner') {
                 $channel = 'display';
-            } elseif ($ref && !Str::contains($ref, parse_url(config('app.url'), PHP_URL_HOST))) {
+            } elseif ($ref && ! Str::contains($ref, parse_url(config('app.url'), PHP_URL_HOST))) {
                 $channel = 'referral';
             }
 
-            if (!isset($channels[$channel])) {
+            if (! isset($channels[$channel])) {
                 $channels[$channel] = ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0];
             }
 
@@ -98,16 +96,12 @@ class WebsiteReportController extends Controller
 
         foreach ($sessionHits as $sessionId => $hits) {
             $firstHit = $hits->first();
-            $channel = 'direct';
-            $ref = strtolower($firstHit->referrer ?? '');
-            $source = strtolower($firstHit->utm_source ?? '');
-            $medium = strtolower($firstHit->utm_medium ?? '');
-            
-            if ($source == 'google' && in_array($medium, ['cpc', 'ppc', 'paidsearch'])) { $channel = 'paid search'; }
-            elseif (Str::contains($ref, ['google', 'bing', 'yahoo', 'duckduckgo', 'baidu'])) { $channel = 'organic search'; }
-            elseif (Str::contains($ref, ['facebook', 'instagram', 'twitter', 'linkedin', 'pinterest', 'tiktok', 't.co'])) { $channel = 'social'; }
-            elseif ($medium == 'email' || $source == 'email') { $channel = 'email'; }
-            elseif ($ref && !Str::contains($ref, parse_url(config('app.url') ?? 'localhost', PHP_URL_HOST))) { $channel = 'referral'; }
+            $channel  = 'direct';
+            $ref      = strtolower($firstHit->referrer ?? '');
+            $source   = strtolower($firstHit->utm_source ?? '');
+            $medium   = strtolower($firstHit->utm_medium ?? '');
+
+            if ($source == 'google' && in_array($medium, ['cpc', 'ppc', 'paidsearch'])) {$channel = 'paid search';} elseif (Str::contains($ref, ['google', 'bing', 'yahoo', 'duckduckgo', 'baidu'])) {$channel = 'organic search';} elseif (Str::contains($ref, ['facebook', 'instagram', 'twitter', 'linkedin', 'pinterest', 'tiktok', 't.co'])) {$channel = 'social';} elseif ($medium == 'email' || $source == 'email') {$channel = 'email';} elseif ($ref && ! Str::contains($ref, parse_url(config('app.url') ?? 'localhost', PHP_URL_HOST))) {$channel = 'referral';}
 
             $channels[$channel]['visits']++;
             if ($hits->count() > 1) {
@@ -122,14 +116,14 @@ class WebsiteReportController extends Controller
         $stats = collect($channels)->map(function ($data, $name) use ($totalLeads) {
             $visitorsCount = count($data['visitors']);
             return (object) [
-                'value' => $name,
-                'visits' => $data['visits'],
+                'value'          => $name,
+                'visits'         => $data['visits'],
                 'engaged_visits' => $data['engaged'],
-                'visitors' => $visitorsCount,
-                'avg_time' => '2m 15s',
-                'avg_pageviews' => $visitorsCount > 0 ? number_format($data['page_views'] / $visitorsCount, 1) : 0,
-                'leads' => $name == 'direct' ? $totalLeads : 0,
-                'pct_leads' => $totalLeads > 0 && $name == 'direct' ? '100%' : '0%',
+                'visitors'       => $visitorsCount,
+                'avg_time'       => '2m 15s',
+                'avg_pageviews'  => $visitorsCount > 0 ? number_format($data['page_views'] / $visitorsCount, 1) : 0,
+                'leads'          => $name == 'direct' ? $totalLeads : 0,
+                'pct_leads'      => $totalLeads > 0 && $name == 'direct' ? '100%' : '0%',
             ];
         })->filter(fn($s) => $s->visits > 0)->values();
 
@@ -139,22 +133,24 @@ class WebsiteReportController extends Controller
     public function trafficReferrers(Request $request)
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $logs = WebsiteVisitorLog::where('dealer_id', $dealerId)
             ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
             ->whereNotNull('referrer')
             ->get();
 
-        $referrers = [];
+        $referrers   = [];
         $sessionHits = $logs->groupBy('session_id');
 
         foreach ($logs as $log) {
             $host = parse_url($log->referrer, PHP_URL_HOST);
-            if (!$host || Str::contains($host, parse_url(config('app.url') ?? 'localhost', PHP_URL_HOST))) continue;
+            if (! $host || Str::contains($host, parse_url(config('app.url') ?? 'localhost', PHP_URL_HOST))) {
+                continue;
+            }
 
-            if (!isset($referrers[$host])) {
+            if (! isset($referrers[$host])) {
                 $referrers[$host] = ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0];
             }
             $referrers[$host]['page_views']++;
@@ -163,8 +159,10 @@ class WebsiteReportController extends Controller
 
         foreach ($sessionHits as $sessionId => $hits) {
             $firstHit = $hits->first();
-            $host = parse_url($firstHit->referrer, PHP_URL_HOST);
-            if (!$host || !isset($referrers[$host])) continue;
+            $host     = parse_url($firstHit->referrer, PHP_URL_HOST);
+            if (! $host || ! isset($referrers[$host])) {
+                continue;
+            }
 
             $referrers[$host]['visits']++;
             if ($hits->count() > 1) {
@@ -179,14 +177,14 @@ class WebsiteReportController extends Controller
         $stats = collect($referrers)->map(function ($data, $name) use ($totalLeads) {
             $visitorsCount = count($data['visitors']);
             return (object) [
-                'value' => $name,
-                'visits' => $data['visits'],
+                'value'          => $name,
+                'visits'         => $data['visits'],
                 'engaged_visits' => $data['engaged'],
-                'visitors' => $visitorsCount,
-                'avg_time' => '3m 42s',
-                'avg_pageviews' => $visitorsCount > 0 ? number_format($data['page_views'] / $visitorsCount, 1) : 0,
-                'leads' => 0, // Simplified attribution
-                'pct_leads' => '0%',
+                'visitors'       => $visitorsCount,
+                'avg_time'       => '3m 42s',
+                'avg_pageviews'  => $visitorsCount > 0 ? number_format($data['page_views'] / $visitorsCount, 1) : 0,
+                'leads'          => 0, // Simplified attribution
+                'pct_leads'      => '0%',
             ];
         })->sortByDesc('visits')->values();
 
@@ -196,20 +194,20 @@ class WebsiteReportController extends Controller
     public function utmCampaigns(Request $request)
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $logs = WebsiteVisitorLog::where('dealer_id', $dealerId)
             ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
             ->whereNotNull('utm_campaign')
             ->get();
 
-        $campaigns = [];
+        $campaigns   = [];
         $sessionHits = $logs->groupBy('session_id');
 
         foreach ($logs as $log) {
             $name = $log->utm_campaign;
-            if (!isset($campaigns[$name])) {
+            if (! isset($campaigns[$name])) {
                 $campaigns[$name] = ['visits' => 0, 'engaged' => 0, 'visitors' => [], 'page_views' => 0, 'leads' => 0];
             }
             $campaigns[$name]['page_views']++;
@@ -218,8 +216,10 @@ class WebsiteReportController extends Controller
 
         foreach ($sessionHits as $sessionId => $hits) {
             $firstHit = $hits->first();
-            $name = $firstHit->utm_campaign;
-            if (!isset($campaigns[$name])) continue;
+            $name     = $firstHit->utm_campaign;
+            if (! isset($campaigns[$name])) {
+                continue;
+            }
 
             $campaigns[$name]['visits']++;
             if ($hits->count() > 1) {
@@ -234,14 +234,14 @@ class WebsiteReportController extends Controller
         $stats = collect($campaigns)->map(function ($data, $name) use ($totalLeads) {
             $visitorsCount = count($data['visitors']);
             return (object) [
-                'value' => $name,
-                'visits' => $data['visits'],
+                'value'          => $name,
+                'visits'         => $data['visits'],
                 'engaged_visits' => $data['engaged'],
-                'visitors' => $visitorsCount,
-                'avg_time' => '4m 30s',
-                'avg_pageviews' => $visitorsCount > 0 ? number_format($data['page_views'] / $visitorsCount, 1) : 0,
-                'leads' => 0,
-                'pct_leads' => '0%',
+                'visitors'       => $visitorsCount,
+                'avg_time'       => '4m 30s',
+                'avg_pageviews'  => $visitorsCount > 0 ? number_format($data['page_views'] / $visitorsCount, 1) : 0,
+                'leads'          => 0,
+                'pct_leads'      => '0%',
             ];
         })->sortByDesc('visits')->values();
 
@@ -251,8 +251,8 @@ class WebsiteReportController extends Controller
     public function topPages(Request $request)
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $query = WebsiteVisitorLog::where('dealer_id', $dealerId)
             ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
@@ -265,34 +265,34 @@ class WebsiteReportController extends Controller
             ->get()
             ->map(function ($item) use ($totalHits) {
                 // Clean URL to show only path
-                $path = parse_url($item->value, PHP_URL_PATH) ?: '/';
+                $path        = parse_url($item->value, PHP_URL_PATH) ?: '/';
                 $item->value = $path;
-                $item->pct = ($item->page_views / $totalHits) * 100;
+                $item->pct   = ($item->page_views / $totalHits) * 100;
                 return $item;
             });
 
         // Group by path again in case multiple full URLs point to same path (e.g. diff query params)
-        $stats = $stats->groupBy('value')->map(function($group) {
-            $first = $group->first();
+        $stats = $stats->groupBy('value')->map(function ($group) {
+            $first             = $group->first();
             $first->page_views = $group->sum('page_views');
-            $first->pct = $group->sum('pct');
+            $first->pct        = $group->sum('pct');
             return $first;
         })->sortByDesc('page_views')->values();
 
         return view('dealer.pages.website.reports.analytics-report', [
             'stats' => $stats,
-            'from' => $from,
-            'to' => $to,
+            'from'  => $from,
+            'to'    => $to,
             'title' => 'Top Pages',
-            'type' => 'top-pages'
+            'type'  => 'top-pages',
         ]);
     }
 
     public function topEntryPages(Request $request)
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $logs = WebsiteVisitorLog::where('dealer_id', $dealerId)
             ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
@@ -300,7 +300,7 @@ class WebsiteReportController extends Controller
             ->get();
 
         // Group by session and take the first hit's URL
-        $entryPages = $logs->groupBy('session_id')->map(function($hits) {
+        $entryPages = $logs->groupBy('session_id')->map(function ($hits) {
             return parse_url($hits->first()->url, PHP_URL_PATH) ?: '/';
         });
 
@@ -309,26 +309,26 @@ class WebsiteReportController extends Controller
         $stats = $entryPages->countBy()
             ->map(function ($count, $path) use ($totalSessions) {
                 return (object) [
-                    'value' => $path,
+                    'value'      => $path,
                     'page_views' => $count,
-                    'pct' => ($count / $totalSessions) * 100
+                    'pct'        => ($count / $totalSessions) * 100,
                 ];
             })->sortByDesc('page_views')->values();
 
         return view('dealer.pages.website.reports.analytics-report', [
             'stats' => $stats,
-            'from' => $from,
-            'to' => $to,
+            'from'  => $from,
+            'to'    => $to,
             'title' => 'Top Entry Pages',
-            'type' => 'top-entry-pages'
+            'type'  => 'top-entry-pages',
         ]);
     }
 
     public function topExitPages(Request $request)
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $logs = WebsiteVisitorLog::where('dealer_id', $dealerId)
             ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
@@ -336,7 +336,7 @@ class WebsiteReportController extends Controller
             ->get();
 
         // Group by session and take the last hit's URL
-        $exitPages = $logs->groupBy('session_id')->map(function($hits) {
+        $exitPages = $logs->groupBy('session_id')->map(function ($hits) {
             return parse_url($hits->first()->url, PHP_URL_PATH) ?: '/';
         });
 
@@ -345,26 +345,26 @@ class WebsiteReportController extends Controller
         $stats = $exitPages->countBy()
             ->map(function ($count, $path) use ($totalSessions) {
                 return (object) [
-                    'value' => $path,
+                    'value'      => $path,
                     'page_views' => $count,
-                    'pct' => ($count / $totalSessions) * 100
+                    'pct'        => ($count / $totalSessions) * 100,
                 ];
             })->sortByDesc('page_views')->values();
 
         return view('dealer.pages.website.reports.analytics-report', [
             'stats' => $stats,
-            'from' => $from,
-            'to' => $to,
+            'from'  => $from,
+            'to'    => $to,
             'title' => 'Top Exit Pages',
-            'type' => 'top-exit-pages'
+            'type'  => 'top-exit-pages',
         ]);
     }
 
     public function platforms(Request $request)
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $query = WebsiteVisitorLog::where('dealer_id', $dealerId)
             ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
@@ -376,22 +376,22 @@ class WebsiteReportController extends Controller
             ->orderByDesc('page_views')
             ->get()
             ->map(function ($item) use ($totalHits) {
-                $item->pct = ($item->page_views / $totalHits) * 100;
-                $item->value = match($item->value) {
-                    'mobile' => 'Smartphone',
-                    'tablet' => 'Tablet',
+                $item->pct   = ($item->page_views / $totalHits) * 100;
+                $item->value = match ($item->value) {
+                    'mobile'  => 'Smartphone',
+                    'tablet'  => 'Tablet',
                     'desktop' => 'Desktop',
-                    default => ucfirst($item->value)
+                    default   => ucfirst($item->value)
                 };
                 return $item;
             });
 
         return view('dealer.pages.website.reports.analytics-report', [
             'stats' => $stats,
-            'from' => $from,
-            'to' => $to,
+            'from'  => $from,
+            'to'    => $to,
             'title' => 'Platforms',
-            'type' => 'platforms'
+            'type'  => 'platforms',
         ]);
     }
 
@@ -400,83 +400,94 @@ class WebsiteReportController extends Controller
         [$stats, $from, $to] = $this->getLogStats($request, 'language');
         return view('dealer.pages.website.reports.analytics-report', [
             'stats' => $stats,
-            'from' => $from,
-            'to' => $to,
+            'from'  => $from,
+            'to'    => $to,
             'title' => 'Languages',
-            'type' => 'languages'
+            'type'  => 'languages',
         ]);
     }
 
     public function exportAnalytics(Request $request)
     {
-        $type = $request->get('type', 'devices');
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $type     = $request->get('type', 'devices');
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
         $dealerId = $request->user()->current_dealer_id;
 
-        $field = match($type) {
-            'devices' => 'CONCAT(device_brand, " ", device_model)',
-            'languages' => 'language',
-            'platforms' => 'device_type',
-            'countries' => 'country',
-            'states' => 'state',
-            'cities' => 'city',
-            'top-pages' => 'url',
-            'top-entry-pages' => 'url',
-            'top-exit-pages' => 'url',
+        $field = match ($type) {
+            'devices'           => 'CONCAT(device_brand, " ", device_model)',
+            'languages'         => 'language',
+            'platforms'         => 'device_type',
+            'countries'         => 'country',
+            'states'            => 'state',
+            'cities'            => 'city',
+            'top-pages'         => 'url',
+            'top-entry-pages'   => 'url',
+            'top-exit-pages'    => 'url',
             'traffic-referrers' => 'referrer',
-            'utm-campaigns' => 'utm_campaign',
-            default => 'url'
+            'utm-campaigns'     => 'utm_campaign',
+            default             => 'url'
         };
 
         $query = WebsiteVisitorLog::where('dealer_id', $dealerId)
             ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
 
         if ($type === 'traffic-channels') {
-            $logs = $query->get();
+            $logs        = $query->get();
             $sessionHits = $logs->groupBy('session_id');
-            
+
             $channels = [
                 'Organic Search' => ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0, 'leads' => 0],
-                'Social' => ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0, 'leads' => 0],
-                'Paid Search' => ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0, 'leads' => 0],
-                'Direct' => ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0, 'leads' => 0],
-                'Referral' => ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0, 'leads' => 0],
-                'Other' => ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0, 'leads' => 0],
+                'Social'         => ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0, 'leads' => 0],
+                'Paid Search'    => ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0, 'leads' => 0],
+                'Direct'         => ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0, 'leads' => 0],
+                'Referral'       => ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0, 'leads' => 0],
+                'Other'          => ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0, 'leads' => 0],
             ];
 
             foreach ($sessionHits as $sessionId => $hits) {
                 $firstHit = $hits->first();
-                $ref = strtolower($firstHit->referrer ?? '');
-                $utm = strtolower($firstHit->utm_source ?? '');
-                
+                $ref      = strtolower($firstHit->referrer ?? '');
+                $utm      = strtolower($firstHit->utm_source ?? '');
+
                 $channel = 'Referral';
-                if (Str::contains($utm, ['google', 'bing', 'yahoo']) && Str::contains($firstHit->utm_medium, 'cpc')) $channel = 'Paid Search';
-                elseif (Str::contains($ref, ['google', 'bing', 'yahoo', 'duckduckgo'])) $channel = 'Organic Search';
-                elseif (Str::contains($ref, ['facebook', 'instagram', 'twitter', 'linkedin', 't.co'])) $channel = 'Social';
-                elseif (!$firstHit->referrer) $channel = 'Direct';
+                if (Str::contains($utm, ['google', 'bing', 'yahoo']) && Str::contains($firstHit->utm_medium, 'cpc')) {
+                    $channel = 'Paid Search';
+                } elseif (Str::contains($ref, ['google', 'bing', 'yahoo', 'duckduckgo'])) {
+                    $channel = 'Organic Search';
+                } elseif (Str::contains($ref, ['facebook', 'instagram', 'twitter', 'linkedin', 't.co'])) {
+                    $channel = 'Social';
+                } elseif (! $firstHit->referrer) {
+                    $channel = 'Direct';
+                }
 
                 $channels[$channel]['visits']++;
                 $channels[$channel]['actions'] += $hits->count();
-                if ($hits->count() > 1) $channels[$channel]['engaged']++;
-                foreach ($hits as $hit) $channels[$channel]['visitors'][$hit->ip_address] = true;
+                if ($hits->count() > 1) {
+                    $channels[$channel]['engaged']++;
+                }
+
+                foreach ($hits as $hit) {
+                    $channels[$channel]['visitors'][$hit->ip_address] = true;
+                }
+
             }
 
             $totalStats = [
                 'visitors' => count($logs->pluck('ip_address')->unique()),
-                'visits' => $sessionHits->count(),
-                'engaged' => collect($channels)->sum('engaged'),
-                'actions' => $logs->count(),
-                'leads' => FormEntry::where('dealer_id', $dealerId)->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])->count(),
+                'visits'   => $sessionHits->count(),
+                'engaged'  => collect($channels)->sum('engaged'),
+                'actions'  => $logs->count(),
+                'leads'    => FormEntry::where('dealer_id', $dealerId)->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])->count(),
             ];
 
             $filename = "traffic-channels-" . now()->format('Y-m-d') . ".csv";
             return response()->streamDownload(function () use ($channels, $totalStats) {
                 $handle = fopen('php://output', 'w');
                 fputcsv($handle, [
-                    'classification', 'count_visitors', 'count_visits', 'count_engagedvisits', 'count_actions', 
-                    'count_leads', 'avg_time', 'avg_actions', 'count_totalleads', 'pct_visitors', 
-                    'pct_visits', 'pct_engagedvisits', 'pct_actions', 'pct_leads'
+                    'classification', 'count_visitors', 'count_visits', 'count_engagedvisits', 'count_actions',
+                    'count_leads', 'avg_time', 'avg_actions', 'count_totalleads', 'pct_visitors',
+                    'pct_visits', 'pct_engagedvisits', 'pct_actions', 'pct_leads',
                 ]);
 
                 foreach ($channels as $name => $data) {
@@ -495,47 +506,55 @@ class WebsiteReportController extends Controller
                         $totalStats['visits'] > 0 ? number_format(($data['visits'] / $totalStats['visits']) * 100, 2) . '%' : '0%',
                         $totalStats['engaged'] > 0 ? number_format(($data['engaged'] / $totalStats['engaged']) * 100, 2) . '%' : '0%',
                         $totalStats['actions'] > 0 ? number_format(($data['actions'] / $totalStats['actions']) * 100, 2) . '%' : '0%',
-                        '0%' // pct_leads
+                        '0%', // pct_leads
                     ]);
                 }
                 fclose($handle);
             }, $filename, ['Content-Type' => 'text/csv']);
 
         } elseif ($type === 'traffic-referrers') {
-            $logs = $query->whereNotNull('referrer')->get();
+            $logs        = $query->whereNotNull('referrer')->get();
             $sessionHits = $logs->groupBy('session_id');
-            
+
             $referrers = [];
             foreach ($sessionHits as $sessionId => $hits) {
                 $firstHit = $hits->first();
-                $host = parse_url($firstHit->referrer, PHP_URL_HOST);
-                if (!$host || Str::contains($host, parse_url(config('app.url') ?? 'localhost', PHP_URL_HOST))) continue;
+                $host     = parse_url($firstHit->referrer, PHP_URL_HOST);
+                if (! $host || Str::contains($host, parse_url(config('app.url') ?? 'localhost', PHP_URL_HOST))) {
+                    continue;
+                }
 
-                if (!isset($referrers[$host])) {
+                if (! isset($referrers[$host])) {
                     $referrers[$host] = ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0];
                 }
 
                 $referrers[$host]['visits']++;
                 $referrers[$host]['actions'] += $hits->count();
-                if ($hits->count() > 1) $referrers[$host]['engaged']++;
-                foreach ($hits as $hit) $referrers[$host]['visitors'][$hit->ip_address] = true;
+                if ($hits->count() > 1) {
+                    $referrers[$host]['engaged']++;
+                }
+
+                foreach ($hits as $hit) {
+                    $referrers[$host]['visitors'][$hit->ip_address] = true;
+                }
+
             }
 
             $totalStats = [
                 'visitors' => count($logs->pluck('ip_address')->unique()),
-                'visits' => $sessionHits->count(),
-                'engaged' => collect($referrers)->sum('engaged'),
-                'actions' => $logs->count(),
-                'leads' => FormEntry::where('dealer_id', $dealerId)->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])->count(),
+                'visits'   => $sessionHits->count(),
+                'engaged'  => collect($referrers)->sum('engaged'),
+                'actions'  => $logs->count(),
+                'leads'    => FormEntry::where('dealer_id', $dealerId)->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])->count(),
             ];
 
             $filename = "traffic-referrers-" . now()->format('Y-m-d') . ".csv";
             return response()->streamDownload(function () use ($referrers, $totalStats) {
                 $handle = fopen('php://output', 'w');
                 fputcsv($handle, [
-                    'refererdomain', 'count_visitors', 'count_visits', 'count_engagedvisits', 'avg_time', 
-                    'count_actions', 'avg_actions', 'count_leads', 'count_totalleads', 'pct_visitors', 
-                    'pct_visits', 'pct_engagedvisits', 'pct_actions', 'pct_leads'
+                    'refererdomain', 'count_visitors', 'count_visits', 'count_engagedvisits', 'avg_time',
+                    'count_actions', 'avg_actions', 'count_leads', 'count_totalleads', 'pct_visitors',
+                    'pct_visits', 'pct_engagedvisits', 'pct_actions', 'pct_leads',
                 ]);
 
                 foreach ($referrers as $domain => $data) {
@@ -554,47 +573,55 @@ class WebsiteReportController extends Controller
                         $totalStats['visits'] > 0 ? number_format(($data['visits'] / $totalStats['visits']) * 100, 2) . '%' : '0%',
                         $totalStats['engaged'] > 0 ? number_format(($data['engaged'] / $totalStats['engaged']) * 100, 2) . '%' : '0%',
                         $totalStats['actions'] > 0 ? number_format(($data['actions'] / $totalStats['actions']) * 100, 2) . '%' : '0%',
-                        '0%'
+                        '0%',
                     ]);
                 }
                 fclose($handle);
             }, $filename, ['Content-Type' => 'text/csv']);
 
         } elseif ($type === 'utm-campaigns') {
-            $logs = $query->whereNotNull('utm_campaign')->get();
+            $logs        = $query->whereNotNull('utm_campaign')->get();
             $sessionHits = $logs->groupBy('session_id');
-            
+
             $campaigns = [];
             foreach ($sessionHits as $sessionId => $hits) {
                 $firstHit = $hits->first();
-                $name = $firstHit->utm_campaign;
-                if (!$name) continue;
+                $name     = $firstHit->utm_campaign;
+                if (! $name) {
+                    continue;
+                }
 
-                if (!isset($campaigns[$name])) {
+                if (! isset($campaigns[$name])) {
                     $campaigns[$name] = ['visitors' => [], 'visits' => 0, 'engaged' => 0, 'actions' => 0];
                 }
 
                 $campaigns[$name]['visits']++;
                 $campaigns[$name]['actions'] += $hits->count();
-                if ($hits->count() > 1) $campaigns[$name]['engaged']++;
-                foreach ($hits as $hit) $campaigns[$name]['visitors'][$hit->ip_address] = true;
+                if ($hits->count() > 1) {
+                    $campaigns[$name]['engaged']++;
+                }
+
+                foreach ($hits as $hit) {
+                    $campaigns[$name]['visitors'][$hit->ip_address] = true;
+                }
+
             }
 
             $totalStats = [
                 'visitors' => count($logs->pluck('ip_address')->unique()),
-                'visits' => $sessionHits->count(),
-                'engaged' => collect($campaigns)->sum('engaged'),
-                'actions' => $logs->count(),
-                'leads' => FormEntry::where('dealer_id', $dealerId)->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])->count(),
+                'visits'   => $sessionHits->count(),
+                'engaged'  => collect($campaigns)->sum('engaged'),
+                'actions'  => $logs->count(),
+                'leads'    => FormEntry::where('dealer_id', $dealerId)->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])->count(),
             ];
 
             $filename = "utm-campaigns-" . now()->format('Y-m-d') . ".csv";
             return response()->streamDownload(function () use ($campaigns, $totalStats) {
                 $handle = fopen('php://output', 'w');
                 fputcsv($handle, [
-                    'utm_campaign', 'count_visitors', 'count_visits', 'count_engagedvisits', 'avg_time', 
-                    'count_actions', 'avg_actions', 'count_leads', 'count_totalleads', 'pct_visitors', 
-                    'pct_visits', 'pct_engagedvisits', 'pct_actions', 'pct_leads'
+                    'utm_campaign', 'count_visitors', 'count_visits', 'count_engagedvisits', 'avg_time',
+                    'count_actions', 'avg_actions', 'count_leads', 'count_totalleads', 'pct_visitors',
+                    'pct_visits', 'pct_engagedvisits', 'pct_actions', 'pct_leads',
                 ]);
 
                 foreach ($campaigns as $name => $data) {
@@ -613,24 +640,24 @@ class WebsiteReportController extends Controller
                         $totalStats['visits'] > 0 ? number_format(($data['visits'] / $totalStats['visits']) * 100, 2) . '%' : '0%',
                         $totalStats['engaged'] > 0 ? number_format(($data['engaged'] / $totalStats['engaged']) * 100, 2) . '%' : '0%',
                         $totalStats['actions'] > 0 ? number_format(($data['actions'] / $totalStats['actions']) * 100, 2) . '%' : '0%',
-                        '0%'
+                        '0%',
                     ]);
                 }
                 fclose($handle);
             }, $filename, ['Content-Type' => 'text/csv']);
 
         } elseif ($type === 'top-pages') {
-            $logs = $query->get();
+            $logs      = $query->get();
             $totalHits = $logs->count() ?: 1;
-            
-            $pages = $logs->groupBy(function($log) {
+
+            $pages = $logs->groupBy(function ($log) {
                 return parse_url($log->url, PHP_URL_PATH) ?: '/';
-            })->map(function($hits) use ($totalHits) {
+            })->map(function ($hits) use ($totalHits) {
                 $count = $hits->count();
                 return (object) [
-                    'path' => parse_url($hits->first()->url, PHP_URL_PATH) ?: '/',
+                    'path'  => parse_url($hits->first()->url, PHP_URL_PATH) ?: '/',
                     'count' => $count,
-                    'pct' => number_format(($count / $totalHits) * 100, 2) . '%'
+                    'pct'   => number_format(($count / $totalHits) * 100, 2) . '%',
                 ];
             })->sortByDesc('count')->values();
 
@@ -645,17 +672,17 @@ class WebsiteReportController extends Controller
             }, $filename, ['Content-Type' => 'text/csv']);
 
         } elseif (in_array($type, ['top-entry-pages', 'top-exit-pages'])) {
-            $logs = $query->orderBy('created_at', $type === 'top-entry-pages' ? 'asc' : 'desc')->get();
-            $pages = $logs->groupBy('session_id')->map(function($hits) {
+            $logs  = $query->orderBy('created_at', $type === 'top-entry-pages' ? 'asc' : 'desc')->get();
+            $pages = $logs->groupBy('session_id')->map(function ($hits) {
                 return parse_url($hits->first()->url, PHP_URL_PATH) ?: '/';
             });
 
             $totalSessions = $pages->count() ?: 1;
-            $stats = $pages->countBy()->map(function ($count, $path) use ($totalSessions) {
+            $stats         = $pages->countBy()->map(function ($count, $path) use ($totalSessions) {
                 return (object) [
-                    'path' => $path,
+                    'path'  => $path,
                     'count' => $count,
-                    'pct' => number_format(($count / $totalSessions) * 100, 2) . '%'
+                    'pct'   => number_format(($count / $totalSessions) * 100, 2) . '%',
                 ];
             })->sortByDesc('count')->values();
 
@@ -670,27 +697,27 @@ class WebsiteReportController extends Controller
             }, $filename, ['Content-Type' => 'text/csv']);
 
         } elseif ($type === 'platforms') {
-            $logs = $query->get();
+            $logs      = $query->get();
             $totalHits = $logs->count() ?: 1;
-            
-            $platforms = $logs->groupBy('device_type')->map(function($hits) use ($totalHits) {
-                $type = $hits->first()->device_type;
+
+            $platforms = $logs->groupBy('device_type')->map(function ($hits) use ($totalHits) {
+                $type  = $hits->first()->device_type;
                 $count = $hits->count();
                 return (object) [
-                    'platform' => match($type) {
-                        'mobile' => 'Smartphone',
-                        'tablet' => 'Tablet',
+                    'platform' => match ($type) {
+                        'mobile'  => 'Smartphone',
+                        'tablet'  => 'Tablet',
                         'desktop' => 'Desktop',
-                        default => ucfirst($type)
+                        default   => ucfirst($type)
                     },
-                    'count' => $count,
-                    'pct' => number_format(($count / $totalHits) * 100, 2) . '%',
-                    'icon' => match($type) {
-                        'mobile' => 'phone',
-                        'tablet' => 'tablet',
+                    'count'    => $count,
+                    'pct'      => number_format(($count / $totalHits) * 100, 2) . '%',
+                    'icon'     => match ($type) {
+                        'mobile'  => 'phone',
+                        'tablet'  => 'tablet',
                         'desktop' => 'display',
-                        default => 'laptop'
-                    }
+                        default   => 'laptop'
+                    },
                 ];
             })->sortByDesc('count')->values();
 
@@ -705,12 +732,12 @@ class WebsiteReportController extends Controller
             }, $filename, ['Content-Type' => 'text/csv']);
 
         } elseif ($type === 'devices') {
-            $logs = $query->get();
+            $logs      = $query->get();
             $totalHits = $logs->count() ?: 1;
-            
-            $devices = $logs->groupBy(function($log) {
+
+            $devices = $logs->groupBy(function ($log) {
                 return $log->device_brand . ' ' . $log->device_model;
-            })->map(function($hits) use ($totalHits) {
+            })->map(function ($hits) use ($totalHits) {
                 $first = $hits->first();
                 $count = $hits->count();
                 $brand = $first->device_brand;
@@ -718,13 +745,13 @@ class WebsiteReportController extends Controller
                     'brand' => $brand,
                     'model' => $first->device_model,
                     'count' => $count,
-                    'pct' => number_format(($count / $totalHits) * 100, 2) . '%',
-                    'icon' => match(true) {
-                        Str::contains(strtolower($brand), 'apple') => 'apple',
+                    'pct'   => number_format(($count / $totalHits) * 100, 2) . '%',
+                    'icon'  => match (true) {
+                        Str::contains(strtolower($brand), 'apple')   => 'apple',
                         Str::contains(strtolower($brand), 'samsung') => 'phone',
-                        Str::contains(strtolower($brand), 'google') => 'android',
-                        default => 'laptop'
-                    }
+                        Str::contains(strtolower($brand), 'google')  => 'android',
+                        default                                      => 'laptop'
+                    },
                 ];
             })->sortByDesc('count')->values();
 
@@ -739,17 +766,17 @@ class WebsiteReportController extends Controller
             }, $filename, ['Content-Type' => 'text/csv']);
 
         } elseif ($type === 'countries') {
-            $logs = $query->get();
+            $logs      = $query->get();
             $totalHits = $logs->count() ?: 1;
-            
-            $countries = $logs->groupBy('country')->map(function($hits) use ($totalHits) {
-                $name = $hits->first()->country;
+
+            $countries = $logs->groupBy('country')->map(function ($hits) use ($totalHits) {
+                $name  = $hits->first()->country;
                 $count = $hits->count();
                 return (object) [
                     'country' => $name,
-                    'count' => $count,
-                    'pct' => number_format(($count / $totalHits) * 100, 2) . '%',
-                    'icon' => strtolower($name) === 'united states' ? 'us' : 'globe'
+                    'count'   => $count,
+                    'pct'     => number_format(($count / $totalHits) * 100, 2) . '%',
+                    'icon'    => strtolower($name) === 'united states' ? 'us' : 'globe',
                 ];
             })->sortByDesc('count')->values();
 
@@ -764,19 +791,19 @@ class WebsiteReportController extends Controller
             }, $filename, ['Content-Type' => 'text/csv']);
 
         } elseif ($type === 'states') {
-            $logs = $query->get();
+            $logs      = $query->get();
             $totalHits = $logs->count() ?: 1;
-            
-            $states = $logs->groupBy('state')->map(function($hits) use ($totalHits) {
+
+            $states = $logs->groupBy('state')->map(function ($hits) use ($totalHits) {
                 $first = $hits->first();
                 $count = $hits->count();
                 return (object) [
-                    'region' => $first->state,
+                    'region'     => $first->state,
                     'regioncode' => '', // Region code not currently stored
-                    'country' => $first->country,
-                    'count' => $count,
-                    'pct' => number_format(($count / $totalHits) * 100, 2) . '%',
-                    'icon' => 'map'
+                    'country'    => $first->country,
+                    'count'      => $count,
+                    'pct'        => number_format(($count / $totalHits) * 100, 2) . '%',
+                    'icon'       => 'map',
                 ];
             })->sortByDesc('count')->values();
 
@@ -791,20 +818,20 @@ class WebsiteReportController extends Controller
             }, $filename, ['Content-Type' => 'text/csv']);
 
         } elseif ($type === 'cities') {
-            $logs = $query->get();
+            $logs      = $query->get();
             $totalHits = $logs->count() ?: 1;
-            
-            $cities = $logs->groupBy('city')->map(function($hits) use ($totalHits) {
+
+            $cities = $logs->groupBy('city')->map(function ($hits) use ($totalHits) {
                 $first = $hits->first();
                 $count = $hits->count();
                 return (object) [
-                    'city' => $first->city,
-                    'region' => $first->state,
+                    'city'       => $first->city,
+                    'region'     => $first->state,
                     'regioncode' => '',
-                    'country' => $first->country,
-                    'count' => $count,
-                    'pct' => number_format(($count / $totalHits) * 100, 2) . '%',
-                    'icon' => 'geo-alt'
+                    'country'    => $first->country,
+                    'count'      => $count,
+                    'pct'        => number_format(($count / $totalHits) * 100, 2) . '%',
+                    'icon'       => 'geo-alt',
                 ];
             })->sortByDesc('count')->values();
 
@@ -843,10 +870,10 @@ class WebsiteReportController extends Controller
         [$stats, $from, $to] = $this->getLogStats($request, 'CONCAT(device_brand, " ", device_model)');
         return view('dealer.pages.website.reports.analytics-report', [
             'stats' => $stats,
-            'from' => $from,
-            'to' => $to,
+            'from'  => $from,
+            'to'    => $to,
             'title' => 'Devices',
-            'type' => 'devices'
+            'type'  => 'devices',
         ]);
     }
 
@@ -855,10 +882,10 @@ class WebsiteReportController extends Controller
         [$stats, $from, $to] = $this->getLogStats($request, 'country');
         return view('dealer.pages.website.reports.analytics-report', [
             'stats' => $stats,
-            'from' => $from,
-            'to' => $to,
+            'from'  => $from,
+            'to'    => $to,
             'title' => 'Locations: Countries',
-            'type' => 'countries'
+            'type'  => 'countries',
         ]);
     }
 
@@ -867,10 +894,10 @@ class WebsiteReportController extends Controller
         [$stats, $from, $to] = $this->getLogStats($request, 'state');
         return view('dealer.pages.website.reports.analytics-report', [
             'stats' => $stats,
-            'from' => $from,
-            'to' => $to,
+            'from'  => $from,
+            'to'    => $to,
             'title' => 'Locations: States',
-            'type' => 'states'
+            'type'  => 'states',
         ]);
     }
 
@@ -879,10 +906,10 @@ class WebsiteReportController extends Controller
         [$stats, $from, $to] = $this->getLogStats($request, 'city');
         return view('dealer.pages.website.reports.analytics-report', [
             'stats' => $stats,
-            'from' => $from,
-            'to' => $to,
+            'from'  => $from,
+            'to'    => $to,
             'title' => 'Locations: Cities',
-            'type' => 'cities'
+            'type'  => 'cities',
         ]);
     }
 
@@ -892,8 +919,8 @@ class WebsiteReportController extends Controller
     public function hotVehicles(Request $request)
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $totalViewsAcrossAll = VehicleDailyStat::where('dealer_id', $dealerId)
             ->whereBetween('date', [$from, $to])
@@ -912,9 +939,9 @@ class WebsiteReportController extends Controller
             ->whereIn('id', $stats->keys())
             ->get()
             ->map(function ($vehicle) use ($stats, $totalViewsAcrossAll) {
-                $vViews = $stats[$vehicle->id]->total_views ?? 0;
+                $vViews               = $stats[$vehicle->id]->total_views ?? 0;
                 $vehicle->total_views = $vViews;
-                $vehicle->popularity = ($vViews / $totalViewsAcrossAll) * 100;
+                $vehicle->popularity  = ($vViews / $totalViewsAcrossAll) * 100;
                 return $vehicle;
             })
             ->sortByDesc('total_views');
@@ -925,8 +952,8 @@ class WebsiteReportController extends Controller
     public function exportHotVehicles(Request $request): StreamedResponse
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $totalViewsAcrossAll = VehicleDailyStat::where('dealer_id', $dealerId)
             ->whereBetween('date', [$from, $to])
@@ -945,9 +972,9 @@ class WebsiteReportController extends Controller
             ->whereIn('id', $stats->keys())
             ->get()
             ->map(function ($vehicle) use ($stats, $totalViewsAcrossAll) {
-                $vViews = $stats[$vehicle->id]->total_views ?? 0;
+                $vViews               = $stats[$vehicle->id]->total_views ?? 0;
                 $vehicle->total_views = $vViews;
-                $vehicle->popularity = ($vViews / $totalViewsAcrossAll) * 100;
+                $vehicle->popularity  = ($vViews / $totalViewsAcrossAll) * 100;
                 return $vehicle;
             })
             ->sortByDesc('total_views');
@@ -980,8 +1007,8 @@ class WebsiteReportController extends Controller
     public function coldVehicles(Request $request)
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $totalViewsAcrossAll = VehicleDailyStat::where('dealer_id', $dealerId)
             ->whereBetween('date', [$from, $to])
@@ -997,9 +1024,9 @@ class WebsiteReportController extends Controller
         $vehicles = Vehicle::with(['make', 'makeModel'])
             ->forDealer($dealerId)->active()->get()
             ->map(function ($vehicle) use ($stats, $totalViewsAcrossAll) {
-                $vViews = $stats[$vehicle->id]->total_views ?? 0;
+                $vViews               = $stats[$vehicle->id]->total_views ?? 0;
                 $vehicle->total_views = $vViews;
-                $vehicle->popularity = ($vViews / $totalViewsAcrossAll) * 100;
+                $vehicle->popularity  = ($vViews / $totalViewsAcrossAll) * 100;
                 return $vehicle;
             })
             ->sortBy('total_views')->take(100);
@@ -1010,8 +1037,8 @@ class WebsiteReportController extends Controller
     public function exportColdVehicles(Request $request): StreamedResponse
     {
         $dealerId = $request->user()->current_dealer_id;
-        $from = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $to = $request->get('to', Carbon::now()->format('Y-m-d'));
+        $from     = $request->get('from', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $to       = $request->get('to', Carbon::now()->format('Y-m-d'));
 
         $totalViewsAcrossAll = VehicleDailyStat::where('dealer_id', $dealerId)
             ->whereBetween('date', [$from, $to])
@@ -1027,9 +1054,9 @@ class WebsiteReportController extends Controller
         $vehicles = Vehicle::with(['make', 'makeModel', 'bodyType', 'exteriorColor', 'drivetrainType', 'dealer', 'specs'])
             ->forDealer($dealerId)->active()->get()
             ->map(function ($vehicle) use ($stats, $totalViewsAcrossAll) {
-                $vViews = $stats[$vehicle->id]->total_views ?? 0;
+                $vViews               = $stats[$vehicle->id]->total_views ?? 0;
                 $vehicle->total_views = $vViews;
-                $vehicle->popularity = ($vViews / $totalViewsAcrossAll) * 100;
+                $vehicle->popularity  = ($vViews / $totalViewsAcrossAll) * 100;
                 return $vehicle;
             })
             ->sortBy('total_views');
