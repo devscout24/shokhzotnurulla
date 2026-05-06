@@ -79,6 +79,11 @@ class WebsiteDashboardController extends Controller
             }
         }
 
+        // Filter Traffic Data for dashboard view (only core 4)
+        $coreChannels = ['Organic Search', 'Direct', 'Referral', 'Social'];
+        $trafficData['channels'] = array_intersect_key($trafficData['channels'], array_flip($coreChannels));
+        $trafficData['summary']  = array_intersect_key($trafficData['summary'], array_flip($coreChannels));
+
         return view('dealer.pages.dashboard', array_merge($stats, [
             'activityData'    => $activityData,
             'trafficData'     => $trafficData,
@@ -104,16 +109,26 @@ class WebsiteDashboardController extends Controller
         $data = [
             'labels'   => collect($days)->map(fn($d) => \Carbon\Carbon::parse($d)->format('n/j'))->toArray(),
             'channels' => [
-                'Direct'         => array_fill(0, count($days), 0),
+                'Direct' => array_fill(0, count($days), 0),
+                'Google Business Profile' => array_fill(0, count($days), 0),
                 'Organic Search' => array_fill(0, count($days), 0),
-                'Referral'       => array_fill(0, count($days), 0),
-                'Social'         => array_fill(0, count($days), 0),
+                'Referral' => array_fill(0, count($days), 0),
+                'Social' => array_fill(0, count($days), 0),
+                'Unknown' => array_fill(0, count($days), 0),
+                'Ai' => array_fill(0, count($days), 0),
+                'Paid Social' => array_fill(0, count($days), 0),
+                'Display' => array_fill(0, count($days), 0),
             ],
-            'summary'  => [
-                'Direct'         => ['visits' => 0, 'visitors' => [], 'leads' => 0],
+            'summary' => [
+                'Direct' => ['visits' => 0, 'visitors' => [], 'leads' => 0],
+                'Google Business Profile' => ['visits' => 0, 'visitors' => [], 'leads' => 0],
                 'Organic Search' => ['visits' => 0, 'visitors' => [], 'leads' => 0],
-                'Referral'       => ['visits' => 0, 'visitors' => [], 'leads' => 0],
-                'Social'         => ['visits' => 0, 'visitors' => [], 'leads' => 0],
+                'Referral' => ['visits' => 0, 'visitors' => [], 'leads' => 0],
+                'Social' => ['visits' => 0, 'visitors' => [], 'leads' => 0],
+                'Unknown' => ['visits' => 0, 'visitors' => [], 'leads' => 0],
+                'Ai' => ['visits' => 0, 'visitors' => [], 'leads' => 0],
+                'Paid Social' => ['visits' => 0, 'visitors' => [], 'leads' => 0],
+                'Display' => ['visits' => 0, 'visitors' => [], 'leads' => 0],
             ],
         ];
 
@@ -134,10 +149,22 @@ class WebsiteDashboardController extends Controller
 
             if ($medium === 'organic' || (str_contains($referrer, 'google') || str_contains($referrer, 'bing'))) {
                 $channel = 'Organic Search';
+            } elseif (str_contains($medium, 'cpc') || str_contains($medium, 'ppc') || str_contains($referrer, 'google.com/business')) {
+                $channel = 'Google Business Profile';
+            } elseif ($medium === 'display' || $medium === 'banner') {
+                $channel = 'Display';
+            } elseif (str_contains($medium, 'social') && (str_contains($medium, 'paid') || str_contains($medium, 'cpc'))) {
+                $channel = 'Paid Social';
             } elseif (str_contains($referrer, 'facebook') || str_contains($referrer, 'instagram') || str_contains($referrer, 'twitter') || str_contains($referrer, 't.co')) {
                 $channel = 'Social';
-            } elseif ($medium === 'referral' || ($referrer && ! str_contains($referrer, 'google') && ! str_contains($referrer, 'bing'))) {
+            } elseif (str_contains($referrer, 'openai') || str_contains($referrer, 'chatgpt') || str_contains($referrer, 'perplexity')) {
+                $channel = 'Ai';
+            } elseif ($medium === 'referral' || ($referrer && !str_contains($referrer, 'google') && !str_contains($referrer, 'bing'))) {
                 $channel = 'Referral';
+            } elseif (!$medium && !$referrer) {
+                $channel = 'Direct';
+            } else {
+                $channel = 'Unknown';
             }
 
             $data['channels'][$channel][$idx]++;
@@ -443,7 +470,7 @@ class WebsiteDashboardController extends Controller
         $filename = "traffic-statistics-by-day-" . now()->format('Y-m-d') . ".csv";
         $headers  = ["Content-type" => "text/csv", "Content-Disposition" => "attachment; filename=$filename"];
 
-        $columns = ['day', 'direct', 'organic search', 'referral', 'social'];
+        $columns = ['day', 'direct', 'google business profile', 'organic search', 'referral', 'social', 'unknown', 'ai', 'paid social', 'display'];
 
         $callback = function () use ($days, $dealerId, $startDate, $endDate, $columns, $isDemo) {
             $file = fopen('php://output', 'w');
@@ -456,9 +483,12 @@ class WebsiteDashboardController extends Controller
                 foreach (array_slice($columns, 1) as $col) {
                     $key = match ($col) {
                         'organic search' => 'Organic Search',
-                        default          => ucwords($col)
+                        'google business profile' => 'Google Business Profile',
+                        'paid social' => 'Paid Social',
+                        'ai' => 'Ai',
+                        default => ucwords($col)
                     };
-
+                    
                     if ($isDemo) {
                         $row[] = rand(10, 50);
                     } else {
