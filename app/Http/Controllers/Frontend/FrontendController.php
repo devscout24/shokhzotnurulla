@@ -1,19 +1,18 @@
 <?php
-
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Inventory\VinDecodeRequest;
 use App\Models\Catalog\Make;
 use App\Models\Catalog\MakeModel;
-use App\Models\Inventory\Vehicle;
 use App\Models\Inventory\DealerInventoryFee;
+use App\Models\Inventory\Vehicle;
 use App\Models\Inventory\VehiclePrintable;
 use App\Services\Inventory\InventoryListingService;
 use App\Services\Inventory\PricingCalculatorService;
 use App\Services\Inventory\VehicleDetailService;
-use App\Services\Website\DealerResolverService;
-use App\Http\Requests\Inventory\VinDecodeRequest;
 use App\Services\Inventory\VinDecodeService;
+use App\Services\Website\DealerResolverService;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,11 +24,11 @@ use Illuminate\View\View;
 class FrontendController extends Controller
 {
     public function __construct(
-        private readonly DealerResolverService    $dealerResolver,
-        private readonly InventoryListingService  $inventoryListing,
-        private readonly VehicleDetailService     $vehicleDetail,
+        private readonly DealerResolverService $dealerResolver,
+        private readonly InventoryListingService $inventoryListing,
+        private readonly VehicleDetailService $vehicleDetail,
         private readonly PricingCalculatorService $pricingCalculator,
-        private readonly VinDecodeService         $vinDecoder,
+        private readonly VinDecodeService $vinDecoder,
     ) {}
 
     // ── Home ──────────────────────────────────────────────────────────────────
@@ -51,10 +50,10 @@ class FrontendController extends Controller
             ->with([
                 'make:id,name',
                 'makeModel:id,name',
-                'primaryPhoto' => fn ($q) => $q
+                'primaryPhoto' => fn($q) => $q
                     ->select(['id', 'vehicle_id', 'path', 'disk', 'url'])
                     ->live(),
-                'photos' => fn ($q) => $q
+                'photos'       => fn($q)       => $q
                     ->select(['id', 'vehicle_id', 'path', 'disk', 'url', 'sort_order', 'is_primary'])
                     ->live()
                     ->orderBy('sort_order')
@@ -170,26 +169,32 @@ class FrontendController extends Controller
         $dealerId = $this->dealerResolver->resolve();
         $vehicle  = $this->vehicleDetail->loadVehicle($slug, $dealerId);
 
+        $sessionKey = "viewed_vehicle_{$vehicle->id}";
+        if (! session()->has($sessionKey)) {
+            $vehicle->increment('total_views');
+            session()->put($sessionKey, true);
+        }
+
         $applicableFees = DealerInventoryFee::where('dealer_id', $dealerId)
             ->where(function ($q) use ($vehicle) {
                 $q->where('condition', 'any')
-                  ->orWhere(function ($q2) use ($vehicle) {
-                      $vc = $vehicle->vehicle_condition ?? '';
-                      match (true) {
-                          $vc === 'New'                  => $q2->where('condition', 'new'),
-                          $vc === 'Certified Pre-Owned'  => $q2->whereIn('condition', ['used', 'cpo']),
-                          default                        => $q2->where('condition', 'used'),
-                      };
-                  });
+                    ->orWhere(function ($q2) use ($vehicle) {
+                        $vc = $vehicle->vehicle_condition ?? '';
+                        match (true) {
+                            $vc === 'New'                 => $q2->where('condition', 'new'),
+                            $vc === 'Certified Pre-Owned' => $q2->whereIn('condition', ['used', 'cpo']),
+                            default                       => $q2->where('condition', 'used'),
+                        };
+                    });
             })
             ->orderBy('sort_order')
             ->get();
 
         // ── Pricing ───────────────────────────────────────────────────────────
-        $specials      = $this->pricingCalculator->getActiveSpecials($dealerId);
-        $bodyStyleMap  = $this->pricingCalculator->getBodyStyleMap();
-        $pricing       = $this->pricingCalculator->calculate($vehicle, $specials, $bodyStyleMap);
-        $allSpecials   = $this->pricingCalculator->findMatching($vehicle, $specials, $bodyStyleMap);
+        $specials     = $this->pricingCalculator->getActiveSpecials($dealerId);
+        $bodyStyleMap = $this->pricingCalculator->getBodyStyleMap();
+        $pricing      = $this->pricingCalculator->calculate($vehicle, $specials, $bodyStyleMap);
+        $allSpecials  = $this->pricingCalculator->findMatching($vehicle, $specials, $bodyStyleMap);
 
         // ── VDP data ──────────────────────────────────────────────────────────
         $spec           = $vehicle->specs;
@@ -211,11 +216,11 @@ class FrontendController extends Controller
         ]))));
 
         $seo = [
-            'title'       => "{$vehicleTitle} for Sale in Smyrna, TN | Angel Motors Inc",
+            'title' => "{$vehicleTitle} for Sale in Smyrna, TN | Angel Motors Inc",
             'description' => "Buy this {$vehicleTitle} at Angel Motors Inc in Smyrna, TN. " .
-                             number_format((int) $vehicle->mileage) . " miles. Price: $" .
-                             number_format((int) $vehicle->list_price) . ".",
-            'keywords'    => strtolower("{$vehicleTitle}, used cars smyrna tn, angel motors inc"),
+            number_format((int) $vehicle->mileage) . " miles. Price: $" .
+            number_format((int) $vehicle->list_price) . ".",
+            'keywords' => strtolower("{$vehicleTitle}, used cars smyrna tn, angel motors inc"),
         ];
 
         $windowSticker = $vehicle->printables->firstWhere('name', 'Window Sticker');
@@ -225,8 +230,6 @@ class FrontendController extends Controller
             'pricing', 'allSpecials', 'applicableFees', 'groupedOptions', 'faqs', 'related', 'vehicleTitle', 'seo', 'windowSticker',
         ));
     }
-
-
 
     public function aboutUs(): View
     {
@@ -245,10 +248,10 @@ class FrontendController extends Controller
             ->with([
                 'make:id,name',
                 'makeModel:id,name',
-                'primaryPhoto' => fn ($q) => $q
+                'primaryPhoto' => fn($q) => $q
                     ->select(['id', 'vehicle_id', 'path', 'disk', 'url'])
                     ->live(),
-                'photos' => fn ($q) => $q
+                'photos'       => fn($q)       => $q
                     ->select(['id', 'vehicle_id', 'path', 'disk', 'url', 'sort_order', 'is_primary'])
                     ->live()
                     ->orderBy('sort_order')
@@ -308,15 +311,15 @@ class FrontendController extends Controller
             'success' => true,
             'partial' => $result['partial'],
             'data'    => [
-                'year'                 => $d['year'],
-                'make'                 => $d['make'],
-                'model'                => $d['model'],
-                'trim'                 => $d['trim'],
-                'engine_string'        => $d['engine_string'],
-                'drive_type'           => $d['drive_type'],
-                'drivetrain_standard'  => $d['drivetrain_standard'],
-                'fuel_type_primary'    => $d['fuel_type_primary'],
-                'body_class'           => $d['body_class'],
+                'year'                => $d['year'],
+                'make'                => $d['make'],
+                'model'               => $d['model'],
+                'trim'                => $d['trim'],
+                'engine_string'       => $d['engine_string'],
+                'drive_type'          => $d['drive_type'],
+                'drivetrain_standard' => $d['drivetrain_standard'],
+                'fuel_type_primary'   => $d['fuel_type_primary'],
+                'body_class'          => $d['body_class'],
             ],
         ]);
     }
@@ -324,18 +327,18 @@ class FrontendController extends Controller
     public function showPage(string $slug): View
     {
         $dealerId = $this->dealerResolver->resolve();
-        
+
         $query = \App\Models\Website\Page::where('slug', $slug)
             ->where('dealer_id', $dealerId);
 
         // Allow authenticated admins/dealers for THIS dealer to see drafts
         $canPreview = auth()->check() && auth()->user()->current_dealer_id === $dealerId;
 
-        if (!$canPreview) {
+        if (! $canPreview) {
             $query->where('is_active', true)
-                ->where(function($q) {
+                ->where(function ($q) {
                     $q->whereNull('published_at')
-                      ->orWhere('published_at', '<=', now());
+                        ->orWhere('published_at', '<=', now());
                 });
         }
 
@@ -346,7 +349,7 @@ class FrontendController extends Controller
 
     // ─── Print Printables ───────────────────────────────────────────────────────────────
 
-    public function printable(Request $request, Vehicle $vehicle, VehiclePrintable $printable): View|Response
+    public function printable(Request $request, Vehicle $vehicle, VehiclePrintable $printable): View | Response
     {
         $vehicle->loadMissing([
             'make', 'makeModel', 'dealer',
@@ -355,7 +358,6 @@ class FrontendController extends Controller
             'specs', 'prices', 'primaryPhoto',
             'factoryOptions.category',
         ]);
-
 
         if ($printable->html_template) {
             return response($printable->html_template, 200)
@@ -376,7 +378,7 @@ class FrontendController extends Controller
     // ── Private: attach pricing to each vehicle ───────────────────────────────
 
     private function attachPricing(
-        LengthAwarePaginator|EloquentCollection|Collection $vehicles,
+        LengthAwarePaginator | EloquentCollection | Collection $vehicles,
         int $dealerId,
     ): void {
         $specials     = $this->pricingCalculator->getActiveSpecials($dealerId);

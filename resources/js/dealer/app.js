@@ -90,14 +90,7 @@ window.Chart = Chart;
 //     });
 // });
 
-// Initialize inventory date picker
-if (document.querySelector('#inventoryDateRange')) {
-    flatpickr('#inventoryDateRange', {
-        mode: 'range',
-        dateFormat: 'm/d/Y',
-        defaultDate: ['01/31/2026', '02/27/2026']
-    });
-}
+// Initialize inventory date picker removed to avoid collision with daterangepicker
 
 // Collapsible filter sections (event delegation keeps it resilient)
 (function () {
