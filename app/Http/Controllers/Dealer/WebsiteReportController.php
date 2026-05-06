@@ -790,6 +790,34 @@ class WebsiteReportController extends Controller
                 fclose($handle);
             }, $filename, ['Content-Type' => 'text/csv']);
 
+        } elseif ($type === 'cities') {
+            $logs = $query->get();
+            $totalHits = $logs->count() ?: 1;
+            
+            $cities = $logs->groupBy('city')->map(function($hits) use ($totalHits) {
+                $first = $hits->first();
+                $count = $hits->count();
+                return (object) [
+                    'city' => $first->city,
+                    'region' => $first->state,
+                    'regioncode' => '',
+                    'country' => $first->country,
+                    'count' => $count,
+                    'pct' => number_format(($count / $totalHits) * 100, 2) . '%',
+                    'icon' => 'geo-alt'
+                ];
+            })->sortByDesc('count')->values();
+
+            $filename = "cities-" . now()->format('Y-m-d') . ".csv";
+            return response()->streamDownload(function () use ($cities) {
+                $handle = fopen('php://output', 'w');
+                fputcsv($handle, ['city', 'region', 'regioncode', 'country', 'count', 'pct', 'icon']);
+                foreach ($cities as $c) {
+                    fputcsv($handle, [$c->city, $c->region, $c->regioncode, $c->country, $c->count, $c->pct, $c->icon]);
+                }
+                fclose($handle);
+            }, $filename, ['Content-Type' => 'text/csv']);
+
         } else {
             $stats = $query->selectRaw($field . ' as value, COUNT(*) as page_views')
                 ->groupBy('value')
