@@ -9,8 +9,7 @@
                     <i class="bi bi-download"></i> Export <i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportTrafficDropdown">
-                    <li><a class="dropdown-item" href="{{ route('dealer.website.dashboard.export-traffic-day', ['from' => $from, 'to' => $to]) }}"><i class="bi bi-bar-chart-fill me-2"></i> Statistics by Day</a></li>
-                    <li><a class="dropdown-item" href="{{ route('dealer.website.dashboard.export-traffic-channel', ['from' => $from, 'to' => $to]) }}"><i class="bi bi-table me-2"></i> Statistics by Channel</a></li>
+                    <li><a class="dropdown-item" href="#">Download CSV</a></li>
                 </ul>
             </div>
         </div>
