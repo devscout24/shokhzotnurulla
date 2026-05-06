@@ -259,13 +259,16 @@
                                             <a href="{{ str_replace('__ID__', $page->id, $routes['edit']) }}" class="title-col m-0">
                                                 {{ $page->title }}
                                             </a>
-                                            <a href="{{ url($page->slug) }}" target="_blank" rel="noopener noreferrer" class="ms-2 text-muted" style="font-size:12px">
+                                            <a href="{{ url($page->slug) }}" target="_blank" rel="noopener noreferrer" class="ms-2 text-muted" title="View Public Page" style="font-size:12px">
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
                                         </div>
                                         <div class="inline-actions">
                                             <a href="{{ str_replace('__ID__', $page->id, $routes['edit']) }}" class="btn-action">
                                                 <i class="fa-regular fa-pen-to-square"></i> Edit
+                                            </a>
+                                            <a href="{{ url($page->slug) }}" target="_blank" class="btn-action">
+                                                <i class="fa-regular fa-eye"></i> View
                                             </a>
                                             <button type="button" class="btn-action action-trash" onclick="showDeleteModal({{ $page->id }})">
                                                 <i class="fa-regular fa-trash-can"></i> Trash

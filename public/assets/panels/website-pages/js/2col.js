@@ -63,10 +63,10 @@ function drop2ColBlock(returnBlock = false) {
     <div class="dropped-block-inner">
       <div class="editor-2col" style="display: flex; gap: 20px; width: 100%;">
         <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;">
-          <p contenteditable="true" spellcheck="false" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none;">Column 1</p>
+          <p contenteditable="true" spellcheck="false" data-placeholder="Column 1" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none;"></p>
         </div>
         <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;">
-          <p contenteditable="true" spellcheck="false" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none;">Column 2</p>
+          <p contenteditable="true" spellcheck="false" data-placeholder="Column 2" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none;"></p>
         </div>
       </div>
     </div>`;
@@ -78,29 +78,22 @@ function drop2ColBlock(returnBlock = false) {
   zones.forEach((zone, idx) => {
     attachDropZoneListeners(zone);
     
-    // Handle placeholder text in each column
-    if (placeholders[idx]) {
-      const placeholder = placeholders[idx];
-      
-      placeholder.addEventListener('beforeinput', () => {
-        if (placeholder.textContent.trim().match(/^Column \d+$/)) {
-          placeholder.textContent = '';
-        }
-      });
-      
-      // Hide placeholder when blocks are added
-      const observer = new MutationObserver(() => {
-        const hasBlocks = zone.querySelector('.dropped-block') !== null;
-        if (hasBlocks) {
-          placeholder.style.display = 'none';
-        } else if (!placeholder.textContent.trim()) {
-          placeholder.textContent = placeholder.dataset.originalText || `Column ${idx + 1}`;
-          placeholder.style.display = 'block';
-        }
-      });
-      observer.observe(zone, { childList: true, subtree: true });
-      placeholder.dataset.originalText = placeholder.textContent;
-    }
+      // Handle placeholder behavior in each column
+      if (placeholders[idx]) {
+        const placeholder = placeholders[idx];
+        placeholder.classList.add('is-placeholder');
+        
+        // Hide the CSS-based placeholder if the column has dropped blocks
+        const observer = new MutationObserver(() => {
+          const hasBlocks = zone.querySelector('.dropped-block') !== null;
+          if (hasBlocks) {
+            placeholder.classList.add('d-none');
+          } else {
+            placeholder.classList.remove('d-none');
+          }
+        });
+        observer.observe(zone, { childList: true, subtree: true });
+      }
   });
 
   if (returnBlock) return block;

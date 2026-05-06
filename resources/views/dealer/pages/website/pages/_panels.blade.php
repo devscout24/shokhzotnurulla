@@ -153,29 +153,56 @@ $visibilityHtml = '
 <button type="button" class="hs-back-btn" id="inv-back-btn"><i class="fa-solid fa-arrow-left"></i> Inventory Settings</button>
 <div class="hs-row"><label>Dealer ID</label><input class="hs-input" id="inv-dealer-id" placeholder="12345"/></div>
 <div class="hs-row"><label>Condition</label><select class="hs-select" id="inv-condition"><option value="all">All</option><option value="new">New</option><option value="used">Used</option></select></div>
+<div class="hs-row"><label>Make</label><input class="hs-input" id="inv-make" placeholder="e.g. Honda"/></div>
+<div class="hs-row"><label>Model</label><input class="hs-input" id="inv-model" placeholder="e.g. Civic"/></div>
+<div class="hs-row"><label>Min Price</label><input class="hs-input" id="inv-min-price" type="number" placeholder="0"/></div>
+<div class="hs-row"><label>Max Price</label><input class="hs-input" id="inv-max-price" type="number" placeholder="100000"/></div>
+<div class="hs-row"><label>Max Mileage</label><input class="hs-input" id="inv-max-mileage" type="number" placeholder="150000"/></div>
+<div class="hs-row"><label>Sort By</label><select class="hs-select" id="inv-sort"><option value="price_asc">Price: Low to High</option><option value="price_desc">Price: High to Low</option><option value="mileage_asc">Mileage: Lowest First</option></select></div>
+<div class="hs-row d-flex justify-content-between align-items-center"><label class="mb-0">Highlighted Only</label><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" id="inv-highlighted"></div></div>
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
-<div class="hs-actions"><button type="button" class="hs-btn-remove" id="inv-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="inv-cancel-btn">Cancel</button></div>
+<div class="hs-actions">
+    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" onclick="closeAllPanels()" style="background:#ce4f4b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
+    <button type="button" class="hs-btn-remove" id="inv-remove-btn" style="flex:1"><i class="fa-regular fa-trash-can"></i> Remove</button>
+</div>
 </div>
 
 {{-- Form Settings --}}
 <div id="form-settings-panel" style="display:none">
 <button type="button" class="hs-back-btn" id="fs-back-btn"><i class="fa-solid fa-arrow-left"></i> Form Settings</button>
+<div class="hs-row"><label>Select Form</label><select class="hs-select" id="fs-id"><option value="general">General Contact</option><option value="test-drive">Schedule Test Drive</option><option value="finance">Finance Application</option></select></div>
+<div class="hs-row"><label>Custom Form Name (Internal)</label><input class="hs-input" id="fs-name" placeholder="Summer Campaign Form"/></div>
 <div class="hs-row"><label>Receiver Email</label><input class="hs-input" id="fs-email" placeholder="sales@dealer.com"/></div>
 <div class="hs-row"><label>Success Msg</label><input class="hs-input" id="fs-success" placeholder="Thank you!"/></div>
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
-<div class="hs-actions"><button type="button" class="hs-btn-remove" id="fs-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="fs-cancel-btn">Cancel</button></div>
+<div class="hs-actions">
+    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" onclick="closeAllPanels()" style="background:#ce4f4b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
+    <button type="button" class="hs-btn-remove" id="fs-remove-btn" style="flex:1"><i class="fa-regular fa-trash-can"></i> Remove</button>
+</div>
 </div>
 
 {{-- Map Settings --}}
 <div id="map-settings-panel" style="display:none">
 <button type="button" class="hs-back-btn" id="map-back-btn"><i class="fa-solid fa-arrow-left"></i> Map Settings</button>
+<div class="hs-row"><label>Main Title</label><input class="hs-input" id="map-title" placeholder="Visit Us Today"/></div>
+<div class="hs-row"><label>Subtitle</label><input class="hs-input" id="map-subtitle" placeholder="Located in the heart of the city"/></div>
 <div class="hs-row"><label>Address</label><input class="hs-input" id="map-address" placeholder="123 Dealer St"/></div>
-<div class="hs-row"><label>Zoom</label><input class="hs-input" id="map-zoom" type="number" value="14"/></div>
+<div class="hs-row"><label>Map Zoom</label><input class="hs-input" id="map-zoom" type="number" value="14"/></div>
+<div class="hs-row"><label>Locations to Show</label>
+    <div class="d-flex flex-column gap-2 p-2 border rounded bg-light">
+        <label class="d-flex align-items-center gap-2 small m-0"><input type="checkbox" checked> Primary Dealership</label>
+        <label class="d-flex align-items-center gap-2 small m-0"><input type="checkbox"> Service Center</label>
+        <label class="d-flex align-items-center gap-2 small m-0"><input type="checkbox"> Body Shop</label>
+    </div>
+</div>
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
-<div class="hs-actions"><button type="button" class="hs-btn-remove" id="map-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="map-cancel-btn">Cancel</button></div>
+<div class="hs-actions">
+    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" onclick="closeAllPanels()" style="background:#ce4f4b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
+    <button type="button" class="hs-btn-remove" id="map-remove-btn" style="flex:1"><i class="fa-regular fa-trash-can"></i> Remove</button>
+</div>
 </div>
 
 {{-- 2-Column Settings --}}
@@ -233,12 +260,19 @@ $visibilityHtml = '
 <hr class="hs-divider"/>
 <div class="hs-actions"><button type="button" class="hs-btn-remove" id="ics-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="ics-cancel-btn">Cancel</button></div>
 </div>
+{{-- Search Settings --}}
 <div id="search-settings-panel" style="display:none">
 <button type="button" class="hs-back-btn" id="search-back-btn"><i class="fa-solid fa-arrow-left"></i> Search Settings</button>
 <div class="hs-row"><label>Placeholder</label><input class="hs-input" id="search-placeholder" placeholder="Search..."/></div>
+<div class="hs-row"><label>Input Size</label><select class="hs-select" id="search-size"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div>
+<div class="hs-row d-flex justify-content-between align-items-center"><label class="mb-0">Honda Store branding</label><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" id="search-honda"></div></div>
+<div class="hs-row d-flex justify-content-between align-items-center"><label class="mb-0">Acura Store branding</label><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" id="search-acura"></div></div>
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
-<div class="hs-actions"><button type="button" class="hs-btn-remove" id="search-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="search-cancel-btn">Cancel</button></div>
+<div class="hs-actions">
+    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" onclick="closeAllPanels()" style="background:#ce4f4b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
+    <button type="button" class="hs-btn-remove" id="search-remove-btn" style="flex:1"><i class="fa-regular fa-trash-can"></i> Remove</button>
+</div>
 </div>
 
 {{-- Cart Settings --}}
@@ -264,4 +298,81 @@ $visibilityHtml = '
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
 <div class="hs-actions"><button type="button" class="hs-btn-remove" id="css-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="css-cancel-btn">Cancel</button></div>
+</div>
+
+{{-- Divider Settings --}}
+<div id="divider-settings-panel" style="display:none">
+<button type="button" class="hs-back-btn" id="ds-back-btn"><i class="fa-solid fa-arrow-left"></i> Divider Settings</button>
+<div class="hs-row"><label>Color</label><input class="hs-input" id="ds-color" type="color" value="#e0e6ed" style="height:40px;padding:2px"/></div>
+<div class="hs-row"><label>Height (px)</label><input class="hs-input" id="ds-height" type="number" value="1" min="1" max="20"/></div>
+{!! $visibilityHtml !!}
+<hr class="hs-divider"/>
+<div class="hs-actions"><button type="button" class="hs-btn-remove" id="ds-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="ds-cancel-btn">Cancel</button></div>
+</div>
+
+{{-- iFrame Settings --}}
+<div id="iframe-settings-panel" style="display:none">
+<button type="button" class="hs-back-btn" id="iframe-back-btn"><i class="fa-solid fa-arrow-left"></i> iFrame Settings</button>
+<div class="hs-row"><label>Source URL</label><input class="hs-input" id="iframe-url" placeholder="https://..."/></div>
+<div class="hs-row"><label>Title (Optional)</label><input class="hs-input" id="iframe-title" placeholder="Frame title..."/></div>
+<div class="hs-row"><label>Height (px)</label><input class="hs-input" id="iframe-height" type="number" value="300"/></div>
+{!! $visibilityHtml !!}
+<hr class="hs-divider"/>
+<div class="hs-actions"><button type="button" class="hs-btn-remove" id="iframe-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="iframe-cancel-btn">Cancel</button></div>
+</div>
+
+{{-- Tabs Settings --}}
+<div id="tabs-settings-panel" style="display:none">
+<button type="button" class="hs-back-btn" id="tabs-back-btn"><i class="fa-solid fa-arrow-left"></i> Tabs Settings</button>
+<div class="hs-row mt-2"><button type="button" class="btn btn-outline-danger btn-sm w-100" id="tabs-add-btn">Add Tab</button></div>
+{!! $visibilityHtml !!}
+<hr class="hs-divider"/>
+<div class="hs-actions"><button type="button" class="hs-btn-remove" id="tabs-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="tabs-cancel-btn">Cancel</button></div>
+</div>
+
+{{-- Overlay Settings --}}
+<div id="overlay-settings-panel" style="display:none">
+<button type="button" class="hs-back-btn" id="ov-back-btn"><i class="fa-solid fa-arrow-left"></i> Overlay Settings</button>
+<div class="hs-row"><label>Opacity (0-1)</label><input class="hs-input" id="ov-opacity" type="number" step="0.1" min="0" max="1" value="0.5"/></div>
+<div class="hs-row"><label>Color</label><input class="hs-input" id="ov-color" type="color" value="#000000"/></div>
+{!! $visibilityHtml !!}
+<hr class="hs-divider"/>
+<div class="hs-actions"><button type="button" class="hs-btn-remove" id="ov-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="ov-cancel-btn">Cancel</button></div>
+</div>
+
+{{-- Blog Settings --}}
+<div id="blog-settings-panel" style="display:none">
+<button type="button" class="hs-back-btn" id="blg-back-btn"><i class="fa-solid fa-arrow-left"></i> Blog Settings</button>
+<div class="hs-row"><label>Category</label><select class="hs-select" id="blg-category"><option value="all">All Categories</option></select></div>
+<div class="hs-row"><label>Post Count</label><input class="hs-input" id="blg-count" type="number" value="3" min="1" max="12"/></div>
+{!! $visibilityHtml !!}
+<hr class="hs-divider"/>
+<div class="hs-actions"><button type="button" class="hs-btn-remove" id="blg-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="blg-cancel-btn">Cancel</button></div>
+</div>
+
+{{-- Content Block Settings --}}
+<div id="content-block-settings-panel" style="display:none">
+<button type="button" class="hs-back-btn" id="cb-back-btn"><i class="fa-solid fa-arrow-left"></i> Content Block</button>
+<div class="hs-row"><label>Select Block</label><select class="hs-select" id="cb-id"><option value="">Choose a block...</option></select></div>
+{!! $visibilityHtml !!}
+<hr class="hs-divider"/>
+<div class="hs-actions"><button type="button" class="hs-btn-remove" id="cb-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="cb-cancel-btn">Cancel</button></div>
+</div>
+
+{{-- Body Types Settings --}}
+<div id="body-types-settings-panel" style="display:none">
+<button type="button" class="hs-back-btn" id="bt-back-btn"><i class="fa-solid fa-arrow-left"></i> Body Types</button>
+<div class="hs-row"><label>Display Mode</label><select class="hs-select" id="bt-mode"><option value="grid">Grid</option><option value="list">List</option></select></div>
+{!! $visibilityHtml !!}
+<hr class="hs-divider"/>
+<div class="hs-actions"><button type="button" class="hs-btn-remove" id="bt-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="bt-cancel-btn">Cancel</button></div>
+</div>
+
+{{-- Plugin Settings --}}
+<div id="plugin-settings-panel" style="display:none">
+<button type="button" class="hs-back-btn" id="plg-back-btn"><i class="fa-solid fa-arrow-left"></i> Plugin Settings</button>
+<div class="hs-row"><label>Plugin ID / Name</label><input class="hs-input" id="plg-id" placeholder="e.g. chat-widget"/></div>
+{!! $visibilityHtml !!}
+<hr class="hs-divider"/>
+<div class="hs-actions"><button type="button" class="hs-btn-remove" id="plg-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="plg-cancel-btn">Cancel</button></div>
 </div>

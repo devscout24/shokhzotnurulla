@@ -8,11 +8,19 @@ function clearSelected() {
 }
 
 function openPanel(id) {
+  // Switch to 'Edit Block' tab
+  const editTab = document.querySelector('.sidebar-tab[data-tab="edit"]');
+  const addTab = document.querySelector('.sidebar-tab[data-tab="add"]');
+  if (editTab) {
+      editTab.classList.add('active');
+      addTab.classList.remove('active');
+  }
+
   // Save currently focused element so focus isn't stolen by panel DOM changes
   const previouslyFocused = document.activeElement;
   const wasContentEditable = previouslyFocused && previouslyFocused.isContentEditable;
 
-  closeAllPanels();
+  closeAllPanels(true); // pass true to prevent recursive tab switching
   const panel = document.getElementById(id);
   if (panel) panel.style.display = 'block';
   const defaultContent = document.getElementById('sidebar-default-content');
@@ -24,9 +32,27 @@ function openPanel(id) {
   }
 }
 
-function closeAllPanels() {
+function closeAllPanels(keepTab = false) {
+  if (!keepTab) {
+      const addTab = document.querySelector('.sidebar-tab[data-tab="add"]');
+      const editTab = document.querySelector('.sidebar-tab[data-tab="edit"]');
+      if (addTab) {
+          addTab.classList.add('active');
+          editTab.classList.remove('active');
+      }
+  }
+
   // Close every settings panel by ID
-  const panels = ['heading-settings-panel', 'text-settings-panel', 'button-settings-panel', 'divider-settings-panel', 'image-settings-panel', 'accordion-settings-panel', 'spacer-settings-panel', 'card-settings-panel', '3col-settings-panel', '2col-settings-panel', 'container-settings-panel', 'icon-settings-panel', 'cart-settings-panel', 'span-settings-panel', 'iframe-settings-panel', 'video-settings-panel', 'inventory-settings-panel', 'form-settings-panel', 'search-settings-panel', 'carousel-settings-panel', 'tabs-settings-panel', 'map-settings-panel', 'overlay-settings-panel', 'html-settings-panel', 'css-settings-panel'];
+  const panels = [
+    'heading-settings-panel', 'text-settings-panel', 'button-settings-panel', 'divider-settings-panel', 
+    'image-settings-panel', 'accordion-settings-panel', 'spacer-settings-panel', 'card-settings-panel', 
+    '3col-settings-panel', '2col-settings-panel', 'container-settings-panel', 'icon-settings-panel', 
+    'cart-settings-panel', 'span-settings-panel', 'iframe-settings-panel', 'video-settings-panel', 
+    'inventory-settings-panel', 'form-settings-panel', 'search-settings-panel', 'carousel-settings-panel', 
+    'tabs-settings-panel', 'map-settings-panel', 'overlay-settings-panel', 'html-settings-panel', 
+    'css-settings-panel', 'blog-settings-panel', 'content-block-settings-panel', 
+    'body-types-settings-panel', 'plugin-settings-panel'
+  ];
   
   panels.forEach(id => {
     const el = document.getElementById(id);
@@ -39,6 +65,28 @@ function closeAllPanels() {
   activeEl = null;
   clearSelected();
 }
+
+// Sidebar Tab Switching
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.sidebar-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const type = tab.dataset.tab;
+            if (type === 'add') {
+                closeAllPanels();
+            } else {
+                // If we're already on an active element, the panel is already there.
+                // Otherwise, keep it as is or show a 'select something' message.
+                if (!activeEl) {
+                    closeAllPanels(true); // show default content but keep 'edit' tab
+                    const addTab = document.querySelector('.sidebar-tab[data-tab="add"]');
+                    const editTab = document.querySelector('.sidebar-tab[data-tab="edit"]');
+                    addTab.classList.remove('active');
+                    editTab.classList.add('active');
+                }
+            }
+        });
+    });
+});
 
 // ── Visibility Toggle Logic ──────────────────────────────────────────────────
 document.addEventListener('change', e => {
@@ -97,10 +145,10 @@ function rgbToHex(rgb) {
 function attachBlockListeners(block) {
   // ── Selection: Click anywhere on block to select it ──────────────────
   block.addEventListener('click', (e) => {
-    // If clicking directly on a contenteditable element,
-    // let the browser handle focus natively — do NOT call stopPropagation or focus()
-    const editable = e.target.closest('[contenteditable="true"]');
-    if (editable) {
+    // If clicking directly on interactive elements,
+    // let the browser handle focus natively
+    const interactive = e.target.closest('[contenteditable="true"], input, textarea, select, button');
+    if (interactive) {
       // Just mark as selected — browser handles the rest
       clearSelected();
       block.classList.add('selected');
@@ -130,43 +178,60 @@ function attachBlockListeners(block) {
   if (upBtn) upBtn.addEventListener('click', e => { e.stopPropagation(); moveBlockUp(block); });
   if (downBtn) downBtn.addEventListener('click', e => { e.stopPropagation(); moveBlockDown(block); });
 
-  // Drag handle
-  const handle = block.querySelector('.drag-handle');
-  if (handle) {
-    // ── Drag & Drop Reordering (Handle Based) ──────────────────────────
-    handle.addEventListener('mousedown', () => { 
-        block.setAttribute('draggable', 'true'); 
-    });
-    handle.addEventListener('mouseup', () => { 
-        block.removeAttribute('draggable'); 
-    });
-    // Fallback if mouse leaves handle
-    handle.addEventListener('mouseleave', () => {
-        if (!block.classList.contains('dragging')) {
-            block.removeAttribute('draggable');
+    // Drag handle
+    const handle = block.querySelector('.drag-handle');
+    if (handle) {
+      handle.addEventListener('mousedown', (e) => {
+          block.setAttribute('draggable', 'true');
+      });
+
+      block.addEventListener('dragstart', e => {
+        const isHandle = e.target.closest('.drag-handle') || e.target.classList.contains('drag-handle');
+        if (!isHandle && !block.getAttribute('draggable')) {
+          e.preventDefault();
+          return false;
         }
-    });
+        block.classList.add('dragging');
+        window.reorderBlock = block;
+        e.dataTransfer.setData('text/plain', 'reorder');
+        e.dataTransfer.effectAllowed = 'move';
+      });
 
-    block.addEventListener('dragstart', e => {
-      // Only allow drag if the handle was mousedown-ed
-      if (!block.hasAttribute('draggable')) {
-        return;
-      }
-      block.classList.add('dragging');
-      window.reorderBlock = block;
-      // Required for Firefox
-      e.dataTransfer.setData('text/plain', '');
-      e.dataTransfer.effectAllowed = 'move';
-    });
+      block.addEventListener('dragend', () => {
+        block.classList.remove('dragging');
+        block.setAttribute('draggable', 'false');
+        window.reorderBlock = null;
+        const indicator = document.getElementById('drop-indicator');
+        if (indicator) indicator.style.display = 'none';
+      });
+    }
 
-    block.addEventListener('dragend', () => {
-      block.classList.remove('dragging');
-      block.removeAttribute('draggable');
-      window.reorderBlock = null;
-      const indicator = document.getElementById('drop-indicator');
-      if (indicator) indicator.style.display = 'none';
-    });
-  }
+    // Hierarchy Buttons
+    const parentBtn = block.querySelector('.select-parent-btn');
+    if (parentBtn) {
+        parentBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const parent = block.parentElement.closest('.dropped-block');
+            if (parent) {
+                clearSelected();
+                parent.classList.add('is-selected', 'selected');
+                triggerBlockSettings(parent);
+            }
+        });
+    }
+
+    const childBtn = block.querySelector('.select-child-btn');
+    if (childBtn) {
+        childBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const child = block.querySelector('.dropped-block');
+            if (child) {
+                clearSelected();
+                child.classList.add('is-selected', 'selected');
+                triggerBlockSettings(child);
+            }
+        });
+    }
 
 
 
@@ -212,6 +277,30 @@ function attachBlockListeners(block) {
   const cart = block.querySelector('.editor-cart');
   if (cart) cart.addEventListener('click', (e) => { e.stopPropagation(); openCartSettings(cart); });
 
+  const blog = block.querySelector('.editor-blog');
+  if (blog) blog.addEventListener('click', (e) => { e.stopPropagation(); openBlogSettings(blog); });
+
+  const contentBlock = block.querySelector('.editor-content_block');
+  if (contentBlock) contentBlock.addEventListener('click', (e) => { e.stopPropagation(); openContentBlockSettings(contentBlock); });
+
+  const bodyTypes = block.querySelector('.editor-body_types');
+  if (bodyTypes) bodyTypes.addEventListener('click', (e) => { e.stopPropagation(); openBodyTypesSettings(bodyTypes); });
+
+  const mapHours = block.querySelector('.editor-map_hours');
+  if (mapHours) mapHours.addEventListener('click', (e) => { e.stopPropagation(); openMapSettings(mapHours); });
+
+  const plugin = block.querySelector('.editor-plugin');
+  if (plugin) plugin.addEventListener('click', (e) => { e.stopPropagation(); openPluginSettings(plugin); });
+
+  const carousel = block.querySelector('.editor-carousel');
+  if (carousel) carousel.addEventListener('click', (e) => { e.stopPropagation(); openCarouselSettings(carousel); });
+
+  const tabs = block.querySelector('.editor-tabs');
+  if (tabs) tabs.addEventListener('click', (e) => { e.stopPropagation(); openTabsSettings(tabs); });
+
+  const overlay = block.querySelector('.editor-overlay');
+  if (overlay) overlay.addEventListener('click', (e) => { e.stopPropagation(); openOverlaySettings(overlay); });
+
   // Initialize Nested Drop Zones (for layout blocks)
   block.querySelectorAll('.col-drop-zone').forEach(zone => {
     attachDropZoneListeners(zone);
@@ -236,21 +325,17 @@ function attachBlockListeners(block) {
 }
 
 // ── Selection Highlight Engine ──────────────────
-// Only handles visual selection — settings panels are opened by individual block listeners
 document.addEventListener('mousedown', (e) => {
     const block = e.target.closest('.dropped-block');
+    const isSettingsPanel = e.target.closest('[id$="-settings-panel"]') || e.target.closest('.sidebar-right') || e.target.closest('.side-panel') || e.target.closest('.offcanvas');
 
     if (block) {
-        // Visual selection only
-        document.querySelectorAll('.dropped-block').forEach(b => b.classList.remove('is-selected', 'selected'));
-        block.classList.add('is-selected');
-    } else if (
-        !e.target.closest('[contenteditable="true"]') &&
-        !e.target.closest('[id$="-settings-panel"]') &&
-        !e.target.closest('.sidebar-right') &&
-        !e.target.closest('.side-panel') &&
-        !e.target.closest('.offcanvas')
-    ) {
+        // If clicking a block that is NOT already selected, update selection
+        if (!block.classList.contains('selected')) {
+            document.querySelectorAll('.dropped-block').forEach(b => b.classList.remove('is-selected', 'selected'));
+            block.classList.add('is-selected', 'selected');
+        }
+    } else if (!isSettingsPanel && !e.target.closest('[contenteditable="true"]')) {
         // Clicked completely outside — deselect and close panels
         document.querySelectorAll('.dropped-block').forEach(b => b.classList.remove('is-selected', 'selected'));
         if (typeof closeAllPanels === 'function') closeAllPanels();
@@ -283,9 +368,9 @@ document.addEventListener('dragend', (e) => {
     if (block) block.setAttribute('draggable', 'false');
 });
 
-// Prevent drag starting when clicking inside editable areas
+// Prevent drag starting when clicking inside editable or interactive areas
 document.addEventListener('dragstart', (e) => {
-    if (e.target.closest('[contenteditable="true"]')) {
+    if (e.target.closest('[contenteditable="true"], input, textarea, select, button')) {
         e.preventDefault();
         e.stopPropagation();
     }
@@ -362,16 +447,26 @@ function duplicateBlock(originalBlock) {
 // ── Move blocks Up / Down ─────────────────────────────────────────────────────
 
 function moveBlockUp(block) {
-  const prev = block.previousElementSibling;
-  if (prev && !prev.classList.contains('editor-empty-state')) {
-    block.parentNode.insertBefore(block, prev); if (typeof saveHistory === 'function') saveHistory();
+  let prev = block.previousElementSibling;
+  // Skip over non-block helper elements
+  while (prev && (prev.id === 'drop-indicator' || prev.classList.contains('editor-empty-state'))) {
+    prev = prev.previousElementSibling;
+  }
+  if (prev) {
+    block.parentNode.insertBefore(block, prev);
+    if (typeof saveHistory === 'function') saveHistory();
   }
 }
 
 function moveBlockDown(block) {
-  const next = block.nextElementSibling;
+  let next = block.nextElementSibling;
+  // Skip over non-block helper elements
+  while (next && (next.id === 'drop-indicator' || next.classList.contains('editor-empty-state'))) {
+    next = next.nextElementSibling;
+  }
   if (next) {
-    block.parentNode.insertBefore(next, block); if (typeof saveHistory === 'function') saveHistory();
+    block.parentNode.insertBefore(next, block); // Insert next sibling before current block = move current block down
+    if (typeof saveHistory === 'function') saveHistory();
   }
 }
 
@@ -533,6 +628,7 @@ function renderBlockData(data) {
         h1.style.color = data.color || '';
         h1.style.fontSize = data.fontSize || '';
         h1.dataset.cssClasses = data.cssClasses || '';
+        block.dataset.blockType = 'Heading';
       }
       break;
     case 'text':
@@ -609,6 +705,39 @@ function renderBlockData(data) {
         spacer.style.height = data.heightDesktop + 'px';
       }
       break;
+    case 'html':
+      if (typeof dropHTMLBlock === 'function') {
+        block = dropHTMLBlock(true);
+        const htmlEl = block.querySelector('.editor-html');
+        htmlEl.dataset.code = data.code || '';
+        htmlEl.dataset.styleId = data.styleId || '';
+        if (data.code) {
+          htmlEl.innerHTML = data.code;
+        }
+        // Re-apply CSS if it was saved
+        if (data.styleId && data.code) {
+          const style = document.createElement('style');
+          style.id = data.styleId;
+          style.textContent = data.code;
+          document.head.appendChild(style);
+        }
+      }
+      break;
+    case 'css':
+      if (typeof dropCSSBlock === 'function') {
+        block = dropCSSBlock(true);
+        const cssEl = block.querySelector('.editor-css');
+        cssEl.dataset.code = data.code || '';
+        cssEl.dataset.styleId = data.styleId || '';
+        if (data.code) {
+          const style = document.createElement('style');
+          style.id = data.styleId || ('css-' + Math.random().toString(36).substr(2, 9));
+          style.textContent = data.code;
+          document.head.appendChild(style);
+          cssEl.dataset.styleId = style.id;
+        }
+      }
+      break;
     case 'container':
       if (typeof dropContainerBlock === 'function') {
         block = dropContainerBlock(true);
@@ -665,7 +794,27 @@ function renderBlockData(data) {
       }
       break;
     case 'accordion':
-      if (typeof dropAccordionBlock === 'function') block = dropAccordionBlock(true);
+      if (typeof dropAccordionBlock === 'function') {
+        block = dropAccordionBlock(true);
+        const acc = block.querySelector('.editor-accordion');
+        if (data.items) {
+          const container = acc.querySelector('.accordion-items') || acc;
+          container.innerHTML = '';
+          data.items.forEach(itemData => {
+            const item = document.createElement('div');
+            item.className = 'acc-item';
+            item.innerHTML = `<div class="acc-header" contenteditable="true">${itemData.header}</div><div class="acc-content col-drop-zone"></div>`;
+            container.appendChild(item);
+            const contentZone = item.querySelector('.acc-content');
+            if (itemData.blocks) {
+              itemData.blocks.forEach(childData => {
+                const childBlock = renderBlockData(childData);
+                if (childBlock) { contentZone.appendChild(childBlock); attachBlockListeners(childBlock); }
+              });
+            }
+          });
+        }
+      }
       break;
     case 'card':
       if (typeof dropCardBlock === 'function') {
@@ -711,17 +860,124 @@ function renderBlockData(data) {
         if (typeof updateVideoPreview === 'function') updateVideoPreview(v);
       }
       break;
-    case 'carousel':
-      if (typeof dropCarouselBlock === 'function') block = dropCarouselBlock(true);
-      break;
-    case 'tabs':
-      if (typeof dropTabsBlock === 'function') block = dropTabsBlock(true);
+    case 'inventory':
+      if (typeof dropInventoryBlock === 'function') {
+        block = dropInventoryBlock(true);
+        const el = block.querySelector('.editor-inventory');
+        Object.assign(el.dataset, data);
+      }
       break;
     case 'search':
-      if (typeof dropSearchBlock === 'function') block = dropSearchBlock(true);
+      if (typeof dropSearchBlock === 'function') {
+        block = dropSearchBlock(true);
+        const el = block.querySelector('.editor-search');
+        Object.assign(el.dataset, data);
+        if (data.placeholder) {
+          const input = el.querySelector('input');
+          if (input) input.placeholder = data.placeholder;
+        }
+      }
+      break;
+    case 'form':
+      if (typeof dropFormBlock === 'function') {
+        block = dropFormBlock(true);
+        const el = block.querySelector('.editor-form');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'blog':
+      if (typeof dropBlogBlock === 'function') {
+        block = dropBlogBlock(true);
+        const el = block.querySelector('.editor-blog');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'content_block':
+      if (typeof dropContentBlockBlock === 'function') {
+        block = dropContentBlockBlock(true);
+        const el = block.querySelector('.editor-content_block');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'body_types':
+      if (typeof dropBodyTypesBlock === 'function') {
+        block = dropBodyTypesBlock(true);
+        const el = block.querySelector('.editor-body_types');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'plugin':
+      if (typeof dropPluginBlock === 'function') {
+        block = dropPluginBlock(true);
+        const el = block.querySelector('.editor-plugin');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'map_hours':
+      if (typeof dropMapHoursBlock === 'function') {
+        block = dropMapHoursBlock(true);
+        const el = block.querySelector('.editor-map_hours');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'map':
+      if (typeof dropMapBlock === 'function') {
+        block = dropMapBlock(true);
+        const el = block.querySelector('.editor-map');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'carousel':
+      if (typeof dropCarouselBlock === 'function') {
+        block = dropCarouselBlock(true);
+        const el = block.querySelector('.editor-carousel');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'tabs':
+      if (typeof dropTabsBlock === 'function') {
+        block = dropTabsBlock(true);
+        const el = block.querySelector('.editor-tabs');
+        Object.assign(el.dataset, data);
+        const zone = el.querySelector('.col-drop-zone');
+        if (zone && data.blocks) {
+          zone.innerHTML = '';
+          data.blocks.forEach(childData => {
+            const childBlock = renderBlockData(childData);
+            if (childBlock) { zone.appendChild(childBlock); attachBlockListeners(childBlock); }
+          });
+        }
+      }
+      break;
+    case 'overlay':
+      if (typeof dropOverlayBlock === 'function') {
+        block = dropOverlayBlock(true);
+        const el = block.querySelector('.editor-overlay');
+        Object.assign(el.dataset, data);
+        const zone = el.querySelector('.col-drop-zone');
+        if (zone && data.blocks) {
+          zone.innerHTML = '';
+          data.blocks.forEach(childData => {
+            const childBlock = renderBlockData(childData);
+            if (childBlock) { zone.appendChild(childBlock); attachBlockListeners(childBlock); }
+          });
+        }
+      }
       break;
     case 'cart':
-      if (typeof dropCartBlock === 'function') block = dropCartBlock(true);
+      if (typeof dropCartBlock === 'function') {
+        block = dropCartBlock(true);
+        const el = block.querySelector('.editor-cart');
+        if (data.text) {
+            const span = el.querySelector('span');
+            if (span) span.textContent = data.text;
+        }
+        // Cart usually doesn't have a direct href on the div, but we can store it in dataset
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'iframe':
+      if (typeof dropIFrameBlock === 'function') block = dropIFrameBlock(true);
       break;
     case 'html-css':
       if (typeof dropHtmlCssBlock === 'function') block = dropHtmlCssBlock(true);

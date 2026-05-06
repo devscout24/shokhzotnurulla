@@ -75,7 +75,7 @@ function dropContainerBlock(returnBlock = false) {
     </div>
     <div class="dropped-block-inner" style="background: transparent; border: none; padding: 0;">
       <div class="editor-container col-drop-zone" style="min-height: 100px; padding: 40px; background: #ffffff; width: 100%;">
-        <p contenteditable="true" spellcheck="false" style="margin:0; color:#6c757d; font-size:14px; min-height:24px; outline:none;">Add content here or drag blocks...</p>
+        <p contenteditable="true" spellcheck="false" data-placeholder="Add content here or drag blocks..." style="margin:0; color:#6c757d; font-size:14px; min-height:24px; outline:none;"></p>
       </div>
     </div>`;
 
@@ -85,23 +85,21 @@ function dropContainerBlock(returnBlock = false) {
   if (containerEl) {
     attachDropZoneListeners(containerEl);
     
-    // Remove placeholder when user starts typing or adds blocks
+    // Handle placeholder behavior
     if (placeholderText) {
-      placeholderText.addEventListener('beforeinput', () => {
-        if (placeholderText.textContent.trim() === 'Add content here or drag blocks...') {
-          placeholderText.textContent = '';
+      placeholderText.classList.add('is-placeholder');
+      
+      // Hide the CSS-based placeholder if the container has dropped blocks
+      const observer = new MutationObserver(() => {
+        const hasBlocks = containerEl.querySelector('.dropped-block') !== null;
+        if (hasBlocks) {
+          placeholderText.classList.add('d-none');
+        } else {
+          placeholderText.classList.remove('d-none');
         }
       });
+      observer.observe(containerEl, { childList: true, subtree: true });
     }
-    
-    // Watch for added blocks and hide placeholder
-    const observer = new MutationObserver(() => {
-      const hasBlocks = containerEl.querySelector('.dropped-block') !== null;
-      if (hasBlocks && placeholderText) {
-        placeholderText.style.display = 'none';
-      }
-    });
-    observer.observe(containerEl, { childList: true, subtree: true });
   }
 
   if (returnBlock) return block;

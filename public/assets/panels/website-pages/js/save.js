@@ -20,9 +20,12 @@ function collectBlocksFromContainer(container) {
   if (!container) return [];
   const payload = [];
   
-  const children = container.querySelectorAll(':scope > .dropped-block, :scope > h1, :scope > p, :scope > .dropped-btn, :scope > .editor-image, :scope > .editor-divider, :scope > .editor-spacer, :scope > .editor-icon, :scope > .editor-iframe, :scope > .editor-cart, :scope > span, :scope > .editor-accordion, :scope > .editor-2col, :scope > .editor-3col, :scope > .editor-container');
+  const children = container.querySelectorAll(':scope > .dropped-block, :scope > h1, :scope > p, :scope > .dropped-btn, :scope > .editor-image, :scope > .editor-divider, :scope > .editor-spacer, :scope > .editor-icon, :scope > .editor-iframe, :scope > .editor-cart, :scope > span, :scope > .editor-accordion, :scope > .editor-2col, :scope > .editor-3col, :scope > .editor-container, :scope > .editor-inventory, :scope > .editor-search, :scope > .editor-form, :scope > .editor-blog, :scope > .editor-content_block, :scope > .editor-body_types, :scope > .editor-map_hours, :scope > .editor-plugin, :scope > .editor-carousel, :scope > .editor-tabs, :scope > .editor-overlay');
 
   children.forEach((el, index) => {
+    // Skip hidden placeholders
+    if (el.style.display === 'none') return;
+
     const data = extractBlockData(el, index);
     if (data) payload.push(data);
   });
@@ -33,8 +36,15 @@ function collectBlocksFromContainer(container) {
 function extractBlockData(el, index) {
   let target = el;
   if (el.classList.contains('dropped-block')) {
-    target = el.querySelector(':scope > .dropped-block-inner > *');
-    if (!target) target = el.querySelector('.editor-card');
+    const inner = el.querySelector(':scope > .dropped-block-inner');
+    // For specialized blocks (HTML, CSS, Inventory, etc.), the 'editor-' class is on the wrapper itself.
+    // For basic blocks (Heading, Text, etc.), it's on a child of the wrapper.
+    if (inner && Array.from(inner.classList).some(c => c.startsWith('editor-'))) {
+        target = inner;
+    } else {
+        target = inner ? (inner.querySelector(':scope > *') || inner) : el;
+    }
+    if (!target && !inner) target = el.querySelector('.editor-card');
   }
 
   if (!target) return null;
@@ -201,7 +211,27 @@ function extractBlockData(el, index) {
     };
   }
 
-  // 11. Video
+  // 10. HTML Block
+  if (target.classList.contains('editor-html')) {
+    return {
+      index,
+      type: 'html',
+      code: target.dataset.code || '',
+      styleId: target.dataset.styleId || ''
+    };
+  }
+
+  // 11. CSS Block
+  if (target.classList.contains('editor-css')) {
+    return {
+      index,
+      type: 'css',
+      code: target.dataset.code || '',
+      styleId: target.dataset.styleId || ''
+    };
+  }
+
+  // 12. Video
   if (target.classList.contains('editor-video')) {
     return {
       index,
@@ -288,6 +318,24 @@ function extractBlockData(el, index) {
       top: blockParent ? blockParent.style.top : '',
       left: blockParent ? blockParent.style.left : ''
     };
+  }
+
+  // 15. Specialized Overfuel Blocks (generic handler for those with simple datasets)
+  const types = ['inventory', 'search', 'form', 'blog', 'content_block', 'body_types', 'map_hours', 'map', 'plugin', 'carousel', 'tabs', 'overlay'];
+  for (const type of types) {
+    if (target.classList.contains('editor-' + type)) {
+      const result = { index, type };
+      // Copy all data attributes
+      Object.assign(result, target.dataset);
+      
+      // Special case for Tabs / Overlay which might have nested blocks
+      if (type === 'tabs' || type === 'overlay') {
+          const zone = target.querySelector('.col-drop-zone');
+          if (zone) result.blocks = collectBlocksFromContainer(zone);
+      }
+      
+      return result;
+    }
   }
 
   return null;

@@ -212,6 +212,30 @@
                 div.appendChild(videoWrapper);
                 break;
 
+            case 'html':
+                const htmlDiv = document.createElement('div');
+                htmlDiv.innerHTML = data.code || '';
+                div.appendChild(htmlDiv);
+                break;
+
+            case 'css':
+                if (data.code) {
+                    const style = document.createElement('style');
+                    style.textContent = data.code;
+                    document.head.appendChild(style);
+                }
+                return null;
+
+            case 'iframe':
+                const ifr = document.createElement('iframe');
+                ifr.src = data.src || '';
+                ifr.title = data.title || 'iFrame';
+                ifr.style.width = '100%';
+                ifr.style.border = 'none';
+                ifr.height = data.height || 300;
+                div.appendChild(ifr);
+                break;
+
             default:
                 console.log('Unknown block type:', data.type);
                 return null;

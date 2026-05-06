@@ -24,9 +24,10 @@ document.getElementById('html-code')?.addEventListener('input', e => {
         activeEl.dataset.code = e.target.value;
         // Render HTML code safely
         try {
-            activeEl.innerHTML = e.target.value || '<div style="padding:10px;background:#f8f9fa;border-radius:4px;font-family:monospace;font-size:13px;color:#999">&lt;!-- Enter HTML code here --&gt;</div>';
+            // Clear existing content and render new HTML
+            activeEl.innerHTML = e.target.value || '<div style="padding:15px;background:#f0f9ff;border-radius:4px;border:2px dashed #0ea5e9;font-family:monospace;font-size:12px;color:#0369a1;text-align:center"><i class="fa-solid fa-code" style="display:block;font-size:20px;margin-bottom:8px"></i>Click to add HTML code</div>';
         } catch(err) {
-            activeEl.innerHTML = '<div style="padding:10px;background:#fff5f5;border-radius:4px;font-family:monospace;font-size:13px;color:#c0392b">❌ Invalid HTML</div>';
+            activeEl.innerHTML = '<div style="padding:15px;background:#fff5f5;border-radius:4px;border:2px dashed #c0392b;font-family:monospace;font-size:12px;color:#c0392b;text-align:center"><i class="fa-solid fa-exclamation-triangle" style="display:block;font-size:20px;margin-bottom:8px"></i>❌ Invalid HTML</div>';
         }
         if (typeof saveHistory === 'function') saveHistory();
     }
@@ -35,14 +36,16 @@ document.getElementById('css-code')?.addEventListener('input', e => {
     if (activeEl) {
         activeEl.dataset.code = e.target.value;
         // Apply CSS code to a style tag or the element itself
-        let styleId = 'html-css-' + Math.random().toString(36).substr(2, 9);
-        let existingStyle = document.getElementById(styleId);
-        if (existingStyle) existingStyle.remove();
-        
+        let styleId = activeEl.dataset.styleId;
+        if (styleId) {
+            let existingStyle = document.getElementById(styleId);
+            if (existingStyle) existingStyle.remove();
+        }
+
         if (e.target.value) {
             const style = document.createElement('style');
+            styleId = 'html-css-' + Math.random().toString(36).substr(2, 9);
             style.id = styleId;
-            // Add scope to CSS rules to target elements inside this block
             style.textContent = e.target.value;
             document.head.appendChild(style);
             activeEl.dataset.styleId = styleId;
