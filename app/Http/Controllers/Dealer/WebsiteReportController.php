@@ -763,6 +763,33 @@ class WebsiteReportController extends Controller
                 fclose($handle);
             }, $filename, ['Content-Type' => 'text/csv']);
 
+        } elseif ($type === 'states') {
+            $logs = $query->get();
+            $totalHits = $logs->count() ?: 1;
+            
+            $states = $logs->groupBy('state')->map(function($hits) use ($totalHits) {
+                $first = $hits->first();
+                $count = $hits->count();
+                return (object) [
+                    'region' => $first->state,
+                    'regioncode' => '', // Region code not currently stored
+                    'country' => $first->country,
+                    'count' => $count,
+                    'pct' => number_format(($count / $totalHits) * 100, 2) . '%',
+                    'icon' => 'map'
+                ];
+            })->sortByDesc('count')->values();
+
+            $filename = "states-" . now()->format('Y-m-d') . ".csv";
+            return response()->streamDownload(function () use ($states) {
+                $handle = fopen('php://output', 'w');
+                fputcsv($handle, ['region', 'regioncode', 'country', 'count', 'pct', 'icon']);
+                foreach ($states as $s) {
+                    fputcsv($handle, [$s->region, $s->regioncode, $s->country, $s->count, $s->pct, $s->icon]);
+                }
+                fclose($handle);
+            }, $filename, ['Content-Type' => 'text/csv']);
+
         } else {
             $stats = $query->selectRaw($field . ' as value, COUNT(*) as page_views')
                 ->groupBy('value')
