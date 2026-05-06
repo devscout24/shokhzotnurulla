@@ -669,6 +669,100 @@ class WebsiteReportController extends Controller
                 fclose($handle);
             }, $filename, ['Content-Type' => 'text/csv']);
 
+        } elseif ($type === 'platforms') {
+            $logs = $query->get();
+            $totalHits = $logs->count() ?: 1;
+            
+            $platforms = $logs->groupBy('device_type')->map(function($hits) use ($totalHits) {
+                $type = $hits->first()->device_type;
+                $count = $hits->count();
+                return (object) [
+                    'platform' => match($type) {
+                        'mobile' => 'Smartphone',
+                        'tablet' => 'Tablet',
+                        'desktop' => 'Desktop',
+                        default => ucfirst($type)
+                    },
+                    'count' => $count,
+                    'pct' => number_format(($count / $totalHits) * 100, 2) . '%',
+                    'icon' => match($type) {
+                        'mobile' => 'phone',
+                        'tablet' => 'tablet',
+                        'desktop' => 'display',
+                        default => 'laptop'
+                    }
+                ];
+            })->sortByDesc('count')->values();
+
+            $filename = "platforms-" . now()->format('Y-m-d') . ".csv";
+            return response()->streamDownload(function () use ($platforms) {
+                $handle = fopen('php://output', 'w');
+                fputcsv($handle, ['platform', 'count', 'pct', 'icon']);
+                foreach ($platforms as $p) {
+                    fputcsv($handle, [$p->platform, $p->count, $p->pct, $p->icon]);
+                }
+                fclose($handle);
+            }, $filename, ['Content-Type' => 'text/csv']);
+
+        } elseif ($type === 'devices') {
+            $logs = $query->get();
+            $totalHits = $logs->count() ?: 1;
+            
+            $devices = $logs->groupBy(function($log) {
+                return $log->device_brand . ' ' . $log->device_model;
+            })->map(function($hits) use ($totalHits) {
+                $first = $hits->first();
+                $count = $hits->count();
+                $brand = $first->device_brand;
+                return (object) [
+                    'brand' => $brand,
+                    'model' => $first->device_model,
+                    'count' => $count,
+                    'pct' => number_format(($count / $totalHits) * 100, 2) . '%',
+                    'icon' => match(true) {
+                        Str::contains(strtolower($brand), 'apple') => 'apple',
+                        Str::contains(strtolower($brand), 'samsung') => 'phone',
+                        Str::contains(strtolower($brand), 'google') => 'android',
+                        default => 'laptop'
+                    }
+                ];
+            })->sortByDesc('count')->values();
+
+            $filename = "devices-" . now()->format('Y-m-d') . ".csv";
+            return response()->streamDownload(function () use ($devices) {
+                $handle = fopen('php://output', 'w');
+                fputcsv($handle, ['brand', 'model', 'count', 'pct', 'icon']);
+                foreach ($devices as $d) {
+                    fputcsv($handle, [$d->brand, $d->model, $d->count, $d->pct, $d->icon]);
+                }
+                fclose($handle);
+            }, $filename, ['Content-Type' => 'text/csv']);
+
+        } elseif ($type === 'countries') {
+            $logs = $query->get();
+            $totalHits = $logs->count() ?: 1;
+            
+            $countries = $logs->groupBy('country')->map(function($hits) use ($totalHits) {
+                $name = $hits->first()->country;
+                $count = $hits->count();
+                return (object) [
+                    'country' => $name,
+                    'count' => $count,
+                    'pct' => number_format(($count / $totalHits) * 100, 2) . '%',
+                    'icon' => strtolower($name) === 'united states' ? 'us' : 'globe'
+                ];
+            })->sortByDesc('count')->values();
+
+            $filename = "countries-" . now()->format('Y-m-d') . ".csv";
+            return response()->streamDownload(function () use ($countries) {
+                $handle = fopen('php://output', 'w');
+                fputcsv($handle, ['country', 'count', 'pct', 'icon']);
+                foreach ($countries as $c) {
+                    fputcsv($handle, [$c->country, $c->count, $c->pct, $c->icon]);
+                }
+                fclose($handle);
+            }, $filename, ['Content-Type' => 'text/csv']);
+
         } else {
             $stats = $query->selectRaw($field . ' as value, COUNT(*) as page_views')
                 ->groupBy('value')
