@@ -644,6 +644,31 @@ class WebsiteReportController extends Controller
                 fclose($handle);
             }, $filename, ['Content-Type' => 'text/csv']);
 
+        } elseif (in_array($type, ['top-entry-pages', 'top-exit-pages'])) {
+            $logs = $query->orderBy('created_at', $type === 'top-entry-pages' ? 'asc' : 'desc')->get();
+            $pages = $logs->groupBy('session_id')->map(function($hits) {
+                return parse_url($hits->first()->url, PHP_URL_PATH) ?: '/';
+            });
+
+            $totalSessions = $pages->count() ?: 1;
+            $stats = $pages->countBy()->map(function ($count, $path) use ($totalSessions) {
+                return (object) [
+                    'path' => $path,
+                    'count' => $count,
+                    'pct' => number_format(($count / $totalSessions) * 100, 2) . '%'
+                ];
+            })->sortByDesc('count')->values();
+
+            $filename = "{$type}-" . now()->format('Y-m-d') . ".csv";
+            return response()->streamDownload(function () use ($stats) {
+                $handle = fopen('php://output', 'w');
+                fputcsv($handle, ['path', 'count', 'pct']);
+                foreach ($stats as $s) {
+                    fputcsv($handle, [$s->path, $s->count, $s->pct]);
+                }
+                fclose($handle);
+            }, $filename, ['Content-Type' => 'text/csv']);
+
         } else {
             $stats = $query->selectRaw($field . ' as value, COUNT(*) as page_views')
                 ->groupBy('value')
