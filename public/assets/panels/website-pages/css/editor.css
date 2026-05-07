@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 .of-master-frame {
     display: flex;
     flex-direction: column;
@@ -226,6 +230,9 @@
     font-weight: 800;
     color: #1a1f36;
     font-size: 32px;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .editor-text p {
@@ -233,6 +240,8 @@
     color: #4f566b;
     font-size: 16px;
     line-height: 1.6;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* ── Sidebar Left (Navigation) ── */
@@ -353,5 +362,22 @@
     color: #1e293b;
 }
 
-z-index: 10;
+/* ── Column & Layout Fixes ── */
+.col-drop-zone {
+    overflow: hidden;
+    word-wrap: break-word;
+    min-width: 0;
+}
+
+.dropped-block-inner {
+    max-width: 100%;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.dropped-block h1, .dropped-block h2, .dropped-block h3, .dropped-block p {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
