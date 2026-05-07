@@ -411,8 +411,10 @@
                             <div class="fw-bold bg-lighter card-header d-flex justify-content-between align-items-center py-3 border-0"
                                 style="background:transparent">
                                 <span class="small text-muted text-uppercase fw-bolder"
-                                    style="letter-spacing:1px">Document</span>
+                                    style="letter-spacing:1px">Content Editor</span>
                                 <div class="d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-light btn-sm px-3" title="Export"><i class="fa-solid fa-download"></i></button>
+                                    <button type="button" class="btn btn-light btn-sm px-3" title="Import"><i class="fa-solid fa-upload"></i></button>
                                     <div class="btn-group bg-white border shadow-sm"
                                         style="border-radius:6px; overflow:hidden">
                                         <button type="button" class="btn btn-light btn-sm border-end px-3" id="btn-undo"
@@ -425,7 +427,7 @@
                             <div class="p-0">
                                 <div id="content-editor-zone">
                                     <div class="editor-empty-state" id="empty-state"><span
-                                            class="editor-empty-badge">Document</span><input class="editor-empty-input"
+                                            class="editor-empty-badge">Content Editor</span><input class="editor-empty-input"
                                             placeholder="" readonly /></div>
                                     <div id="blocks-container" style="min-height:1000px"></div>
                                 </div>
@@ -661,6 +663,7 @@
     <script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/export-import.js') }}?v=6.0"></script>
 
     <script>
         // Sync Top Bar Status

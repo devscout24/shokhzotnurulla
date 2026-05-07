@@ -389,6 +389,7 @@ setInterval(() => {
 <script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=5.4"></script>
 <script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=5.4"></script>
 <script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=5.4"></script>
+<script src="{{ asset('assets/panels/website-pages/js/export-import.js') }}?v=5.4"></script>
 
 <script>
 // NUCLEAR FOCUS FIX: High-priority mousedown listener
