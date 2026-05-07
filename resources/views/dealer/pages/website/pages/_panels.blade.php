@@ -304,6 +304,7 @@ $visibilityHtml = '
 <div id="divider-settings-panel" style="display:none">
 <button type="button" class="hs-back-btn" id="ds-back-btn"><i class="fa-solid fa-arrow-left"></i> Divider Settings</button>
 <div class="hs-row"><label>Color</label><input class="hs-input" id="ds-color" type="color" value="#e0e6ed" style="height:40px;padding:2px"/></div>
+<div class="hs-row"><label>Width (%)</label><input class="hs-input" id="ds-width" type="number" value="100" min="1" max="100"/></div>
 <div class="hs-row"><label>Height (px)</label><input class="hs-input" id="ds-height" type="number" value="1" min="1" max="20"/></div>
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
