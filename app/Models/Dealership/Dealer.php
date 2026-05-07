@@ -36,7 +36,7 @@ class Dealer extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name',
+        'company_name',
         'slug',
         'email',
         'phone',
@@ -57,6 +57,7 @@ class Dealer extends Model
         'banner_bg_color',
         'banner_desktop_media_id',
         'banner_mobile_media_id',
+        'status',
     ];
 
     protected function casts(): array
@@ -64,6 +65,7 @@ class Dealer extends Model
         return [
             'is_active' => 'boolean',
             'social_links' => AsArrayObject::class,
+            'status' => \App\Enums\DealerStatus::class,
         ];
     }
 

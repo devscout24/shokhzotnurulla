@@ -14,25 +14,43 @@ class DealerObserver
     public function created(Dealer $dealer): void
     {
         Cache::forget("dealer_{$dealer->id}_frontend_settings");
+        if ($dealer->domain) {
+            \App\Services\Website\WebResolver::clearCache($dealer->domain);
+        }
     }
 
     public function updated(Dealer $dealer): void
     {
         Cache::forget("dealer_{$dealer->id}_frontend_settings");
+        if ($dealer->domain) {
+            \App\Services\Website\WebResolver::clearCache($dealer->domain);
+        }
+        if ($dealer->isDirty('domain')) {
+            \App\Services\Website\WebResolver::clearCache($dealer->getOriginal('domain'));
+        }
     }
 
     public function deleted(Dealer $dealer): void
     {
         Cache::forget("dealer_{$dealer->id}_frontend_settings");
+        if ($dealer->domain) {
+            \App\Services\Website\WebResolver::clearCache($dealer->domain);
+        }
     }
 
     public function restored(Dealer $dealer): void
     {
         Cache::forget("dealer_{$dealer->id}_frontend_settings");
+        if ($dealer->domain) {
+            \App\Services\Website\WebResolver::clearCache($dealer->domain);
+        }
     }
 
     public function forceDeleted(Dealer $dealer): void
     {
         Cache::forget("dealer_{$dealer->id}_frontend_settings");
+        if ($dealer->domain) {
+            \App\Services\Website\WebResolver::clearCache($dealer->domain);
+        }
     }
 }

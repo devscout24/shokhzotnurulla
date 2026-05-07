@@ -35,7 +35,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
 class Vehicle extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, \App\Traits\BelongsToDealer;
 
     protected $fillable = [
         'dealer_id',
@@ -91,10 +91,6 @@ class Vehicle extends Model
 
     // ─── Relationships — Dealership ───────────────────────────────────────────
 
-    public function dealer(): BelongsTo
-    {
-        return $this->belongsTo(Dealer::class);
-    }
 
     // ─── Relationships — Catalog ──────────────────────────────────────────────
 
