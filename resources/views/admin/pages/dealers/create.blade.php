@@ -77,10 +77,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Domain</label>
-                    <input type="text" name="domain" class="form-control" value="{{ old('domain') }}" placeholder="e.g. luxurymotors.com" required>
-                    @error('domain') <div class="text-danger">{{ $message }}</div> @enderror
-                    <p style="font-size: 11px; color: #888; margin-top: 5px;">This domain will be used to resolve the dealer context for the frontend.</p>
+                    <label class="form-label">Domains</label>
+                    <div id="domains-container">
+                        <div class="domain-input-wrapper" style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <input type="text" name="domains[]" class="form-control" placeholder="e.g. luxurymotors.com" required>
+                            <button type="button" class="btn-action" onclick="addDomainRow()" style="padding: 10px;"><i class="bi bi-plus"></i></button>
+                        </div>
+                    </div>
+                    @error('domains') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('domains.*') <div class="text-danger">{{ $message }}</div> @enderror
+                    <p style="font-size: 11px; color: #888; margin-top: 5px;">You can add multiple domains. All will resolve to this dealer's data.</p>
                 </div>
 
                 <div class="form-group">
@@ -104,3 +110,21 @@
     </div>
 </main>
 @endsection
+
+@push('page-scripts')
+<script>
+    function addDomainRow() {
+        const container = document.getElementById('domains-container');
+        const div = document.createElement('div');
+        div.className = 'domain-input-wrapper';
+        div.style.display = 'flex';
+        div.style.gap = '8px';
+        div.style.marginBottom = '8px';
+        div.innerHTML = `
+            <input type="text" name="domains[]" class="form-control" placeholder="e.g. sub.domain.com" required>
+            <button type="button" class="btn-action text-danger" onclick="this.parentElement.remove()" style="padding: 10px;"><i class="bi bi-trash"></i></button>
+        `;
+        container.appendChild(div);
+    }
+</script>
+@endpush

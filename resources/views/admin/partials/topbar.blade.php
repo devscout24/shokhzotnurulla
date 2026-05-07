@@ -33,6 +33,10 @@
                     <i class="bi bi-chevron-down"></i>
                 </button>
                 <div class="settings-menu" id="settingsMenu" role="menu" aria-hidden="true">
+                    <a href="{{ route('admin.profile.edit') }}" class="settings-item">
+                        <i class="bi bi-person me-2"></i>{{ __('My Profile') }}
+                    </a>
+                    <div class="settings-divider" style="height: 1px; background: #eee; margin: 4px 0;"></div>
                     <a href="javascript:void(0)" class="settings-item logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="bi bi-box-arrow-right me-2"></i>{{ __('Logout') }}
                     </a>

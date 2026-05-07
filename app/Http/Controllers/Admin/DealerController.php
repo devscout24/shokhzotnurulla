@@ -25,16 +25,30 @@ class DealerController extends Controller
     {
         $validated = $request->validate([
             'company_name' => 'required|string|max:50',
-            'domain' => 'required|string|unique:dealers,domain',
             'email' => 'nullable|email',
             'phone' => 'nullable|string|max:16',
+            'domains' => 'required|array|min:1',
+            'domains.*' => 'required|string|unique:domains,domain',
         ]);
 
-        $validated['slug'] = Str::slug($validated['company_name']);
-        $validated['status'] = DealerStatus::ACTIVE;
-        $validated['is_active'] = true;
+        $dealerData = [
+            'company_name' => $validated['company_name'],
+            'slug' => Str::slug($validated['company_name']),
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'status' => DealerStatus::ACTIVE,
+            'is_active' => true,
+            'domain' => $validated['domains'][0], // Set the first one as the primary on dealer table too
+        ];
 
-        Dealer::create($validated);
+        $dealer = Dealer::create($dealerData);
+
+        foreach ($validated['domains'] as $index => $domainName) {
+            $dealer->domains()->create([
+                'domain' => $domainName,
+                'is_primary' => $index === 0,
+            ]);
+        }
 
         return redirect()->route('admin.dealers.index')->with('success', 'Dealer created successfully.');
     }
@@ -48,17 +62,30 @@ class DealerController extends Controller
     {
         $validated = $request->validate([
             'company_name' => 'required|string|max:50',
-            'domain' => 'required|string|unique:dealers,domain,' . $dealer->id,
             'email' => 'nullable|email',
             'phone' => 'nullable|string|max:16',
             'status' => 'required|string',
+            'domains' => 'required|array|min:1',
+            'domains.*' => 'required|string|unique:domains,domain,' . $dealer->id . ',dealer_id',
         ]);
 
-        $dealer->update($validated);
-        
-        // Sync is_active for backward compatibility if needed
-        $dealer->is_active = $dealer->status === DealerStatus::ACTIVE;
-        $dealer->save();
+        $dealer->update([
+            'company_name' => $validated['company_name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'status' => $validated['status'],
+            'is_active' => $validated['status'] === DealerStatus::ACTIVE->value,
+            'domain' => $validated['domains'][0],
+        ]);
+
+        // Sync domains
+        $dealer->domains()->delete();
+        foreach ($validated['domains'] as $index => $domainName) {
+            $dealer->domains()->create([
+                'domain' => $domainName,
+                'is_primary' => $index === 0,
+            ]);
+        }
 
         return redirect()->route('admin.dealers.index')->with('success', 'Dealer updated successfully.');
     }

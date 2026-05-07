@@ -16,4 +16,10 @@ Route::prefix('admin')
         Route::patch('dealers/{dealer}/toggle-status', [\App\Http\Controllers\Admin\DealerController::class, 'toggleStatus'])
             ->name('dealers.toggle-status');
 
+        // Profile
+        Route::get('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'edit'])
+            ->name('profile.edit');
+        Route::put('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])
+            ->name('profile.update');
+
     });
