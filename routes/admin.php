@@ -22,4 +22,12 @@ Route::prefix('admin')
         Route::put('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])
             ->name('profile.update');
 
+        // Integrations
+        Route::get('dealers/{dealer}/integrations', [\App\Http\Controllers\Admin\IntegrationController::class, 'index'])
+            ->name('dealers.integrations.index');
+        Route::post('dealers/{dealer}/integrations', [\App\Http\Controllers\Admin\IntegrationController::class, 'save'])
+            ->name('dealers.integrations.save');
+        Route::post('integrations/{integration}/test', [\App\Http\Controllers\Admin\IntegrationController::class, 'test'])
+            ->name('dealers.integrations.test');
+
     });

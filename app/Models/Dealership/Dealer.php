@@ -161,6 +161,11 @@ class Dealer extends Model
         return $this->hasOne(DigitalRetailSetting::class);
     }
 
+    public function integrations(): HasMany
+    {
+        return $this->hasMany(DealerIntegration::class);
+    }
+
     // ── Scoped Queries (not relations) ────────────────────────────────
 
     public function roles(): Builder

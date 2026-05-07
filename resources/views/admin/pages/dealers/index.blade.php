@@ -123,6 +123,10 @@
                                 <a href="{{ route('admin.dealers.edit', $dealer) }}" class="btn-action">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
+
+                                <a href="{{ route('admin.dealers.integrations.index', $dealer) }}" class="btn-action">
+                                    <i class="bi bi-plug"></i> Integrations
+                                </a>
                                 
                                 <form action="{{ route('admin.dealers.toggle-status', $dealer) }}" method="POST">
                                     @csrf

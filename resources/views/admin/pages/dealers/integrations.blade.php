@@ -1,0 +1,194 @@
+@extends('layouts.admin.app')
+
+@section('title', __('Integrations') . ' | ' . $dealer->company_name)
+
+@push('page-styles')
+<style>
+    .integration-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .integration-card {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .integration-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .integration-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .integration-logo {
+        height: 32px;
+        width: auto;
+    }
+    .status-badge {
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+    .status-configured { background: #e6f4ea; color: #1e8e3e; }
+    .status-not-configured { background: #f1f3f4; color: #5f6368; }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-label { display: block; font-size: 12px; font-weight: 600; color: #666; margin-bottom: 5px; }
+    .form-control { width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; }
+    
+    .btn-test { background: #f8f9fa; border: 1px solid #ddd; color: #444; padding: 8px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+    .btn-save { background: #c0392b; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+</style>
+@endpush
+
+@section('page-content')
+<main class="main-content">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2 class="view-title">API Integrations</h2>
+            <p style="color: #666; font-size: 14px;">Managing services for <strong>{{ $dealer->company_name }}</strong></p>
+        </div>
+        <a href="{{ route('admin.dealers.edit', $dealer) }}" class="btn-test" style="text-decoration: none;">Back to Dealer</a>
+    </div>
+
+    <div class="integration-grid">
+        <!-- Carfax -->
+        <div class="integration-card" id="card-carfax">
+            <div class="integration-header">
+                <h3 style="font-size: 16px; margin: 0;">Carfax</h3>
+                <span class="status-badge {{ $dealer->integrations->where('provider', 'carfax')->first() ? 'status-configured' : 'status-not-configured' }}">
+                    {{ $dealer->integrations->where('provider', 'carfax')->first() ? 'Configured' : 'Not Configured' }}
+                </span>
+            </div>
+            <form class="integration-form" data-provider="carfax">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="settings[username]" class="form-control" value="{{ $dealer->integrations->where('provider', 'carfax')->first()?->settings['username'] ?? '' }}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="settings[password]" class="form-control" placeholder="••••••••">
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                    <button type="button" class="btn-test test-connection" data-provider="carfax">Test Connection</button>
+                    <button type="submit" class="btn-save">Save Settings</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 700Credit -->
+        <div class="integration-card" id="card-700credit">
+            <div class="integration-header">
+                <h3 style="font-size: 16px; margin: 0;">700Credit</h3>
+                <span class="status-badge {{ $dealer->integrations->where('provider', '700credit')->first() ? 'status-configured' : 'status-not-configured' }}">
+                    {{ $dealer->integrations->where('provider', '700credit')->first() ? 'Configured' : 'Not Configured' }}
+                </span>
+            </div>
+            <form class="integration-form" data-provider="700credit">
+                <div class="form-group">
+                    <label class="form-label">API Key</label>
+                    <input type="text" name="settings[api_key]" class="form-control" value="{{ $dealer->integrations->where('provider', '700credit')->first()?->settings['api_key'] ?? '' }}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Dealer Code</label>
+                    <input type="text" name="settings[dealer_code]" class="form-control" value="{{ $dealer->integrations->where('provider', '700credit')->first()?->settings['dealer_code'] ?? '' }}">
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                    <button type="button" class="btn-test test-connection" data-provider="700credit">Test Connection</button>
+                    <button type="submit" class="btn-save">Save Settings</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+@endsection
+
+@push('page-scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Handle Form Submission
+        $('.integration-form').on('submit', function(e) {
+            e.preventDefault();
+            const $form = $(this);
+            const provider = $form.data('provider');
+            const formData = $form.serializeArray();
+            
+            // Construct the data object
+            const data = {
+                provider: provider,
+                is_active: true,
+                settings: {},
+                _token: '{{ csrf_token() }}'
+            };
+            
+            formData.forEach(item => {
+                if (item.name.startsWith('settings[')) {
+                    const key = item.name.match(/\[(.*?)\]/)[1];
+                    data.settings[key] = item.value;
+                }
+            });
+
+            $.ajax({
+                url: '{{ route("admin.dealers.integrations.save", $dealer) }}',
+                method: 'POST',
+                data: data,
+                success: function(response) {
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON?.message || 'Error saving settings.');
+                }
+            });
+        });
+
+        // Handle Connection Testing
+        $('.test-connection').on('click', function() {
+            const provider = $(this).data('provider');
+            const $btn = $(this);
+            $btn.text('Testing...').prop('disabled', true);
+
+            // First save current values before testing
+            const $form = $btn.closest('form');
+            const formData = $form.serializeArray();
+            const data = {
+                provider: provider,
+                settings: {},
+                test_connection: true,
+                _token: '{{ csrf_token() }}'
+            };
+            
+            formData.forEach(item => {
+                if (item.name.startsWith('settings[')) {
+                    const key = item.name.match(/\[(.*?)\]/)[1];
+                    data.settings[key] = item.value;
+                }
+            });
+
+            $.ajax({
+                url: '{{ route("admin.dealers.integrations.save", $dealer) }}',
+                method: 'POST',
+                data: data,
+                success: function(response) {
+                    alert(response.message);
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON?.message || 'Connection failed.');
+                },
+                complete: function() {
+                    $btn.text('Test Connection').prop('disabled', false);
+                }
+            });
+        });
+    });
+</script>
+@endpush

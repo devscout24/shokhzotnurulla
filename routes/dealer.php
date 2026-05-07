@@ -393,6 +393,7 @@ Route::prefix('dealer')->name('dealer.')
 
         Route::prefix('connections')->name('connections.')->group(function () {
             Route::get('/apps', [ConnectionController::class, 'apps'])->name('apps');
+            Route::post('/apps/save', [ConnectionController::class, 'saveIntegration'])->name('apps.save');
             Route::get('/links', [ConnectionController::class, 'links'])->name('links');
         });
 
