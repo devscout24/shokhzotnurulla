@@ -15,6 +15,7 @@ function openImageSettings(el) {
   document.getElementById('is-width').value = el.style.width ? parseInt(el.style.width) : 100;
   document.getElementById('is-height').value = el.style.height && el.style.height !== 'auto' ? parseInt(el.style.height) : '';
   document.getElementById('is-opacity').value = el.style.opacity || 1;
+  document.getElementById('is-free').checked = block.classList.contains('free-moving');
 
   const wrapper = el.closest('.dropped-block-inner');
   const jc = wrapper ? wrapper.style.justifyContent : 'flex-start';
@@ -23,6 +24,12 @@ function openImageSettings(el) {
   
   document.querySelectorAll('.is-align-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.align === curAlign);
+  });
+
+  // Sync Float
+  const curFloat = block.style.float || 'none';
+  document.querySelectorAll('.is-float-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.float === curFloat);
   });
 }
 
@@ -49,6 +56,25 @@ document.getElementById('is-height')?.addEventListener('input', e => {
 });
 document.getElementById('is-opacity')?.addEventListener('input', e => { if(activeEl) { activeEl.style.opacity = e.target.value; if(typeof saveHistory === 'function') saveHistory(); } });
 
+// Free Position
+document.getElementById('is-free')?.addEventListener('change', e => {
+  if (activeEl) {
+    const block = activeEl.closest('.dropped-block');
+    if (e.target.checked) {
+      block.classList.add('free-moving');
+      block.style.position = 'absolute';
+      block.style.zIndex = '1000';
+    } else {
+      block.classList.remove('free-moving');
+      block.style.position = 'relative';
+      block.style.top = '';
+      block.style.left = '';
+      block.style.zIndex = '';
+    }
+    if (typeof saveHistory === 'function') saveHistory();
+  }
+});
+
 // Align
 document.querySelectorAll('.is-align-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -62,6 +88,36 @@ document.querySelectorAll('.is-align-btn').forEach(btn => {
         const jcMap = { 'left': 'flex-start', 'center': 'center', 'right': 'flex-end' };
         wrapper.style.justifyContent = jcMap[align] || 'flex-start';
     }
+    if(typeof saveHistory === 'function') saveHistory();
+  });
+});
+
+// Float
+document.querySelectorAll('.is-float-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if(!activeEl) return;
+    document.querySelectorAll('.is-float-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    const flt = btn.dataset.float;
+    const block = activeEl.closest('.dropped-block');
+    const inner = activeEl.closest('.dropped-block-inner');
+
+    if (flt === 'none') {
+      block.style.float = '';
+      block.style.width = '';
+      block.style.margin = '';
+      activeEl.style.width = '100%';
+      if (inner) inner.style.display = 'flex';
+    } else {
+      block.style.float = flt;
+      block.style.width = 'fit-content';
+      block.style.maxWidth = '50%';
+      block.style.margin = flt === 'left' ? '0 20px 10px 0' : '0 0 10px 20px';
+      activeEl.style.width = '100%';
+      if (inner) inner.style.display = 'block';
+    }
+    
     if(typeof saveHistory === 'function') saveHistory();
   });
 });
@@ -166,8 +222,9 @@ function dropImageBlock(returnBlock = false) {
       <button type="button" class="reorder-btn move-up-btn"><i class="fa-solid fa-chevron-up"></i></button>
       <button type="button" class="reorder-btn move-down-btn"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
-    <div class="dropped-block-inner" style="display:flex; justify-content:flex-start;">
+    <div class="dropped-block-inner" style="display:flex; justify-content:flex-start; position:relative;">
       <img src="https://via.placeholder.com/300x150?text=Click+to+set+image" class="editor-image" style="width:100%;height:auto;display:block;"/>
+      <div class="image-resizer-handle" title="Drag to resize"></div>
     </div>`;
 
   if (returnBlock) return block;

@@ -18,6 +18,8 @@ function openContainerSettings(el) {
   if (curBg) {
     document.getElementById('container-bg').value = rgbToHex(curBg) || '#ffffff';
   }
+
+  document.getElementById('container-free').checked = block.classList.contains('free-moving');
 }
 
 // Back / Cancel
@@ -38,6 +40,25 @@ document.getElementById('container-padding')?.addEventListener('input', e => {
 document.getElementById('container-bg')?.addEventListener('input', e => {
   if (activeEl) {
     activeEl.style.backgroundColor = e.target.value;
+    if (typeof saveHistory === 'function') saveHistory();
+  }
+});
+
+// Free Position
+document.getElementById('container-free')?.addEventListener('change', e => {
+  if (activeEl) {
+    const block = activeEl.closest('.dropped-block');
+    if (e.target.checked) {
+      block.classList.add('free-moving');
+      block.style.position = 'absolute';
+      block.style.zIndex = '1000';
+    } else {
+      block.classList.remove('free-moving');
+      block.style.position = 'relative';
+      block.style.top = '';
+      block.style.left = '';
+      block.style.zIndex = '';
+    }
     if (typeof saveHistory === 'function') saveHistory();
   }
 });
