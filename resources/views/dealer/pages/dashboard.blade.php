@@ -20,7 +20,7 @@
 
         <div class="view-content" data-view="dashboard">
             @php
-                $isGa4Active = auth()->user()->dealer->integrations()
+                $isGa4Active = \App\Models\Dealership\DealerIntegration::where('dealer_id', auth()->user()->current_dealer_id)
                     ->where('provider', 'ga4')
                     ->where('is_active', true)
                     ->exists();
