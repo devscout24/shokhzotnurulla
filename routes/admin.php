@@ -30,4 +30,14 @@ Route::prefix('admin')
         Route::post('integrations/{integration}/test', [\App\Http\Controllers\Admin\IntegrationController::class, 'test'])
             ->name('dealers.integrations.test');
 
+        // Integration Approval Workflow
+        Route::get('integrations/pending', [\App\Http\Controllers\Admin\IntegrationController::class, 'pending'])
+            ->name('integrations.pending');
+        Route::patch('integrations/{integration}/approve', [\App\Http\Controllers\Admin\IntegrationController::class, 'approve'])
+            ->name('integrations.approve');
+        Route::patch('integrations/{integration}/reject', [\App\Http\Controllers\Admin\IntegrationController::class, 'reject'])
+            ->name('integrations.reject');
+        Route::patch('integrations/{integration}/revoke', [\App\Http\Controllers\Admin\IntegrationController::class, 'revoke'])
+            ->name('integrations.revoke');
+
     });

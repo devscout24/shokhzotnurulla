@@ -56,7 +56,7 @@
             <h2 class="view-title">API Integrations</h2>
             <p style="color: #666; font-size: 14px;">Managing services for <strong>{{ $dealer->company_name }}</strong></p>
         </div>
-        <a href="{{ route('admin.dealers.edit', $dealer) }}" class="btn-test" style="text-decoration: none;">Back to Dealer</a>
+        <a href="{{ route('admin.dealers.index', $dealer) }}" class="btn-test" style="text-decoration: none;">Back to Dealer</a>
     </div>
 
     <div class="integration-grid">
@@ -103,6 +103,70 @@
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                     <button type="button" class="btn-test test-connection" data-provider="700credit">Test Connection</button>
+                    <button type="submit" class="btn-save">Save Settings</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Google Analytics 4 -->
+        <div class="integration-card" id="card-ga4">
+            <div class="integration-header">
+                <h3 style="font-size: 16px; margin: 0;">Google Analytics 4</h3>
+                <span class="status-badge {{ $dealer->integrations->where('provider', 'ga4')->first() ? 'status-configured' : 'status-not-configured' }}">
+                    {{ $dealer->integrations->where('provider', 'ga4')->first() ? 'Configured' : 'Not Configured' }}
+                </span>
+            </div>
+            <form class="integration-form" data-provider="ga4">
+                <div class="form-group">
+                    <label class="form-label">Measurement ID</label>
+                    <input type="text" name="settings[measurement_id]" class="form-control" value="{{ $dealer->integrations->where('provider', 'ga4')->first()?->settings['measurement_id'] ?? '' }}" placeholder="G-XXXXXXXXXX">
+                    <small class="text-muted mt-1 d-block" style="font-size: 11px; color: #888;">Found in GA4 Admin > Data Streams</small>
+                </div>
+                <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+                    <button type="submit" class="btn-save">Save Settings</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Google Tag Manager -->
+        <div class="integration-card" id="card-gtm">
+            <div class="integration-header">
+                <h3 style="font-size: 16px; margin: 0;">Google Tag Manager</h3>
+                <span class="status-badge {{ $dealer->integrations->where('provider', 'gtm')->first() ? 'status-configured' : 'status-not-configured' }}">
+                    {{ $dealer->integrations->where('provider', 'gtm')->first() ? 'Configured' : 'Not Configured' }}
+                </span>
+            </div>
+            <form class="integration-form" data-provider="gtm">
+                <div class="form-group">
+                    <label class="form-label">Container ID</label>
+                    <input type="text" name="settings[container_id]" class="form-control" value="{{ $dealer->integrations->where('provider', 'gtm')->first()?->settings['container_id'] ?? '' }}" placeholder="GTM-XXXXXXX">
+                    <small class="text-muted mt-1 d-block" style="font-size: 11px; color: #888;">Format: GTM- followed by alphanumeric characters</small>
+                </div>
+                <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+                    <button type="submit" class="btn-save">Save Settings</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Stripe -->
+        <div class="integration-card" id="card-stripe">
+            <div class="integration-header">
+                <h3 style="font-size: 16px; margin: 0;">Stripe Gateway</h3>
+                <span class="status-badge {{ $dealer->integrations->where('provider', 'stripe')->first() ? 'status-configured' : 'status-not-configured' }}">
+                    {{ $dealer->integrations->where('provider', 'stripe')->first() ? 'Configured' : 'Not Configured' }}
+                </span>
+            </div>
+            <form class="integration-form" data-provider="stripe">
+                <div class="form-group">
+                    <label class="form-label">Publishable Key</label>
+                    <input type="text" name="settings[public_key]" class="form-control" value="{{ $dealer->integrations->where('provider', 'stripe')->first()?->settings['public_key'] ?? '' }}" placeholder="pk_live_...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Secret Key</label>
+                    <input type="password" name="settings[secret_key]" class="form-control" placeholder="sk_live_... (Hidden for security)">
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                    <button type="button" class="btn-test test-connection" data-provider="stripe">Test Connection</button>
                     <button type="submit" class="btn-save">Save Settings</button>
                 </div>
             </form>

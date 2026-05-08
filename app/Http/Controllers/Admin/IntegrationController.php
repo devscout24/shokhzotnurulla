@@ -18,6 +18,56 @@ class IntegrationController extends Controller
         // ... more mappings as they are implemented
     ];
 
+    /**
+     * Get dynamic validation rules based on the integration provider.
+     */
+    protected function getValidationRules(string $provider): array
+    {
+        $baseRules = [
+            'provider' => 'required|string',
+            'settings' => 'required|array',
+        ];
+
+        // Specific validation rules for each app's credentials
+        $settingRules = match ($provider) {
+            'carfax' => [
+                'settings.username' => 'required|string',
+                'settings.password' => 'required|string',
+            ],
+            '700credit' => [
+                'settings.api_key'     => 'required|string',
+                'settings.dealer_code' => 'required|string',
+            ],
+            'ga4' => [
+                'settings.measurement_id' => ['required', 'string', 'regex:/^G-[A-Z0-9]+$/'],
+            ],
+            'gtm' => [
+                'settings.container_id' => ['required', 'string', 'regex:/^GTM-[A-Z0-9]+$/'],
+            ],
+            'stripe' => [
+                'settings.public_key' => 'required|string|starts_with:pk_',
+                'settings.secret_key' => 'required|string|starts_with:sk_',
+            ],
+            'carnow' => [
+                'settings.dealer_id' => 'required|string',
+            ],
+            'complyauto' => [
+                'settings.api_token' => 'required|string',
+            ],
+            'ipacket' => [
+                'settings.api_key' => 'required|string',
+            ],
+            'promax' => [
+                'settings.dealer_id' => 'required|string',
+                'settings.password'  => 'required|string',
+            ],
+            // Default for services that might just require a toggle or simpler settings
+            default => [],
+        };
+
+        return array_merge($baseRules, $settingRules);
+    }
+
     public function index(Dealer $dealer)
     {
         $dealer->load('integrations');
@@ -29,16 +79,13 @@ class IntegrationController extends Controller
      */
     public function save(Request $request, Dealer $dealer)
     {
-        $request->validate([
-            'provider'        => 'required|string',
-            'settings'        => 'required|array',
-        ]);
+        $request->validate($this->getValidationRules($request->input('provider')));
 
         $integration = DealerIntegration::updateOrCreate(
             ['dealer_id' => $dealer->id, 'provider' => $request->provider],
             [
                 'settings'  => $request->settings,
-                'is_active' => filter_var($request->input('is_active', false), FILTER_VALIDATE_BOOLEAN),
+                'is_active' => filter_var($request->input('is_active', true), FILTER_VALIDATE_BOOLEAN),
             ]
         );
 

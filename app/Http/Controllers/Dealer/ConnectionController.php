@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Dealer;
 
+use App\Enums\IntegrationStatus;
+use App\Events\IntegrationSubmitted;
 use App\Http\Controllers\Controller;
 use App\Models\Dealership\DealerIntegration;
 use Illuminate\Http\Request;
@@ -18,6 +20,7 @@ class ConnectionController extends Controller
 
     /**
      * Save integration credentials from the dealer-side modals.
+     * Sets status to pending_approval — Super Admin must approve before activation.
      */
     public function saveIntegration(Request $request)
     {
@@ -35,14 +38,21 @@ class ConnectionController extends Controller
         $integration = DealerIntegration::updateOrCreate(
             ['dealer_id' => $dealer->id, 'provider' => $request->provider],
             [
-                'settings'  => $request->settings,
-                'is_active' => filter_var($request->input('is_active', true), FILTER_VALIDATE_BOOLEAN),
+                'settings'          => $request->settings,
+                'is_active'         => false, // NOT active until admin approves
+                'status'            => IntegrationStatus::PENDING_APPROVAL,
+                'submitted_by'      => $request->user()->id,
+                'submitted_at'      => now(),
+                'rejection_reason'  => null, // Clear any previous rejection
             ]
         );
 
+        // Notify Super Admin(s) that a new integration request is pending
+        event(new IntegrationSubmitted($integration));
+
         return response()->json([
             'success' => true,
-            'message' => ucfirst($request->provider) . ' settings saved successfully.',
+            'message' => ucfirst($request->provider) . ' settings submitted for approval.',
         ]);
     }
 
