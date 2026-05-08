@@ -66,14 +66,14 @@
         <div class="integration-card" id="card-carfax">
             <div class="integration-header">
                 <h3 style="font-size: 16px; margin: 0;">Carfax</h3>
-                <span class="status-badge {{ $dealer->integrations->where('provider', 'carfax')->first() ? 'status-configured' : 'status-not-configured' }}">
-                    {{ $dealer->integrations->where('provider', 'carfax')->first() ? 'Configured' : 'Not Configured' }}
+                <span class="status-badge {{ $dealer->integrations->where('provider', 'carfax')->where('is_active', true)->first() ? 'status-configured' : 'status-not-configured' }}">
+                    {{ $dealer->integrations->where('provider', 'carfax')->where('is_active', true)->first() ? 'Configured' : 'Not Configured' }}
                 </span>
             </div>
             <form class="integration-form" data-provider="carfax">
                 <div class="form-group">
                     <label class="form-label">Username</label>
-                    <input type="text" name="settings[username]" class="form-control" value="{{ $dealer->integrations->where('provider', 'carfax')->first()?->settings['username'] ?? '' }}">
+                    <input type="text" name="settings[username]" class="form-control" value="{{ $dealer->integrations->where('provider', 'carfax')->where('is_active', true)->first()?->settings['username'] ?? '' }}">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password</label>
@@ -81,7 +81,7 @@
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                     <div>
-                        @if($dealer->integrations->where('provider', 'carfax')->first())
+                        @if($dealer->integrations->where('provider', 'carfax')->where('is_active', true)->first())
                             <button type="button" class="btn-deactivate" data-provider="carfax">Unconfigure</button>
                         @endif
                         <button type="button" class="btn-test test-connection" data-provider="carfax">Test Connection</button>
@@ -95,22 +95,22 @@
         <div class="integration-card" id="card-700credit">
             <div class="integration-header">
                 <h3 style="font-size: 16px; margin: 0;">700Credit</h3>
-                <span class="status-badge {{ $dealer->integrations->where('provider', '700credit')->first() ? 'status-configured' : 'status-not-configured' }}">
-                    {{ $dealer->integrations->where('provider', '700credit')->first() ? 'Configured' : 'Not Configured' }}
+                <span class="status-badge {{ $dealer->integrations->where('provider', '700credit')->where('is_active', true)->first() ? 'status-configured' : 'status-not-configured' }}">
+                    {{ $dealer->integrations->where('provider', '700credit')->where('is_active', true)->first() ? 'Configured' : 'Not Configured' }}
                 </span>
             </div>
             <form class="integration-form" data-provider="700credit">
                 <div class="form-group">
                     <label class="form-label">API Key</label>
-                    <input type="text" name="settings[api_key]" class="form-control" value="{{ $dealer->integrations->where('provider', '700credit')->first()?->settings['api_key'] ?? '' }}">
+                    <input type="text" name="settings[api_key]" class="form-control" value="{{ $dealer->integrations->where('provider', '700credit')->where('is_active', true)->first()?->settings['api_key'] ?? '' }}">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Dealer Code</label>
-                    <input type="text" name="settings[dealer_code]" class="form-control" value="{{ $dealer->integrations->where('provider', '700credit')->first()?->settings['dealer_code'] ?? '' }}">
+                    <input type="text" name="settings[dealer_code]" class="form-control" value="{{ $dealer->integrations->where('provider', '700credit')->where('is_active', true)->first()?->settings['dealer_code'] ?? '' }}">
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                     <div>
-                        @if($dealer->integrations->where('provider', '700credit')->first())
+                        @if($dealer->integrations->where('provider', '700credit')->where('is_active', true)->first())
                             <button type="button" class="btn-deactivate" data-provider="700credit">Unconfigure</button>
                         @endif
                         <button type="button" class="btn-test test-connection" data-provider="700credit">Test Connection</button>
@@ -124,19 +124,19 @@
         <div class="integration-card" id="card-ga4">
             <div class="integration-header">
                 <h3 style="font-size: 16px; margin: 0;">Google Analytics 4</h3>
-                <span class="status-badge {{ $dealer->integrations->where('provider', 'ga4')->first() ? 'status-configured' : 'status-not-configured' }}">
-                    {{ $dealer->integrations->where('provider', 'ga4')->first() ? 'Configured' : 'Not Configured' }}
+                <span class="status-badge {{ $dealer->integrations->where('provider', 'ga4')->where('is_active', true)->first() ? 'status-configured' : 'status-not-configured' }}">
+                    {{ $dealer->integrations->where('provider', 'ga4')->where('is_active', true)->first() ? 'Configured' : 'Not Configured' }}
                 </span>
             </div>
             <form class="integration-form" data-provider="ga4">
                 <div class="form-group">
                     <label class="form-label">Measurement ID</label>
-                    <input type="text" name="settings[measurement_id]" class="form-control" value="{{ $dealer->integrations->where('provider', 'ga4')->first()?->settings['measurement_id'] ?? '' }}" placeholder="G-XXXXXXXXXX">
+                    <input type="text" name="settings[measurement_id]" class="form-control" value="{{ $dealer->integrations->where('provider', 'ga4')->where('is_active', true)->first()?->settings['measurement_id'] ?? '' }}" placeholder="G-XXXXXXXXXX">
                     <small class="text-muted mt-1 d-block" style="font-size: 11px; color: #888;">Found in GA4 Admin > Data Streams</small>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                     <div>
-                        @if($dealer->integrations->where('provider', 'ga4')->first())
+                        @if($dealer->integrations->where('provider', 'ga4')->where('is_active', true)->first())
                             <button type="button" class="btn-deactivate" data-provider="ga4">Unconfigure</button>
                         @endif
                     </div>
@@ -149,19 +149,19 @@
         <div class="integration-card" id="card-gtm">
             <div class="integration-header">
                 <h3 style="font-size: 16px; margin: 0;">Google Tag Manager</h3>
-                <span class="status-badge {{ $dealer->integrations->where('provider', 'gtm')->first() ? 'status-configured' : 'status-not-configured' }}">
-                    {{ $dealer->integrations->where('provider', 'gtm')->first() ? 'Configured' : 'Not Configured' }}
+                <span class="status-badge {{ $dealer->integrations->where('provider', 'gtm')->where('is_active', true)->first() ? 'status-configured' : 'status-not-configured' }}">
+                    {{ $dealer->integrations->where('provider', 'gtm')->where('is_active', true)->first() ? 'Configured' : 'Not Configured' }}
                 </span>
             </div>
             <form class="integration-form" data-provider="gtm">
                 <div class="form-group">
                     <label class="form-label">Container ID</label>
-                    <input type="text" name="settings[container_id]" class="form-control" value="{{ $dealer->integrations->where('provider', 'gtm')->first()?->settings['container_id'] ?? '' }}" placeholder="GTM-XXXXXXX">
+                    <input type="text" name="settings[container_id]" class="form-control" value="{{ $dealer->integrations->where('provider', 'gtm')->where('is_active', true)->first()?->settings['container_id'] ?? '' }}" placeholder="GTM-XXXXXXX">
                     <small class="text-muted mt-1 d-block" style="font-size: 11px; color: #888;">Format: GTM- followed by alphanumeric characters</small>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                     <div>
-                        @if($dealer->integrations->where('provider', 'gtm')->first())
+                        @if($dealer->integrations->where('provider', 'gtm')->where('is_active', true)->first())
                             <button type="button" class="btn-deactivate" data-provider="gtm">Unconfigure</button>
                         @endif
                     </div>
@@ -174,14 +174,14 @@
         <div class="integration-card" id="card-stripe">
             <div class="integration-header">
                 <h3 style="font-size: 16px; margin: 0;">Stripe Gateway</h3>
-                <span class="status-badge {{ $dealer->integrations->where('provider', 'stripe')->first() ? 'status-configured' : 'status-not-configured' }}">
-                    {{ $dealer->integrations->where('provider', 'stripe')->first() ? 'Configured' : 'Not Configured' }}
+                <span class="status-badge {{ $dealer->integrations->where('provider', 'stripe')->where('is_active', true)->first() ? 'status-configured' : 'status-not-configured' }}">
+                    {{ $dealer->integrations->where('provider', 'stripe')->where('is_active', true)->first() ? 'Configured' : 'Not Configured' }}
                 </span>
             </div>
             <form class="integration-form" data-provider="stripe">
                 <div class="form-group">
                     <label class="form-label">Publishable Key</label>
-                    <input type="text" name="settings[public_key]" class="form-control" value="{{ $dealer->integrations->where('provider', 'stripe')->first()?->settings['public_key'] ?? '' }}" placeholder="pk_live_...">
+                    <input type="text" name="settings[public_key]" class="form-control" value="{{ $dealer->integrations->where('provider', 'stripe')->where('is_active', true)->first()?->settings['public_key'] ?? '' }}" placeholder="pk_live_...">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Secret Key</label>
@@ -189,7 +189,7 @@
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                     <div>
-                        @if($dealer->integrations->where('provider', 'stripe')->first())
+                        @if($dealer->integrations->where('provider', 'stripe')->where('is_active', true)->first())
                             <button type="button" class="btn-deactivate" data-provider="stripe">Unconfigure</button>
                         @endif
                         <button type="button" class="btn-test test-connection" data-provider="stripe">Test Connection</button>
@@ -244,7 +244,7 @@
 
         // Handle Unconfigure
         $('.btn-deactivate').on('click', function() {
-            if(!confirm('Are you sure you want to unconfigure this integration? This will remove all credentials.')) return;
+            if(!confirm('Are you sure you want to make this integration inactive?')) return;
             const provider = $(this).data('provider');
             
             $.ajax({
@@ -304,3 +304,4 @@
     });
 </script>
 @endpush
+

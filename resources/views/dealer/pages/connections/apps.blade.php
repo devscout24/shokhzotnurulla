@@ -332,8 +332,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-autocheck">&#10003; Auto<br>Check</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['autocheck']) && $integrations['autocheck']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['autocheck']) && $integrations['autocheck']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -343,8 +347,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-carnow">CarNow</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['carnow']) && $integrations['carnow']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['carnow']) && $integrations['carnow']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -354,8 +362,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-complyauto">COMPLYA<span style="color:#c0392b;">&#10003;</span></div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['complyauto']) && $integrations['complyauto']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['complyauto']) && $integrations['complyauto']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -365,8 +377,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-dealercenter">DEALER<br>CENTER</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['dealercenter']) && $integrations['dealercenter']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['dealercenter']) && $integrations['dealercenter']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -376,8 +392,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-driveo">Driveo</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['driveo']) && $integrations['driveo']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['driveo']) && $integrations['driveo']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -423,8 +443,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-ipacket">&#9673; iPacket&#183;</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['ipacket']) && $integrations['ipacket']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['ipacket']) && $integrations['ipacket']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -434,8 +458,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-monroney">MonroneyLabels<span style="color:#333;">.com</span></div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['monroneylabels']) && $integrations['monroneylabels']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['monroneylabels']) && $integrations['monroneylabels']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -445,8 +473,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-promax"><span style="color:#c0392b;">&#9650;</span>ProMax</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['promax']) && $integrations['promax']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['promax']) && $integrations['promax']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -456,8 +488,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-stripe">stripe</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['stripe']) && $integrations['stripe']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['stripe']) && $integrations['stripe']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
