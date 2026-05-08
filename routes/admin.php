@@ -27,6 +27,8 @@ Route::prefix('admin')
             ->name('dealers.integrations.index');
         Route::post('dealers/{dealer}/integrations', [\App\Http\Controllers\Admin\IntegrationController::class, 'save'])
             ->name('dealers.integrations.save');
+        Route::delete('dealers/{dealer}/integrations/{provider}', [\App\Http\Controllers\Admin\IntegrationController::class, 'destroy'])
+            ->name('dealers.integrations.destroy');
         Route::post('integrations/{integration}/test', [\App\Http\Controllers\Admin\IntegrationController::class, 'test'])
             ->name('dealers.integrations.test');
 

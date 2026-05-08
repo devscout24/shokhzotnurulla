@@ -101,6 +101,30 @@ class IntegrationController extends Controller
     }
 
     /**
+     * Remove/unconfigure an integration for a dealer by setting it inactive.
+     */
+    public function destroy(Dealer $dealer, string $provider)
+    {
+        $integration = DealerIntegration::where('dealer_id', $dealer->id)
+            ->where('provider', $provider)
+            ->first();
+
+        if ($integration) {
+            $integration->update(['is_active' => false]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => ucfirst($provider) . ' integration made inactive successfully.',
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Integration not found.',
+        ], 404);
+    }
+
+    /**
      * Test the connection for an integration.
      */
     public function test(DealerIntegration $integration)

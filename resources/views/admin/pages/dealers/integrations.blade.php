@@ -46,6 +46,8 @@
     
     .btn-test { background: #f8f9fa; border: 1px solid #ddd; color: #444; padding: 8px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
     .btn-save { background: #c0392b; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-deactivate { background: #fff; border: 1px solid #dc3545; color: #dc3545; padding: 8px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; margin-right: 5px; }
+    .btn-deactivate:hover { background: #dc3545; color: #fff; }
 </style>
 @endpush
 
@@ -78,7 +80,12 @@
                     <input type="password" name="settings[password]" class="form-control" placeholder="••••••••">
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-                    <button type="button" class="btn-test test-connection" data-provider="carfax">Test Connection</button>
+                    <div>
+                        @if($dealer->integrations->where('provider', 'carfax')->first())
+                            <button type="button" class="btn-deactivate" data-provider="carfax">Unconfigure</button>
+                        @endif
+                        <button type="button" class="btn-test test-connection" data-provider="carfax">Test Connection</button>
+                    </div>
                     <button type="submit" class="btn-save">Save Settings</button>
                 </div>
             </form>
@@ -102,7 +109,12 @@
                     <input type="text" name="settings[dealer_code]" class="form-control" value="{{ $dealer->integrations->where('provider', '700credit')->first()?->settings['dealer_code'] ?? '' }}">
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-                    <button type="button" class="btn-test test-connection" data-provider="700credit">Test Connection</button>
+                    <div>
+                        @if($dealer->integrations->where('provider', '700credit')->first())
+                            <button type="button" class="btn-deactivate" data-provider="700credit">Unconfigure</button>
+                        @endif
+                        <button type="button" class="btn-test test-connection" data-provider="700credit">Test Connection</button>
+                    </div>
                     <button type="submit" class="btn-save">Save Settings</button>
                 </div>
             </form>
@@ -122,7 +134,12 @@
                     <input type="text" name="settings[measurement_id]" class="form-control" value="{{ $dealer->integrations->where('provider', 'ga4')->first()?->settings['measurement_id'] ?? '' }}" placeholder="G-XXXXXXXXXX">
                     <small class="text-muted mt-1 d-block" style="font-size: 11px; color: #888;">Found in GA4 Admin > Data Streams</small>
                 </div>
-                <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                    <div>
+                        @if($dealer->integrations->where('provider', 'ga4')->first())
+                            <button type="button" class="btn-deactivate" data-provider="ga4">Unconfigure</button>
+                        @endif
+                    </div>
                     <button type="submit" class="btn-save">Save Settings</button>
                 </div>
             </form>
@@ -142,7 +159,12 @@
                     <input type="text" name="settings[container_id]" class="form-control" value="{{ $dealer->integrations->where('provider', 'gtm')->first()?->settings['container_id'] ?? '' }}" placeholder="GTM-XXXXXXX">
                     <small class="text-muted mt-1 d-block" style="font-size: 11px; color: #888;">Format: GTM- followed by alphanumeric characters</small>
                 </div>
-                <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                    <div>
+                        @if($dealer->integrations->where('provider', 'gtm')->first())
+                            <button type="button" class="btn-deactivate" data-provider="gtm">Unconfigure</button>
+                        @endif
+                    </div>
                     <button type="submit" class="btn-save">Save Settings</button>
                 </div>
             </form>
@@ -166,7 +188,12 @@
                     <input type="password" name="settings[secret_key]" class="form-control" placeholder="sk_live_... (Hidden for security)">
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-                    <button type="button" class="btn-test test-connection" data-provider="stripe">Test Connection</button>
+                    <div>
+                        @if($dealer->integrations->where('provider', 'stripe')->first())
+                            <button type="button" class="btn-deactivate" data-provider="stripe">Unconfigure</button>
+                        @endif
+                        <button type="button" class="btn-test test-connection" data-provider="stripe">Test Connection</button>
+                    </div>
                     <button type="submit" class="btn-save">Save Settings</button>
                 </div>
             </form>
@@ -211,6 +238,27 @@
                 },
                 error: function(xhr) {
                     alert(xhr.responseJSON?.message || 'Error saving settings.');
+                }
+            });
+        });
+
+        // Handle Unconfigure
+        $('.btn-deactivate').on('click', function() {
+            if(!confirm('Are you sure you want to unconfigure this integration? This will remove all credentials.')) return;
+            const provider = $(this).data('provider');
+            
+            $.ajax({
+                url: `/admin/dealers/{{ $dealer->id }}/integrations/${provider}`,
+                method: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON?.message || 'Error unconfiguring integration.');
                 }
             });
         });
