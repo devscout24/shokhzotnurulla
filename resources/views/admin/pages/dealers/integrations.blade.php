@@ -233,32 +233,43 @@
                 method: 'POST',
                 data: data,
                 success: function(response) {
-                    alert(response.message);
-                    location.reload();
+                    toastr.success(response.message);
+                    setTimeout(() => location.reload(), 1500);
                 },
                 error: function(xhr) {
-                    alert(xhr.responseJSON?.message || 'Error saving settings.');
+                    toastr.error(xhr.responseJSON?.message || 'Error saving settings.');
                 }
             });
         });
 
         // Handle Unconfigure
         $('.btn-deactivate').on('click', function() {
-            if(!confirm('Are you sure you want to make this integration inactive?')) return;
             const provider = $(this).data('provider');
             
-            $.ajax({
-                url: `/admin/dealers/{{ $dealer->id }}/integrations/${provider}`,
-                method: 'DELETE',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    alert(response.message);
-                    location.reload();
-                },
-                error: function(xhr) {
-                    alert(xhr.responseJSON?.message || 'Error unconfiguring integration.');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Are you sure you want to make this integration inactive?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#c0392b',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, deactivate it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/admin/dealers/{{ $dealer->id }}/integrations/${provider}`,
+                        method: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            toastr.success(response.message);
+                            setTimeout(() => location.reload(), 1500);
+                        },
+                        error: function(xhr) {
+                            toastr.error(xhr.responseJSON?.message || 'Error unconfiguring integration.');
+                        }
+                    });
                 }
             });
         });
@@ -291,10 +302,10 @@
                 method: 'POST',
                 data: data,
                 success: function(response) {
-                    alert(response.message);
+                    toastr.success(response.message);
                 },
                 error: function(xhr) {
-                    alert(xhr.responseJSON?.message || 'Connection failed.');
+                    toastr.error(xhr.responseJSON?.message || 'Connection failed.');
                 },
                 complete: function() {
                     $btn.text('Test Connection').prop('disabled', false);
