@@ -19,38 +19,55 @@
         <hr>
 
         <div class="view-content" data-view="dashboard">
-            @include('dealer.components.dashboard.dashboard-stats')
+            @php
+                $isGa4Active = auth()->user()->dealer->integrations()
+                    ->where('provider', 'ga4')
+                    ->where('is_active', true)
+                    ->exists();
+            @endphp
 
-            {{-- Conversion Stats Row --}}
-            <div class="conversion-row">
-                <div class="conv-item">
-                    <i class="bi bi-funnel"></i>
-                    Base Conversion: <span class="fw-bold">{{ $baseConversion }}%</span>
-                </div>
-                <div class="conv-item">
-                    <i class="bi bi-telephone"></i>
-                    With Click to Call: <span class="fw-bold">{{ $withClickToCall }}%</span>
-                </div>
-                <div class="conv-item">
-                    <i class="bi bi-clock"></i>
-                    Average Session: <span class="fw-bold">{{ $avgSession }}</span>
-                </div>
-            </div>
+            @if($isGa4Active)
+                @include('dealer.components.dashboard.dashboard-stats')
 
-            <div class="row mt-4">
-                <div class="col-xl-9">
-                    @include('dealer.components.dashboard.website-activity-graph')
-                    @include('dealer.components.dashboard.traffic-channel-graph')
-                    @include('dealer.components.dashboard.traffic-channel-table')
-                </div>
-                <div class="col-xl-3">
-                    @include('dealer.components.dashboard.popular-search')
-                    <div class="report-link-box mt-3">
-                        <p class="mb-1 text-muted" style="font-size: 13px;">Looking for Hot/Cold cars?</p>
-                        <a href="#" class="fw-bold" style="font-size: 13px; color: #333; text-decoration: none;">View the report <i class="bi bi-arrow-right"></i></a>
+                {{-- Conversion Stats Row --}}
+                <div class="conversion-row">
+                    <div class="conv-item">
+                        <i class="bi bi-funnel"></i>
+                        Base Conversion: <span class="fw-bold">{{ $baseConversion ?? '0' }}%</span>
+                    </div>
+                    <div class="conv-item">
+                        <i class="bi bi-telephone"></i>
+                        With Click to Call: <span class="fw-bold">{{ $withClickToCall ?? '0' }}%</span>
+                    </div>
+                    <div class="conv-item">
+                        <i class="bi bi-clock"></i>
+                        Average Session: <span class="fw-bold">{{ $avgSession ?? '0:00' }}</span>
                     </div>
                 </div>
-            </div>
+
+                <div class="row mt-4">
+                    <div class="col-xl-9">
+                        @include('dealer.components.dashboard.website-activity-graph')
+                        @include('dealer.components.dashboard.traffic-channel-graph')
+                        @include('dealer.components.dashboard.traffic-channel-table')
+                    </div>
+                    <div class="col-xl-3">
+                        @include('dealer.components.dashboard.popular-search')
+                        <div class="report-link-box mt-3">
+                            <p class="mb-1 text-muted" style="font-size: 13px;">Looking for Hot/Cold cars?</p>
+                            <a href="#" class="fw-bold" style="font-size: 13px; color: #333; text-decoration: none;">View the report <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div style="background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 40px; text-align: center; margin-top: 20px;">
+                    <i class="bi bi-bar-chart text-muted" style="font-size: 48px; margin-bottom: 15px; display: inline-block;"></i>
+                    <h3 style="font-size: 18px; color: #333; margin-bottom: 10px;">Analytics Not Configured</h3>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 0;">
+                        Website activity and traffic metrics cannot be displayed because the Google Analytics integration is currently inactive or not configured.
+                    </p>
+                </div>
+            @endif
         </div>
     </main>
 @endsection
