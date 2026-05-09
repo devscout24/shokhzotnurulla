@@ -15,8 +15,8 @@ class DealerStatusMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // 1. Get the current dealer from the service container (resolved in TenantServiceProvider)
-        $dealer = app('currentDealer');
+        // 1. Get the current dealer from the service container safely (resolved in TenantServiceProvider)
+        $dealer = app()->bound('currentDealer') ? app('currentDealer') : null;
 
         // 2. If no dealer is resolved for the current domain, abort (or redirect)
         if (!$dealer) {

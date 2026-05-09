@@ -17,6 +17,7 @@ use App\Http\Controllers\Dealer\WebsiteJobPostController;
 use App\Http\Controllers\Dealer\WebsiteMediaController;
 use App\Http\Controllers\Dealer\WebsiteMenuController;
 use App\Http\Controllers\Dealer\WebsitePageController;
+use App\Http\Controllers\Dealer\WebsiteBlogPostController;
 use App\Http\Controllers\Dealer\WebsitePromoBannerController;
 use App\Http\Controllers\Dealer\WebsiteReportController;
 use App\Http\Controllers\Dealer\WebsiteServiceOfferController;
@@ -66,6 +67,18 @@ Route::prefix('dealer')->name('dealer.')
                 Route::delete('/{page}', [WebsitePageController::class, 'destroy'])->name('destroy');
                 Route::post('/{page}/duplicate', [WebsitePageController::class, 'duplicate'])->name('duplicate');
                 Route::get('/by-tag/{tag}', [WebsitePageController::class, 'getByTag'])->name('by-tag');
+            });
+
+            // ── Blog Posts (CMS) ───────────────────────────────────────────────────────
+            Route::prefix('blog-posts')->name('blog-posts.')->group(function () {
+                Route::get('/', [WebsiteBlogPostController::class, 'index'])->name('index');
+                Route::get('/create', [WebsiteBlogPostController::class, 'create'])->name('create');
+                Route::post('/', [WebsiteBlogPostController::class, 'store'])->name('store');
+                Route::get('/{blogPost}/edit', [WebsiteBlogPostController::class, 'edit'])->name('edit');
+                Route::match(['PUT', 'PATCH'], '/{blogPost}', [WebsiteBlogPostController::class, 'update'])->name('update');
+                Route::delete('/{blogPost}', [WebsiteBlogPostController::class, 'destroy'])->name('destroy');
+                Route::post('/{blogPost}/duplicate', [WebsiteBlogPostController::class, 'duplicate'])->name('duplicate');
+                Route::get('/by-tag/{tag}', [WebsiteBlogPostController::class, 'getByTag'])->name('by-tag');
             });
 
             // ── FAQs (Reusable Content) ──────────────────────────────────────────────────

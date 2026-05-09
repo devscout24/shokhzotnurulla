@@ -61,12 +61,12 @@ function drop2ColBlock(returnBlock = false) {
       <button type="button" class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner">
-      <div class="editor-2col" style="display: flex; gap: 20px; width: 100%;">
-        <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;">
-          <p contenteditable="true" spellcheck="false" data-placeholder="Column 1" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none;"></p>
+      <div class="editor-2col" style="display: flex; gap: 20px; width: 100%; table-layout: fixed;">
+        <div class="col-drop-zone" style="flex: 1; width: 0; min-width: 0; min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px; overflow-wrap: break-word; word-break: break-all;">
+          <p contenteditable="true" spellcheck="false" data-placeholder="Column 1" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none; word-break: break-all;"></p>
         </div>
-        <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;">
-          <p contenteditable="true" spellcheck="false" data-placeholder="Column 2" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none;"></p>
+        <div class="col-drop-zone" style="flex: 1; width: 0; min-width: 0; min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px; overflow-wrap: break-word; word-break: break-all;">
+          <p contenteditable="true" spellcheck="false" data-placeholder="Column 2" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none; word-break: break-all;"></p>
         </div>
       </div>
     </div>`;

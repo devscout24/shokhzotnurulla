@@ -1,5 +1,5 @@
 @extends('layouts.dealer.app')
-@section('title', __('Edit Page'))
+@section('title', __('Add Blog Post'))
 @push('page-assets')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/heading.css') }}?v=5.1" />
     <link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/p.css') }}?v=5.1" />
     <link rel="stylesheet" href="{{ asset('assets/panels/website-pages/css/button.css') }}?v=5.1" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         .layout {
             display: flex !important;
@@ -73,7 +74,7 @@
         }
 
         .block-item:hover {
-            border-color: #c0392b;
+            border-color: #e0e6ed;
             background: #fffcfc;
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, .06)
@@ -83,7 +84,7 @@
             font-size: 22px;
             display: block;
             margin-bottom: 10px;
-            color: #c0392b
+            color: #adb5bd
         }
 
         .block-item span {
@@ -135,6 +136,19 @@
             margin: 20px 0
         }
 
+        .hs-back-btn {
+            background: none;
+            border: none;
+            font-weight: 800;
+            color: #1a1f36;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0;
+            font-size: 16px
+        }
+
         .hs-actions {
             display: flex;
             gap: 10px;
@@ -166,6 +180,7 @@
             display: none
         }
 
+        /* Side Panels Style (Ref site) */
         .side-panel {
             position: fixed;
             right: -450px;
@@ -231,7 +246,7 @@
         }
 
         .featured-image-box:hover {
-            border-color: #c0392b;
+            border-color: #adb5bd;
             background: #fffcfc;
         }
 
@@ -299,17 +314,17 @@
 
         #drop-indicator {
             height: 4px;
-            background: #c0392b;
+            background: #adb5bd;
             border-radius: 2px;
             margin: 10px 0;
             width: 100%;
             transition: all 0.2s ease;
-            box-shadow: 0 0 10px rgba(192, 57, 43, 0.4);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .drag-over {
-            background-color: rgba(192, 57, 43, 0.02) !important;
-            outline: 2px dashed #c0392b !important;
+            background-color: rgba(0, 0, 0, 0.02) !important;
+            outline: 2px dashed #adb5bd !important;
             outline-offset: -2px;
         }
 
@@ -361,12 +376,11 @@
 @section('page-content')
     <div class="overlay" id="side-overlay"></div>
     <div class="of-master-frame">
-        <form action="{{ route('dealer.website.pages.update', $page->id) }}" method="POST" id="page-builder-form"
-            style="display:contents" onsubmit="return prepareFormSubmit()">
+        <form action="{{ $routes['store'] }}" method="POST" id="page-builder-form" style="display:contents"
+            onsubmit="return prepareFormSubmit()">
             @csrf
-            @method('PATCH')
             <div class="of-header shadow-sm">
-                <h4 class="fw-bold m-0 fs-5 text-dark">Edit Page</h4>
+                <h4 class="fw-bold m-0 fs-5 text-dark">Add Blog Post</h4>
                 <div class="ms-auto d-flex align-items-center gap-3">
                     <button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold border-2"
                         style="border-radius:6px"><i class="fa-solid fa-eye me-2"></i>Preview</button>
@@ -377,18 +391,16 @@
                         style="border-radius:6px" onclick="toggleSidePanel('page-revisions')"><i
                             class="fa-solid fa-clock-rotate-left me-2"></i>Page Revisions</button>
                     <button type="submit" class="btn btn-danger btn-sm px-5 fw-bold shadow-sm"
-                        style="background:#ce4f4b; border-radius:6px"><i class="fa-solid fa-check me-2"></i>Update</button>
+                        style="background:#ce4f4b; border-radius:6px"><i class="fa-solid fa-check me-2"></i>Save</button>
                 </div>
             </div>
             <div class="input-group border-bottom bg-white" style="height:55px">
                 <span class="bg-lighter input-group-text border-0 px-4 fw-bold small text-muted"
-                    style="min-width:140px">PAGE TITLE</span>
-                <input type="text" value="{{ $page->title }}" class="form-control border-0 px-4 fs-6" name="title"
-                    id="page-title" required autocomplete="off" placeholder="Enter page title...">
+                    style="min-width:140px">POST TITLE</span>
+                <input type="text" value="" class="form-control border-0 px-4 fs-6" name="title" id="page-title" required
+                    autocomplete="off" placeholder="Enter page title...">
                 <span class="bg-white input-group-text border-0 text-muted small px-4 border-start" id="top-status-badge">
-                    <i class="fa-solid fa-circle me-2"
-                        style="font-size:8px;color:{{ $page->is_active ? '#27ae60' : '#ced4da' }}"></i> Status:
-                    {{ $page->is_active ? 'Published' : 'Draft' }}
+                    <i class="fa-solid fa-circle me-2" style="font-size:8px;color:#ced4da"></i> Status: Draft
                 </span>
             </div>
 
@@ -398,13 +410,17 @@
                         <div class="card border-0">
                             <div class="fw-bold bg-lighter card-header d-flex justify-content-between align-items-center py-3 border-0"
                                 style="background:transparent">
-                                <span class="small text-muted text-uppercase fw-bolder"
-                                    style="letter-spacing:1px">Document</span>
+                                <span class="small text-muted text-uppercase fw-bolder" style="letter-spacing:1px">Content
+                                    Editor</span>
                                 <div class="d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-light btn-sm px-3" title="Export"><i
+                                            class="fa-solid fa-download"></i></button>
+                                    <button type="button" class="btn btn-light btn-sm px-3" title="Import"><i
+                                            class="fa-solid fa-upload"></i></button>
                                     <div class="btn-group bg-white border shadow-sm"
                                         style="border-radius:6px; overflow:hidden">
-                                        <button type="button" class="btn btn-light btn-sm border-end px-3" id="btn-undo"><i
-                                                class="fa-solid fa-rotate-left"></i></button>
+                                        <button type="button" class="btn btn-light btn-sm border-end px-3" id="btn-undo"
+                                            disabled><i class="fa-solid fa-rotate-left"></i></button>
                                         <button type="button" class="btn btn-light btn-sm px-3" id="btn-redo"><i
                                                 class="fa-solid fa-rotate-right text-primary"></i></button>
                                     </div>
@@ -412,6 +428,9 @@
                             </div>
                             <div class="p-0">
                                 <div id="content-editor-zone">
+                                    <div class="editor-empty-state" id="empty-state"><span
+                                            class="editor-empty-badge">Content Editor</span><input
+                                            class="editor-empty-input" placeholder="" readonly /></div>
                                     <div id="blocks-container" style="min-height:1000px"></div>
                                 </div>
                             </div>
@@ -508,14 +527,13 @@
                     <div class="ps-section-title">Post Metadata</div>
                     <div class="hs-row"><label>Status</label>
                         <select class="hs-select" name="is_active" id="ps-status" onchange="updateTopStatus(this)">
-                            <option value="1" {{ $page->is_active ? 'selected' : '' }}>Published</option>
-                            <option value="0" {{ !$page->is_active ? 'selected' : '' }}>Draft</option>
+                            <option value="1" selected>Published</option>
+                            <option value="0">Draft</option>
                             <option value="pending">Pending Review</option>
                         </select>
                     </div>
                     <div class="hs-row"><label>Publish Date</label>
-                        <input type="datetime-local" class="hs-input" name="published_at" id="ps-published-at"
-                            value="{{ $page->published_at ? $page->published_at->format('Y-m-d\TH:i') : '' }}">
+                        <input type="datetime-local" class="hs-input" name="published_at" id="ps-published-at">
                     </div>
                     <div class="hs-row"><label>Visibility</label>
                         <select class="hs-select">
@@ -534,20 +552,19 @@
                     <div class="hs-row">
                         <label>Page Slug</label>
                         <div class="d-flex gap-2">
-                            <input class="hs-input" name="slug" id="page-slug" value="{{ $page->slug }}" placeholder="home">
-                            <a href="{{ url($page->slug) }}" target="_blank"
-                                class="btn btn-outline-secondary d-flex align-items-center" title="View Page">
+                            <input class="hs-input" name="slug" id="page-slug" placeholder="home">
+                            <a href="#" target="_blank" id="slug-preview-link"
+                                class="btn btn-outline-secondary d-flex align-items-center disabled" title="View Page">
                                 <i class="fa-solid fa-external-link"></i>
                             </a>
                         </div>
                     </div>
                     <div class="hs-row"><label>Tags (Comma separated)</label><input class="hs-input" name="tags"
-                            id="ps-tags" value="{{ is_array($page->tags) ? implode(', ', $page->tags) : '' }}"
-                            placeholder="news, update, gallery"></div>
+                            id="ps-tags" placeholder="news, update, gallery"></div>
                     <div class="hs-row"><label>Meta Title</label><input class="hs-input" name="meta_title"
-                            id="ps-meta-title" value="{{ $page->meta_title }}" placeholder="Page browser title"></div>
+                            id="ps-meta-title" placeholder="Page browser title"></div>
                     <div class="hs-row"><label>Meta Description</label><textarea class="hs-input" name="meta_description"
-                            id="ps-meta-description" style="min-height:80px">{{ $page->meta_description }}</textarea></div>
+                            id="ps-meta-description" style="min-height:80px"></textarea></div>
 
                     <hr class="hs-divider">
                     <div class="ps-section-title">Style</div>
@@ -585,12 +602,20 @@
                             </div>
                         </div>
                     </div>
-                    {{-- Revision History placeholders --}}
                     <div class="revision-item">
                         <div class="revision-info">
                             <div class="revision-version">4</div>
                             <div>
-                                <div class="revision-date">{{ $page->updated_at->subDay()->format('M d, Y h:i A') }}</div>
+                                <div class="revision-date">Mar 28, 2026 10:15 AM</div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-restore">Restore</button>
+                    </div>
+                    <div class="revision-item">
+                        <div class="revision-info">
+                            <div class="revision-version">3</div>
+                            <div>
+                                <div class="revision-date">Mar 27, 2026 09:45 PM</div>
                             </div>
                         </div>
                         <button type="button" class="btn-restore">Restore</button>
@@ -598,9 +623,9 @@
                 </div>
             </div>
 
-            <input type="hidden" name="content" id="page-content-json" value="{{ $page->content }}">
-            <input type="hidden" name="meta_keywords" id="meta-keywords-hidden" value="{{ $page->meta_keywords }}">
-            <input type="hidden" name="is_featured" value="{{ $page->is_featured ? 1 : 0 }}">
+            <input type="hidden" name="content" id="page-content-json" value="[]">
+            <input type="hidden" name="meta_keywords" id="meta-keywords-hidden">
+            <input type="hidden" name="is_featured" value="0">
         </form>
     </div>
 @endsection
@@ -612,82 +637,80 @@
             return false;
         };
 
-        // Brute Force Pointer Events Fix
-        setInterval(() => {
-            window.CMS_CONFIG = {
-                upload_url: "{{ route('dealer.website.media.upload') }}",
-                csrf_token: "{{ csrf_token() }}"
-            };
+        window.CMS_CONFIG = {
+            upload_url: "{{ route('dealer.website.media.upload') }}",
+            csrf_token: "{{ csrf_token() }}"
+        };
     </script>
-    <script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=5.3"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=5.3"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=6.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=5.3"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=5.3"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=5.3"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/html-css.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/export-import.js') }}?v=5.4"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/html-css.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/export-import.js') }}?v=6.0"></script>
 
-    <script>
-        // NUCLEAR FOCUS FIX: High-priority mousedown listener
-        document.addEventListener('mousedown', function (e) {
-            const editable = e.target.closest('[contenteditable="true"]');
-            if (editable) {
-                console.log('Nuclear focus triggered for:', editable.tagName);
-                setTimeout(() => {
-                    editable.focus();
-                    // Re-enable typing just in case
-                    editable.style.webkitUserModify = 'read-write';
-                }, 0);
-            }
-        }, true);
-    </script>
     <script>
         // Sync Top Bar Status
-        function updateTopStatus(select) {
-            const badge = document.getElementById('top-status-badge');
-            const dot = badge.querySelector('i');
-            const text = select.options[select.selectedIndex].text;
-
-            if (select.value === '1') {
-                dot.style.color = '#27ae60';
-            } else {
-                dot.style.color = '#ced4da';
-            }
-            badge.innerHTML = `<i class="fa-solid fa-circle me-2" style="font-size:8px;color:${dot.style.color}"></i> Status: ${text}`;
-        }
-
+        // Toggle Side Panels
         function toggleSidePanel(id) {
             const panels = ['page-settings', 'page-revisions'];
             const overlay = document.getElementById('side-overlay');
+
             panels.forEach(p => {
                 const el = document.getElementById('side-panel-' + p);
                 if (p === id) {
-                    if (el.classList.contains('open')) { el.classList.remove('open'); overlay.style.display = 'none'; }
-                    else { panels.forEach(o => document.getElementById('side-panel-' + o).classList.remove('open')); el.classList.add('open'); overlay.style.display = 'block'; }
-                } else { el.classList.remove('open'); }
+                    if (el.classList.contains('open')) {
+                        el.classList.remove('open');
+                        overlay.style.display = 'none';
+                    } else {
+                        // Close others first
+                        panels.forEach(other => document.getElementById('side-panel-' + other).classList.remove('open'));
+                        el.classList.add('open');
+                        overlay.style.display = 'block';
+                    }
+                } else {
+                    el.classList.remove('open');
+                }
             });
         }
+
         document.getElementById('side-overlay').addEventListener('click', function () {
             document.querySelectorAll('.side-panel').forEach(p => p.classList.remove('open'));
             this.style.display = 'none';
         });
+
+        // Slug auto-generation & sanitization
+        document.getElementById('page-title').addEventListener('input', function () {
+            var slug = this.value.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/^-+|-+$/g, '');
+            document.getElementById('page-slug').value = slug;
+        });
+
+        document.getElementById('page-slug').addEventListener('input', function () {
+            this.value = this.value.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-');
+        });
+
+        document.getElementById('page-slug').addEventListener('blur', function () {
+            this.value = this.value.replace(/^-+|-+$/g, '');
+        });
+
         function prepareFormSubmit() {
             // Collect content
             var blocksContainer = document.getElementById('blocks-container');
@@ -705,29 +728,9 @@
 
             return true;
         }
-        // Slug auto-generation & sanitization
-        document.getElementById('page-title').addEventListener('input', function () {
-            var slug = this.value.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/^-+|-+$/g, '');
-            document.getElementById('page-slug').value = slug;
-        });
 
-        document.getElementById('page-slug').addEventListener('input', function () {
-            this.value = this.value.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-');
-        });
-
-        document.getElementById('page-slug').addEventListener('blur', function () {
-            this.value = this.value.replace(/^-+|-+$/g, '');
-        });
         document.addEventListener('DOMContentLoaded', function () {
-            try {
-                var contentData = {!! $page->content ?: '[]' !!};
-                if (window.renderExistingContent) {
-                    window.renderExistingContent(contentData);
-                }
-            } catch (e) {
-                console.error("Error loading page content:", e);
-            }
-
+            // Shared logic for sidebar panels (Blocks settings)
             ['vs', 'crs', 'tbs', 'inv', 'plg', 'frm', 'blg', 'sch', 'mh'].forEach(function (p) {
                 var btn = document.getElementById(p + '-back-btn');
                 if (btn) btn.addEventListener('click', function () {
@@ -741,29 +744,10 @@
                     var d = document.getElementById('sidebar-default-content'); if (d) d.style.display = 'block';
                 });
             });
+
+            // Fix layout overflow
             var layout = document.querySelector('.layout');
             if (layout) { layout.style.display = 'flex'; layout.style.width = '100%'; layout.style.maxWidth = '100%'; layout.style.flex = '1'; layout.style.overflow = 'visible'; }
-
-            // ── GUARANTEED TEXT EDITING FIX ──────────────────────────────────────
-            document.addEventListener('click', function (e) {
-                var el = e.target;
-                while (el && el !== document.body) {
-                    if (el.isContentEditable) {
-                        el.focus();
-                        try {
-                            if (document.caretRangeFromPoint) {
-                                var range = document.caretRangeFromPoint(e.clientX, e.clientY);
-                                if (range) { var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); }
-                            } else if (document.caretPositionFromPoint) {
-                                var pos = document.caretPositionFromPoint(e.clientX, e.clientY);
-                                if (pos) { var range = document.createRange(); range.setStart(pos.offsetNode, pos.offset); range.collapse(true); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range); }
-                            }
-                        } catch (err) { }
-                        break;
-                    }
-                    el = el.parentElement;
-                }
-            }, true);
         });
     </script>
 @endpush

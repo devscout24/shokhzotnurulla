@@ -1,5 +1,5 @@
 @extends('layouts.dealer.app')
-@section('title', __('Edit Page'))
+@section('title', __('Edit Blog Post'))
 @push('page-assets')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -361,12 +361,12 @@
 @section('page-content')
     <div class="overlay" id="side-overlay"></div>
     <div class="of-master-frame">
-        <form action="{{ route('dealer.website.pages.update', $page->id) }}" method="POST" id="page-builder-form"
+        <form action="{{ route('dealer.website.blog-posts.update', $blogPost->id) }}" method="POST" id="page-builder-form"
             style="display:contents" onsubmit="return prepareFormSubmit()">
             @csrf
             @method('PATCH')
             <div class="of-header shadow-sm">
-                <h4 class="fw-bold m-0 fs-5 text-dark">Edit Page</h4>
+                <h4 class="fw-bold m-0 fs-5 text-dark">Edit Blog Post</h4>
                 <div class="ms-auto d-flex align-items-center gap-3">
                     <button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold border-2"
                         style="border-radius:6px"><i class="fa-solid fa-eye me-2"></i>Preview</button>
@@ -382,13 +382,13 @@
             </div>
             <div class="input-group border-bottom bg-white" style="height:55px">
                 <span class="bg-lighter input-group-text border-0 px-4 fw-bold small text-muted"
-                    style="min-width:140px">PAGE TITLE</span>
-                <input type="text" value="{{ $page->title }}" class="form-control border-0 px-4 fs-6" name="title"
-                    id="page-title" required autocomplete="off" placeholder="Enter page title...">
+                    style="min-width:140px">POST TITLE</span>
+                <input type="text" value="{{ $blogPost->title }}" class="form-control border-0 px-4 fs-6" name="title"
+                    id="page-title" required autocomplete="off" placeholder="Enter post title...">
                 <span class="bg-white input-group-text border-0 text-muted small px-4 border-start" id="top-status-badge">
                     <i class="fa-solid fa-circle me-2"
-                        style="font-size:8px;color:{{ $page->is_active ? '#27ae60' : '#ced4da' }}"></i> Status:
-                    {{ $page->is_active ? 'Published' : 'Draft' }}
+                        style="font-size:8px;color:{{ $blogPost->is_active ? '#27ae60' : '#ced4da' }}"></i> Status:
+                    {{ $blogPost->is_active ? 'Published' : 'Draft' }}
                 </span>
             </div>
 
@@ -508,14 +508,14 @@
                     <div class="ps-section-title">Post Metadata</div>
                     <div class="hs-row"><label>Status</label>
                         <select class="hs-select" name="is_active" id="ps-status" onchange="updateTopStatus(this)">
-                            <option value="1" {{ $page->is_active ? 'selected' : '' }}>Published</option>
-                            <option value="0" {{ !$page->is_active ? 'selected' : '' }}>Draft</option>
+                            <option value="1" {{ $blogPost->is_active ? 'selected' : '' }}>Published</option>
+                            <option value="0" {{ !$blogPost->is_active ? 'selected' : '' }}>Draft</option>
                             <option value="pending">Pending Review</option>
                         </select>
                     </div>
                     <div class="hs-row"><label>Publish Date</label>
                         <input type="datetime-local" class="hs-input" name="published_at" id="ps-published-at"
-                            value="{{ $page->published_at ? $page->published_at->format('Y-m-d\TH:i') : '' }}">
+                            value="{{ $blogPost->published_at ? $blogPost->published_at->format('Y-m-d\TH:i') : '' }}">
                     </div>
                     <div class="hs-row"><label>Visibility</label>
                         <select class="hs-select">
@@ -534,20 +534,20 @@
                     <div class="hs-row">
                         <label>Page Slug</label>
                         <div class="d-flex gap-2">
-                            <input class="hs-input" name="slug" id="page-slug" value="{{ $page->slug }}" placeholder="home">
-                            <a href="{{ url($page->slug) }}" target="_blank"
-                                class="btn btn-outline-secondary d-flex align-items-center" title="View Page">
+                            <input class="hs-input" name="slug" id="page-slug" value="{{ $blogPost->slug }}" placeholder="my-blog-post">
+                            <a href="{{ url('blog/' . $blogPost->slug) }}" target="_blank"
+                                class="btn btn-outline-secondary d-flex align-items-center" title="View Post">
                                 <i class="fa-solid fa-external-link"></i>
                             </a>
                         </div>
                     </div>
                     <div class="hs-row"><label>Tags (Comma separated)</label><input class="hs-input" name="tags"
-                            id="ps-tags" value="{{ is_array($page->tags) ? implode(', ', $page->tags) : '' }}"
+                            id="ps-tags" value="{{ is_array($blogPost->tags) ? implode(', ', $blogPost->tags) : '' }}"
                             placeholder="news, update, gallery"></div>
                     <div class="hs-row"><label>Meta Title</label><input class="hs-input" name="meta_title"
-                            id="ps-meta-title" value="{{ $page->meta_title }}" placeholder="Page browser title"></div>
+                            id="ps-meta-title" value="{{ $blogPost->meta_title }}" placeholder="Post browser title"></div>
                     <div class="hs-row"><label>Meta Description</label><textarea class="hs-input" name="meta_description"
-                            id="ps-meta-description" style="min-height:80px">{{ $page->meta_description }}</textarea></div>
+                            id="ps-meta-description" style="min-height:80px">{{ $blogPost->meta_description }}</textarea></div>
 
                     <hr class="hs-divider">
                     <div class="ps-section-title">Style</div>
@@ -585,12 +585,11 @@
                             </div>
                         </div>
                     </div>
-                    {{-- Revision History placeholders --}}
                     <div class="revision-item">
                         <div class="revision-info">
                             <div class="revision-version">4</div>
                             <div>
-                                <div class="revision-date">{{ $page->updated_at->subDay()->format('M d, Y h:i A') }}</div>
+                                <div class="revision-date">{{ $blogPost->updated_at->subDay()->format('M d, Y h:i A') }}</div>
                             </div>
                         </div>
                         <button type="button" class="btn-restore">Restore</button>
@@ -598,9 +597,9 @@
                 </div>
             </div>
 
-            <input type="hidden" name="content" id="page-content-json" value="{{ $page->content }}">
-            <input type="hidden" name="meta_keywords" id="meta-keywords-hidden" value="{{ $page->meta_keywords }}">
-            <input type="hidden" name="is_featured" value="{{ $page->is_featured ? 1 : 0 }}">
+            <input type="hidden" name="content" id="page-content-json" value="{{ $blogPost->content }}">
+            <input type="hidden" name="meta_keywords" id="meta-keywords-hidden" value="{{ $blogPost->meta_keywords }}">
+            <input type="hidden" name="is_featured" value="{{ $blogPost->is_featured ? 1 : 0 }}">
         </form>
     </div>
 @endsection
@@ -720,7 +719,7 @@
         });
         document.addEventListener('DOMContentLoaded', function () {
             try {
-                var contentData = {!! $page->content ?: '[]' !!};
+                var contentData = {!! $blogPost->content ?: '[]' !!};
                 if (window.renderExistingContent) {
                     window.renderExistingContent(contentData);
                 }

@@ -13,8 +13,8 @@ class DealerScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        // 1. Get the current dealer from the service container
-        $dealer = app('currentDealer');
+        // 1. Get the current dealer from the service container safely
+        $dealer = app()->bound('currentDealer') ? app('currentDealer') : null;
 
         // 2. If a dealer is identified for the current session/domain, restrict the query
         if ($dealer) {

@@ -1,6 +1,6 @@
 @extends('layouts.dealer.app')
 
-@section('title', __('Pages'))
+@section('title', __('Blog Posts'))
 
 @push('page-assets')
     <style>
@@ -56,20 +56,6 @@
             transform: translateY(-50%);
             color: #8792a2;
             font-size: 13px;
-        }
-
-        .btn-template {
-            background: #fff;
-            border: 1px solid #e0e6ed;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 14px;
-            color: #4f566b;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
         }
 
         .btn-add-page {
@@ -144,11 +130,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-
-        .external-link {
-            color: #8792a2;
-            font-size: 11px;
         }
 
         .inline-actions {
@@ -340,22 +321,26 @@
 @section('page-content')
     <div class="main-content">
         <div class="page-header-flex">
-            <h1 class="page-title">Pages</h1>
+            <h1 class="page-title">Blog Posts</h1>
             <div class="header-actions">
                 <div class="search-input-group">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Search pages">
+                    <input type="text" class="search-input" placeholder="Search blog posts">
                 </div>
-                <a href="#" class="btn-template">
-                    <i class="far fa-file-alt"></i> Start From Template
-                </a>
                 <a href="{{ $routes['create'] }}" class="btn-add-page">
-                    <i class="fas fa-plus"></i> Add Page
+                    <i class="fas fa-plus"></i> Add Blog Post
                 </a>
             </div>
         </div>
 
-        @if ($pages->count())
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        @if ($posts->count())
             <div class="content-card">
                 <div class="table-responsive">
                     <table class="table">
@@ -372,34 +357,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($pages as $page)
+                            @foreach ($posts as $post)
                                 <tr>
                                     <td class="chk-col"><input type="checkbox" class="chk-custom"></td>
                                     <td>
                                         <div class="d-flex flex-column">
                                             <div class="d-flex align-items-center">
-                                                <a href="{{ str_replace('__ID__', $page->id, $routes['edit']) }}"
+                                                <a href="{{ str_replace('__ID__', $post->id, $routes['edit']) }}"
                                                     class="title-col m-0">
-                                                    {{ $page->title }}
+                                                    {{ $post->title }}
                                                 </a>
-                                                <a href="{{ url($page->slug) }}" target="_blank" rel="noopener noreferrer"
-                                                    class="ms-2 text-muted" title="View Public Page" style="font-size:12px">
+                                                <a href="{{ url('blog/' . $post->slug) }}" target="_blank" rel="noopener noreferrer"
+                                                    class="ms-2 text-muted" title="View Public Post" style="font-size:12px">
                                                     <i class="fas fa-external-link-alt"></i>
                                                 </a>
                                             </div>
                                             <div class="inline-actions">
-                                                <a href="{{ str_replace('__ID__', $page->id, $routes['edit']) }}"
+                                                <a href="{{ str_replace('__ID__', $post->id, $routes['edit']) }}"
                                                     class="btn-action">
                                                     <i class="fa-regular fa-pen-to-square"></i> Edit
                                                 </a>
-                                                <a href="{{ url($page->slug) }}" target="_blank" class="btn-action">
+                                                <a href="{{ url('blog/' . $post->slug) }}" target="_blank" class="btn-action">
                                                     <i class="fa-regular fa-eye"></i> View
                                                 </a>
                                                 <button type="button" class="btn-action action-trash"
-                                                    onclick="showDeleteModal({{ $page->id }})">
+                                                    onclick="showDeleteModal({{ $post->id }})">
                                                     <i class="fa-regular fa-trash-can"></i> Trash
                                                 </button>
-                                                <button type="button" class="btn-action" onclick="duplicatePage({{ $page->id }})">
+                                                <button type="button" class="btn-action" onclick="duplicatePost({{ $post->id }})">
                                                     <i class="fa-regular fa-copy"></i> Copy
                                                 </button>
                                             </div>
@@ -407,51 +392,50 @@
                                     </td>
                                     <td>
                                         <div class="url-text d-flex align-items-center">
-                                            <span class="text-muted">/{{ $page->slug }}</span>
-                                            <a href="{{ url($page->slug) }}" target="_blank" rel="noopener noreferrer"
+                                            <span class="text-muted">/blog/{{ $post->slug }}</span>
+                                            <a href="{{ url('blog/' . $post->slug) }}" target="_blank" rel="noopener noreferrer"
                                                 class="ms-2 text-muted" style="font-size:11px">
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
                                         </div>
                                     </td>
                                     <td>
-                                        {{-- Showing dealer name or placeholder as author --}}
-                                        <span class="date-text">{{ $page->dealer->name ?? 'Admin' }}</span>
+                                        <span class="date-text">{{ $post->dealer->name ?? 'Admin' }}</span>
                                     </td>
                                     <td>
-                                        @php $isPublished = $page->is_active && $page->published_at && $page->published_at <= now(); @endphp
+                                        @php $isPublished = $post->is_active && $post->published_at && $post->published_at <= now(); @endphp
                                         <div class="status-dot">
                                             <div class="dot {{ $isPublished ? 'dot-published' : 'dot-draft' }}"></div>
                                             {{ $isPublished ? 'Published' : 'Draft' }}
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        @if($page->meta_description)
+                                        @if($post->meta_description)
                                             <i class="fas fa-check-circle meta-check"></i>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
-                                    <td><span class="date-text">{{ $page->created_at->format('M d, Y') }}</span></td>
-                                    <td><span class="date-text">{{ $page->updated_at->format('M d, Y') }}</span></td>
+                                    <td><span class="date-text">{{ $post->created_at->format('M d, Y') }}</span></td>
+                                    <td><span class="date-text">{{ $post->updated_at->format('M d, Y') }}</span></td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-                @if($pages->hasPages())
+                @if($posts->hasPages())
                     <div class="p-4 border-top">
-                        {{ $pages->links() }}
+                        {{ $posts->links() }}
                     </div>
                 @endif
             </div>
         @else
             <div class="content-card empty-state">
-                <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
-                <h3 class="text-dark fw-bold">No pages found</h3>
-                <p class="text-muted">You haven't created any pages yet.</p>
+                <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                <h3 class="text-dark fw-bold">No blog posts found</h3>
+                <p class="text-muted">You haven't created any blog posts yet.</p>
                 <a href="{{ $routes['create'] }}" class="btn-add-page d-inline-flex mt-2">
-                    <i class="fas fa-plus"></i> Add Page
+                    <i class="fas fa-plus"></i> Add Blog Post
                 </a>
             </div>
         @endif
@@ -468,7 +452,7 @@
                     onclick="closeDeleteModal()">&times;</button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete this post?
+                Are you sure you want to delete this blog post?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
@@ -487,32 +471,32 @@
     </form>
 
     <script>
-        let pageIdToDelete = null;
+        let postIdToDelete = null;
 
-        function showDeleteModal(pageId) {
-            pageIdToDelete = pageId;
+        function showDeleteModal(postId) {
+            postIdToDelete = postId;
             document.getElementById('deleteModalOverlay').style.display = 'flex';
         }
 
         function closeDeleteModal() {
-            pageIdToDelete = null;
+            postIdToDelete = null;
             document.getElementById('deleteModalOverlay').style.display = 'none';
         }
 
         document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
-            if (pageIdToDelete) {
+            if (postIdToDelete) {
                 const form = document.getElementById('deleteForm');
-                let url = '{{ route("dealer.website.pages.destroy", ":id") }}';
-                form.action = url.replace(':id', pageIdToDelete);
+                let url = '{{ route("dealer.website.blog-posts.destroy", ":id") }}';
+                form.action = url.replace(':id', postIdToDelete);
                 form.submit();
             }
         });
 
-        function duplicatePage(pageId) {
-            if (confirm('Are you sure you want to duplicate this page?')) {
+        function duplicatePost(postId) {
+            if (confirm('Are you sure you want to duplicate this blog post?')) {
                 const form = document.getElementById('duplicateForm');
-                let url = '{{ route("dealer.website.pages.duplicate", ":id") }}';
-                form.action = url.replace(':id', pageId);
+                let url = '{{ route("dealer.website.blog-posts.duplicate", ":id") }}';
+                form.action = url.replace(':id', postId);
                 form.submit();
             }
         }

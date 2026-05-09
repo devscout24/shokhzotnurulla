@@ -91,10 +91,12 @@ $visibilityHtml = '
 <div class="hs-row"><label>Alt Text (Description)</label><input class="hs-input" id="is-alt" placeholder="Image description..."/></div>
 <div class="hs-row"><label>Link Image to</label><input class="hs-input" id="is-link" placeholder="https://..."/></div>
 <div class="hs-row d-flex justify-content-between align-items-center"><label class="mb-0">Open in New Tab</label><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" id="is-newtab"></div></div>
-<div class="hs-row"><label>Align</label><div class="hs-align-group"><button type="button" class="is-align-btn" data-align="left"><i class="fa-solid fa-align-left"></i></button><button type="button" class="is-align-btn" data-align="center"><i class="fa-solid fa-align-center"></i></button><button type="button" class="is-align-btn" data-align="right"><i class="fa-solid fa-align-right"></i></button></div></div>
+<div class="hs-row"><label>Align</label><div class="hs-align-group"><button type="button" class="is-align-btn" data-align="left" title="Left"><i class="fa-solid fa-align-left"></i></button><button type="button" class="is-align-btn" data-align="center" title="Center"><i class="fa-solid fa-align-center"></i></button><button type="button" class="is-align-btn" data-align="right" title="Right"><i class="fa-solid fa-align-right"></i></button></div></div>
+<div class="hs-row"><label>Float (Text Wrap)</label><div class="hs-align-group"><button type="button" class="is-float-btn active" data-float="none">None</button><button type="button" class="is-float-btn" data-float="left">Left</button><button type="button" class="is-float-btn" data-float="right">Right</button></div></div>
 <div class="hs-row"><label>Width (%)</label><input class="hs-input" id="is-width" type="number" value="100"/></div>
 <div class="hs-row"><label>Height (px)</label><input class="hs-input" id="is-height" type="number" placeholder="auto"/></div>
 <div class="hs-row"><label>Opacity (0-1)</label><input class="hs-input" id="is-opacity" type="number" step="0.1" min="0" max="1" value="1"/></div>
+<div class="hs-row d-flex justify-content-between align-items-center"><label class="mb-0">Free Position (Drag anywhere)</label><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" id="is-free"></div></div>
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
 <div class="hs-actions">
@@ -143,6 +145,7 @@ $visibilityHtml = '
 <button type="button" class="hs-back-btn" id="container-back-btn"><i class="fa-solid fa-arrow-left"></i> Container Settings</button>
 <div class="hs-row"><label>Padding Vertical (px)</label><input class="hs-input" id="container-padding" type="number" value="40"/></div>
 <div class="hs-row"><label>Background Color</label><input class="hs-input" id="container-bg" type="color" value="#ffffff"/></div>
+<div class="hs-row d-flex justify-content-between align-items-center"><label class="mb-0">Free Position (Drag anywhere)</label><div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" id="container-free"></div></div>
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
 <div class="hs-actions"><button type="button" class="hs-btn-remove" id="container-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="container-cancel-btn">Cancel</button></div>
@@ -304,6 +307,7 @@ $visibilityHtml = '
 <div id="divider-settings-panel" style="display:none">
 <button type="button" class="hs-back-btn" id="ds-back-btn"><i class="fa-solid fa-arrow-left"></i> Divider Settings</button>
 <div class="hs-row"><label>Color</label><input class="hs-input" id="ds-color" type="color" value="#e0e6ed" style="height:40px;padding:2px"/></div>
+<div class="hs-row"><label>Width (%)</label><input class="hs-input" id="ds-width" type="number" value="100" min="1" max="100"/></div>
 <div class="hs-row"><label>Height (px)</label><input class="hs-input" id="ds-height" type="number" value="1" min="1" max="20"/></div>
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>

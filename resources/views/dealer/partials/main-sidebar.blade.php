@@ -17,8 +17,8 @@
             <span>{{ __('Pages') }}</span>
         </div>
     </a>
-    <a class="sidebar-item-link" href="#">
-        <div class="sidebar-item">
+    <a class="sidebar-item-link" href="{{ route('dealer.website.blog-posts.index') }}">
+        <div class="sidebar-item {{ request()->routeIs('dealer.website.blog-posts.*') ? 'active' : '' }}">
             <i class="bi bi-chat-left-text"></i>
             <span>{{ __('Blog Posts') }}</span>
         </div>
