@@ -15,6 +15,9 @@ class IntegrationController extends Controller
     protected array $providers = [
         'carfax'    => \App\Services\Integrations\CarfaxProvider::class,
         '700credit' => \App\Services\Integrations\Credit700Provider::class,
+        'stripe'    => \App\Services\Integrations\StripeProvider::class,
+        'ga4'       => \App\Services\Integrations\Ga4Provider::class,
+        'gtm'       => \App\Services\Integrations\GtmProvider::class,
         // ... more mappings as they are implemented
     ];
 
