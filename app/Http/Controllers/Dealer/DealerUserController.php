@@ -20,8 +20,13 @@ class DealerUserController extends Controller
         // Ensure requested roles exist for this dealer
         $this->ensureRolesExist($dealer);
 
-        // Scope users to current dealer only
-        $users = $dealer->users()->with('roles')->get();
+        // Scope users to current dealer only and exclude system users
+        $users = $dealer->users()
+            ->where('is_system_user', false)
+            ->with(['roles' => function($query) use ($dealer) {
+                $query->where('roles.dealer_id', $dealer->id);
+            }])
+            ->get();
         
         // Load all available timezones
         $timezones = \DateTimeZone::listIdentifiers();

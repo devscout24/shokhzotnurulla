@@ -1,12 +1,11 @@
 <?php
 namespace Database\Seeders;
 
+use App\Models\Dealership\Dealer;
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Role;
-use App\Models\Permission;
-use App\Models\User;
-use App\Models\Dealership\Dealer;
 
 class DealerRoleSeeder extends Seeder
 {
@@ -30,17 +29,17 @@ class DealerRoleSeeder extends Seeder
 
         foreach ($permissions as $perm) {
             Permission::firstOrCreate([
-                'name' => $perm,
-                'guard_name' => 'web'
+                'name'       => $perm,
+                'guard_name' => 'web',
             ]);
         }
 
         // --- Dealer Owner Role ---
         $ownerRole = Role::firstOrCreate(
             [
-                'name' => 'dealer_owner',
+                'name'       => 'dealer_owner',
                 'guard_name' => 'web',
-                'dealer_id' => $dealer->id,
+                'dealer_id'  => $dealer->id,
             ],
             [
                 'is_active' => true,
@@ -58,14 +57,14 @@ class DealerRoleSeeder extends Seeder
 
         // --- Staff Roles ---
         $staffRoleNames = ['dealer_manager', 'dealer_sales', 'dealer_support'];
-        $staffRoles = [];
+        $staffRoles     = [];
 
         foreach ($staffRoleNames as $name) {
             $staffRoles[$name] = Role::firstOrCreate(
                 [
-                    'name' => $name,
+                    'name'       => $name,
                     'guard_name' => 'web',
-                    'dealer_id' => $dealer->id,
+                    'dealer_id'  => $dealer->id,
                 ],
                 ['is_active' => true]
             );
