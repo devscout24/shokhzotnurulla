@@ -419,6 +419,12 @@ Route::prefix('dealer')->name('dealer.')
             Route::get('/authentication', [SettingController::class, 'authentication'])->name('authentication');
             Route::get('/security', [SettingController::class, 'security'])->name('security');
             Route::patch('/security', [SettingController::class, 'updateSecurity'])->name('security.update');
+            
+            // User Management
+            Route::get('/users', [\App\Http\Controllers\Dealer\DealerUserController::class, 'index'])->name('users.index');
+            Route::post('/users', [\App\Http\Controllers\Dealer\DealerUserController::class, 'store'])->name('users.store');
+            Route::patch('/users/{user}', [\App\Http\Controllers\Dealer\DealerUserController::class, 'update'])->name('users.update');
+            Route::delete('/users/{user}', [\App\Http\Controllers\Dealer\DealerUserController::class, 'destroy'])->name('users.destroy');
         });
 
     });

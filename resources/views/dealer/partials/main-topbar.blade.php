@@ -119,6 +119,7 @@
 
                 <div class="settings-menu" id="settingsMenu" role="menu" aria-hidden="true">
                     <a href="{{ route('dealer.settings.profile') }}" class="settings-item" role="menuitem">{{ __('My profile') }}</a>
+                    <a href="{{ route('dealer.settings.users.index') }}" class="settings-item" role="menuitem">{{ __('Manage users') }}</a>
                     {{-- <a href="{{ route('dealer.settings.authentication') }}" class="settings-item" role="menuitem">{{ __('2FA') }}</a> --}}
                     <a href="{{ route('dealer.settings.security') }}" class="settings-item" role="menuitem">{{ __('Account security') }}</a>
                     <div class="settings-divider" aria-hidden="true"></div>

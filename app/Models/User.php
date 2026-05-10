@@ -75,6 +75,19 @@ class User extends Authenticatable implements MustVerifyEmail
         return trim($this->first_name . ' ' . $this->last_name);
     }
 
+    public function getIsOwnerAttribute(): bool
+    {
+        if (!$this->current_dealer_id) {
+            return false;
+        }
+
+        // Check if user is owner of their current dealer
+        return $this->dealers()
+            ->where('dealer_id', $this->current_dealer_id)
+            ->wherePivot('is_owner', true)
+            ->exists();
+    }
+
     /**
      * Many-to-Many relationship with Dealer
      */

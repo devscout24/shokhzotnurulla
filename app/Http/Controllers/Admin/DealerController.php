@@ -112,7 +112,7 @@ class DealerController extends Controller
         $owner->assignRole($ownerRole);
 
         // Create other standard roles for the dealer
-        $staffRoleNames = ['dealer_manager', 'dealer_sales', 'dealer_support'];
+        $staffRoleNames = ['View only', 'Content editor', 'Billing', 'Administrator'];
         foreach ($staffRoleNames as $name) {
             Role::firstOrCreate([
                 'name' => $name,
