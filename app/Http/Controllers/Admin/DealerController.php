@@ -32,6 +32,7 @@ class DealerController extends Controller
         ]);
 
         $dealerData = [
+            'name' => $validated['company_name'],
             'company_name' => $validated['company_name'],
             'slug' => Str::slug($validated['company_name']),
             'email' => $validated['email'],
@@ -70,6 +71,7 @@ class DealerController extends Controller
         ]);
 
         $dealer->update([
+            'name' => $validated['company_name'],
             'company_name' => $validated['company_name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'],

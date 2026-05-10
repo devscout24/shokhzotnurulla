@@ -36,10 +36,13 @@ class Dealer extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'name',
         'company_name',
         'slug',
         'email',
         'phone',
+        'domain',
+        'staging_domain',
         'is_active',
         'legal_name',
         'corporate_address',
