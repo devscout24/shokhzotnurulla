@@ -157,7 +157,7 @@
                                 <form action="{{ route('admin.dealers.notify', $dealer) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn-action" {{ $isVerified ? 'disabled' : '' }} style="{{ $isVerified ? 'opacity: 0.5; cursor: not-allowed;' : '' }}">
-                                        <i class="bi bi-envelope"></i> {{ $isVerified ? 'Verified' : 'Notify' }}
+                                        <i class="bi bi-envelope"></i> {{ $isVerified ? 'Setup Complete' : 'Send Setup Link' }}
                                     </button>
                                 </form>
                             </div>

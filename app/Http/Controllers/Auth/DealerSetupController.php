@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class DealerSetupController extends Controller
 {
@@ -50,6 +51,9 @@ class DealerSetupController extends Controller
 
         Password::broker()->deleteToken($user);
 
-        return redirect()->route('login')->with('status', 'Your account has been verified and password has been set successfully. You can now login.');
+        // Auto-login the user after setup
+        Auth::login($user);
+
+        return redirect()->route('dealer.website.dashboard')->with('status', 'Your account has been verified and password has been set successfully. Welcome to your dashboard!');
     }
 }
