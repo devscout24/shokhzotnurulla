@@ -15,6 +15,8 @@ Route::prefix('admin')
         Route::resource('dealers', \App\Http\Controllers\Admin\DealerController::class);
         Route::patch('dealers/{dealer}/toggle-status', [\App\Http\Controllers\Admin\DealerController::class, 'toggleStatus'])
             ->name('dealers.toggle-status');
+        Route::post('dealers/{dealer}/notify', [\App\Http\Controllers\Admin\DealerController::class, 'notify'])
+            ->name('dealers.notify');
 
         // Profile
         Route::get('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'edit'])

@@ -91,6 +91,11 @@
                 {{ session('success') }}
             </div>
         @endif
+        @if(session('error'))
+            <div class="alert alert-danger mb-4" style="padding: 12px 16px; border-radius: 6px; background: #fce8e6; color: #d93025; border: 1px solid #f5c6cb; font-size: 13px;">
+                {{ session('error') }}
+            </div>
+        @endif
 
         <table class="dealer-table">
             <thead>
@@ -142,6 +147,17 @@
                                     @method('DELETE')
                                     <button type="submit" class="btn-action text-danger">
                                         <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+
+                                @php
+                                    $user = $dealer->owners()->first() ?? $dealer->users()->first();
+                                    $isVerified = $user ? $user->email_verified_at !== null : false;
+                                @endphp
+                                <form action="{{ route('admin.dealers.notify', $dealer) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn-action" {{ $isVerified ? 'disabled' : '' }} style="{{ $isVerified ? 'opacity: 0.5; cursor: not-allowed;' : '' }}">
+                                        <i class="bi bi-envelope"></i> {{ $isVerified ? 'Verified' : 'Notify' }}
                                     </button>
                                 </form>
                             </div>

@@ -91,7 +91,7 @@
 
                 <div class="form-group">
                     <label class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="dealer@example.com">
+                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="dealer@example.com" required>
                     @error('email') <div class="text-danger">{{ $message }}</div> @enderror
                 </div>
 

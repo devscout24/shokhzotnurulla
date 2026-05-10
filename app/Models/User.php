@@ -245,7 +245,7 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         if ($this->hasInvalidRoleState()) {
-            return 'Your assigned role is invalid or inactiveee!';
+            return 'Your assigned role is invalid or inactive!';
         }
 
         if (!$this->hasValidPanelConfiguration()) {

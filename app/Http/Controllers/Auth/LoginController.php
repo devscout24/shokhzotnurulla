@@ -90,7 +90,7 @@ class LoginController extends Controller
     protected function redirectToDashboard($user)
     {
         return $user->isSystemUser()
-            ? route('admin.dashboard')
+            ? route('admin.dealers.index')
             : route('dealer.website.dashboard');
     }
 }
