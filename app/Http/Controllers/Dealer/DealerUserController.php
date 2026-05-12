@@ -15,6 +15,8 @@ class DealerUserController extends Controller
 {
     public function index()
     {
+        $this->authorize('dealer.view_staff');
+
         $dealer = auth()->user()->currentDealer;
         
         // Ensure requested roles exist for this dealer
@@ -36,6 +38,8 @@ class DealerUserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        $this->authorize('dealer.edit_staff');
+
         $dealer = auth()->user()->currentDealer;
         
         // Security check: user must belong to this dealer
@@ -68,7 +72,7 @@ class DealerUserController extends Controller
 
     private function ensureRolesExist($dealer)
     {
-        $roles = ['View only', 'Content editor', 'Billing', 'Administrator'];
+        $roles = ['dealer_manager', 'dealer_sales', 'dealer_support'];
         foreach ($roles as $roleName) {
             Role::firstOrCreate([
                 'name' => $roleName,
@@ -82,6 +86,8 @@ class DealerUserController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('dealer.create_staff');
+
         $request->validate([
             'email' => 'required|email|unique:users,email',
             'first_name' => 'required|string|max:50',
@@ -122,6 +128,8 @@ class DealerUserController extends Controller
     
     public function destroy(User $user)
     {
+        $this->authorize('dealer.delete_staff');
+
         // Safety check
         if ($user->id === auth()->id()) {
             return back()->with('error', 'You cannot delete yourself.');
@@ -132,6 +140,16 @@ class DealerUserController extends Controller
         // Check if user belongs to this dealer
         if ($user->current_dealer_id !== $dealer->id) {
             abort(403);
+        }
+
+        // Check if the user to be deleted is an owner
+        $isOwner = $dealer->users()
+            ->where('users.id', $user->id)
+            ->wherePivot('is_owner', true)
+            ->exists();
+
+        if ($isOwner) {
+            return back()->with('error', 'You cannot delete a Dealer Owner.');
         }
 
         $user->delete();

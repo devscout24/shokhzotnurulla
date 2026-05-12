@@ -21,9 +21,17 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Implicitly grant "Super Admin" role all permissions
-        // This works in the app by using gate-related functions like auth()->user->can() and @can()
+        // And "Dealer Owner" role all dealer-related permissions
         Gate::before(function ($user, $ability) {
-            return $user->hasRole('super_admin') ? true : null;
+            if ($user->hasRole('super_admin')) {
+                return true;
+            }
+
+            if ($user->hasRole('dealer_owner') && str_starts_with($ability, 'dealer.')) {
+                return true;
+            }
+
+            return null;
         });
     }
 }
