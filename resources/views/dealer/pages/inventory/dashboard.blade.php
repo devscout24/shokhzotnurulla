@@ -823,9 +823,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Location Dropdown logic
@@ -854,82 +851,97 @@
                 window.location.href = url.toString();
             });
 
-            // Date Range Picker initialization on the Icon
+            // Date Range Picker - Lazy Initialization
             const $dateIcon = $('.inv-date-range .bi-calendar3');
             const $dateInput = $('#inventoryDateRange');
 
             if ($dateIcon.length) {
-                // Robust Safety Checks
-                let momentAvailable = typeof moment !== 'undefined' && typeof moment.localeData === 'function';
-                
-                // Fallback for ESM/Vite wrapped moment
-                if (typeof moment !== 'undefined' && moment.default && typeof moment.default.localeData === 'function') {
-                    window.moment = moment.default;
-                    momentAvailable = true;
-                }
-
-                const drpAvailable = typeof $.fn.daterangepicker === 'function';
-
-                if (!momentAvailable || !drpAvailable) {
-                    console.warn('Moment.js or DateRangePicker not loaded. Skipping initialization.');
-                    return;
-                }
-
-                const initialDate = $dateInput.val();
-                let startDate = moment().subtract(29, 'days');
-                let endDate = moment();
-
-                if (initialDate && initialDate.includes(' - ')) {
-                    const parts = initialDate.split(' - ');
-                    const s = moment(parts[0], 'MM/DD/YYYY');
-                    const e = moment(parts[1], 'MM/DD/YYYY');
-                    if (s.isValid() && e.isValid()) {
-                        startDate = s;
-                        endDate = e;
+                $dateIcon.on('click', function(e) {
+                    const $icon = $(this);
+                    
+                    // If already initialized, just toggle it (handled by the library)
+                    if ($icon.data('daterangepicker')) {
+                        return;
                     }
-                }
 
-                $dateIcon.daterangepicker({
-                    startDate: startDate,
-                    endDate: endDate,
-                    opens: 'left',
-                    autoApply: true,
-                    alwaysShowCalendars: true,
-                    ranges: {
-                        'Last week': [moment().subtract(6, 'days'), moment()],
-                        'Month to date': [moment().startOf('month'), moment().endOf('month')],
-                        'Last 28 days': [moment().subtract(27, 'days'), moment()],
-                        'Last 30 days': [moment().subtract(29, 'days'), moment()],
-                        'Last 90 days': [moment().subtract(89, 'days'), moment()],
-                        'Last 180 days': [moment().subtract(179, 'days'), moment()],
-                        'Last 12 months': [moment().subtract(1, 'year').add(1, 'day'), moment()]
-                    },
-                    locale: {
-                        format: 'MM/DD/YYYY',
-                        separator: ' - ',
-                        applyLabel: 'Apply',
-                        cancelLabel: 'Cancel',
-                        fromLabel: 'From',
-                        toLabel: 'To',
-                        customRangeLabel: 'Custom',
-                        weekLabel: 'W',
-                        daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-                        monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-                            'August', 'September', 'October', 'November', 'December'
-                        ],
-                        firstDay: 1
+                    // Prevent default and stop propagation during initialization
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Safety Checks
+                    let momentAvailable = typeof moment !== 'undefined' && typeof moment.localeData === 'function';
+                    if (typeof moment !== 'undefined' && moment.default && typeof moment.default.localeData === 'function') {
+                        window.moment = moment.default;
+                        momentAvailable = true;
                     }
-                }, function(start, end, label) {
-                    // Update input and reload on selection
-                    const dateStr = start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY');
-                    $dateInput.val(dateStr);
-                    const url = new URL(window.location.href);
-                    url.searchParams.set('date_range', dateStr);
-                    window.location.href = url.toString();
-                });
 
-                $dateIcon.on('show.daterangepicker', function(ev, picker) {
-                    picker.container.css('display', 'flex');
+                    const drpAvailable = typeof $.fn.daterangepicker === 'function';
+
+                    if (!momentAvailable || !drpAvailable) {
+                        console.warn('Moment.js or DateRangePicker not loaded. Please ensure app.js is loaded correctly.');
+                        return;
+                    }
+
+                    const initialDate = $dateInput.val();
+                    let startDate = moment().subtract(29, 'days');
+                    let endDate = moment();
+
+                    if (initialDate && initialDate.includes(' - ')) {
+                        const parts = initialDate.split(' - ');
+                        const s = moment(parts[0], 'MM/DD/YYYY');
+                        const e = moment(parts[1], 'MM/DD/YYYY');
+                        if (s.isValid() && e.isValid()) {
+                            startDate = s;
+                            endDate = e;
+                        }
+                    }
+
+                    // Initialize
+                    $icon.daterangepicker({
+                        startDate: startDate,
+                        endDate: endDate,
+                        opens: 'left',
+                        autoApply: true,
+                        alwaysShowCalendars: true,
+                        ranges: {
+                            'Last week': [moment().subtract(6, 'days'), moment()],
+                            'Month to date': [moment().startOf('month'), moment().endOf('month')],
+                            'Last 28 days': [moment().subtract(27, 'days'), moment()],
+                            'Last 30 days': [moment().subtract(29, 'days'), moment()],
+                            'Last 90 days': [moment().subtract(89, 'days'), moment()],
+                            'Last 180 days': [moment().subtract(179, 'days'), moment()],
+                            'Last 12 months': [moment().subtract(1, 'year').add(1, 'day'), moment()]
+                        },
+                        locale: {
+                            format: 'MM/DD/YYYY',
+                            separator: ' - ',
+                            applyLabel: 'Apply',
+                            cancelLabel: 'Cancel',
+                            fromLabel: 'From',
+                            toLabel: 'To',
+                            customRangeLabel: 'Custom',
+                            weekLabel: 'W',
+                            daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                            monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                                'August', 'September', 'October', 'November', 'December'
+                            ],
+                            firstDay: 1
+                        }
+                    }, function(start, end, label) {
+                        const dateStr = start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY');
+                        $dateInput.val(dateStr);
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('date_range', dateStr);
+                        window.location.href = url.toString();
+                    });
+
+                    // Handle layout override
+                    $icon.on('show.daterangepicker', function(ev, picker) {
+                        picker.container.css('display', 'flex');
+                    });
+
+                    // Manually trigger the first show
+                    $icon.data('daterangepicker').show();
                 });
             }
 
