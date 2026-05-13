@@ -58,5 +58,5 @@ jobs:
             php artisan optimize:clear
             
             chmod -R 775 storage bootstrap/cache
-            chown -R webgurus365:www-data storage bootstrap/cache
+            chown -R webgurus365:webgurus365 storage bootstrap/cache
           EOF
