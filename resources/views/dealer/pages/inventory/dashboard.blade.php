@@ -830,39 +830,40 @@
         referrerpolicy="no-referrer"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Location Dropdown
-            const toggle = document.getElementById('locationDropdownToggle');
-            const menu = document.getElementById('locationMenu');
+            // Location Dropdown logic
+            const $toggle = $('#locationDropdownToggle');
+            const $menu = $('#locationMenu');
 
-            if (toggle) {
-                toggle.addEventListener('click', function(e) {
+            if ($toggle.length) {
+                $toggle.on('click', function(e) {
                     e.stopPropagation();
-                    menu.classList.toggle('show');
+                    $menu.toggleClass('show');
                 });
             }
 
-            document.addEventListener('click', function() {
-                if (menu) menu.classList.remove('show');
+            $(document).on('click', function() {
+                if ($menu.length) $menu.removeClass('show');
             });
 
-            document.querySelectorAll('.inv-location-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    const url = new URL(window.location.href);
-                    if (id && id !== '0') {
-                        url.searchParams.set('dealer_id', id);
-                    } else {
-                        url.searchParams.delete('dealer_id');
-                    }
-                    window.location.href = url.toString();
-                });
+            $('.inv-location-item').on('click', function() {
+                const id = $(this).data('id');
+                const url = new URL(window.location.href);
+                if (id && id !== '0') {
+                    url.searchParams.set('dealer_id', id);
+                } else {
+                    url.searchParams.delete('dealer_id');
+                }
+                window.location.href = url.toString();
             });
 
-            // Date Range Picker
-            const dateInput = $('#inventoryDateRange');
-            if (dateInput.length) {
-                if (typeof moment === 'undefined') {
-                    console.error('moment.js is not loaded! Check if app.js is loaded correctly.');
+            // Date Range Picker initialization
+            const $dateInput = $('#inventoryDateRange');
+            const $dateContainer = $('.inv-date-range');
+
+            if ($dateInput.length) {
+                // Safety Checks
+                if (typeof moment === 'undefined' || typeof $.fn.daterangepicker === 'undefined') {
+                    console.warn('Moment.js or DateRangePicker not loaded. Skipping initialization.');
                     return;
                 }
 
@@ -872,20 +873,22 @@
 
                 if (initialDate && initialDate.includes(' - ')) {
                     const parts = initialDate.split(' - ');
-                    startDate = moment(parts[0], 'MM/DD/YYYY');
-                    endDate = moment(parts[1], 'MM/DD/YYYY');
+                    const s = moment(parts[0], 'MM/DD/YYYY');
+                    const e = moment(parts[1], 'MM/DD/YYYY');
+                    if (s.isValid() && e.isValid()) {
+                        startDate = s;
+                        endDate = e;
+                    }
                 }
 
-                $('.inv-date-range').on('click', function() {
-                    dateInput.click();
+                // Trigger picker when clicking the container (avoiding recursion)
+                $dateContainer.on('click', function(e) {
+                    if (e.target !== $dateInput[0]) {
+                        $dateInput.click();
+                    }
                 });
 
-                if (typeof dateInput.daterangepicker !== 'function') {
-                    console.error('daterangepicker is not loaded! Check if app.js is loaded correctly.');
-                    return;
-                }
-
-                dateInput.daterangepicker({
+                $dateInput.daterangepicker({
                     startDate: startDate,
                     endDate: endDate,
                     opens: 'left',
@@ -918,9 +921,8 @@
                     }
                 });
 
-                dateInput.on('apply.daterangepicker', function(ev, picker) {
-                    const dateStr = picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format(
-                        'MM/DD/YYYY');
+                $dateInput.on('apply.daterangepicker', function(ev, picker) {
+                    const dateStr = picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY');
                     const url = new URL(window.location.href);
                     url.searchParams.set('date_range', dateStr);
                     window.location.href = url.toString();
