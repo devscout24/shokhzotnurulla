@@ -320,8 +320,13 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border-radius: 4px;
             padding: 0;
-            display: flex !important;
+            display: none;
             flex-direction: row;
+        }
+
+        .daterangepicker.show-calendar,
+        .daterangepicker.show-ranges {
+            display: flex !important;
         }
 
         .daterangepicker .ranges {
@@ -856,6 +861,11 @@
             // Date Range Picker
             const dateInput = $('#inventoryDateRange');
             if (dateInput.length) {
+                if (typeof moment === 'undefined') {
+                    console.error('moment.js is not loaded! Check if app.js is loaded correctly.');
+                    return;
+                }
+
                 const initialDate = "{{ $dateRange }}";
                 let startDate = moment().subtract(29, 'days');
                 let endDate = moment();
@@ -866,10 +876,20 @@
                     endDate = moment(parts[1], 'MM/DD/YYYY');
                 }
 
+                $('.inv-date-range').on('click', function() {
+                    dateInput.click();
+                });
+
+                if (typeof dateInput.daterangepicker !== 'function') {
+                    console.error('daterangepicker is not loaded! Check if app.js is loaded correctly.');
+                    return;
+                }
+
                 dateInput.daterangepicker({
                     startDate: startDate,
                     endDate: endDate,
                     opens: 'left',
+                    autoApply: true,
                     autoUpdateInput: true,
                     alwaysShowCalendars: true,
                     ranges: {
@@ -882,7 +902,7 @@
                         'Last 12 months': [moment().subtract(1, 'year').add(1, 'day'), moment()]
                     },
                     locale: {
-                        format: 'MMM D, YYYY',
+                        format: 'MM/DD/YYYY',
                         separator: ' - ',
                         applyLabel: 'Apply',
                         cancelLabel: 'Cancel',
