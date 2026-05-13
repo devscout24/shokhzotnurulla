@@ -13,12 +13,14 @@ class Role extends SpatieRole
         'guard_name',
         'dealer_id', // Team/Dealer scope
         'is_active', // Active/inactive flag
+        'expires_at', // Expiration date for temporary roles
     ];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
+            'expires_at' => 'datetime',
         ];
     }
 

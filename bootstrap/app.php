@@ -85,4 +85,8 @@ return Application::configure(basePath: dirname(__DIR__))
         //     return response()->view('errors.500', [], 500);
         // });
 
-    })->create();
+    })
+    ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {
+        $schedule->command('roles:cleanup-expired')->daily();
+    })
+    ->create();

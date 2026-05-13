@@ -17,6 +17,9 @@ class DealerObserver
         if ($dealer->domain) {
             \App\Services\Website\WebResolver::clearCache($dealer->domain);
         }
+
+        // Seed default menus for newly registered dealers
+        \Database\Seeders\MenuSeeder::seedForDealer($dealer);
     }
 
     public function updated(Dealer $dealer): void

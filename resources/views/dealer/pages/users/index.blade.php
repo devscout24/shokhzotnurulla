@@ -287,12 +287,18 @@
                             <td>
                                 <span class="role-badge">ROLES</span>
                                 @php
-                                    $roleNames = $user->roles->pluck('name')->toArray();
+                                    $roleMap = [
+                                        'dealer_owner' => 'Owner',
+                                        'dealer_manager' => 'Manager',
+                                        'dealer_sales' => 'Sales',
+                                        'dealer_support' => 'Support',
+                                    ];
+                                    $roleNames = $user->roles->pluck('name')->map(fn($n) => $roleMap[$n] ?? $n)->toArray();
                                     if($user->is_owner && !in_array('Owner', $roleNames)) {
                                         array_unshift($roleNames, 'Owner');
                                     }
                                 @endphp
-                                {{ implode(', ', $roleNames) }}
+                                {{ implode(', ', array_unique($roleNames)) }}
                             </td>
                             <td style="color: #ce4f4b;"><i class="bi bi-x-lg"></i> No</td>
                             <td style="color: #2c3e50;"><i class="bi bi-unlock"></i> No</td>
@@ -367,20 +373,16 @@
                     <label>Roles</label>
                     <div class="role-list">
                         <div class="role-item">
-                            <input type="checkbox" name="roles[]" value="View only" id="add_role_view">
-                            <label for="add_role_view" style="margin: 0; font-weight: normal;">View only</label>
+                            <input type="checkbox" name="roles[]" value="dealer_manager" id="add_role_manager">
+                            <label for="add_role_manager" style="margin: 0; font-weight: normal;">Manager</label>
                         </div>
                         <div class="role-item">
-                            <input type="checkbox" name="roles[]" value="Content editor" id="add_role_content">
-                            <label for="add_role_content" style="margin: 0; font-weight: normal;">Content editor</label>
+                            <input type="checkbox" name="roles[]" value="dealer_sales" id="add_role_sales">
+                            <label for="add_role_sales" style="margin: 0; font-weight: normal;">Sales</label>
                         </div>
                         <div class="role-item">
-                            <input type="checkbox" name="roles[]" value="Billing" id="add_role_billing">
-                            <label for="add_role_billing" style="margin: 0; font-weight: normal;">Billing</label>
-                        </div>
-                        <div class="role-item">
-                            <input type="checkbox" name="roles[]" value="Administrator" id="add_role_admin">
-                            <label for="add_role_admin" style="margin: 0; font-weight: normal;">Administrator</label>
+                            <input type="checkbox" name="roles[]" value="dealer_support" id="add_role_support">
+                            <label for="add_role_support" style="margin: 0; font-weight: normal;">Support</label>
                         </div>
                     </div>
                 </div>
@@ -444,20 +446,16 @@
                     <label>Roles</label>
                     <div class="role-list">
                         <div class="role-item">
-                            <input type="checkbox" name="roles[]" value="View only" id="edit_role_view">
-                            <label for="edit_role_view" style="margin: 0; font-weight: normal;">View only</label>
+                            <input type="checkbox" name="roles[]" value="dealer_manager" id="edit_role_manager">
+                            <label for="edit_role_manager" style="margin: 0; font-weight: normal;">Manager</label>
                         </div>
                         <div class="role-item">
-                            <input type="checkbox" name="roles[]" value="Content editor" id="edit_role_content">
-                            <label for="edit_role_content" style="margin: 0; font-weight: normal;">Content editor</label>
+                            <input type="checkbox" name="roles[]" value="dealer_sales" id="edit_role_sales">
+                            <label for="edit_role_sales" style="margin: 0; font-weight: normal;">Sales</label>
                         </div>
                         <div class="role-item">
-                            <input type="checkbox" name="roles[]" value="Billing" id="edit_role_billing">
-                            <label for="edit_role_billing" style="margin: 0; font-weight: normal;">Billing</label>
-                        </div>
-                        <div class="role-item">
-                            <input type="checkbox" name="roles[]" value="Administrator" id="edit_role_admin">
-                            <label for="edit_role_admin" style="margin: 0; font-weight: normal;">Administrator</label>
+                            <input type="checkbox" name="roles[]" value="dealer_support" id="edit_role_support">
+                            <label for="edit_role_support" style="margin: 0; font-weight: normal;">Support</label>
                         </div>
                     </div>
                 </div>

@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
 
             FactoryOptionCategorySeeder::class,
             FactoryOptionSeeder::class,
+            MenuSeeder::class,
         ]);
     }
 }

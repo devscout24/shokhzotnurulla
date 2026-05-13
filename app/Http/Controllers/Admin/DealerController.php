@@ -81,47 +81,66 @@ class DealerController extends Controller
         // Set permissions team context
         setPermissionsTeamId($dealer->id);
 
-        $permissions = [
+        $allPermissions = [
             'dealer.view_dashboard',
             'dealer.manage_inventory',
-            'dealer.manage_staff',
             'dealer.manage_leads',
+            'dealer.view_staff',
+            'dealer.create_staff',
+            'dealer.edit_staff',
+            'dealer.delete_staff',
             'dealer.manage_settings',
+            'dealer.cancel_dealership',
         ];
 
         // Ensure permissions exist globally
-        foreach ($permissions as $perm) {
+        foreach ($allPermissions as $perm) {
             Permission::firstOrCreate([
                 'name' => $perm,
                 'guard_name' => 'web'
             ]);
         }
 
-        // Create Owner Role for this dealer
+        // --- Dealer Owner Role ---
         $ownerRole = Role::firstOrCreate([
             'name' => 'dealer_owner',
             'guard_name' => 'web',
             'dealer_id' => $dealer->id,
-        ], [
-            'is_active' => true,
-        ]);
+        ], ['is_active' => true]);
+        $ownerRole->syncPermissions($allPermissions);
 
-        $ownerRole->syncPermissions($permissions);
-
-        // Assign Role to User
+        // Assign Role to Owner User
         $owner->assignRole($ownerRole);
 
-        // Create other standard roles for the dealer
-        $staffRoleNames = ['View only', 'Content editor', 'Billing', 'Administrator'];
-        foreach ($staffRoleNames as $name) {
-            Role::firstOrCreate([
-                'name' => $name,
-                'guard_name' => 'web',
-                'dealer_id' => $dealer->id,
-            ], [
-                'is_active' => true,
-            ]);
-        }
+        // --- Dealer Manager Role ---
+        // Access everything except dealership cancellation
+        $managerRole = Role::firstOrCreate([
+            'name' => 'dealer_manager',
+            'guard_name' => 'web',
+            'dealer_id' => $dealer->id,
+        ], ['is_active' => true]);
+        $managerRole->syncPermissions(array_diff($allPermissions, ['dealer.cancel_dealership']));
+
+        // --- Dealer Sales Role ---
+        // Same as manager, but cannot delete staff
+        $salesRole = Role::firstOrCreate([
+            'name' => 'dealer_sales',
+            'guard_name' => 'web',
+            'dealer_id' => $dealer->id,
+        ], ['is_active' => true]);
+        $salesRole->syncPermissions(array_diff($allPermissions, ['dealer.cancel_dealership', 'dealer.delete_staff']));
+
+        // --- Dealer Support Role ---
+        // Role of the owner but cannot affect dealer account settings/cancellation. Expires in 4 days.
+        $supportRole = Role::firstOrCreate([
+            'name' => 'dealer_support',
+            'guard_name' => 'web',
+            'dealer_id' => $dealer->id,
+        ], [
+            'is_active' => true,
+            'expires_at' => now()->addDays(4), // Setting 4 days as middle ground
+        ]);
+        $supportRole->syncPermissions(array_diff($allPermissions, ['dealer.manage_settings', 'dealer.cancel_dealership']));
     }
 
     public function edit(Dealer $dealer)
