@@ -5,6 +5,9 @@ window.$ = window.jQuery = $;
 
 import moment from 'moment';
 window.moment = moment;
+if (moment.default) {
+    window.moment = moment.default;
+}
 
 import 'daterangepicker';
 

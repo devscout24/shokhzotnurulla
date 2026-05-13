@@ -825,9 +825,12 @@
 @endsection
 
 @push('page-scripts')
-    {{-- CDN Fallback for Chart.js to ensure it always loads --}}
+    {{-- CDN Fallbacks for core libraries to ensure they always load on server --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Location Dropdown logic
@@ -861,9 +864,23 @@
             const $dateContainer = $('.inv-date-range');
 
             if ($dateInput.length) {
-                // Safety Checks
-                if (typeof moment === 'undefined' || typeof $.fn.daterangepicker === 'undefined') {
-                    console.warn('Moment.js or DateRangePicker not loaded. Skipping initialization.');
+                // Robust Safety Checks
+                let momentAvailable = typeof moment !== 'undefined' && typeof moment.localeData === 'function';
+                
+                // Fallback for ESM/Vite wrapped moment
+                if (typeof moment !== 'undefined' && moment.default && typeof moment.default.localeData === 'function') {
+                    window.moment = moment.default;
+                    momentAvailable = true;
+                }
+
+                const drpAvailable = typeof $.fn.daterangepicker === 'function';
+
+                if (!momentAvailable || !drpAvailable) {
+                    console.warn('Moment.js (with localeData) or DateRangePicker not loaded. Skipping initialization.', {
+                        moment: typeof moment,
+                        localeData: typeof (moment ? moment.localeData : 'N/A'),
+                        drp: typeof $.fn.daterangepicker
+                    });
                     return;
                 }
 
