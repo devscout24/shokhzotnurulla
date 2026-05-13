@@ -1,0 +1,62 @@
+name: 🚀 Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4' 
+          extensions: mbstring, xml, bcmath, curl
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' 
+
+      - name: 🔨 Install Dependencies & Build Assets
+        run: |
+          # Install PHP dependencies
+          composer install --no-dev --optimize-autoloader
+          
+          # Install Node dependencies and build Vite/Mix assets
+          npm install
+          npm run build
+
+      - name: 📂 Rsync Deployment
+        uses: Burnett01/rsync-deployments@7.0.0
+        with:
+          # -avzr: archive, verbose, compress, recurse
+          # --no-perms/owner/group: Let CloudPanel's Site User handle permissions on arrival
+          switches: -avzr --delete --no-perms --no-owner --no-group --exclude-from='.deployignore'
+          path: ./
+          remote_path: /home/webgurus365/htdocs/webgurus365.com/
+          remote_host: webgurus365.com
+          remote_user: webgurus365
+          remote_port: 22
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: ⚙️ Post-Deployment Commands
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+          chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key webgurus365@webgurus365.com << 'EOF'
+            cd /home/webgurus365/htdocs/webgurus365.com
+            
+            # Run Laravel optimizations
+            # Note: We don't run 'npm install' here because we built assets in the CI step above
+            umask 002
+            php artisan optimize:clear
+            
+            chmod -R 775 storage bootstrap/cache
+            chown -R webgurus365:www-data storage bootstrap/cache
+          EOF

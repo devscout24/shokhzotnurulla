@@ -1,0 +1,12 @@
+.git/
+.github/
+.env
+node_modules/
+vendor/
+storage/*.key
+/public/storage
+/storage/app/public
+/storage/app/private
+public/uploads/
+.vscode/
+deploy.php

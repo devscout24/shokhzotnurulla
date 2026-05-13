@@ -20,6 +20,7 @@ class SystemSuperAdminSeeder extends Seeder
         $systemDealer = Dealer::firstOrCreate(
             ['slug' => config('systemuser.dealer_slug')],
             [
+                'company_name' => 'dev comp 1',
                 'name' => 'System Dealer',
                 'email' => 'superadmin@gmail.com',
                 'phone' => '+923280287524',
