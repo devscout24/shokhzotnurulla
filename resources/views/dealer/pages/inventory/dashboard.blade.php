@@ -3,6 +3,8 @@
 @section('title', __('Inventory Dashboard') . ' | ' . __(config('app.name')))
 
 @push('page-styles')
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
     <style>
         .inv-cards-grid {
             display: grid;
@@ -819,11 +821,13 @@
 @endsection
 
 @push('page-scripts')
-    {{-- CDN Fallbacks for core libraries to ensure they always load on server --}}
+   {{-- CDN Fallbacks for core libraries to ensure they always load on server --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" defer crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
-    <script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
+   <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Location Dropdown logic
             const $toggle = $('#locationDropdownToggle');
