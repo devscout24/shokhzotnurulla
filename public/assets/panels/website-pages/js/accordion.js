@@ -32,10 +32,14 @@ document.getElementById('as-add-item')?.addEventListener('click', () => {
     const header = newItem.querySelector('.acc-header');
     const content = newItem.querySelector('.acc-content');
     
-    header.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isVisible = content.style.display === 'block';
-      content.style.display = isVisible ? 'none' : 'block';
+    // Do NOT use stopPropagation on contenteditable elements - it blocks text input
+    // Instead, use keyboard event for toggling
+    header.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const isVisible = content.style.display === 'block';
+        content.style.display = isVisible ? 'none' : 'block';
+      }
     });
     
     attachDropZoneListeners(content);
@@ -77,7 +81,7 @@ function dropAccordionBlock(returnBlock = false) {
     <div class="dropped-block-inner">
       <div class="editor-accordion" style="width: 100%;">
         <div class="acc-item" style="border: 1px solid #dee2e6; margin-bottom: 5px; border-radius: 4px;">
-          <div class="acc-header" style="padding:10px; background:#f8f9fa; cursor:pointer; font-weight:600;" contenteditable="true">Accordion Item #1</div>
+          <div class="acc-header" style="padding:10px; background:#f8f9fa; cursor:pointer; font-weight:600; min-height:40px; display:block;" contenteditable="true">Accordion Item #1</div>
           <div class="acc-content col-drop-zone" style="padding:15px; min-height:50px;"></div>
         </div>
       </div>
@@ -87,10 +91,14 @@ function dropAccordionBlock(returnBlock = false) {
   const header = block.querySelector('.acc-header');
   const content = block.querySelector('.acc-content');
 
-  header.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isVisible = content.style.display === 'block';
-    content.style.display = isVisible ? 'none' : 'block';
+  // Do NOT use stopPropagation on contenteditable elements - it blocks text input
+  // Instead, use keyboard event for toggling
+  header.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const isVisible = content.style.display === 'block';
+      content.style.display = isVisible ? 'none' : 'block';
+    }
   });
 
   attachDropZoneListeners(content);

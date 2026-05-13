@@ -61,16 +61,43 @@ function drop3ColBlock(returnBlock = false) {
       <button type="button" class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner">
-      <div class="editor-3col" style="display: flex; gap: 20px; width: 100%;">
-        <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;"></div>
-        <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;"></div>
-        <div class="col-drop-zone flex-grow-1" style="min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px;"></div>
+      <div class="editor-3col" style="display: flex; gap: 20px; width: 100%; table-layout: fixed;">
+        <div class="col-drop-zone" style="flex: 1; width: 0; min-width: 0; min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px; overflow-wrap: break-word; word-break: break-all;">
+          <p contenteditable="true" spellcheck="false" data-placeholder="Column 1" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none; word-break: break-all;"></p>
+        </div>
+        <div class="col-drop-zone" style="flex: 1; width: 0; min-width: 0; min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px; overflow-wrap: break-word; word-break: break-all;">
+          <p contenteditable="true" spellcheck="false" data-placeholder="Column 2" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none; word-break: break-all;"></p>
+        </div>
+        <div class="col-drop-zone" style="flex: 1; width: 0; min-width: 0; min-height: 80px; border: 1px dashed #ced4da; border-radius: 4px; padding: 10px; overflow-wrap: break-word; word-break: break-all;">
+          <p contenteditable="true" spellcheck="false" data-placeholder="Column 3" style="margin:0; color:#adb5bd; font-size:13px; min-height:20px; outline:none; word-break: break-all;"></p>
+        </div>
       </div>
     </div>`;
 
   const col3 = block.querySelector('.editor-3col');
   const zones = block.querySelectorAll('.col-drop-zone');
-  zones.forEach(zone => attachDropZoneListeners(zone));
+  const placeholders = block.querySelectorAll('[contenteditable]');
+  
+  zones.forEach((zone, idx) => {
+    attachDropZoneListeners(zone);
+    
+      // Handle placeholder behavior in each column
+      if (placeholders[idx]) {
+        const placeholder = placeholders[idx];
+        placeholder.classList.add('is-placeholder');
+        
+        // Hide the CSS-based placeholder if the column has dropped blocks
+        const observer = new MutationObserver(() => {
+          const hasBlocks = zone.querySelector('.dropped-block') !== null;
+          if (hasBlocks) {
+            placeholder.classList.add('d-none');
+          } else {
+            placeholder.classList.remove('d-none');
+          }
+        });
+        observer.observe(zone, { childList: true, subtree: true });
+      }
+  });
 
   if (returnBlock) return block;
 

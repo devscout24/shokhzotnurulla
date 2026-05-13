@@ -79,11 +79,12 @@ function dropCardBlock(returnBlock = false) {
 
   // Child listeners
   if (img) img.addEventListener('click', (e) => { e.stopPropagation(); openImageSettings(img); });
-  if (h1) h1.addEventListener('focus', (e) => { e.stopPropagation(); openHeadingSettings(h1); });
-  if (p) p.addEventListener('focus', (e) => { e.stopPropagation(); openTextSettings(p); });
+  // NOTE: Do NOT add stopPropagation or focus listeners to contenteditable elements (h1, p)
+  // The shared.js document-level listeners handle focus and settings opening properly.
+  // Direct listeners prevent text input from working.
   
   card.addEventListener('click', (e) => {
-    if (e.target === card || e.target.classList.contains('card-body')) {
+    if (e.target === card || e.target.classList.contains('card-body') || e.target.classList.contains('dropped-block-inner')) {
       e.stopPropagation();
       openCardSettings(card);
     }

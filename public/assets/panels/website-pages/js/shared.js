@@ -8,17 +8,52 @@ function clearSelected() {
 }
 
 function openPanel(id) {
-  closeAllPanels();
+  // Switch to 'Edit Block' tab
+  const editTab = document.querySelector('.sidebar-tab[data-tab="edit"]');
+  const addTab = document.querySelector('.sidebar-tab[data-tab="add"]');
+  if (editTab) {
+    editTab.classList.add('active');
+    addTab.classList.remove('active');
+  }
+
+  // Save currently focused element so focus isn't stolen by panel DOM changes
+  const previouslyFocused = document.activeElement;
+  const wasContentEditable = previouslyFocused && previouslyFocused.isContentEditable;
+
+  closeAllPanels(true); // pass true to prevent recursive tab switching
   const panel = document.getElementById(id);
   if (panel) panel.style.display = 'block';
   const defaultContent = document.getElementById('sidebar-default-content');
   if (defaultContent) defaultContent.style.display = 'none';
+
+  // Restore focus to the contenteditable element after panel opens
+  if (wasContentEditable) {
+    setTimeout(() => { previouslyFocused.focus(); }, 0);
+  }
 }
 
-function closeAllPanels() {
+function closeAllPanels(keepTab = false) {
+  if (!keepTab) {
+    const addTab = document.querySelector('.sidebar-tab[data-tab="add"]');
+    const editTab = document.querySelector('.sidebar-tab[data-tab="edit"]');
+    if (addTab) {
+      addTab.classList.add('active');
+      editTab.classList.remove('active');
+    }
+  }
+
   // Close every settings panel by ID
-  const panels = ['heading-settings-panel', 'text-settings-panel', 'button-settings-panel', 'divider-settings-panel', 'image-settings-panel', 'accordion-settings-panel', 'spacer-settings-panel', 'card-settings-panel', '3col-settings-panel', '2col-settings-panel', 'container-settings-panel', 'icon-settings-panel', 'cart-settings-panel', 'span-settings-panel', 'iframe-settings-panel', 'video-settings-panel', 'inventory-settings-panel', 'form-settings-panel', 'search-settings-panel', 'carousel-settings-panel', 'tabs-settings-panel', 'map-settings-panel', 'overlay-settings-panel', 'html-settings-panel', 'css-settings-panel'];
-  
+  const panels = [
+    'heading-settings-panel', 'text-settings-panel', 'button-settings-panel', 'divider-settings-panel',
+    'image-settings-panel', 'accordion-settings-panel', 'spacer-settings-panel', 'card-settings-panel',
+    '3col-settings-panel', '2col-settings-panel', 'container-settings-panel', 'icon-settings-panel',
+    'cart-settings-panel', 'span-settings-panel', 'iframe-settings-panel', 'video-settings-panel',
+    'inventory-settings-panel', 'form-settings-panel', 'search-settings-panel', 'carousel-settings-panel',
+    'tabs-settings-panel', 'map-settings-panel', 'overlay-settings-panel', 'html-settings-panel',
+    'css-settings-panel', 'blog-settings-panel', 'content-block-settings-panel',
+    'body-types-settings-panel', 'plugin-settings-panel'
+  ];
+
   panels.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
@@ -31,16 +66,38 @@ function closeAllPanels() {
   clearSelected();
 }
 
+// Sidebar Tab Switching
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.sidebar-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const type = tab.dataset.tab;
+      if (type === 'add') {
+        closeAllPanels();
+      } else {
+        // If we're already on an active element, the panel is already there.
+        // Otherwise, keep it as is or show a 'select something' message.
+        if (!activeEl) {
+          closeAllPanels(true); // show default content but keep 'edit' tab
+          const addTab = document.querySelector('.sidebar-tab[data-tab="add"]');
+          const editTab = document.querySelector('.sidebar-tab[data-tab="edit"]');
+          addTab.classList.remove('active');
+          editTab.classList.add('active');
+        }
+      }
+    });
+  });
+});
+
 // ── Visibility Toggle Logic ──────────────────────────────────────────────────
 document.addEventListener('change', e => {
   if (e.target.classList.contains('visibility-toggle')) {
     if (!activeEl) return;
     const block = activeEl.closest('.dropped-block');
     if (!block) return;
-    
+
     const device = e.target.dataset.device; // "desktop" or "mobile"
     const isVisible = e.target.checked;
-    
+
     block.dataset[`visibility${device.charAt(0).toUpperCase() + device.slice(1)}`] = isVisible ? 'visible' : 'hidden';
     if (typeof saveHistory === 'function') saveHistory();
   }
@@ -49,7 +106,7 @@ document.addEventListener('change', e => {
 function syncVisibilityToggles(block) {
   const desktopToggle = document.querySelector('.visibility-toggle[data-device="desktop"]');
   const mobileToggle = document.querySelector('.visibility-toggle[data-device="mobile"]');
-  
+
   if (desktopToggle) desktopToggle.checked = block.dataset.visibilityDesktop !== 'hidden';
   if (mobileToggle) mobileToggle.checked = block.dataset.visibilityMobile !== 'hidden';
 }
@@ -86,17 +143,40 @@ function rgbToHex(rgb) {
 // ── Attach listeners to any block (h1 / p / button) ──────────────────────────
 
 function attachBlockListeners(block) {
-  // Selection Logic
+  // Add Move tool and Resizer if they don't exist
+  if (!block.querySelector('.block-move-tool')) {
+    const moveTool = document.createElement('div');
+    moveTool.className = 'block-move-tool';
+    moveTool.innerHTML = '<i class="fa-solid fa-arrows-alt"></i>';
+    block.appendChild(moveTool);
+  }
+  if (!block.querySelector('.block-resizer-handle')) {
+    ['t', 'b', 'l', 'r', 'tl', 'tr', 'bl', 'br'].forEach(dir => {
+      const resizer = document.createElement('div');
+      resizer.className = `block-resizer-handle resizer-${dir}`;
+      resizer.dataset.dir = dir;
+      block.appendChild(resizer);
+    });
+  }
+
+  // ── Selection: Click anywhere on block to select it ──────────────────
   block.addEventListener('click', (e) => {
+    // If clicking directly on interactive elements,
+    // let the browser handle focus natively
+    const interactive = e.target.closest('[contenteditable="true"], input, textarea, select, button');
+    if (interactive) {
+      // Just mark as selected — browser handles the rest
+      clearSelected();
+      block.classList.add('selected');
+      block.classList.add('is-selected');
+      return;
+    }
+
+    // Clicking on non-text parts: select block and open settings
     e.stopPropagation();
     clearSelected();
     block.classList.add('selected');
-    
-    // Auto-focus editable if it's a text/heading block
-    const editable = block.querySelector('[contenteditable="true"]');
-    if (editable && (e.target === block || e.target.classList.contains('dropped-block-inner'))) {
-      editable.focus();
-    }
+    block.classList.add('is-selected');
   });
 
   // Copy / duplicate icon
@@ -117,64 +197,59 @@ function attachBlockListeners(block) {
   // Drag handle
   const handle = block.querySelector('.drag-handle');
   if (handle) {
-    // ── Drag & Drop Reordering (Handle Based) ──────────────────────────
-    handle.addEventListener('mousedown', () => { 
-        block.setAttribute('draggable', 'true'); 
-    });
-    handle.addEventListener('mouseup', () => { 
-        block.removeAttribute('draggable'); 
+    handle.addEventListener('mousedown', (e) => {
+      block.setAttribute('draggable', 'true');
     });
 
     block.addEventListener('dragstart', e => {
-      if (!block.hasAttribute('draggable')) {
+      const isHandle = e.target.closest('.drag-handle') || e.target.classList.contains('drag-handle');
+      if (!isHandle && !block.getAttribute('draggable')) {
         e.preventDefault();
-        return;
+        return false;
       }
       block.classList.add('dragging');
       window.reorderBlock = block;
-      e.dataTransfer.setData('text/plain', '');
+      e.dataTransfer.setData('text/plain', 'reorder');
       e.dataTransfer.effectAllowed = 'move';
     });
 
     block.addEventListener('dragend', () => {
       block.classList.remove('dragging');
-      block.removeAttribute('draggable');
+      block.setAttribute('draggable', 'false');
       window.reorderBlock = null;
       const indicator = document.getElementById('drop-indicator');
       if (indicator) indicator.style.display = 'none';
     });
   }
 
-  // Individual Settings Handlers
-  const h1 = block.querySelector('h1[contenteditable]');
-  if (h1) {
-    h1.addEventListener('click', (e) => { e.stopPropagation(); openHeadingSettings(h1); });
-    h1.addEventListener('focus', (e) => { 
-        clearSelected(); 
-        block.classList.add('selected'); 
-        openHeadingSettings(h1); 
+  // Hierarchy Buttons
+  const parentBtn = block.querySelector('.select-parent-btn');
+  if (parentBtn) {
+    parentBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const parent = block.parentElement.closest('.dropped-block');
+      if (parent) {
+        clearSelected();
+        parent.classList.add('is-selected', 'selected');
+        triggerBlockSettings(parent);
+      }
     });
   }
 
-  const p = block.querySelector('p[contenteditable]');
-  if (p) {
-    p.addEventListener('click', (e) => { e.stopPropagation(); openTextSettings(p); });
-    p.addEventListener('focus', (e) => { 
-        clearSelected(); 
-        block.classList.add('selected'); 
-        openTextSettings(p); 
+  const childBtn = block.querySelector('.select-child-btn');
+  if (childBtn) {
+    childBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const child = block.querySelector('.dropped-block');
+      if (child) {
+        clearSelected();
+        child.classList.add('is-selected', 'selected');
+        triggerBlockSettings(child);
+      }
     });
   }
 
-  const spanEl = block.querySelector('span[contenteditable]');
-  if (spanEl) {
-    spanEl.addEventListener('click', (e) => { e.stopPropagation(); openSpanSettings(spanEl); });
-    spanEl.addEventListener('focus', (e) => { 
-        clearSelected(); 
-        block.classList.add('selected'); 
-        openSpanSettings(spanEl); 
-    });
-  }
+
 
   const btn = block.querySelector('.dropped-btn');
   if (btn) btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); openButtonSettings(btn); });
@@ -218,20 +293,129 @@ function attachBlockListeners(block) {
   const cart = block.querySelector('.editor-cart');
   if (cart) cart.addEventListener('click', (e) => { e.stopPropagation(); openCartSettings(cart); });
 
+  const blog = block.querySelector('.editor-blog');
+  if (blog) blog.addEventListener('click', (e) => { e.stopPropagation(); openBlogSettings(blog); });
+
+  const contentBlock = block.querySelector('.editor-content_block');
+  if (contentBlock) contentBlock.addEventListener('click', (e) => { e.stopPropagation(); openContentBlockSettings(contentBlock); });
+
+  const bodyTypes = block.querySelector('.editor-body_types');
+  if (bodyTypes) bodyTypes.addEventListener('click', (e) => { e.stopPropagation(); openBodyTypesSettings(bodyTypes); });
+
+  const mapHours = block.querySelector('.editor-map_hours');
+  if (mapHours) mapHours.addEventListener('click', (e) => { e.stopPropagation(); openMapSettings(mapHours); });
+
+  const plugin = block.querySelector('.editor-plugin');
+  if (plugin) plugin.addEventListener('click', (e) => { e.stopPropagation(); openPluginSettings(plugin); });
+
+  const carousel = block.querySelector('.editor-carousel');
+  if (carousel) carousel.addEventListener('click', (e) => { e.stopPropagation(); openCarouselSettings(carousel); });
+
+  const tabs = block.querySelector('.editor-tabs');
+  if (tabs) tabs.addEventListener('click', (e) => { e.stopPropagation(); openTabsSettings(tabs); });
+
+  const overlay = block.querySelector('.editor-overlay');
+  if (overlay) overlay.addEventListener('click', (e) => { e.stopPropagation(); openOverlaySettings(overlay); });
+
   // Initialize Nested Drop Zones (for layout blocks)
   block.querySelectorAll('.col-drop-zone').forEach(zone => {
     attachDropZoneListeners(zone);
   });
 
-  const col3 = block.querySelector('.editor-3col');
-  if (col3) col3.addEventListener('click', (e) => { if (e.target === col3 || e.target.classList.contains('col-drop-zone')) { e.stopPropagation(); open3ColSettings(col3); } });
+  // Layout Block Settings Handlers (Container, 2Col, 3Col)
+  const layoutEl = block.querySelector('.editor-3col, .editor-2col, .editor-container');
+  if (layoutEl) {
+    block.addEventListener('click', (e) => {
+      // If clicking exactly on the layout block or its drop zone (but not a nested block)
+      if (e.target === layoutEl || e.target.classList.contains('col-drop-zone')) {
+        e.stopPropagation();
+        clearSelected();
+        block.classList.add('selected');
 
-  const col2 = block.querySelector('.editor-2col');
-  if (col2) col2.addEventListener('click', (e) => { if (e.target === col2 || e.target.classList.contains('col-drop-zone')) { e.stopPropagation(); open2ColSettings(col2); } });
-
-  const container = block.querySelector('.editor-container');
-  if (container) container.addEventListener('click', (e) => { if (e.target === container) { e.stopPropagation(); openContainerSettings(container); } });
+        if (layoutEl.classList.contains('editor-3col')) if (typeof open3ColSettings === 'function') open3ColSettings(layoutEl);
+        if (layoutEl.classList.contains('editor-2col')) if (typeof open2ColSettings === 'function') open2ColSettings(layoutEl);
+        if (layoutEl.classList.contains('editor-container')) if (typeof openContainerSettings === 'function') openContainerSettings(layoutEl);
+      }
+    });
+  }
 }
+
+// ── Selection Highlight Engine ──────────────────
+document.addEventListener('mousedown', (e) => {
+  const block = e.target.closest('.dropped-block');
+  const isSettingsPanel = e.target.closest('[id$="-settings-panel"]') || e.target.closest('.sidebar-right') || e.target.closest('.side-panel') || e.target.closest('.offcanvas');
+
+  if (block) {
+    // If clicking a block that is NOT already selected, update selection
+    if (!block.classList.contains('selected')) {
+      document.querySelectorAll('.dropped-block').forEach(b => b.classList.remove('is-selected', 'selected'));
+      block.classList.add('is-selected', 'selected');
+    }
+  } else if (!isSettingsPanel && !e.target.closest('[contenteditable="true"]')) {
+    // Clicked completely outside — deselect and close panels
+    document.querySelectorAll('.dropped-block').forEach(b => b.classList.remove('is-selected', 'selected'));
+    if (typeof closeAllPanels === 'function') closeAllPanels();
+  }
+});
+
+// Trigger settings based on block content
+function triggerBlockSettings(block) {
+  const h1 = block.querySelector('h1');
+  const p = block.querySelector('p');
+  const btn = block.querySelector('.dropped-btn');
+  const img = block.querySelector('.editor-image');
+  const video = block.querySelector('.editor-video');
+  const col2 = block.querySelector('.editor-2col');
+  const col3 = block.querySelector('.editor-3col');
+  const container = block.querySelector('.editor-container');
+
+  if (h1 && typeof openHeadingSettings === 'function') openHeadingSettings(h1);
+  else if (p && typeof openTextSettings === 'function') openTextSettings(p);
+  else if (btn && typeof openButtonSettings === 'function') openButtonSettings(btn);
+  else if (img && typeof openImageSettings === 'function') openImageSettings(img);
+  else if (video && typeof openVideoSettings === 'function') openVideoSettings(video);
+  else if (col2 && typeof open2ColSettings === 'function') open2ColSettings(col2);
+  else if (col3 && typeof open3ColSettings === 'function') open3ColSettings(col3);
+  else if (container && typeof openContainerSettings === 'function') openContainerSettings(container);
+}
+
+document.addEventListener('dragend', (e) => {
+  const block = e.target.closest('.dropped-block');
+  if (block) block.setAttribute('draggable', 'false');
+});
+
+// Prevent drag starting when clicking inside editable or interactive areas
+document.addEventListener('dragstart', (e) => {
+  if (e.target.closest('[contenteditable="true"], input, textarea, select, button')) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+}, true);
+
+// Capture-phase: open settings panel when contenteditable is clicked.
+// We do NOT call stopPropagation or preventDefault so the browser
+// naturally places the cursor. Focus is restored by openPanel().
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[contenteditable="true"]');
+  if (!el) return;
+
+  const block = el.closest('.dropped-block');
+  if (block) {
+    clearSelected();
+    block.classList.add('selected', 'is-selected');
+  }
+
+  if (el.tagName === 'H1') {
+    if (typeof openHeadingSettings === 'function') openHeadingSettings(el);
+  } else if (el.tagName === 'P') {
+    if (typeof openTextSettings === 'function') openTextSettings(el);
+  } else if (el.tagName === 'SPAN') {
+    if (typeof openSpanSettings === 'function') openSpanSettings(el);
+  } else if (el.classList.contains('acc-header')) {
+    if (typeof openAccordionSettings === 'function') openAccordionSettings(el);
+  }
+}, true); // capture phase
+
 
 // ── Duplicate a block (with existing content) ─────────────────────────────────
 
@@ -279,68 +463,231 @@ function duplicateBlock(originalBlock) {
 // ── Move blocks Up / Down ─────────────────────────────────────────────────────
 
 function moveBlockUp(block) {
-  const prev = block.previousElementSibling;
-  if (prev && !prev.classList.contains('editor-empty-state')) {
-    block.parentNode.insertBefore(block, prev); if (typeof saveHistory === 'function') saveHistory();
+  let prev = block.previousElementSibling;
+  // Skip over non-block helper elements
+  while (prev && (prev.id === 'drop-indicator' || prev.classList.contains('editor-empty-state'))) {
+    prev = prev.previousElementSibling;
+  }
+  if (prev) {
+    block.parentNode.insertBefore(block, prev);
+    if (typeof saveHistory === 'function') saveHistory();
   }
 }
 
 function moveBlockDown(block) {
-  const next = block.nextElementSibling;
+  let next = block.nextElementSibling;
+  // Skip over non-block helper elements
+  while (next && (next.id === 'drop-indicator' || next.classList.contains('editor-empty-state'))) {
+    next = next.nextElementSibling;
+  }
   if (next) {
-    block.parentNode.insertBefore(next, block); if (typeof saveHistory === 'function') saveHistory();
+    block.parentNode.insertBefore(next, block); // Insert next sibling before current block = move current block down
+    if (typeof saveHistory === 'function') saveHistory();
   }
 }
 
 
 // ── Free Movement Dragging ───────────────────────────────────────────────────
 let isManualDragging = false;
+let isResizing = false;
 let dragStartX, dragStartY, initialTop, initialLeft, manualDragBlock;
 
 document.addEventListener('mousedown', e => {
-  const handle = e.target.closest('.free-moving .drag-handle');
-  if (handle) {
+  // Skip if clicking inside a contenteditable element
+  if (e.target.closest('[contenteditable="true"], input, textarea, select, button')) return;
+
+  const moveTool = e.target.closest('.block-move-tool');
+  const resizer = e.target.closest('.block-resizer-handle');
+  const block = e.target.closest('.dropped-block');
+
+  if (moveTool && block) {
     isManualDragging = true;
-    manualDragBlock = handle.closest('.dropped-block');
-    
+    manualDragBlock = block;
+    // Switch to flow dragging (not absolute)
+    manualDragBlock.classList.add('dragging');
+
     dragStartX = e.clientX;
     dragStartY = e.clientY;
-    initialTop = parseInt(manualDragBlock.style.top) || 0;
-    initialLeft = parseInt(manualDragBlock.style.left) || 0;
-    
-    manualDragBlock.style.cursor = 'grabbing';
+
+    e.preventDefault();
+    e.stopPropagation();
+  } else if (resizer && block) {
+    isResizing = true;
+    resizeBlock = block;
+    resizeDir = resizer.dataset.dir;
+    resizeStartX = e.clientX;
+    resizeStartY = e.clientY;
+    resizeStartWidth = block.offsetWidth;
+    resizeStartHeight = block.offsetHeight;
+
+    const style = getComputedStyle(block);
+    const rect = block.getBoundingClientRect();
+    const parentRect = block.parentElement.getBoundingClientRect();
+
+    resizeStartMarginLeft = parseInt(style.marginLeft) || (rect.left - parentRect.left);
+    resizeStartMarginTop = parseInt(style.marginTop) || (rect.top - parentRect.top);
+
     e.preventDefault();
     e.stopPropagation();
   }
 });
 
+let resizeBlock = null, resizeDir, resizeStartX, resizeStartY, resizeStartWidth, resizeStartHeight, resizeStartMarginLeft, resizeStartMarginTop;
+
 document.addEventListener('mousemove', e => {
   if (isManualDragging && manualDragBlock) {
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-    
-    const newTop = initialTop + dy;
-    const newLeft = initialLeft + dx;
-    
-    manualDragBlock.style.top = newTop + 'px';
-    manualDragBlock.style.left = newLeft + 'px';
-    
-    // Sync settings panel inputs if they exist and are visible
-    const topInput = document.getElementById('icon-top');
-    const leftInput = document.getElementById('icon-left');
-    if (topInput && manualDragBlock.querySelector('.editor-icon')) topInput.value = newTop;
-    if (leftInput && manualDragBlock.querySelector('.editor-icon')) leftInput.value = newLeft;
+    const x = e.clientX;
+    const y = e.clientY;
+
+    // Smooth visual follow
+    manualDragBlock.style.position = 'relative';
+    manualDragBlock.style.zIndex = '2000';
+    manualDragBlock.style.pointerEvents = 'none'; // So we can find elements under it
+
+    const dx = x - dragStartX;
+    const dy = y - dragStartY;
+
+    manualDragBlock.style.transform = `translate(${dx}px, ${dy}px)`;
+
+    // Find potential drop target
+    const targetEl = document.elementFromPoint(x, y);
+    if (targetEl) {
+      const targetZone = targetEl.closest('.col-drop-zone') || document.getElementById('blocks-container');
+      if (targetZone && targetZone !== manualDragBlock.parentElement) {
+        // Preview reorder if needed?
+      }
+    }
+
+  } else if (isResizing && resizeBlock) {
+    const dx = e.clientX - resizeStartX;
+    const dy = e.clientY - resizeStartY;
+    const container = resizeBlock.parentElement;
+    const maxWidth = container ? container.offsetWidth : 1000;
+
+    let newWidth = resizeStartWidth;
+    let newHeight = resizeStartHeight;
+    let newMarginLeft = resizeStartMarginLeft;
+    let newMarginTop = resizeStartMarginTop;
+
+    if (resizeDir.includes('r')) {
+      newWidth = resizeStartWidth + dx;
+      if (newMarginLeft + newWidth > maxWidth) newWidth = maxWidth - newMarginLeft;
+      resizeBlock.style.width = Math.max(30, newWidth) + 'px';
+    }
+    if (resizeDir.includes('b')) {
+      newHeight = resizeStartHeight + dy;
+      resizeBlock.style.minHeight = Math.max(30, newHeight) + 'px';
+      resizeBlock.style.height = 'auto'; // allow text to grow
+    }
+
+    if (resizeDir.includes('l')) {
+      newWidth = resizeStartWidth - dx;
+      newMarginLeft = resizeStartMarginLeft + dx;
+      if (newMarginLeft < 0) {
+          newWidth += newMarginLeft;
+          newMarginLeft = 0;
+      }
+      if (newWidth > 30) {
+        resizeBlock.style.width = newWidth + 'px';
+        resizeBlock.style.marginLeft = newMarginLeft + 'px';
+      }
+    }
+    if (resizeDir.includes('t')) {
+      newHeight = resizeStartHeight - dy;
+      newMarginTop = resizeStartMarginTop + dy;
+      if (newMarginTop < 0) {
+          newHeight += newMarginTop;
+          newMarginTop = 0;
+      }
+      if (newHeight > 30) {
+        resizeBlock.style.minHeight = newHeight + 'px';
+        resizeBlock.style.height = 'auto';
+        resizeBlock.style.marginTop = newMarginTop + 'px';
+      }
+    }
+
+    // Scale image if present
+    const img = resizeBlock.querySelector('.editor-image');
+    if (img) {
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+    }
   }
 });
 
-document.addEventListener('mouseup', () => {
-  if (isManualDragging) {
-    isManualDragging = false;
-    if (manualDragBlock) {
-      manualDragBlock.style.cursor = '';
+document.addEventListener('mouseup', e => {
+  if (isManualDragging && manualDragBlock) {
+    const x = e.clientX;
+    const y = e.clientY;
+
+    manualDragBlock.style.pointerEvents = '';
+    manualDragBlock.style.transform = '';
+    manualDragBlock.style.position = '';
+
+    const targetEl = document.elementFromPoint(x, y);
+    const targetZone = document.getElementById('blocks-container');
+
+    if (targetZone) {
+      // 1. Calculate absolute drop position
+      const containerRect = targetZone.getBoundingClientRect();
+      const finalLeft = x - containerRect.left - (manualDragBlock.offsetWidth / 2);
+      const finalTop = y - containerRect.top - (manualDragBlock.offsetHeight / 2);
+
+      manualDragBlock.style.position = 'absolute';
+      manualDragBlock.style.left = Math.max(0, finalLeft) + 'px';
+      manualDragBlock.style.top = Math.max(0, finalTop) + 'px';
+      manualDragBlock.style.margin = '0px';
+      manualDragBlock.style.float = 'none';
+      manualDragBlock.style.flex = ''; // Remove any flex sizing from previous merges
+      
+      targetZone.appendChild(manualDragBlock);
+
+      // 2. Auto-Push (Collision Detection): Push overlapping blocks down
+      const dropRect = manualDragBlock.getBoundingClientRect();
+      const pushAmount = manualDragBlock.offsetHeight + 15;
+
+      targetZone.querySelectorAll(':scope > .dropped-block').forEach(block => {
+          if (block === manualDragBlock) return;
+          
+          const bRect = block.getBoundingClientRect();
+          const overlapX = dropRect.right > bRect.left && dropRect.left < bRect.right;
+          const overlapY = dropRect.bottom > bRect.top && dropRect.top < bRect.bottom;
+
+          if (overlapX && overlapY) {
+              const oldTop = parseInt(block.style.top) || (bRect.top - containerRect.top);
+              block.style.position = 'absolute';
+              block.style.top = (oldTop + pushAmount) + 'px';
+              // Ensure left is set if it wasn't already absolute
+              if (!block.style.left) {
+                  block.style.left = Math.max(0, bRect.left - containerRect.left) + 'px';
+              }
+          }
+      });
+
+      // 3. Container Height Auto-Expand
+      let maxBottom = 500;
+      targetZone.querySelectorAll(':scope > .dropped-block').forEach(b => {
+          const bottom = parseInt(b.style.top || 0) + b.offsetHeight;
+          if (bottom > maxBottom) maxBottom = bottom;
+      });
+      targetZone.style.minHeight = (maxBottom + 200) + 'px';
     }
+
+    // Clean up empty row containers if any exist from before
+    document.querySelectorAll('.row-container').forEach(row => {
+        if (row.children.length === 0) row.remove();
+    });
+
+    isManualDragging = false;
+    manualDragBlock.classList.remove('dragging');
     manualDragBlock = null;
   }
+  if (isResizing) {
+    isResizing = false;
+    resizeBlock = null;
+  }
+  if (typeof saveHistory === 'function') saveHistory();
 });
 
 
@@ -393,7 +740,7 @@ function attachDropZoneListeners(col) {
   });
 }
 
-window.renderExistingContent = function(content) {
+window.renderExistingContent = function (content) {
   console.log("Rendering content:", content);
   const container = document.getElementById('blocks-container');
   if (!container) {
@@ -414,7 +761,7 @@ window.renderExistingContent = function(content) {
   }
 
   container.innerHTML = ''; // Clear existing
-  
+
   // Re-add drop indicator
   const indicator = document.createElement('div');
   indicator.id = 'drop-indicator';
@@ -430,14 +777,14 @@ window.renderExistingContent = function(content) {
       }
     });
   }
-  
+
   checkEmptyBlocks();
 };
 
 function renderBlockData(data) {
   let block = null;
-  
-  switch(data.type) {
+
+  switch (data.type) {
     case 'heading':
       if (typeof dropHeadingBlock === 'function') {
         block = dropHeadingBlock(true);
@@ -447,6 +794,7 @@ function renderBlockData(data) {
         h1.style.color = data.color || '';
         h1.style.fontSize = data.fontSize || '';
         h1.dataset.cssClasses = data.cssClasses || '';
+        block.dataset.blockType = 'Heading';
       }
       break;
     case 'text':
@@ -457,6 +805,16 @@ function renderBlockData(data) {
         p.style.color = data.color || '';
         p.style.fontSize = data.fontSize || '';
         p.dataset.cssClasses = data.cssClasses || '';
+
+        if (data.nestedBlocks && Array.isArray(data.nestedBlocks)) {
+          data.nestedBlocks.forEach(nd => {
+            const nb = renderBlockData(nd);
+            if (nb) {
+               // Must extract inner to avoid nested `.dropped-block` tools, or just append the whole block
+               p.appendChild(nb);
+            }
+          });
+        }
       }
       break;
     case 'span':
@@ -479,11 +837,11 @@ function renderBlockData(data) {
         btn.setAttribute('href', data.href || '#');
         if (data.newTab) btn.setAttribute('target', '_blank');
         if (data.fullWidth) btn.classList.add('full-width');
-        
+
         const wrapper = btn.closest('.dropped-block-inner');
         if (wrapper) {
-            const alignMap = { 'left': 'flex-start', 'center': 'center', 'right': 'flex-end' };
-            wrapper.style.justifyContent = alignMap[data.align] || 'center';
+          const alignMap = { 'left': 'flex-start', 'center': 'center', 'right': 'flex-end' };
+          wrapper.style.justifyContent = alignMap[data.align] || 'center';
         }
       }
       break;
@@ -496,12 +854,20 @@ function renderBlockData(data) {
         img.style.width = data.width || '100%';
         img.style.height = data.height || 'auto';
         img.dataset.cssClasses = data.cssClasses || '';
-        
+
         const wrapper = img.closest('.dropped-block-inner');
         if (wrapper) {
-            wrapper.style.display = 'flex';
-            const alignMap = { 'left': 'flex-start', 'center': 'center', 'right': 'flex-end' };
-            wrapper.style.justifyContent = alignMap[data.align] || 'flex-start';
+          wrapper.style.display = 'flex';
+          const alignMap = { 'left': 'flex-start', 'center': 'center', 'right': 'flex-end' };
+          wrapper.style.justifyContent = alignMap[data.align] || 'flex-start';
+          wrapper.style.position = 'relative';
+          // Add resizer if missing (though dropImageBlock should have it)
+          if (!wrapper.querySelector('.image-resizer-handle')) {
+            const resizer = document.createElement('div');
+            resizer.className = 'image-resizer-handle';
+            resizer.title = 'Drag to resize';
+            wrapper.appendChild(resizer);
+          }
         }
       }
       break;
@@ -523,6 +889,39 @@ function renderBlockData(data) {
         spacer.style.height = data.heightDesktop + 'px';
       }
       break;
+    case 'html':
+      if (typeof dropHTMLBlock === 'function') {
+        block = dropHTMLBlock(true);
+        const htmlEl = block.querySelector('.editor-html');
+        htmlEl.dataset.code = data.code || '';
+        htmlEl.dataset.styleId = data.styleId || '';
+        if (data.code) {
+          htmlEl.innerHTML = data.code;
+        }
+        // Re-apply CSS if it was saved
+        if (data.styleId && data.code) {
+          const style = document.createElement('style');
+          style.id = data.styleId;
+          style.textContent = data.code;
+          document.head.appendChild(style);
+        }
+      }
+      break;
+    case 'css':
+      if (typeof dropCSSBlock === 'function') {
+        block = dropCSSBlock(true);
+        const cssEl = block.querySelector('.editor-css');
+        cssEl.dataset.code = data.code || '';
+        cssEl.dataset.styleId = data.styleId || '';
+        if (data.code) {
+          const style = document.createElement('style');
+          style.id = data.styleId || ('css-' + Math.random().toString(36).substr(2, 9));
+          style.textContent = data.code;
+          document.head.appendChild(style);
+          cssEl.dataset.styleId = style.id;
+        }
+      }
+      break;
     case 'container':
       if (typeof dropContainerBlock === 'function') {
         block = dropContainerBlock(true);
@@ -534,7 +933,7 @@ function renderBlockData(data) {
         container.style.flexDirection = data.flexDirection || 'column';
         container.style.justifyContent = data.justifyContent || 'flex-start';
         container.style.alignItems = data.alignItems || 'stretch';
-        
+
         if (data.blocks) {
           data.blocks.forEach(childData => {
             const childBlock = renderBlockData(childData);
@@ -553,7 +952,7 @@ function renderBlockData(data) {
         block = fn(true);
         const colWrapper = block.querySelector('.editor-2col, .editor-3col');
         colWrapper.style.gap = data.gap || '20px';
-        
+
         const zones = colWrapper.querySelectorAll('.col-drop-zone');
         zones.forEach((zone, i) => {
           zone.innerHTML = ''; // Clear default
@@ -579,7 +978,27 @@ function renderBlockData(data) {
       }
       break;
     case 'accordion':
-      if (typeof dropAccordionBlock === 'function') block = dropAccordionBlock(true);
+      if (typeof dropAccordionBlock === 'function') {
+        block = dropAccordionBlock(true);
+        const acc = block.querySelector('.editor-accordion');
+        if (data.items) {
+          const container = acc.querySelector('.accordion-items') || acc;
+          container.innerHTML = '';
+          data.items.forEach(itemData => {
+            const item = document.createElement('div');
+            item.className = 'acc-item';
+            item.innerHTML = `<div class="acc-header" contenteditable="true">${itemData.header}</div><div class="acc-content col-drop-zone"></div>`;
+            container.appendChild(item);
+            const contentZone = item.querySelector('.acc-content');
+            if (itemData.blocks) {
+              itemData.blocks.forEach(childData => {
+                const childBlock = renderBlockData(childData);
+                if (childBlock) { contentZone.appendChild(childBlock); attachBlockListeners(childBlock); }
+              });
+            }
+          });
+        }
+      }
       break;
     case 'card':
       if (typeof dropCardBlock === 'function') {
@@ -587,25 +1006,25 @@ function renderBlockData(data) {
         const card = block.querySelector('.editor-card');
         card.style.backgroundColor = data.backgroundColor || 'transparent';
         card.style.width = data.width || '100%';
-        
+
         const cardImg = card.querySelector('.editor-image');
         if (cardImg && data.image) {
-            cardImg.src = data.image.src || '';
-            cardImg.alt = data.image.alt || '';
-            cardImg.style.width = data.image.width || '100%';
-            cardImg.style.height = data.image.height || 'auto';
+          cardImg.src = data.image.src || '';
+          cardImg.alt = data.image.alt || '';
+          cardImg.style.width = data.image.width || '100%';
+          cardImg.style.height = data.image.height || 'auto';
         }
-        
+
         const cardBody = card.querySelector('.card-body');
         if (cardBody && data.blocks) {
-            cardBody.innerHTML = '';
-            data.blocks.forEach(childData => {
-                const childBlock = renderBlockData(childData);
-                if (childBlock) {
-                    cardBody.appendChild(childBlock);
-                    attachBlockListeners(childBlock);
-                }
-            });
+          cardBody.innerHTML = '';
+          data.blocks.forEach(childData => {
+            const childBlock = renderBlockData(childData);
+            if (childBlock) {
+              cardBody.appendChild(childBlock);
+              attachBlockListeners(childBlock);
+            }
+          });
         }
       }
       break;
@@ -625,22 +1044,157 @@ function renderBlockData(data) {
         if (typeof updateVideoPreview === 'function') updateVideoPreview(v);
       }
       break;
-    case 'carousel':
-      if (typeof dropCarouselBlock === 'function') block = dropCarouselBlock(true);
-      break;
-    case 'tabs':
-      if (typeof dropTabsBlock === 'function') block = dropTabsBlock(true);
+    case 'inventory':
+      if (typeof dropInventoryBlock === 'function') {
+        block = dropInventoryBlock(true);
+        const el = block.querySelector('.editor-inventory');
+        Object.assign(el.dataset, data);
+      }
       break;
     case 'search':
-      if (typeof dropSearchBlock === 'function') block = dropSearchBlock(true);
+      if (typeof dropSearchBlock === 'function') {
+        block = dropSearchBlock(true);
+        const el = block.querySelector('.editor-search');
+        Object.assign(el.dataset, data);
+        if (data.placeholder) {
+          const input = el.querySelector('input');
+          if (input) input.placeholder = data.placeholder;
+        }
+      }
+      break;
+    case 'form':
+      if (typeof dropFormBlock === 'function') {
+        block = dropFormBlock(true);
+        const el = block.querySelector('.editor-form');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'blog':
+      if (typeof dropBlogBlock === 'function') {
+        block = dropBlogBlock(true);
+        const el = block.querySelector('.editor-blog');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'content_block':
+      if (typeof dropContentBlockBlock === 'function') {
+        block = dropContentBlockBlock(true);
+        const el = block.querySelector('.editor-content_block');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'body_types':
+      if (typeof dropBodyTypesBlock === 'function') {
+        block = dropBodyTypesBlock(true);
+        const el = block.querySelector('.editor-body_types');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'plugin':
+      if (typeof dropPluginBlock === 'function') {
+        block = dropPluginBlock(true);
+        const el = block.querySelector('.editor-plugin');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'map_hours':
+      if (typeof dropMapHoursBlock === 'function') {
+        block = dropMapHoursBlock(true);
+        const el = block.querySelector('.editor-map_hours');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'map':
+      if (typeof dropMapBlock === 'function') {
+        block = dropMapBlock(true);
+        const el = block.querySelector('.editor-map');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'carousel':
+      if (typeof dropCarouselBlock === 'function') {
+        block = dropCarouselBlock(true);
+        const el = block.querySelector('.editor-carousel');
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'row-container':
+      block = document.createElement('div');
+      block.className = 'row-container';
+      block.style.cssText = 'display:flex; flex-direction:row; align-items:flex-start; gap:10px; width:100%;';
+      if (data.columns) {
+        data.columns.forEach(colData => {
+          const childBlock = renderBlockData(colData);
+          if (childBlock) {
+             childBlock.style.flex = '1';
+             childBlock.style.width = 'auto';
+             block.appendChild(childBlock);
+             attachBlockListeners(childBlock);
+          }
+        });
+      }
+      break;
+    case 'tabs':
+      if (typeof dropTabsBlock === 'function') {
+        block = dropTabsBlock(true);
+        const el = block.querySelector('.editor-tabs');
+        Object.assign(el.dataset, data);
+        const zone = el.querySelector('.col-drop-zone');
+        if (zone && data.blocks) {
+          zone.innerHTML = '';
+          data.blocks.forEach(childData => {
+            const childBlock = renderBlockData(childData);
+            if (childBlock) { zone.appendChild(childBlock); attachBlockListeners(childBlock); }
+          });
+        }
+      }
+      break;
+    case 'overlay':
+      if (typeof dropOverlayBlock === 'function') {
+        block = dropOverlayBlock(true);
+        const el = block.querySelector('.editor-overlay');
+        Object.assign(el.dataset, data);
+        const zone = el.querySelector('.col-drop-zone');
+        if (zone && data.blocks) {
+          zone.innerHTML = '';
+          data.blocks.forEach(childData => {
+            const childBlock = renderBlockData(childData);
+            if (childBlock) { zone.appendChild(childBlock); attachBlockListeners(childBlock); }
+          });
+        }
+      }
       break;
     case 'cart':
-      if (typeof dropCartBlock === 'function') block = dropCartBlock(true);
+      if (typeof dropCartBlock === 'function') {
+        block = dropCartBlock(true);
+        const el = block.querySelector('.editor-cart');
+        if (data.text) {
+          const span = el.querySelector('span');
+          if (span) span.textContent = data.text;
+        }
+        // Cart usually doesn't have a direct href on the div, but we can store it in dataset
+        Object.assign(el.dataset, data);
+      }
+      break;
+    case 'iframe':
+      if (typeof dropIFrameBlock === 'function') block = dropIFrameBlock(true);
       break;
     case 'html-css':
       if (typeof dropHtmlCssBlock === 'function') block = dropHtmlCssBlock(true);
       break;
   }
-  
+
+  // Restore float data for nested wrapped blocks
+  if (block && (data.blockFloat || data.blockMargin || data.blockWidth || data.blockTop || data.blockLeft || data.blockPosition)) {
+     if (data.blockFloat) block.style.float = data.blockFloat;
+     if (data.blockMargin) block.style.margin = data.blockMargin;
+     if (data.blockWidth) block.style.width = data.blockWidth;
+     if (data.blockPosition) block.style.position = data.blockPosition;
+     if (data.blockTop) block.style.top = data.blockTop;
+     if (data.blockLeft) block.style.left = data.blockLeft;
+  }
+
   return block;
 }
+
+// End of Shared JS

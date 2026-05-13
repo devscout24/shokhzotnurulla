@@ -21,5 +21,6 @@ class WebsiteVisitorLog extends Model
         'utm_medium',
         'utm_campaign',
         'session_id',
+        'language',
     ];
 }

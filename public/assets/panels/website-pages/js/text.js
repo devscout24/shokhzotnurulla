@@ -69,6 +69,7 @@ function dropTextBlock(returnBlock = false) {
 
   const block = document.createElement('div');
   block.className = 'dropped-block';
+  block.dataset.blockType = 'Text';
   block.innerHTML = `
     <span class="dropped-block-badge">
       Text <i class="fa-solid fa-copy copy-btn" title="Duplicate"></i>
@@ -79,7 +80,7 @@ function dropTextBlock(returnBlock = false) {
       <button type="button" class="reorder-btn move-down-btn" title="Move Down"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
     <div class="dropped-block-inner">
-      <p contenteditable="true" spellcheck="false" data-placeholder="Enter text details..." style="margin:0;font-size:16px;color:#4f566b;width:100%;"></p>
+      <p contenteditable="true" spellcheck="false" data-placeholder="Enter text here..." style="min-height:40px; padding:5px; margin:0; width:100%; display:block; outline:none;"></p>
     </div>`;
 
   if (returnBlock) return block;
@@ -88,8 +89,10 @@ function dropTextBlock(returnBlock = false) {
   attachBlockListeners(block);
 
   const p = block.querySelector('p');
-  p.focus();
-  openTextSettings(p);
-  placeCursorAtEnd(p);
+  setTimeout(() => {
+    p.focus();
+    placeCursorAtEnd(p);
+    openTextSettings(p);
+  }, 100);
   if (typeof saveHistory === 'function') saveHistory();
 }

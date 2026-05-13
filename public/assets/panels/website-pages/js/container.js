@@ -18,6 +18,8 @@ function openContainerSettings(el) {
   if (curBg) {
     document.getElementById('container-bg').value = rgbToHex(curBg) || '#ffffff';
   }
+
+  document.getElementById('container-free').checked = block.classList.contains('free-moving');
 }
 
 // Back / Cancel
@@ -38,6 +40,25 @@ document.getElementById('container-padding')?.addEventListener('input', e => {
 document.getElementById('container-bg')?.addEventListener('input', e => {
   if (activeEl) {
     activeEl.style.backgroundColor = e.target.value;
+    if (typeof saveHistory === 'function') saveHistory();
+  }
+});
+
+// Free Position
+document.getElementById('container-free')?.addEventListener('change', e => {
+  if (activeEl) {
+    const block = activeEl.closest('.dropped-block');
+    if (e.target.checked) {
+      block.classList.add('free-moving');
+      block.style.position = 'absolute';
+      block.style.zIndex = '1000';
+    } else {
+      block.classList.remove('free-moving');
+      block.style.position = 'relative';
+      block.style.top = '';
+      block.style.left = '';
+      block.style.zIndex = '';
+    }
     if (typeof saveHistory === 'function') saveHistory();
   }
 });
@@ -75,12 +96,31 @@ function dropContainerBlock(returnBlock = false) {
     </div>
     <div class="dropped-block-inner" style="background: transparent; border: none; padding: 0;">
       <div class="editor-container col-drop-zone" style="min-height: 100px; padding: 40px; background: #ffffff; width: 100%;">
+        <p contenteditable="true" spellcheck="false" data-placeholder="Add content here or drag blocks..." style="margin:0; color:#6c757d; font-size:14px; min-height:24px; outline:none;"></p>
       </div>
     </div>`;
 
   const containerEl = block.querySelector('.editor-container');
+  const placeholderText = block.querySelector('[contenteditable]');
+  
   if (containerEl) {
     attachDropZoneListeners(containerEl);
+    
+    // Handle placeholder behavior
+    if (placeholderText) {
+      placeholderText.classList.add('is-placeholder');
+      
+      // Hide the CSS-based placeholder if the container has dropped blocks
+      const observer = new MutationObserver(() => {
+        const hasBlocks = containerEl.querySelector('.dropped-block') !== null;
+        if (hasBlocks) {
+          placeholderText.classList.add('d-none');
+        } else {
+          placeholderText.classList.remove('d-none');
+        }
+      });
+      observer.observe(containerEl, { childList: true, subtree: true });
+    }
   }
 
   if (returnBlock) return block;

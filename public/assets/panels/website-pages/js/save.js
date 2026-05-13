@@ -1,20 +1,31 @@
-// ── Save: collect all block data and console.log ─────────────────────────────
-
-document.querySelector('.btn.btn-danger.btn-sm.px-4').addEventListener('click', () => {
-  const blocksContainer = document.getElementById('blocks-container');
-  const payload = collectBlocksFromContainer(blocksContainer);
-
-  console.log('📄 Page Content Data:', payload);
-  console.log('📦 Full JSON String:', JSON.stringify(payload, null, 2));
+// ── Save: collect all block data ─────────────────────────────────────────────
+// Debug helper: log page content when save button is clicked
+document.addEventListener('DOMContentLoaded', function () {
+  // Target the submit button inside the page-builder-form (works for both create & edit)
+  const form = document.getElementById('page-builder-form');
+  if (form) {
+    const saveBtn = form.querySelector('[type="submit"]');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        const blocksContainer = document.getElementById('blocks-container');
+        const payload = collectBlocksFromContainer(blocksContainer);
+        console.log('📄 Page Content Data:', payload);
+        console.log('📦 Full JSON String:', JSON.stringify(payload, null, 2));
+      });
+    }
+  }
 });
 
 function collectBlocksFromContainer(container) {
   if (!container) return [];
   const payload = [];
-  
-  const children = container.querySelectorAll(':scope > .dropped-block, :scope > h1, :scope > p, :scope > .dropped-btn, :scope > .editor-image, :scope > .editor-divider, :scope > .editor-spacer, :scope > .editor-icon, :scope > .editor-iframe, :scope > .editor-cart, :scope > span, :scope > .editor-accordion, :scope > .editor-2col, :scope > .editor-3col, :scope > .editor-container');
+
+  const children = container.querySelectorAll(':scope > .dropped-block, :scope > .row-container, :scope > h1, :scope > p, :scope > .dropped-btn, :scope > .editor-image, :scope > .editor-divider, :scope > .editor-spacer, :scope > .editor-icon, :scope > .editor-iframe, :scope > .editor-cart, :scope > span, :scope > .editor-accordion, :scope > .editor-2col, :scope > .editor-3col, :scope > .editor-container, :scope > .editor-inventory, :scope > .editor-search, :scope > .editor-form, :scope > .editor-blog, :scope > .editor-content_block, :scope > .editor-body_types, :scope > .editor-map_hours, :scope > .editor-plugin, :scope > .editor-carousel, :scope > .editor-tabs, :scope > .editor-overlay');
 
   children.forEach((el, index) => {
+    // Skip hidden placeholders
+    if (el.style.display === 'none') return;
+
     const data = extractBlockData(el, index);
     if (data) payload.push(data);
   });
@@ -25,35 +36,57 @@ function collectBlocksFromContainer(container) {
 function extractBlockData(el, index) {
   let target = el;
   if (el.classList.contains('dropped-block')) {
-    target = el.querySelector(':scope > .dropped-block-inner > *');
-    if (!target) target = el.querySelector('.editor-card');
+    const inner = el.querySelector(':scope > .dropped-block-inner');
+    // For specialized blocks (HTML, CSS, Inventory, etc.), the 'editor-' class is on the wrapper itself.
+    // For basic blocks (Heading, Text, etc.), it's on a child of the wrapper.
+    if (inner && Array.from(inner.classList).some(c => c.startsWith('editor-'))) {
+      target = inner;
+    } else {
+      target = inner ? (inner.querySelector(':scope > *') || inner) : el;
+    }
+    if (!target && !inner) target = el.querySelector('.editor-card');
   }
 
   if (!target) return null;
 
+  function getPosData(element) {
+    const parentBlock = element.closest('.dropped-block');
+    return {
+      blockFloat: parentBlock ? parentBlock.style.float : '',
+      blockMargin: parentBlock ? parentBlock.style.margin : '',
+      blockWidth: parentBlock ? parentBlock.style.width : '',
+      blockTop: parentBlock ? parentBlock.style.top : '',
+      blockLeft: parentBlock ? parentBlock.style.left : '',
+      blockPosition: parentBlock ? parentBlock.style.position : ''
+    };
+  }
+
+  // Helper: extract nested floated blocks and clean text
+  function extractTextAndNested(el) {
+    const cloned = el.cloneNode(true);
+    const nestedBlocks = [];
+    
+    // Find nested blocks in the actual DOM element (not clone, so extractBlockData works)
+    el.querySelectorAll('.dropped-block').forEach((n, i) => {
+      const data = extractBlockData(n, i);
+      if (data) nestedBlocks.push(data);
+    });
+
+    // Remove nested blocks from clone to get clean text
+    cloned.querySelectorAll('.dropped-block').forEach(b => b.remove());
+    return { text: cloned.innerText, nestedBlocks };
+  }
+
   // 1. Heading
   if (target.tagName === 'H1') {
-    return {
-      index,
-      type: 'heading',
-      text: target.innerText,
-      textAlign: target.style.textAlign || 'left',
-      color: target.style.color || '',
-      fontSize: target.style.fontSize || '',
-      cssClasses: target.dataset.cssClasses || '',
-    };
+    const { text, nestedBlocks } = extractTextAndNested(target);
+    return { index, type: 'heading', text, nestedBlocks, textAlign: target.style.textAlign || 'left', color: target.style.color || '', fontSize: target.style.fontSize || '', cssClasses: target.dataset.cssClasses || '', ...getPosData(target) };
   }
 
   // 2. Text
   if (target.tagName === 'P') {
-    return {
-      index,
-      type: 'text',
-      text: target.innerText,
-      color: target.style.color || '',
-      fontSize: target.style.fontSize || '',
-      cssClasses: target.dataset.cssClasses || '',
-    };
+    const { text, nestedBlocks } = extractTextAndNested(target);
+    return { index, type: 'text', text, nestedBlocks, color: target.style.color || '', fontSize: target.style.fontSize || '', cssClasses: target.dataset.cssClasses || '', ...getPosData(target) };
   }
 
   // 3. Span
@@ -63,8 +96,7 @@ function extractBlockData(el, index) {
       type: 'span',
       text: target.innerText,
       color: target.style.color || '',
-      fontSize: target.style.fontSize || '',
-    };
+      fontSize: target.style.fontSize || '', ...getPosData(target) };
   }
 
   // 4. Button
@@ -92,8 +124,7 @@ function extractBlockData(el, index) {
       href: target.getAttribute('href') || '#',
       newTab: target.getAttribute('target') === '_blank',
       fullWidth: target.classList.contains('full-width'),
-      align: currentAlign,
-    };
+      align: currentAlign, ...getPosData(target) };
   }
 
   // 5. Image
@@ -110,7 +141,7 @@ function extractBlockData(el, index) {
       const alignMap = { 'flex-start': 'left', 'center': 'center', 'flex-end': 'right' };
       currentAlign = alignMap[jc] || 'left';
     }
-    
+
     const currentSrc = target.getAttribute('src') || target.src;
     return {
       index,
@@ -120,8 +151,7 @@ function extractBlockData(el, index) {
       width: target.style.width || '100%',
       height: target.style.height || 'auto',
       align: currentAlign,
-      cssClasses: target.dataset.cssClasses || '',
-    };
+      cssClasses: target.dataset.cssClasses || '', ...getPosData(target) };
   }
 
   // 6. Divider
@@ -130,8 +160,7 @@ function extractBlockData(el, index) {
       index,
       type: 'divider',
       color: target.style.borderColor || '',
-      cssClasses: target.dataset.cssClasses || '',
-    };
+      cssClasses: target.dataset.cssClasses || '', ...getPosData(target) };
   }
 
   // 7. Spacer
@@ -141,8 +170,7 @@ function extractBlockData(el, index) {
       type: 'spacer',
       heightDesktop: target.dataset.heightDesktop || '10',
       heightMobile: target.dataset.heightMobile || '10',
-      display: target.dataset.display || 'all',
-    };
+      display: target.dataset.display || 'all', ...getPosData(target) };
   }
 
   // 8. Accordion
@@ -160,8 +188,7 @@ function extractBlockData(el, index) {
       index,
       type: 'accordion',
       items: items,
-      cssClasses: target.dataset.cssClasses || '',
-    };
+      cssClasses: target.dataset.cssClasses || '', ...getPosData(target) };
   }
 
   // 9. Columns (2col / 3col)
@@ -175,7 +202,7 @@ function extractBlockData(el, index) {
       type: target.classList.contains('editor-2col') ? '2col' : '3col',
       gap: target.style.gap || '20px',
       columns: columns
-    };
+    , ...getPosData(target) };
   }
 
   // 10. Container
@@ -190,10 +217,45 @@ function extractBlockData(el, index) {
       justifyContent: target.style.justifyContent || 'flex-start',
       alignItems: target.style.alignItems || 'stretch',
       blocks: collectBlocksFromContainer(target)
-    };
+    , ...getPosData(target) };
   }
 
-  // 11. Video
+
+
+  // 10b. Row Auto-Merge Container
+  if (target.classList.contains('row-container')) {
+      const columns = [];
+      target.querySelectorAll(':scope > .dropped-block').forEach((col, i) => {
+          columns.push(extractBlockData(col, i));
+      });
+      return {
+          index,
+          type: 'row-container',
+          columns: columns
+      , ...getPosData(target) };
+  }
+
+  // 11. HTML Block
+  if (target.classList.contains('editor-html')) {
+    return {
+      index,
+      type: 'html',
+      code: target.dataset.code || '',
+      styleId: target.dataset.styleId || ''
+    , ...getPosData(target) };
+  }
+
+  // 11. CSS Block
+  if (target.classList.contains('editor-css')) {
+    return {
+      index,
+      type: 'css',
+      code: target.dataset.code || '',
+      styleId: target.dataset.styleId || ''
+    , ...getPosData(target) };
+  }
+
+  // 12. Video
   if (target.classList.contains('editor-video')) {
     return {
       index,
@@ -204,7 +266,7 @@ function extractBlockData(el, index) {
       autoplay: target.dataset.autoplay === 'true',
       loop: target.dataset.loop === 'true',
       controls: target.dataset.controls !== 'false'
-    };
+    , ...getPosData(target) };
   }
 
   // 11. Icon
@@ -227,7 +289,7 @@ function extractBlockData(el, index) {
       isFloating: block ? block.classList.contains('free-moving') : false,
       top: block ? block.style.top : '',
       left: block ? block.style.left : ''
-    };
+    , ...getPosData(target) };
   }
 
   // 12. IFrame
@@ -239,7 +301,7 @@ function extractBlockData(el, index) {
       src: ifr ? ifr.src : '',
       title: ifr ? ifr.title : '',
       height: ifr ? ifr.height : (target.querySelector('.iframe-placeholder') ? target.querySelector('.iframe-placeholder').style.height : '300')
-    };
+    , ...getPosData(target) };
   }
 
   // 13. Card
@@ -263,7 +325,7 @@ function extractBlockData(el, index) {
         height: cardImg.style.height || 'auto'
       } : null,
       blocks: collectBlocksFromContainer(cardBody)
-    };
+    , ...getPosData(target) };
   }
 
   // 14. Cart
@@ -279,7 +341,25 @@ function extractBlockData(el, index) {
       isFloating: blockParent ? blockParent.classList.contains('free-moving') : false,
       top: blockParent ? blockParent.style.top : '',
       left: blockParent ? blockParent.style.left : ''
-    };
+    , ...getPosData(target) };
+  }
+
+  // 15. Specialized Overfuel Blocks (generic handler for those with simple datasets)
+  const types = ['inventory', 'search', 'form', 'blog', 'content_block', 'body_types', 'map_hours', 'map', 'plugin', 'carousel', 'tabs', 'overlay'];
+  for (const type of types) {
+    if (target.classList.contains('editor-' + type)) {
+      const result = { index, type };
+      // Copy all data attributes
+      Object.assign(result, target.dataset);
+
+      // Special case for Tabs / Overlay which might have nested blocks
+      if (type === 'tabs' || type === 'overlay') {
+        const zone = target.querySelector('.col-drop-zone');
+        if (zone) result.blocks = collectBlocksFromContainer(zone);
+      }
+
+      return result;
+    }
   }
 
   return null;

@@ -1,58 +1,70 @@
 // ── Drag & Drop Zone ──────────────────────────────────────────────────────────
 
-const zone = document.getElementById('content-editor-zone');
-const blocksContainer = document.getElementById('blocks-container');
-const emptyState = document.getElementById('empty-state');
+document.addEventListener('DOMContentLoaded', function() {
+  const zone = document.getElementById('content-editor-zone');
+  const blocksContainer = document.getElementById('blocks-container');
+  const emptyState = document.getElementById('empty-state');
 
-window.dragType = null;
+  if (!zone || !blocksContainer) return;
 
-document.querySelectorAll('.block-item[draggable]').forEach(item => {
-  item.addEventListener('dragstart', e => {
-    window.dragType = item.dataset.type;
-    item.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'copy';
+  window.dragType = null;
+
+  document.querySelectorAll('.block-item[draggable]').forEach(item => {
+    item.addEventListener('dragstart', e => {
+      window.dragType = item.dataset.type;
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'copy';
+      // Required for Firefox
+      e.dataTransfer.setData('text/plain', item.dataset.type);
+    });
+    item.addEventListener('dragend', () => item.classList.remove('dragging'));
   });
-  item.addEventListener('dragend', () => item.classList.remove('dragging'));
-});
 
-const dropIndicator = document.createElement('div');
-dropIndicator.id = 'drop-indicator';
-dropIndicator.style.display = 'none';
-blocksContainer.appendChild(dropIndicator);
+  const dropIndicator = document.createElement('div');
+  dropIndicator.id = 'drop-indicator';
+  dropIndicator.style.display = 'none';
+  blocksContainer.appendChild(dropIndicator);
 
-zone.addEventListener('dragover', e => {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'copy';
-  zone.classList.add('drag-over');
-  const after = getDragAfterElement(blocksContainer, e.clientY, e.clientX);
-  dropIndicator.style.display = 'block';
-  if (after == null) blocksContainer.appendChild(dropIndicator);
-  else blocksContainer.insertBefore(dropIndicator, after);
-});
+  zone.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    zone.classList.add('drag-over');
+    const after = getDragAfterElement(blocksContainer, e.clientY, e.clientX);
+    dropIndicator.style.display = 'block';
+    if (after == null) blocksContainer.appendChild(dropIndicator);
+    else blocksContainer.insertBefore(dropIndicator, after);
+  });
 
-zone.addEventListener('dragleave', e => {
-  if (!zone.contains(e.relatedTarget)) {
+  zone.addEventListener('dragleave', e => {
+    if (!zone.contains(e.relatedTarget)) {
+      zone.classList.remove('drag-over');
+      dropIndicator.style.display = 'none';
+    }
+  });
+
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
     zone.classList.remove('drag-over');
     dropIndicator.style.display = 'none';
-  }
-});
+    const after = getDragAfterElement(blocksContainer, e.clientY, e.clientX);
+    
+    if (window.dragType) {
+      createAndInsertBlock(window.dragType, blocksContainer, after);
+    } else if (window.reorderBlock) {
+      if (after == null) blocksContainer.appendChild(window.reorderBlock);
+      else blocksContainer.insertBefore(window.reorderBlock, after);
+      if (typeof saveHistory === 'function') saveHistory();
+    }
+    
+    window.dragType = null;
+    window.reorderBlock = null;
+  });
 
-zone.addEventListener('drop', e => {
-  e.preventDefault();
-  zone.classList.remove('drag-over');
-  dropIndicator.style.display = 'none';
-  const after = getDragAfterElement(blocksContainer, e.clientY, e.clientX);
-  
-  if (window.dragType) {
-    createAndInsertBlock(window.dragType, blocksContainer, after);
-  } else if (window.reorderBlock) {
-    if (after == null) blocksContainer.appendChild(window.reorderBlock);
-    else blocksContainer.insertBefore(window.reorderBlock, after);
-    if (typeof saveHistory === 'function') saveHistory();
-  }
-  
-  window.dragType = null;
-  window.reorderBlock = null;
+  zone.addEventListener('click', e => {
+    if (e.target === zone || e.target === blocksContainer) {
+      if (typeof closeAllPanels === 'function') closeAllPanels();
+    }
+  });
 });
 
 function createAndInsertBlock(type, container, afterElement) {
@@ -103,22 +115,33 @@ function createAndInsertBlock(type, container, afterElement) {
   if (afterElement == null) container.appendChild(block);
   else container.insertBefore(block, afterElement);
 
-  attachBlockListeners(block);
+  if (typeof attachBlockListeners === 'function') {
+    attachBlockListeners(block);
+  }
 
   // Hide empty state
+  const emptyState = document.getElementById('empty-state');
   if (emptyState) emptyState.style.display = 'none';
 
   if (typeof saveHistory === 'function') saveHistory();
 
-  // Auto-open settings for the new block
-  const img = block.querySelector('.editor-image');
-  if (img && typeof openImageSettings === 'function') openImageSettings(img);
-  
-  const h1 = block.querySelector('h1[contenteditable]');
-  if (h1 && typeof openHeadingSettings === 'function') { h1.focus(); openHeadingSettings(h1); }
-  
-  const p = block.querySelector('p[contenteditable]');
-  if (p && typeof openTextSettings === 'function') { p.focus(); openTextSettings(p); }
+  // Focus the new element if it's text-based, THEN open settings
+  const editable = block.querySelector('[contenteditable="true"]');
+  if (editable) {
+      editable.focus();
+      if (typeof placeCursorAtEnd === 'function') placeCursorAtEnd(editable);
+      
+      // Open settings panel AFTER focus is established (delay to prevent focus stealing)
+      setTimeout(() => {
+          editable.focus(); // re-focus after settings panel DOM changes
+          if (editable.tagName === 'H1' && typeof openHeadingSettings === 'function') openHeadingSettings(editable);
+          else if (editable.tagName === 'P' && typeof openTextSettings === 'function') openTextSettings(editable);
+          else if (editable.tagName === 'SPAN' && typeof openSpanSettings === 'function') openSpanSettings(editable);
+          else if (editable.classList.contains('acc-header') && typeof openAccordionSettings === 'function') openAccordionSettings(editable);
+          // Re-focus AFTER settings panel opens (settings panel might steal focus)
+          setTimeout(() => editable.focus(), 50);
+      }, 100);
+  }
   
   const btn = block.querySelector('.dropped-btn');
   if (btn && typeof openButtonSettings === 'function') openButtonSettings(btn);
@@ -137,11 +160,11 @@ function getDragAfterElement(container, y, x) {
   const draggableElements = [...container.querySelectorAll(':scope > .dropped-block:not(.dragging)')];
   
   const computedStyle = getComputedStyle(container);
-  const isH = computedStyle.flexDirection === 'row' || (computedStyle.display === 'flex' && computedStyle.flexDirection === 'row');
+  const isH = computedStyle.display === 'flex' && computedStyle.flexDirection === 'row';
 
   return draggableElements.reduce((closest, child) => {
     const box = child.getBoundingClientRect();
-    const offset = isH ? x - box.left - box.width/2 : y - box.top - box.height/2;
+    const offset = isH ? x - (box.left + box.width/2) : y - (box.top + box.height/2);
 
     if (offset < 0 && offset > closest.offset) {
       return { offset: offset, element: child };
@@ -150,7 +173,3 @@ function getDragAfterElement(container, y, x) {
     }
   }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
-
-zone.addEventListener('click', e => {
-  if (e.target === zone || e.target === blocksContainer) closeAllPanels();
-});

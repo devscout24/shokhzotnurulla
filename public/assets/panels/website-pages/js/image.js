@@ -15,6 +15,7 @@ function openImageSettings(el) {
   document.getElementById('is-width').value = el.style.width ? parseInt(el.style.width) : 100;
   document.getElementById('is-height').value = el.style.height && el.style.height !== 'auto' ? parseInt(el.style.height) : '';
   document.getElementById('is-opacity').value = el.style.opacity || 1;
+  document.getElementById('is-free').checked = block.classList.contains('free-moving');
 
   const wrapper = el.closest('.dropped-block-inner');
   const jc = wrapper ? wrapper.style.justifyContent : 'flex-start';
@@ -23,6 +24,12 @@ function openImageSettings(el) {
   
   document.querySelectorAll('.is-align-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.align === curAlign);
+  });
+
+  // Sync Float
+  const curFloat = block.style.float || 'none';
+  document.querySelectorAll('.is-float-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.float === curFloat);
   });
 }
 
@@ -49,6 +56,25 @@ document.getElementById('is-height')?.addEventListener('input', e => {
 });
 document.getElementById('is-opacity')?.addEventListener('input', e => { if(activeEl) { activeEl.style.opacity = e.target.value; if(typeof saveHistory === 'function') saveHistory(); } });
 
+// Free Position
+document.getElementById('is-free')?.addEventListener('change', e => {
+  if (activeEl) {
+    const block = activeEl.closest('.dropped-block');
+    if (e.target.checked) {
+      block.classList.add('free-moving');
+      block.style.position = 'absolute';
+      block.style.zIndex = '1000';
+    } else {
+      block.classList.remove('free-moving');
+      block.style.position = 'relative';
+      block.style.top = '';
+      block.style.left = '';
+      block.style.zIndex = '';
+    }
+    if (typeof saveHistory === 'function') saveHistory();
+  }
+});
+
 // Align
 document.querySelectorAll('.is-align-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -66,73 +92,116 @@ document.querySelectorAll('.is-align-btn').forEach(btn => {
   });
 });
 
+// Float
+document.querySelectorAll('.is-float-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if(!activeEl) return;
+    document.querySelectorAll('.is-float-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    const flt = btn.dataset.float;
+    const block = activeEl.closest('.dropped-block');
+    const inner = activeEl.closest('.dropped-block-inner');
+
+    if (flt === 'none') {
+      block.style.float = '';
+      block.style.width = '';
+      block.style.margin = '';
+      activeEl.style.width = '100%';
+      if (inner) inner.style.display = 'flex';
+    } else {
+      block.style.float = flt;
+      block.style.width = 'fit-content';
+      block.style.maxWidth = '50%';
+      block.style.margin = flt === 'left' ? '0 20px 10px 0' : '0 0 10px 20px';
+      activeEl.style.width = '100%';
+      if (inner) inner.style.display = 'block';
+    }
+    
+    if(typeof saveHistory === 'function') saveHistory();
+  });
+});
+
 // ── Upload ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const uploadBtn = document.getElementById('is-upload-btn');
-  if (uploadBtn) {
+  const uploadInput = document.getElementById('is-upload-input');
+
+  if (uploadBtn && uploadInput) {
+    // Store the target element at click time so file dialog doesn't lose it
+    let targetEl = null;
+
     uploadBtn.onclick = (e) => {
       e.preventDefault();
-      const currentTarget = activeEl;
+      e.stopPropagation();
+      targetEl = activeEl; // capture NOW, before file dialog opens
+      if (!targetEl) {
+        alert('Please select an image block first by clicking on it.');
+        return;
+      }
+      uploadInput.value = '';
+      uploadInput.click();
+    };
+
+    uploadInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Use targetEl captured at click time — NOT activeEl (may be null after dialog)
+      const currentTarget = targetEl;
       if (!currentTarget) {
-        alert('Please select an image block first.');
+        alert('Image block not found. Please click the image block and try again.');
         return;
       }
 
-      let input = document.getElementById('is-upload-input-dynamic');
-      if (!input) {
-        input = document.createElement('input');
-        input.type = 'file';
-        input.id = 'is-upload-input-dynamic';
-        input.style.display = 'none';
-        input.accept = 'image/*';
-        document.body.appendChild(input);
-      }
+      const formData = new FormData();
+      formData.append('files[]', file);
+      uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+      uploadBtn.disabled = true;
 
-      input.onchange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const formData = new FormData();
-          formData.append('files[]', file);
-          uploadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+      const uploadUrl = (window.CMS_CONFIG && window.CMS_CONFIG.upload_url)
+        ? window.CMS_CONFIG.upload_url
+        : '/dealer/website/media/upload';
 
-          const uploadUrl = (window.CMS_CONFIG && window.CMS_CONFIG.upload_url) ? window.CMS_CONFIG.upload_url : '/dealer/website/media/upload';
-          fetch(uploadUrl, {
-            method: 'POST',
-            body: formData,
-            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content }
-          })
-          .then(r => {
-            if (!r.ok) throw new Error('Upload failed with status ' + r.status);
-            return r.json();
-          })
-          .then(data => {
-            console.log('Upload Success:', data);
-            if (data.success && data.media?.[0]?.url) {
-              const url = data.media[0].url;
-              console.log('Setting image src to:', url);
-              document.getElementById('is-url').value = url;
-              if (currentTarget) {
-                currentTarget.src = url;
-                currentTarget.setAttribute('src', url);
-                console.log('Element updated:', currentTarget);
-              }
-              if (typeof saveHistory === 'function') saveHistory();
-            } else {
-              alert('Upload failed: ' + (data.message || 'Unknown error'));
-            }
-          })
-          .catch(err => {
-            console.error('Upload Error:', err);
-            alert('Error uploading image. Please check your connection or file size.');
-          })
-          .finally(() => { 
-            uploadBtn.innerHTML = '<i class="fa-solid fa-upload"></i>'; 
-            input.value = ''; 
-          });
+      console.log('[Image Upload] Uploading to:', uploadUrl);
+
+      fetch(uploadUrl, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-CSRF-TOKEN': csrfToken }
+      })
+      .then(r => {
+        if (!r.ok) throw new Error('Server error: HTTP ' + r.status);
+        return r.json();
+      })
+      .then(data => {
+        console.log('[Image Upload] Response:', data);
+        if (data.success && data.media && data.media[0] && data.media[0].url) {
+          const url = data.media[0].url;
+          // Update the settings panel URL input
+          const urlInput = document.getElementById('is-url');
+          if (urlInput) urlInput.value = url;
+          // Update the actual image element on canvas
+          currentTarget.src = url;
+          currentTarget.setAttribute('src', url);
+          if (typeof saveHistory === 'function') saveHistory();
+        } else {
+          alert('Upload failed: ' + (data.message || JSON.stringify(data)));
         }
-      };
-      input.click();
-    };
+      })
+      .catch(err => {
+        console.error('[Image Upload] Error:', err);
+        alert('Upload error: ' + err.message + '\n\nCheck browser console (F12) for details.');
+      })
+      .finally(() => {
+        uploadBtn.innerHTML = '<i class="fa-solid fa-upload"></i>';
+        uploadBtn.disabled = false;
+        uploadInput.value = '';
+      });
+    });
+  } else {
+    console.warn('[Image Upload] uploadBtn or uploadInput not found in DOM');
   }
 });
 
@@ -153,8 +222,9 @@ function dropImageBlock(returnBlock = false) {
       <button type="button" class="reorder-btn move-up-btn"><i class="fa-solid fa-chevron-up"></i></button>
       <button type="button" class="reorder-btn move-down-btn"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
-    <div class="dropped-block-inner" style="display:flex; justify-content:flex-start;">
+    <div class="dropped-block-inner" style="display:flex; justify-content:flex-start; position:relative;">
       <img src="https://via.placeholder.com/300x150?text=Click+to+set+image" class="editor-image" style="width:100%;height:auto;display:block;"/>
+      <div class="image-resizer-handle" title="Drag to resize"></div>
     </div>`;
 
   if (returnBlock) return block;

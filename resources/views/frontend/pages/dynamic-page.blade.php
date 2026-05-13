@@ -9,10 +9,16 @@
             min-height: 400px;
         }
         /* Basic block styles for frontend */
-        .rendered-block { margin-bottom: 20px; position: relative; }
-        .rendered-container { display: flex; width: 100%; }
-        .rendered-2col, .rendered-3col { display: flex; gap: 20px; }
-        .rendered-col { flex: 1; min-width: 0; }
+        * { box-sizing: border-box; }
+        .dynamic-content-wrapper { overflow-x: hidden; }
+        .rendered-block { margin-bottom: 20px; position: relative; max-width: 100%; word-wrap: break-word; overflow-wrap: break-word; }
+        .rendered-container { display: flex; width: 100%; flex-wrap: wrap; }
+        .rendered-2col, .rendered-3col { display: flex; gap: 20px; flex-wrap: wrap; }
+        .rendered-col { flex: 1; min-width: 250px; max-width: 100%; overflow: hidden; }
+        
+        /* Heading Fixes */
+        h1, h2, h3, h4, h5, h6 { max-width: 100%; word-wrap: break-word; overflow-wrap: break-word; }
+        
         img.rendered-img { max-width: 100%; height: auto; display: block; }
         .rendered-btn { display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 4px; }
         .rendered-spacer { width: 100%; }
@@ -210,6 +216,30 @@
                     videoWrapper.appendChild(video);
                 }
                 div.appendChild(videoWrapper);
+                break;
+
+            case 'html':
+                const htmlDiv = document.createElement('div');
+                htmlDiv.innerHTML = data.code || '';
+                div.appendChild(htmlDiv);
+                break;
+
+            case 'css':
+                if (data.code) {
+                    const style = document.createElement('style');
+                    style.textContent = data.code;
+                    document.head.appendChild(style);
+                }
+                return null;
+
+            case 'iframe':
+                const ifr = document.createElement('iframe');
+                ifr.src = data.src || '';
+                ifr.title = data.title || 'iFrame';
+                ifr.style.width = '100%';
+                ifr.style.border = 'none';
+                ifr.height = data.height || 300;
+                div.appendChild(ifr);
                 break;
 
             default:

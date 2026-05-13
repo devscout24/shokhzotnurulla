@@ -23,7 +23,7 @@
     <a href="{{ route('dealer.website.reports.top-exit-pages') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.top-exit-pages') ? 'active' : '' }}">
         <i class="bi bi-box-arrow-right"></i> Top Exit Pages
     </a>
-    <a href="#" class="rc-sidebar-item">
+    <a href="{{ route('dealer.website.reports.platforms') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.platforms') ? 'active' : '' }}">
         <i class="bi bi-laptop"></i> Platforms
     </a>
     <a href="{{ route('dealer.website.reports.devices') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.devices') ? 'active' : '' }}">
@@ -38,7 +38,7 @@
     <a href="{{ route('dealer.website.reports.locations.cities') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.locations.cities') ? 'active' : '' }}">
         <i class="bi bi-pin-map"></i> Locations: Cities
     </a>
-    <a href="#" class="rc-sidebar-item">
+    <a href="{{ route('dealer.website.reports.languages') }}" class="rc-sidebar-item {{ request()->routeIs('dealer.website.reports.languages') ? 'active' : '' }}">
         <i class="bi bi-translate"></i> Languages
     </a>
 </div>

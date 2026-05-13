@@ -36,13 +36,14 @@ class DealerResolverService
                     return $dealer->id;
                 }
 
+                // Fallback: If an admin/dealer user is logged in, prioritize their current dealer context
+                // This is crucial for previewing pages from the admin dashboard on different domains.
+                if (auth()->check() && auth()->user()->current_dealer_id) {
+                    return auth()->user()->current_dealer_id;
+                }
+
                 // Fallback for local development
                 if (app()->isLocal() || config('app.debug') || str_ends_with($domain, '.test') || str_ends_with($domain, '.team') || in_array($domain, ['localhost', '127.0.0.1', '::1'])) {
-                    // If an admin is logged in, prioritize their current dealer
-                    if (auth()->check() && auth()->user()->current_dealer_id) {
-                        return auth()->user()->current_dealer_id;
-                    }
-
                     $firstDealer = Dealer::first(['id']);
                     if ($firstDealer) {
                         return $firstDealer->id;

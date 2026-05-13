@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 // ── Auth Routes ───────────────────────────────────────────────────────────────
 Auth::routes(['verify' => true]);
 
+Route::get('setup-account/{token}', [\App\Http\Controllers\Auth\DealerSetupController::class, 'showSetupForm'])->name('dealer.setup');
+Route::post('setup-account', [\App\Http\Controllers\Auth\DealerSetupController::class, 'setupAccount'])->name('dealer.setup.submit');
+
 // ── Panel Routes ──────────────────────────────────────────────────────────────
 require __DIR__ . '/dealer.php';
 require __DIR__ . '/admin.php';

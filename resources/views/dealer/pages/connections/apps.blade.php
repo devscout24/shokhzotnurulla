@@ -312,13 +312,17 @@
                 <div class="ai-grid">
 
                     {{-- 700Credit --}}
-                    <div class="ai-card" data-app="generic" data-name="700Credit">
+                    <div class="ai-card" data-app="generic" data-name="700Credit" data-provider="700credit">
                         <div class="ai-card-name">700Credit</div>
                         <div class="ai-card-logo">
                             <div class="logo-text logo-700credit">&#126;700<span>Credit</span></div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['700credit']) && $integrations['700credit']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['700credit']) && $integrations['700credit']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -328,8 +332,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-autocheck">&#10003; Auto<br>Check</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['autocheck']) && $integrations['autocheck']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['autocheck']) && $integrations['autocheck']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -339,8 +347,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-carnow">CarNow</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['carnow']) && $integrations['carnow']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['carnow']) && $integrations['carnow']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -350,8 +362,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-complyauto">COMPLYA<span style="color:#c0392b;">&#10003;</span></div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['complyauto']) && $integrations['complyauto']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['complyauto']) && $integrations['complyauto']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -361,8 +377,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-dealercenter">DEALER<br>CENTER</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['dealercenter']) && $integrations['dealercenter']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['dealercenter']) && $integrations['dealercenter']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -372,8 +392,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-driveo">Driveo</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['driveo']) && $integrations['driveo']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['driveo']) && $integrations['driveo']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -388,8 +412,12 @@
                             </div>
                             <div class="logo-text logo-ga4">Google Analytics 4</div>
                         </div>
-                        <div class="ai-card-status configured" id="ga4-status">
-                            <span class="status-icon">&#10003;</span> Configured
+                        <div class="ai-card-status {{ isset($integrations['ga4']) && $integrations['ga4']->is_active ? 'configured' : '' }}" id="ga4-status">
+                            @if(isset($integrations['ga4']) && $integrations['ga4']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -400,8 +428,12 @@
                             <div class="gtm-icon"></div>
                             <div class="logo-text logo-gtm">Google Tag Manager</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['gtm']) && $integrations['gtm']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['gtm']) && $integrations['gtm']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -411,8 +443,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-ipacket">&#9673; iPacket&#183;</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['ipacket']) && $integrations['ipacket']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['ipacket']) && $integrations['ipacket']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -422,8 +458,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-monroney">MonroneyLabels<span style="color:#333;">.com</span></div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['monroneylabels']) && $integrations['monroneylabels']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['monroneylabels']) && $integrations['monroneylabels']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -433,8 +473,12 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-promax"><span style="color:#c0392b;">&#9650;</span>ProMax</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['promax']) && $integrations['promax']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['promax']) && $integrations['promax']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -444,19 +488,27 @@
                         <div class="ai-card-logo">
                             <div class="logo-text logo-stripe">stripe</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['stripe']) && $integrations['stripe']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['stripe']) && $integrations['stripe']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
                     {{-- Carfax --}}
-                    <div class="ai-card" data-app="generic" data-name="Carfax">
+                    <div class="ai-card" data-app="generic" data-name="Carfax" data-provider="carfax">
                         <div class="ai-card-name">Carfax</div>
                         <div class="ai-card-logo">
                             <div class="logo-text logo-carfax">CARFAX</div>
                         </div>
-                        <div class="ai-card-status">
-                            <span class="status-icon">&#9888;</span> Not Configured
+                        <div class="ai-card-status {{ isset($integrations['carfax']) && $integrations['carfax']->is_active ? 'configured' : '' }}">
+                            @if(isset($integrations['carfax']) && $integrations['carfax']->is_active)
+                                <span class="status-icon">&#10003;</span> Configured
+                            @else
+                                <span class="status-icon">&#9888;</span> Not Configured
+                            @endif
                         </div>
                     </div>
 
@@ -480,7 +532,7 @@
                 <label class="int-label">Measurement ID <span class="req">*</span></label>
                 <input type="text" class="int-control" id="ga4MeasurementId"
                        placeholder="e.g. G-XXXXXXXXXX"
-                       value="{{ config('integrations.ga4_measurement_id', '') }}">
+                       value="{{ $integrations['ga4']->settings['measurement_id'] ?? '' }}">
                 <p class="int-help-text">
                     Your GA4 Measurement ID starts with <strong>G-</strong>. Find it in your
                     Google Analytics property under Admin &rarr; Data Streams.
@@ -515,7 +567,7 @@
                 <label class="int-label">Container ID <span class="req">*</span></label>
                 <input type="text" class="int-control" id="gtmContainerId"
                        placeholder="e.g. GTM-XXXXXXX"
-                       value="{{ config('integrations.gtm_container_id', '') }}">
+                       value="{{ $integrations['gtm']->settings['container_id'] ?? '' }}">
                 <p class="int-help-text">
                     Your GTM Container ID starts with <strong>GTM-</strong>. Find it in your
                     Google Tag Manager account dashboard.
@@ -572,7 +624,11 @@
 @endsection
 
 @push('page-scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    const SAVE_URL = '{{ route("dealer.connections.apps.save") }}';
+    const CSRF = '{{ csrf_token() }}';
+
     function openModal(id)  { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
@@ -588,6 +644,30 @@
         }
     });
 
+    // Helper: save integration via AJAX
+    function saveIntegration(provider, settings, isActive, $btn) {
+        const originalText = $btn ? $btn.text() : '';
+        if ($btn) $btn.text('Saving...').prop('disabled', true);
+
+        $.ajax({
+            url: SAVE_URL,
+            method: 'POST',
+            data: {
+                provider: provider,
+                settings: settings,
+                is_active: isActive ? 1 : 0,
+                _token: CSRF
+            },
+            success: function(response) {
+                location.reload();
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Error saving settings.');
+                if ($btn) $btn.text(originalText).prop('disabled', false);
+            }
+        });
+    }
+
     // Card click handlers
     document.querySelectorAll('.ai-card').forEach(card => {
         card.addEventListener('click', () => {
@@ -600,36 +680,45 @@
             } else {
                 document.getElementById('genericModalTitle').textContent = name;
                 document.getElementById('genericProviderName').textContent = name;
+                // Store the provider slug for saving
+                document.getElementById('genericModal').dataset.provider = name.toLowerCase().replace(/\s+/g, '');
+                // Pre-fill existing value if any
+                const providerSlug = name.toLowerCase().replace(/\s+/g, '');
                 document.getElementById('genericApiKey').value = '';
                 openModal('genericModal');
             }
         });
     });
 
-    // GA4
+    // ── GA4 Save ──
     document.getElementById('btnCloseGa4').addEventListener('click',  () => closeModal('ga4Modal'));
     document.getElementById('btnCancelGa4').addEventListener('click', () => closeModal('ga4Modal'));
-    document.getElementById('btnSaveGa4').addEventListener('click', () => {
+    document.getElementById('btnSaveGa4').addEventListener('click', function() {
         const id = document.getElementById('ga4MeasurementId').value.trim();
         if (!id) { alert('Please enter a Measurement ID.'); return; }
-        const status = document.getElementById('ga4-status');
-        status.className = 'ai-card-status configured';
-        status.innerHTML = '<span class="status-icon">&#10003;</span> Configured';
-        closeModal('ga4Modal');
+        const enabled = document.getElementById('ga4Enabled').value;
+        saveIntegration('ga4', { measurement_id: id }, enabled === '1', $(this));
     });
 
-    // GTM
+    // ── GTM Save ──
     document.getElementById('btnCloseGtm').addEventListener('click',  () => closeModal('gtmModal'));
     document.getElementById('btnCancelGtm').addEventListener('click', () => closeModal('gtmModal'));
-    document.getElementById('btnSaveGtm').addEventListener('click', () => {
+    document.getElementById('btnSaveGtm').addEventListener('click', function() {
         const id = document.getElementById('gtmContainerId').value.trim();
         if (!id) { alert('Please enter a Container ID.'); return; }
-        closeModal('gtmModal');
+        const enabled = document.getElementById('gtmEnabled').value;
+        saveIntegration('gtm', { container_id: id }, enabled === '1', $(this));
     });
 
-    // Generic
+    // ── Generic Save ──
     document.getElementById('btnCloseGeneric').addEventListener('click',  () => closeModal('genericModal'));
     document.getElementById('btnCancelGeneric').addEventListener('click', () => closeModal('genericModal'));
-    document.getElementById('btnSaveGeneric').addEventListener('click',   () => closeModal('genericModal'));
+    document.getElementById('btnSaveGeneric').addEventListener('click', function() {
+        const apiKey = document.getElementById('genericApiKey').value.trim();
+        if (!apiKey) { alert('Please enter an API Key.'); return; }
+        const provider = document.getElementById('genericModal').dataset.provider;
+        const enabled = document.querySelector('#genericModal select').value;
+        saveIntegration(provider, { api_key: apiKey }, enabled === '1', $(this));
+    });
 </script>
 @endpush
