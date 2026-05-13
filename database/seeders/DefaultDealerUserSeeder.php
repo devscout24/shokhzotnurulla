@@ -19,6 +19,7 @@ class DefaultDealerUserSeeder extends Seeder
         $dealer = Dealer::firstOrCreate(
             ['slug' => 'dealer-1'],
             [
+                'company_name' => 'dev comp 1',
                 'name' => 'Dealer 1',
                 'email' => 'admin@admin.com',
                 'phone' => '+923280287525',
