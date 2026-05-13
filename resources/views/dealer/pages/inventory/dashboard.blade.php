@@ -549,7 +549,7 @@
             <div class="subview" data-subview="dashboard">
                 <div class="inv-main-content row g-4 px-3">
                     {{-- Main Section: Cards and Units Sold Table --}}
-                    <div class="col-xl-8 col-lg-7">
+                    <div class="col-xl-7 col-lg-7">
                         <div class="inv-top-bar">
                             <div class="inv-location-dropdown-wrapper">
                                 <div class="inv-location-dropdown" id="locationDropdownToggle">
