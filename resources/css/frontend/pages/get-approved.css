@@ -236,9 +236,65 @@ section {
     }
 }
 
-@media (max-width: 575px) {
+@media (max-width: 767px) {
     .eIywFy {
         padding-left: 1rem !important;
         padding-right: 1rem !important;
+    }
+
+    .hAgfhi {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    /* Make form steps easier to read on mobile */
+    #ga-step-1,
+    #ga-step-2,
+    #ga-step-3,
+    #ga-step-4-joint,
+    #ga-step-5-joint {
+        padding-left: 0.25rem !important;
+        padding-right: 0.25rem !important;
+    }
+
+    .wizardstep {
+        font-size: 0.9rem;
+    }
+
+    .jHTnHg {
+        padding: 2rem 1rem;
+    }
+
+    #interior-page-header h1 {
+        font-size: 1.4rem !important;
+    }
+
+    .kduiyY { height: 20px; }
+    .kduvPm { height: 20px; }
+    .kdtJAz { height: 20px; }
+    .kdvVWg { height: 15px; }
+}
+
+@media (max-width: 575px) {
+    .eIywFy {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    /* Wizard step header: smaller indicator text */
+    .wizardstep-indicator {
+        font-size: 0.8rem;
+    }
+
+    /* Full-width continue buttons */
+    #ga-continue-1,
+    #ga-continue-2,
+    #ga-continue-3,
+    #ga-continue-4-joint {
+        font-size: 0.95rem;
+    }
+
+    .px-4.pt-0.pb-4.border.rounded.bg-white {
+        padding: 0.75rem !important;
     }
 }

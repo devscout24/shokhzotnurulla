@@ -200,3 +200,30 @@ bg-danger {
         height: 40px;
     }
 }
+
+@media (max-width: 767px) {
+    .dSRwKi,
+    .hAgfhi {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .jHTnHg {
+        padding: 2rem 1rem;
+    }
+
+    #interior-page-header h1 {
+        font-size: 1.4rem !important;
+    }
+
+    .card3 {
+        padding: 1.5rem !important;
+        min-height: auto !important;
+    }
+
+    .kduiyY { height: 30px; }
+    .kdtJAz { height: 20px; }
+    .kdwMZF { height: 30px; }
+    .kdvjHt { height: 10px; }
+    .eDbZRx { height: 50px; }
+}

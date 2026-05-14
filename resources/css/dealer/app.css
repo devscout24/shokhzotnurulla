@@ -3220,3 +3220,136 @@ a.inv-stat-card:focus {
 .listing-actions .dropdown-toggle::after {
     display: none !important;
 }
+
+/* ══════════════════════════════════════════════════
+   ADMIN DASHBOARD — MOBILE RESPONSIVE
+   Breakpoints: 992px (tablet), 767px (mobile), 480px (small mobile)
+══════════════════════════════════════════════════ */
+
+@media (max-width: 992px) {
+    /* Dashboard stat cards: 2 columns on tablet */
+    .inv-cards-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Dashboard: stack chart below cards */
+    .inv-cards-and-chart {
+        flex-direction: column;
+    }
+
+    .inv-chart-box {
+        width: 100%;
+        flex-shrink: 1;
+    }
+
+    /* Main content dashboard section: stack sidebar */
+    .inv-main-content {
+        flex-direction: column;
+    }
+
+    .inv-sidebar {
+        width: 100% !important;
+    }
+
+    /* Page header: already configured, just ensure spacing */
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    /* Date picker: full width on tablet */
+    .date-picker-box,
+    .inv-date-range {
+        width: 100% !important;
+    }
+
+    /* Table: horizontally scrollable */
+    .inv-table {
+        min-width: 600px;
+    }
+
+    .inv-table-section {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Dashboard stat cards: 1 column on mobile */
+    .inv-cards-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    /* Reduce main content padding */
+    .main-content {
+        padding: 15px !important;
+    }
+
+    /* Page title and header */
+    .page-header .view-title h1,
+    .page-header .view-title h2 {
+        font-size: 1.2rem !important;
+    }
+
+    /* Topbar secondary: show on mobile as scrollable pills */
+    .topbar-secondary .nav-item span {
+        display: none; /* Icons only on mobile to save space */
+    }
+
+    .topbar-secondary .nav-item {
+        padding: 8px !important;
+    }
+
+    /* Form entries table: scrollable */
+    .form-entries-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Website pages grid: single column */
+    .pages-grid,
+    .blog-grid,
+    .slides-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Settings sections: ensure full-width inputs */
+    .settings-form-row {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .settings-form-row > * {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Very small phones: minimal padding */
+    .main-content {
+        padding: 10px !important;
+    }
+
+    /* Topbar secondary: hide text completely */
+    .topbar-secondary .nav-item span {
+        display: none !important;
+    }
+
+    /* Mobile top row: compact */
+    .mobile-row-1 {
+        padding: 0 12px;
+    }
+
+    /* Card value font: slightly smaller */
+    .inv-card-value {
+        font-size: 16px;
+    }
+
+    .inv-card-amount {
+        font-size: 13px;
+    }
+}
+

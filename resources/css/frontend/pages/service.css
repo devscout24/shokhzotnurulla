@@ -190,3 +190,39 @@ section {
         height: 20px;
     }
 }
+
+@media (max-width: 767px) {
+    .jHTnHg {
+        padding: 2rem 1rem;
+    }
+
+    #interior-page-header h1 {
+        font-size: 1.4rem !important;
+    }
+
+    /* Day-picker cards: smaller padding on mobile */
+    .day-card {
+        padding: 0.5rem !important;
+        font-size: 0.85rem;
+    }
+
+    .kduiyY { height: 30px; }
+    .kdtJAz { height: 20px; }
+    .kdvVWg { height: 15px; }
+    .kdvwXJ { height: 5px; }
+
+    section {
+        padding: 1.5rem 0;
+    }
+}
+
+@media (max-width: 575px) {
+    .h-500 {
+        min-height: 200px;
+    }
+
+    /* Service form: reduce padding */
+    .cElement.cForm.p-4 {
+        padding: 1rem !important;
+    }
+}

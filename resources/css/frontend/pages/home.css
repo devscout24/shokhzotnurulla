@@ -1,6 +1,6 @@
 /* ── Hero Section ──────────────────────────────────────────────────────── */
 .hero-video {
-    height: 550px;
+    height: clamp(280px, 60vw, 550px); /* Fluid: 280px on mobile, 550px on desktop */
     position: relative;
     overflow: hidden;
 }
@@ -18,21 +18,30 @@
 
 .hero-caption {
     position: absolute;
-    left: 15%;
-    right: 15%;
+    left: 5%;
+    right: 5%;
     z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+@media (min-width: 992px) {
+    .hero-caption {
+        left: 10%;
+        right: 10%;
+    }
 }
 
 .carousel-caption,
 .hero-caption {
-    padding: 0 2% !important;
-    background: rgb(0, 0, 0);
-    background: radial-gradient(circle, rgba(0, 0, 0, .75) 0, rgba(255, 255, 255, 0) 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, .35);
-    border-top: 1px solid rgba(255, 255, 255, .35);
+    padding: 20px !important;
+    background: radial-gradient(circle, rgba(0, 0, 0, .85) 0, rgba(0, 0, 0, 0) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, .2);
+    border-top: 1px solid rgba(255, 255, 255, .2);
     top: 50%;
     transform: translateY(-50%);
     bottom: auto;
+    border-radius: 12px;
 }
 
 .hero-video-overlay {
@@ -41,8 +50,8 @@
     right: 0;
     top: 0;
     bottom: 0;
-    z-index: 2;
-    background: radial-gradient(circle, rgba(0, 0, 0, .75) 0, rgba(255, 255, 255, 0) 100%);
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.4);
 }
 
 /* ── Home page blocks ──────────────────────────────────────────────────── */
@@ -115,37 +124,32 @@
 
 .card2 {
     background-color: #ffff;
-    padding: 10% !important;
-    border-radius: 30px;
+    padding: 2rem !important; /* Fixed padding for mobile, scale up if needed */
+    border-radius: 20px;
     display: flex;
-    align-items: left;
-    justify-content: left;
+    align-items: center;
+    justify-content: center;
     flex-direction: column;
 }
 
-.QeHlJ {
-    position: absolute;
-    color: white;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 3;
-    padding-top: 30%;
-    text-align: center;
+@media (min-width: 768px) {
+    .card2 {
+        padding: 10% !important;
+        border-radius: 30px;
+        align-items: flex-start;
+    }
 }
 
-/* ── Spacer classes ────────────────────────────────────────────────────── */
-.kduiyY  { height: 60px; }
-.kdvjHq  { height: 20px; }
+/* ── Spacer classes — Responsive ────────────────────────────────────────── */
+.kduiyY  { height: clamp(30px, 5vw, 60px); }
+.kdvjHq  { height: clamp(10px, 2vw, 20px); }
 .kdvwXJ  { height: 10px; }
 .kdvwXG  { height: 10px; }
-.kdvVWg  { height: 30px; }
-.kdvVWh  { height: 30px; }
-.kdtJAz  { height: 40px; }
+.kdvVWg  { height: clamp(15px, 3vw, 30px); }
+.kdvVWh  { height: clamp(15px, 3vw, 30px); }
+.kdtJAz  { height: clamp(20px, 4vw, 40px); }
 .kdvjHt  { height: 20px; }
-.kdwMZF  { height: 80px; }
+.kdwMZF  { height: clamp(40px, 8vw, 80px); }
 
 /* ── Vehicle / SRP cards ───────────────────────────────────────────────── */
 section {
@@ -526,5 +530,72 @@ small {
     }
     .new-arrivals-track-outer {
         margin: 0;
+    }
+}
+
+/* ── Home Page Additional Mobile Fixes ──────────────────────────────── */
+@media (max-width: 767px) {
+    /* Hero caption: smaller text, better centering */
+    .carousel-caption h2,
+    .hero-caption h2 {
+        font-size: 1.5rem !important;
+    }
+
+    .carousel-caption p,
+    .hero-caption p {
+        font-size: 0.9rem !important;
+    }
+
+    .carousel-caption,
+    .hero-caption {
+        padding: 12px !important;
+        left: 2% !important;
+        right: 2% !important;
+    }
+
+    /* Home search bar — stack vertically */
+    #home-search-wrapper {
+        flex-direction: column !important;
+    }
+
+    #home-search-wrapper .btn {
+        width: 100% !important;
+        border-radius: 12px !important;
+        margin-top: 0.5rem;
+    }
+
+    /* Browse by style: wrap to 3 per row */
+    .body-style-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    /* Finance/service promo blocks */
+    .evgXRR {
+        height: 200px !important;
+    }
+
+    /* Horizontal padding for page sections */
+    .hAgfhi {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Hero: smallest screens */
+    .carousel-caption h2,
+    .hero-caption h2 {
+        font-size: 1.2rem !important;
+    }
+
+    .carousel-caption .btn,
+    .hero-caption .btn {
+        font-size: 0.85rem !important;
+        padding: 8px 16px !important;
+    }
+
+    /* Browse by style: 2 per row on very small screens */
+    .body-style-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
     }
 }

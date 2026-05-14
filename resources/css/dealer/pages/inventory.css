@@ -1310,3 +1310,128 @@
     letter-spacing: 0.3px;
     line-height: 1.2;
 }
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE — ADMIN INVENTORY & VDP
+   Breakpoints: 992px (tablet), 768px (mobile)
+══════════════════════════════════════════════════ */
+
+@media (max-width: 992px) {
+    /* Inventory: sidebar toggles via offcanvas */
+    .inv-sidebar {
+        display: none;
+        position: fixed;
+        top: 110px;
+        left: 0;
+        height: calc(100vh - 110px);
+        width: 260px;
+        z-index: 900;
+        box-shadow: 4px 0 16px rgba(0,0,0,0.15);
+    }
+    .inv-sidebar.open {
+        display: flex;
+    }
+
+    /* Inventory: content takes full width */
+    .inv-main {
+        flex-direction: column;
+    }
+
+    .inv-content {
+        width: 100%;
+    }
+
+    /* Inventory grid: 2 columns on tablet */
+    .inv-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* VDP: sidebar hides on tablet */
+    .vdp-nav-sidebar {
+        display: none;
+    }
+
+    /* VDP topbar: wrap buttons */
+    .vdp-topbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 12px;
+        gap: 8px;
+    }
+
+    .vdp-title {
+        font-size: 13px;
+        max-width: 280px;
+    }
+
+    /* Inventory topbar: allow wrapping */
+    .inv-topbar {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .inv-topbar-right {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Main content area: remove large padding */
+    .main-content {
+        padding: 12px !important;
+    }
+
+    /* Inventory grid: 1 column on mobile */
+    .inv-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Inventory table: scroll horizontally */
+    .inv-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* VDP topbar: stacked */
+    .vdp-topbar-right {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .vdp-btn-outline,
+    .vdp-btn-danger {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    /* Modal: full screen on mobile */
+    .inv-modal {
+        max-width: 100%;
+        border-radius: 0;
+        max-height: 100vh;
+        height: 100%;
+    }
+
+    .inv-modal-overlay {
+        padding: 0;
+    }
+
+    /* Form grid: single column on mobile */
+    .inv-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Stats grid: 2 cols on mobile */
+    .vdp-stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Pagination: smaller */
+    .inv-pg-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+}

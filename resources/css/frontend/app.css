@@ -64,12 +64,77 @@ body {
     padding: 0;
     font-size: .95rem;
     background: #f5f5f5;
+    overflow-x: hidden; /* Prevent horizontal scroll on all pages */
 }
 
 *,
 :after,
 :before {
     box-sizing: border-box;
+}
+
+/* ── Global Responsiveness & Accessibility ── */
+:root {
+    --responsive-h1: clamp(2rem, 5vw, 3rem);
+    --responsive-h2: clamp(1.75rem, 4vw, 2.5rem);
+    --responsive-h3: clamp(1.5rem, 3.5vw, 2rem);
+    --responsive-h4: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+h1 { font-size: var(--responsive-h1) !important; }
+h2 { font-size: var(--responsive-h2) !important; }
+h3 { font-size: var(--responsive-h3) !important; }
+h4 { font-size: var(--responsive-h4) !important; }
+
+/* Responsive Table Wrapper */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+
+/* Global Image Behavior */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Improved Container Handling for Mobile */
+@media (max-width: 575px) {
+    .container, .container-fluid {
+        padding-right: 15px !important;
+        padding-left: 15px !important;
+    }
+    
+    .row {
+        margin-right: -10px;
+        margin-left: -10px;
+    }
+    
+    .col, [class*="col-"] {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+}
+
+/* iOS Safari Tap Highlight Fix & Touch Optimization */
+a, button, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation; /* Removes 300ms click delay on mobile */
+}
+
+/* iOS Input Auto-Zoom Prevention — font-size must be >= 16px */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea,
+select {
+    font-size: 16px !important;
+}
+
+/* Ensure mobile spacers stay correct */
+@media (max-width: 1199px) {
+    #mobile-nav-spacer {
+        display: block !important;
+    }
 }
 
 .carss {

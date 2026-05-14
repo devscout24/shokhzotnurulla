@@ -849,3 +849,94 @@ html[dir=rtl] .border-primary {
 #inventory-grid .srp-card:hover {
     box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
 }
+
+/* ── Inventory Listing — Mobile Responsiveness ───────────────────────── */
+@media (max-width: 991px) {
+    /* Hide desktop sidebar — offcanvas handles it */
+    #filter-sidebar {
+        display: none !important;
+    }
+
+    #inventory-results-col {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Top banner refinement */
+    #top-banner .container > .d-flex {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    /* SRP Card: full-width image, proper text sizing */
+    .srp-card .card-body {
+        padding: 0.75rem !important;
+    }
+
+    .srp-card .card-footer {
+        padding: 0.75rem !important;
+    }
+
+    /* Inventory count heading */
+    .inventoryheading {
+        font-size: 0.9rem !important;
+    }
+
+    /* Make pill filter bar scrollable but neat */
+    [data-cy="srp-pills"] {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+
+    [data-cy="srp-pills"] button {
+        font-size: 0.8rem !important;
+        padding: 0.35rem 0.6rem !important;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 575px) {
+    /* Mobile filter toolbar adjustment */
+    .eiTTSf {
+        top: 63px; /* Match fixed nav height */
+    }
+
+    /* Banner top margin to avoid fixed mobile toolbar overlap */
+    #inventory-index #top-banner {
+        margin-top: 38px;
+    }
+
+    /* Search wrapper full-width on mobile */
+    .search-wrapper,
+    .search-input {
+        min-width: 100% !important;
+        width: 100% !important;
+    }
+
+    /* Pagination — smaller page links */
+    .page-link {
+        padding: 0.3rem 0.5rem !important;
+        font-size: 0.8rem !important;
+        min-width: 32px !important;
+    }
+
+    /* Vehicle card price text */
+    .srp-card .text-large,
+    .srp-card .h5 {
+        font-size: 1rem !important;
+    }
+
+    .srp-card small,
+    .srp-card .text-small {
+        font-size: 0.75rem !important;
+    }
+
+    /* CTA buttons inside cards */
+    .srp-card .btn {
+        font-size: 0.8rem !important;
+        padding: 6px 10px !important;
+    }
+}
