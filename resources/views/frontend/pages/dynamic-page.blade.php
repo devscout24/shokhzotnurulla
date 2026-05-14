@@ -4,32 +4,176 @@
 
 @push('page-assets')
     <style>
-        .dynamic-content-wrapper {
-            padding: 40px 0;
-            min-height: 400px;
+        :root {
+            --of-primary: #ce4f4b;
+            --of-secondary: #1a1f36;
+            --of-text: #4f566b;
+            --of-border: #e0e6ed;
         }
-        /* Basic block styles for frontend */
-        * { box-sizing: border-box; }
-        .dynamic-content-wrapper { overflow-x: hidden; }
-        .rendered-block { margin-bottom: 20px; position: relative; max-width: 100%; word-wrap: break-word; overflow-wrap: break-word; }
-        .rendered-container { display: flex; width: 100%; flex-wrap: wrap; }
-        .rendered-2col, .rendered-3col { display: flex; gap: 20px; flex-wrap: wrap; }
-        .rendered-col { flex: 1; min-width: 250px; max-width: 100%; overflow: hidden; }
-        
-        /* Heading Fixes */
-        h1, h2, h3, h4, h5, h6 { max-width: 100%; word-wrap: break-word; overflow-wrap: break-word; }
-        
-        img.rendered-img { max-width: 100%; height: auto; display: block; }
-        .rendered-btn { display: inline-block; padding: 10px 20px; text-decoration: none; border-radius: 4px; }
-        .rendered-spacer { width: 100%; }
-        .rendered-divider { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+
+        .dynamic-content-wrapper {
+            padding: clamp(20px, 5vw, 60px) 0;
+            min-height: 400px;
+            color: var(--of-text);
+            line-height: 1.6;
+        }
+
+        #rendered-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .rendered-block {
+            margin-bottom: 24px;
+            position: relative;
+            width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            transition: all 0.3s ease;
+        }
+
+        /* Responsive Layouts */
+        .rendered-container {
+            display: flex;
+            width: 100%;
+            flex-wrap: wrap;
+            padding: 0 15px;
+        }
+
+        .rendered-2col, .rendered-3col {
+            display: grid;
+            gap: 30px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .rendered-2col {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .rendered-3col {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        @media (max-width: 991px) {
+            .rendered-3col {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .rendered-2col, .rendered-3col {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .dynamic-content-wrapper {
+                padding: 30px 0;
+            }
+        }
+
+        .rendered-col {
+            min-width: 0; /* Fix flex/grid overflow */
+            width: 100%;
+        }
+
+        /* Typography */
+        .rendered-block h1, .rendered-block h2, .rendered-block h3, 
+        .rendered-block h4, .rendered-block h5, .rendered-block h6 {
+            color: var(--of-secondary);
+            font-weight: 800;
+            margin-bottom: 0.5em;
+            line-height: 1.2;
+        }
+
+        .rendered-block p {
+            margin-bottom: 1em;
+        }
+
+        /* Images & Media */
+        img.rendered-img {
+            max-width: 100%;
+            height: auto !important;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .rendered-video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .rendered-video-wrapper iframe, 
+        .rendered-video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Buttons */
+        .rendered-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 28px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .rendered-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: inherit;
+        }
+
+        /* Specialized Blocks Placeholders */
+        .block-placeholder {
+            padding: 40px;
+            background: #f8f9fa;
+            border: 2px dashed var(--of-border);
+            border-radius: 12px;
+            text-align: center;
+            color: #adb5bd;
+        }
+
+        .block-placeholder i {
+            font-size: 32px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* iOS Safari Fixes */
+        @supports (-webkit-touch-callout: none) {
+            .dynamic-content-wrapper {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
     </style>
 @endpush
 
 @section('page-content')
+    {{-- Mobile Header Spacer --}}
+    <div class="d-block d-xl-none" style="height: 63px;"></div>
+
     <div class="dynamic-content-wrapper">
-        <div class="container" id="rendered-content">
-            <!-- Content will be rendered here via JS -->
+        <div class="container-fluid px-4">
+            <div id="rendered-content">
+                <!-- Content will be rendered here via JS -->
+            </div>
         </div>
     </div>
 @endsection
@@ -37,15 +181,31 @@
 @push('page-scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const content = {!! $page->content ?: '[]' !!};
+        // Prevent iOS zoom on input focus by ensuring 16px font size
+        const style = document.createElement('style');
+        style.textContent = `@media screen and (max-width: 767px) { 
+            input, select, textarea { font-size: 16px !important; } 
+            .rendered-btn { min-height: 44px; }
+        }`;
+        document.head.appendChild(style);
+
+        let contentData = [];
+        try {
+            const rawContent = `{!! addslashes($page->content) !!}`;
+            contentData = JSON.parse(rawContent);
+        } catch (e) {
+            console.error("Failed to parse content JSON:", e);
+            contentData = {!! $page->content ?: '[]' !!};
+        }
+
         const container = document.getElementById('rendered-content');
         
-        if (!content || content.length === 0) {
-            container.innerHTML = '<div class="text-center py-5"><h3>No content found for this page.</h3></div>';
+        if (!contentData || contentData.length === 0) {
+            container.innerHTML = '<div class="text-center py-5"><i class="fas fa-file-alt fa-3x mb-3 text-muted"></i><h3>No content published yet.</h3></div>';
             return;
         }
 
-        renderContent(content, container);
+        renderContent(contentData, container);
     });
 
     function renderContent(data, target) {
@@ -59,29 +219,30 @@
         const div = document.createElement('div');
         div.className = 'rendered-block type-' + data.type;
         
+        // Common Styles Application
+        if (data.blockMargin) div.style.margin = data.blockMargin;
+        if (data.blockPadding) div.style.padding = data.blockPadding;
+        
         switch(data.type) {
             case 'heading':
-                const h = document.createElement('h1');
+                const h = document.createElement(data.level || 'h2');
                 h.innerText = data.text || '';
-                if (data.color) h.style.color = data.color;
-                if (data.fontSize) {
-                    const size = String(data.fontSize);
-                    h.style.fontSize = size.endsWith('px') || size.endsWith('%') || size.endsWith('rem') ? size : size + 'px';
-                }
-                if (data.textAlign) h.style.textAlign = data.textAlign;
+                applyTypography(h, data);
                 div.appendChild(h);
                 break;
                 
             case 'text':
                 const p = document.createElement('p');
                 p.innerText = data.text || '';
-                if (data.color) p.style.color = data.color;
-                if (data.fontSize) {
-                    const size = String(data.fontSize);
-                    p.style.fontSize = size.endsWith('px') || size.endsWith('%') || size.endsWith('rem') ? size : size + 'px';
-                }
-                if (data.textAlign) p.style.textAlign = data.textAlign;
+                applyTypography(p, data);
                 div.appendChild(p);
+                break;
+
+            case 'span':
+                const span = document.createElement('span');
+                span.innerText = data.text || '';
+                applyTypography(span, data);
+                div.appendChild(span);
                 break;
                 
             case 'button':
@@ -93,7 +254,8 @@
                 if (data.backgroundColor) a.style.backgroundColor = data.backgroundColor;
                 if (data.color) a.style.color = data.color;
                 if (data.borderRadius) a.style.borderRadius = data.borderRadius + 'px';
-                if (data.fullWidth) a.style.display = 'block';
+                if (data.fontSize) a.style.fontSize = data.fontSize + 'px';
+                if (data.fullWidth) a.style.width = '100%';
                 div.appendChild(a);
                 break;
 
@@ -101,33 +263,24 @@
                 const img = document.createElement('img');
                 img.className = 'rendered-img';
                 img.src = data.src || '';
-                if (data.width) {
-                    const w = String(data.width);
-                    img.style.width = w.endsWith('%') || w.endsWith('px') || w.endsWith('vw') ? w : w + 'px';
-                }
-                if (data.height && data.height !== 'auto') {
-                    const h = String(data.height);
-                    img.style.height = h.endsWith('px') || h.endsWith('%') ? h : h + 'px';
-                } else {
-                    img.style.height = 'auto';
-                }
+                if (data.width) img.style.width = data.width.toString().includes('%') ? data.width : data.width + 'px';
+                if (data.height && data.height !== 'auto') img.style.height = data.height + 'px';
                 if (data.borderRadius) img.style.borderRadius = data.borderRadius + 'px';
+                if (data.align === 'center') {
+                    img.style.marginLeft = 'auto';
+                    img.style.marginRight = 'auto';
+                }
                 div.appendChild(img);
                 break;
 
             case 'container':
                 div.className += ' rendered-container';
                 if (data.backgroundColor) div.style.backgroundColor = data.backgroundColor;
-                if (data.paddingTop) div.style.paddingTop = data.paddingTop + 'px';
-                if (data.paddingBottom) div.style.paddingBottom = data.paddingBottom + 'px';
-                div.style.flexDirection = data.flexDirection || 'column';
-                div.style.alignItems = data.alignItems || 'stretch';
-                div.style.justifyContent = data.justifyContent || 'flex-start';
+                if (data.padding) div.style.padding = data.padding;
+                if (data.borderRadius) div.style.borderRadius = data.borderRadius + 'px';
                 
                 const containerBlocks = data.blocks || data.content || [];
-                if (Array.isArray(containerBlocks)) {
-                    renderContent(containerBlocks, div);
-                }
+                renderContent(containerBlocks, div);
                 break;
 
             case '2col':
@@ -149,105 +302,79 @@
             case 'divider':
                 const hr = document.createElement('hr');
                 hr.className = 'rendered-divider';
+                hr.style.margin = (data.spacing || 20) + 'px 0';
                 if (data.color) hr.style.borderColor = data.color;
-                if (data.spacing) {
-                    hr.style.marginTop = data.spacing + 'px';
-                    hr.style.marginBottom = data.spacing + 'px';
-                }
+                if (data.width) hr.style.width = data.width + '%';
                 div.appendChild(hr);
                 break;
 
             case 'spacer':
                 const spacer = document.createElement('div');
-                spacer.className = 'rendered-spacer';
                 spacer.style.height = (data.height || 20) + 'px';
                 div.appendChild(spacer);
                 break;
 
-            case 'icon':
-                const icon = document.createElement('i');
-                icon.className = data.iconClass || 'fas fa-star';
-                if (data.color) icon.style.color = data.color;
-                if (data.fontSize) icon.style.fontSize = data.fontSize + 'px';
-                div.appendChild(icon);
-                break;
-
             case 'video':
-                const videoWrapper = document.createElement('div');
-                videoWrapper.className = 'rendered-video';
-                videoWrapper.style.position = 'relative';
-                videoWrapper.style.paddingBottom = '56.25%'; // 16:9
-                videoWrapper.style.height = '0';
-                videoWrapper.style.overflow = 'hidden';
-                videoWrapper.style.borderRadius = '8px';
-                videoWrapper.style.background = '#000';
-
+                const vWrap = document.createElement('div');
+                vWrap.className = 'rendered-video-wrapper';
+                
                 if (data.host === 'youtube') {
-                    const iframe = document.createElement('iframe');
+                    const ifr = document.createElement('iframe');
                     let ytId = data.url;
-                    // Extract ID if full URL
-                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                    const match = data.url.match(regExp);
+                    const match = data.url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
                     if (match && match[2].length === 11) ytId = match[2];
-                    
-                    iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=${data.autoplay ? 1 : 0}&loop=${data.loop ? 1 : 0}&controls=${data.controls ? 1 : 0}`;
-                    iframe.style.position = 'absolute';
-                    iframe.style.top = '0';
-                    iframe.style.left = '0';
-                    iframe.style.width = '100%';
-                    iframe.style.height = '100%';
-                    iframe.style.border = '0';
-                    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                    iframe.allowFullscreen = true;
-                    videoWrapper.appendChild(iframe);
+                    ifr.src = `https://www.youtube.com/embed/${ytId}`;
+                    vWrap.appendChild(ifr);
                 } else {
                     const video = document.createElement('video');
                     video.src = data.url || '';
-                    video.style.position = 'absolute';
-                    video.style.top = '0';
-                    video.style.left = '0';
-                    video.style.width = '100%';
-                    video.style.height = '100%';
-                    video.controls = data.controls !== false;
-                    video.autoplay = data.autoplay === true;
-                    video.loop = data.loop === true;
-                    video.muted = data.autoplay === true; // Autoplay requires mute in many browsers
-                    if (data.poster) video.poster = data.poster;
-                    videoWrapper.appendChild(video);
+                    video.controls = true;
+                    vWrap.appendChild(video);
                 }
-                div.appendChild(videoWrapper);
+                div.appendChild(vWrap);
                 break;
 
             case 'html':
-                const htmlDiv = document.createElement('div');
-                htmlDiv.innerHTML = data.code || '';
-                div.appendChild(htmlDiv);
+                const hDiv = document.createElement('div');
+                hDiv.innerHTML = data.code || '';
+                div.appendChild(hDiv);
                 break;
-
-            case 'css':
-                if (data.code) {
-                    const style = document.createElement('style');
-                    style.textContent = data.code;
-                    document.head.appendChild(style);
-                }
-                return null;
 
             case 'iframe':
                 const ifr = document.createElement('iframe');
                 ifr.src = data.src || '';
-                ifr.title = data.title || 'iFrame';
                 ifr.style.width = '100%';
+                ifr.style.height = (data.height || 400) + 'px';
                 ifr.style.border = 'none';
-                ifr.height = data.height || 300;
                 div.appendChild(ifr);
                 break;
 
+            // Specialized Placeholders
+            case 'inventory':
+            case 'form':
+            case 'search':
+            case 'map':
+                div.innerHTML = `<div class="block-placeholder">
+                    <i class="fas fa-${data.type === 'inventory' ? 'car' : (data.type === 'form' ? 'file-alt' : (data.type === 'search' ? 'search' : 'map-marker-alt'))}"></i>
+                    <strong>${data.type.toUpperCase()} BLOCK</strong>
+                    <p class="small m-0">This feature is being optimized for mobile.</p>
+                </div>`;
+                break;
+
             default:
-                console.log('Unknown block type:', data.type);
+                console.warn('Unknown block type:', data.type);
                 return null;
         }
         
         return div;
+    }
+
+    function applyTypography(el, data) {
+        if (data.color) el.style.color = data.color;
+        if (data.fontSize) el.style.fontSize = data.fontSize.toString().includes('px') ? data.fontSize : data.fontSize + 'px';
+        if (data.textAlign) el.style.textAlign = data.textAlign;
+        if (data.fontWeight) el.style.fontWeight = data.fontWeight;
+        if (data.lineHeight) el.style.lineHeight = data.lineHeight;
     }
 </script>
 @endpush
