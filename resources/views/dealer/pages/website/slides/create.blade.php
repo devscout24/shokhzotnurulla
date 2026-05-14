@@ -601,6 +601,14 @@
     <script src="{{ asset('assets/panels/website-pages/js/export-import.js') }}?v=6.0"></script>
 
     <script>
+        function updateTopStatus(select) {
+            const badge = document.getElementById('top-status-badge');
+            const dot = badge.querySelector('i');
+            const text = select.options[select.selectedIndex].text;
+            dot.style.color = select.value === '1' ? '#27ae60' : '#ced4da';
+            badge.innerHTML = `<i class="fa-solid fa-circle me-2" style="font-size:8px;color:${dot.style.color}"></i> Status: ${text}`;
+        }
+
         function toggleSidePanel(id) {
             const panels = ['page-settings', 'page-revisions'];
             const overlay = document.getElementById('side-overlay');

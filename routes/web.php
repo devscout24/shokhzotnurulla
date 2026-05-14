@@ -88,6 +88,12 @@ Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class])->name('frontend
         Route::post('/unlock-price', [FormEntryController::class, 'unlockPrice'])->name('unlock-price');
     });
 
+    // Blog Posts
+    Route::get('/blog/{slug}', [FrontendController::class, 'showBlogPost'])->name('blog.show');
+
+    // Slides
+    Route::get('/slides/{slug}', [FrontendController::class, 'showSlide'])->name('slide.show');
+
     // Dynamic Pages (Catch-all for slugs)
     Route::get('/{slug}', [FrontendController::class, 'showPage'])->name('page.show');
 });

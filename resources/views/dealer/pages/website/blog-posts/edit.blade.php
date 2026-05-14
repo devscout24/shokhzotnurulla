@@ -535,7 +535,7 @@
                         <label>Page Slug</label>
                         <div class="d-flex gap-2">
                             <input class="hs-input" name="slug" id="page-slug" value="{{ $blogPost->slug }}" placeholder="my-blog-post">
-                            <a href="{{ url('blog/' . $blogPost->slug) }}" target="_blank"
+                            <a href="{{ route('frontend.blog.show', $blogPost->slug) }}" target="_blank"
                                 class="btn btn-outline-secondary d-flex align-items-center" title="View Post">
                                 <i class="fa-solid fa-external-link"></i>
                             </a>

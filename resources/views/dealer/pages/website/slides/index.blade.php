@@ -382,7 +382,7 @@
                                                     class="title-col m-0">
                                                     {{ $slide->title }}
                                                 </a>
-                                                <a href="{{ url($slide->slug) }}" target="_blank" rel="noopener noreferrer"
+                                                <a href="{{ route('frontend.slide.show', $slide->slug) }}" target="_blank" rel="noopener noreferrer"
                                                     class="ms-2 text-muted" title="View Public Slide" style="font-size:12px">
                                                     <i class="fas fa-external-link-alt"></i>
                                                 </a>
@@ -392,7 +392,7 @@
                                                     class="btn-action">
                                                     <i class="fa-regular fa-pen-to-square"></i> Edit
                                                 </a>
-                                                <a href="{{ url($slide->slug) }}" target="_blank" class="btn-action">
+                                                <a href="{{ route('frontend.slide.show', $slide->slug) }}" target="_blank" class="btn-action">
                                                     <i class="fa-regular fa-eye"></i> View
                                                 </a>
                                                 <button type="button" class="btn-action action-trash"
@@ -407,8 +407,8 @@
                                     </td>
                                     <td>
                                         <div class="url-text d-flex align-items-center">
-                                            <span class="text-muted">/{{ $slide->slug }}</span>
-                                            <a href="{{ url($slide->slug) }}" target="_blank" rel="noopener noreferrer"
+                                            <span class="text-muted">/slides/{{ $slide->slug }}</span>
+                                            <a href="{{ route('frontend.slide.show', $slide->slug) }}" target="_blank" rel="noopener noreferrer"
                                                 class="ms-2 text-muted" style="font-size:11px">
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>

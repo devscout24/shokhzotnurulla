@@ -504,6 +504,10 @@ document.addEventListener('mousedown', e => {
     isManualDragging = true;
     manualDragBlock = block;
     
+    // Capture dimensions to prevent shrinking when switching to absolute
+    const currentWidth = block.offsetWidth;
+    const currentHeight = block.offsetHeight;
+    
     // Calculate click offset relative to the block's top-left corner to prevent jumping
     const rect = block.getBoundingClientRect();
     dragOffsetX = e.clientX - rect.left;
@@ -515,6 +519,10 @@ document.addEventListener('mousedown', e => {
     manualDragBlock.classList.add('dragging');
     manualDragBlock.style.zIndex = '5000'; // Bring to front
     manualDragBlock.style.pointerEvents = 'none'; // Allow finding target under cursor
+    
+    // Apply fixed dimensions during drag
+    manualDragBlock.style.width = currentWidth + 'px';
+    // manualDragBlock.style.height = currentHeight + 'px'; // Height usually can stay auto but width is critical
 
     e.preventDefault();
     e.stopPropagation();
@@ -543,40 +551,38 @@ let resizeBlock = null, resizeDir, resizeStartX, resizeStartY, resizeStartWidth,
 
 document.addEventListener('mousemove', e => {
   if (isManualDragging && manualDragBlock) {
-    const targetZone = document.getElementById('blocks-container');
-    if (!targetZone) return;
+    const x = e.clientX;
+    const y = e.clientY;
 
-    const containerRect = targetZone.getBoundingClientRect();
+    // Visual follow
+    const dx = x - dragStartX;
+    const dy = y - dragStartY;
+    manualDragBlock.style.transform = `translate(${dx}px, ${dy}px)`;
+    manualDragBlock.style.zIndex = '5000';
+    manualDragBlock.style.pointerEvents = 'none';
+
+    // Find potential drop zone and insertion point
+    const targetEl = document.elementFromPoint(x, y);
+    const targetZone = targetEl ? (targetEl.closest('.col-drop-zone') || document.getElementById('blocks-container')) : null;
     
-    // Calculate the desired position relative to the container
-    let finalLeft = e.clientX - containerRect.left - dragOffsetX;
-    let finalTop = e.clientY - containerRect.top - dragOffsetY;
-
-    // Horizontal boundaries
-    const maxLeft = containerRect.width - manualDragBlock.offsetWidth;
-    finalLeft = Math.max(0, Math.min(finalLeft, maxLeft));
-    
-    // Vertical boundaries (min 0)
-    finalTop = Math.max(0, finalTop);
-
-    // Apply position immediately for boundary feedback
-    manualDragBlock.style.position = 'absolute';
-    manualDragBlock.style.left = finalLeft + 'px';
-    manualDragBlock.style.top = finalTop + 'px';
-    manualDragBlock.style.margin = '0px';
-    manualDragBlock.style.transform = 'none'; // Disable transform to use absolute coordinates
-    manualDragBlock.style.float = 'none';
-    manualDragBlock.style.flex = '';
-
-    // Auto-scroll if dragging near viewport edges
-    const scrollContainer = document.querySelector('.canvas-left');
-    if (scrollContainer) {
-      const threshold = 50;
-      const rect = scrollContainer.getBoundingClientRect();
-      if (e.clientY < rect.top + threshold) scrollContainer.scrollTop -= 10;
-      if (e.clientY > rect.bottom - threshold) scrollContainer.scrollTop += 10;
+    if (targetZone) {
+      const indicator = document.getElementById('drop-indicator');
+      if (indicator) {
+        indicator.style.display = 'block';
+        const afterElement = typeof getDragAfterElement === 'function' ? getDragAfterElement(targetZone, y, x) : null;
+        if (afterElement) targetZone.insertBefore(indicator, afterElement);
+        else targetZone.appendChild(indicator);
+      }
     }
 
+    // Auto-scroll
+    const scrollContainer = document.querySelector('.canvas-left');
+    if (scrollContainer) {
+      const threshold = 100;
+      const rect = scrollContainer.getBoundingClientRect();
+      if (y < rect.top + threshold) scrollContainer.scrollTop -= 15;
+      if (y > rect.bottom - threshold) scrollContainer.scrollTop += 15;
+    }
   } else if (isResizing && resizeBlock) {
     const dx = e.clientX - resizeStartX;
     const dy = e.clientY - resizeStartY;
@@ -596,7 +602,7 @@ document.addEventListener('mousemove', e => {
     if (resizeDir.includes('b')) {
       newHeight = resizeStartHeight + dy;
       resizeBlock.style.minHeight = Math.max(30, newHeight) + 'px';
-      resizeBlock.style.height = 'auto'; // allow text to grow
+      resizeBlock.style.height = 'auto';
     }
 
     if (resizeDir.includes('l')) {
@@ -636,75 +642,36 @@ document.addEventListener('mousemove', e => {
 
 document.addEventListener('mouseup', e => {
   if (isManualDragging && manualDragBlock) {
-    const x = e.clientX;
-    const y = e.clientY;
-
     manualDragBlock.style.pointerEvents = '';
     manualDragBlock.style.transform = '';
     manualDragBlock.style.zIndex = '';
+    manualDragBlock.classList.remove('dragging');
 
-    const targetZone = document.getElementById('blocks-container');
-    if (targetZone) {
-      const containerRect = targetZone.getBoundingClientRect();
-      
-      // Calculate drop position relative to container, using the mouse offset from mousedown
-      let finalLeft = x - containerRect.left - dragOffsetX;
-      let finalTop = y - containerRect.top - dragOffsetY;
+    const indicator = document.getElementById('drop-indicator');
+    if (indicator && indicator.style.display !== 'none') {
+      // Snap to the indicator's position in the flow
+      indicator.parentNode.insertBefore(manualDragBlock, indicator);
+      indicator.style.display = 'none';
 
-      // Boundary Checks: Keep within container horizontally
-      const maxLeft = containerRect.width - manualDragBlock.offsetWidth;
-      finalLeft = Math.max(0, Math.min(finalLeft, maxLeft));
-      
-      // Keep within container vertically (minimum 0)
-      finalTop = Math.max(0, finalTop);
-
-      manualDragBlock.style.position = 'absolute';
-      manualDragBlock.style.left = finalLeft + 'px';
-      manualDragBlock.style.top = finalTop + 'px';
-      manualDragBlock.style.margin = '0px';
+      // Reset to FLOW positioning (Stable for all modules)
+      manualDragBlock.style.position = 'relative';
+      manualDragBlock.style.left = 'auto';
+      manualDragBlock.style.top = 'auto';
+      manualDragBlock.style.margin = '0 0 5px 0';
+      manualDragBlock.style.width = '100%'; 
       manualDragBlock.style.float = 'none';
-      manualDragBlock.style.flex = ''; 
-      
-      targetZone.appendChild(manualDragBlock);
-
-      // Collision Detection: Push overlapping blocks down
-      const dropRect = manualDragBlock.getBoundingClientRect();
-      const pushAmount = manualDragBlock.offsetHeight + 15;
-
-      targetZone.querySelectorAll(':scope > .dropped-block').forEach(block => {
-          if (block === manualDragBlock) return;
-          
-          const bRect = block.getBoundingClientRect();
-          const overlapX = dropRect.right > bRect.left && dropRect.left < bRect.right;
-          const overlapY = dropRect.bottom > bRect.top && dropRect.top < bRect.bottom;
-
-          if (overlapX && overlapY) {
-              const oldTop = parseInt(block.style.top) || (bRect.top - containerRect.top);
-              block.style.position = 'absolute';
-              block.style.top = (oldTop + pushAmount) + 'px';
-              if (!block.style.left) {
-                  block.style.left = Math.max(0, bRect.left - containerRect.left) + 'px';
-              }
-          }
-      });
-
-      // Auto-Expand Container
-      let maxBottom = 500;
-      targetZone.querySelectorAll(':scope > .dropped-block').forEach(b => {
-          const bottom = (parseInt(b.style.top) || 0) + b.offsetHeight;
-          if (bottom > maxBottom) maxBottom = bottom;
-      });
-      targetZone.style.minHeight = (maxBottom + 200) + 'px';
+      manualDragBlock.style.flex = '';
     }
 
+    // Cleanup empty containers
     document.querySelectorAll('.row-container').forEach(row => {
         if (row.children.length === 0) row.remove();
     });
 
     isManualDragging = false;
-    manualDragBlock.classList.remove('dragging');
     manualDragBlock = null;
     if (typeof saveHistory === 'function') saveHistory();
+    if (typeof checkEmptyBlocks === 'function') checkEmptyBlocks();
   }
   if (isResizing) {
     isResizing = false;

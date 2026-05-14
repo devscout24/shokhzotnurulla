@@ -347,6 +347,42 @@ class FrontendController extends Controller
         return view('frontend.pages.dynamic-page', compact('page'));
     }
 
+    public function showBlogPost(string $slug): View
+    {
+        $dealerId = $this->dealerResolver->resolve();
+        $query = \App\Models\Website\BlogPost::where('slug', $slug)
+            ->where('dealer_id', $dealerId);
+
+        $canPreview = auth()->check() && auth()->user()->current_dealer_id === $dealerId;
+        if (! $canPreview) {
+            $query->where('is_active', true)
+                ->where(function ($q) {
+                    $q->whereNull('published_at')->orWhere('published_at', '<=', now());
+                });
+        }
+
+        $page = $query->firstOrFail();
+        return view('frontend.pages.dynamic-page', compact('page'));
+    }
+
+    public function showSlide(string $slug): View
+    {
+        $dealerId = $this->dealerResolver->resolve();
+        $query = \App\Models\Website\Slide::where('slug', $slug)
+            ->where('dealer_id', $dealerId);
+
+        $canPreview = auth()->check() && auth()->user()->current_dealer_id === $dealerId;
+        if (! $canPreview) {
+            $query->where('is_active', true)
+                ->where(function ($q) {
+                    $q->whereNull('published_at')->orWhere('published_at', '<=', now());
+                });
+        }
+
+        $page = $query->firstOrFail();
+        return view('frontend.pages.dynamic-page', compact('page'));
+    }
+
     // ─── Print Printables ───────────────────────────────────────────────────────────────
 
     public function printable(Request $request, Vehicle $vehicle, VehiclePrintable $printable): View | Response

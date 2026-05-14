@@ -367,7 +367,7 @@
                                                     class="title-col m-0">
                                                     {{ $post->title }}
                                                 </a>
-                                                <a href="{{ url('blog/' . $post->slug) }}" target="_blank" rel="noopener noreferrer"
+                                                <a href="{{ route('frontend.blog.show', $post->slug) }}" target="_blank" rel="noopener noreferrer"
                                                     class="ms-2 text-muted" title="View Public Post" style="font-size:12px">
                                                     <i class="fas fa-external-link-alt"></i>
                                                 </a>
@@ -377,7 +377,7 @@
                                                     class="btn-action">
                                                     <i class="fa-regular fa-pen-to-square"></i> Edit
                                                 </a>
-                                                <a href="{{ url('blog/' . $post->slug) }}" target="_blank" class="btn-action">
+                                                <a href="{{ route('frontend.blog.show', $post->slug) }}" target="_blank" class="btn-action">
                                                     <i class="fa-regular fa-eye"></i> View
                                                 </a>
                                                 <button type="button" class="btn-action action-trash"
@@ -393,7 +393,7 @@
                                     <td>
                                         <div class="url-text d-flex align-items-center">
                                             <span class="text-muted">/blog/{{ $post->slug }}</span>
-                                            <a href="{{ url('blog/' . $post->slug) }}" target="_blank" rel="noopener noreferrer"
+                                            <a href="{{ route('frontend.blog.show', $post->slug) }}" target="_blank" rel="noopener noreferrer"
                                                 class="ms-2 text-muted" style="font-size:11px">
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>

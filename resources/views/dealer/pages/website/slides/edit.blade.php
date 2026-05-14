@@ -493,7 +493,7 @@
                         <label>Slide Slug</label>
                         <div class="d-flex gap-2">
                             <input class="hs-input" name="slug" id="page-slug" value="{{ $slide->slug }}" placeholder="home">
-                            <a href="{{ url($slide->slug) }}" target="_blank"
+                            <a href="{{ route('frontend.slide.show', $slide->slug) }}" target="_blank"
                                 class="btn btn-outline-secondary d-flex align-items-center" title="View Slide">
                                 <i class="fa-solid fa-external-link"></i>
                             </a>
