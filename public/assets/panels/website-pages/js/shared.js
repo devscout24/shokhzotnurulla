@@ -490,7 +490,7 @@ function moveBlockDown(block) {
 // ── Free Movement Dragging ───────────────────────────────────────────────────
 let isManualDragging = false;
 let isResizing = false;
-let dragStartX, dragStartY, initialTop, initialLeft, manualDragBlock;
+let dragStartX, dragStartY, dragOffsetX, dragOffsetY, manualDragBlock;
 
 document.addEventListener('mousedown', e => {
   // Skip if clicking inside a contenteditable element
@@ -503,11 +503,18 @@ document.addEventListener('mousedown', e => {
   if (moveTool && block) {
     isManualDragging = true;
     manualDragBlock = block;
-    // Switch to flow dragging (not absolute)
-    manualDragBlock.classList.add('dragging');
-
+    
+    // Calculate click offset relative to the block's top-left corner to prevent jumping
+    const rect = block.getBoundingClientRect();
+    dragOffsetX = e.clientX - rect.left;
+    dragOffsetY = e.clientY - rect.top;
+    
     dragStartX = e.clientX;
     dragStartY = e.clientY;
+
+    manualDragBlock.classList.add('dragging');
+    manualDragBlock.style.zIndex = '5000'; // Bring to front
+    manualDragBlock.style.pointerEvents = 'none'; // Allow finding target under cursor
 
     e.preventDefault();
     e.stopPropagation();
@@ -536,26 +543,38 @@ let resizeBlock = null, resizeDir, resizeStartX, resizeStartY, resizeStartWidth,
 
 document.addEventListener('mousemove', e => {
   if (isManualDragging && manualDragBlock) {
-    const x = e.clientX;
-    const y = e.clientY;
+    const targetZone = document.getElementById('blocks-container');
+    if (!targetZone) return;
 
-    // Smooth visual follow
-    manualDragBlock.style.position = 'relative';
-    manualDragBlock.style.zIndex = '2000';
-    manualDragBlock.style.pointerEvents = 'none'; // So we can find elements under it
+    const containerRect = targetZone.getBoundingClientRect();
+    
+    // Calculate the desired position relative to the container
+    let finalLeft = e.clientX - containerRect.left - dragOffsetX;
+    let finalTop = e.clientY - containerRect.top - dragOffsetY;
 
-    const dx = x - dragStartX;
-    const dy = y - dragStartY;
+    // Horizontal boundaries
+    const maxLeft = containerRect.width - manualDragBlock.offsetWidth;
+    finalLeft = Math.max(0, Math.min(finalLeft, maxLeft));
+    
+    // Vertical boundaries (min 0)
+    finalTop = Math.max(0, finalTop);
 
-    manualDragBlock.style.transform = `translate(${dx}px, ${dy}px)`;
+    // Apply position immediately for boundary feedback
+    manualDragBlock.style.position = 'absolute';
+    manualDragBlock.style.left = finalLeft + 'px';
+    manualDragBlock.style.top = finalTop + 'px';
+    manualDragBlock.style.margin = '0px';
+    manualDragBlock.style.transform = 'none'; // Disable transform to use absolute coordinates
+    manualDragBlock.style.float = 'none';
+    manualDragBlock.style.flex = '';
 
-    // Find potential drop target
-    const targetEl = document.elementFromPoint(x, y);
-    if (targetEl) {
-      const targetZone = targetEl.closest('.col-drop-zone') || document.getElementById('blocks-container');
-      if (targetZone && targetZone !== manualDragBlock.parentElement) {
-        // Preview reorder if needed?
-      }
+    // Auto-scroll if dragging near viewport edges
+    const scrollContainer = document.querySelector('.canvas-left');
+    if (scrollContainer) {
+      const threshold = 50;
+      const rect = scrollContainer.getBoundingClientRect();
+      if (e.clientY < rect.top + threshold) scrollContainer.scrollTop -= 10;
+      if (e.clientY > rect.bottom - threshold) scrollContainer.scrollTop += 10;
     }
 
   } else if (isResizing && resizeBlock) {
@@ -606,7 +625,6 @@ document.addEventListener('mousemove', e => {
       }
     }
 
-    // Scale image if present
     const img = resizeBlock.querySelector('.editor-image');
     if (img) {
       img.style.width = '100%';
@@ -623,27 +641,33 @@ document.addEventListener('mouseup', e => {
 
     manualDragBlock.style.pointerEvents = '';
     manualDragBlock.style.transform = '';
-    manualDragBlock.style.position = '';
+    manualDragBlock.style.zIndex = '';
 
-    const targetEl = document.elementFromPoint(x, y);
     const targetZone = document.getElementById('blocks-container');
-
     if (targetZone) {
-      // 1. Calculate absolute drop position
       const containerRect = targetZone.getBoundingClientRect();
-      const finalLeft = x - containerRect.left - (manualDragBlock.offsetWidth / 2);
-      const finalTop = y - containerRect.top - (manualDragBlock.offsetHeight / 2);
+      
+      // Calculate drop position relative to container, using the mouse offset from mousedown
+      let finalLeft = x - containerRect.left - dragOffsetX;
+      let finalTop = y - containerRect.top - dragOffsetY;
+
+      // Boundary Checks: Keep within container horizontally
+      const maxLeft = containerRect.width - manualDragBlock.offsetWidth;
+      finalLeft = Math.max(0, Math.min(finalLeft, maxLeft));
+      
+      // Keep within container vertically (minimum 0)
+      finalTop = Math.max(0, finalTop);
 
       manualDragBlock.style.position = 'absolute';
-      manualDragBlock.style.left = Math.max(0, finalLeft) + 'px';
-      manualDragBlock.style.top = Math.max(0, finalTop) + 'px';
+      manualDragBlock.style.left = finalLeft + 'px';
+      manualDragBlock.style.top = finalTop + 'px';
       manualDragBlock.style.margin = '0px';
       manualDragBlock.style.float = 'none';
-      manualDragBlock.style.flex = ''; // Remove any flex sizing from previous merges
+      manualDragBlock.style.flex = ''; 
       
       targetZone.appendChild(manualDragBlock);
 
-      // 2. Auto-Push (Collision Detection): Push overlapping blocks down
+      // Collision Detection: Push overlapping blocks down
       const dropRect = manualDragBlock.getBoundingClientRect();
       const pushAmount = manualDragBlock.offsetHeight + 15;
 
@@ -658,23 +682,21 @@ document.addEventListener('mouseup', e => {
               const oldTop = parseInt(block.style.top) || (bRect.top - containerRect.top);
               block.style.position = 'absolute';
               block.style.top = (oldTop + pushAmount) + 'px';
-              // Ensure left is set if it wasn't already absolute
               if (!block.style.left) {
                   block.style.left = Math.max(0, bRect.left - containerRect.left) + 'px';
               }
           }
       });
 
-      // 3. Container Height Auto-Expand
+      // Auto-Expand Container
       let maxBottom = 500;
       targetZone.querySelectorAll(':scope > .dropped-block').forEach(b => {
-          const bottom = parseInt(b.style.top || 0) + b.offsetHeight;
+          const bottom = (parseInt(b.style.top) || 0) + b.offsetHeight;
           if (bottom > maxBottom) maxBottom = bottom;
       });
       targetZone.style.minHeight = (maxBottom + 200) + 'px';
     }
 
-    // Clean up empty row containers if any exist from before
     document.querySelectorAll('.row-container').forEach(row => {
         if (row.children.length === 0) row.remove();
     });
@@ -682,6 +704,7 @@ document.addEventListener('mouseup', e => {
     isManualDragging = false;
     manualDragBlock.classList.remove('dragging');
     manualDragBlock = null;
+    if (typeof saveHistory === 'function') saveHistory();
   }
   if (isResizing) {
     isResizing = false;

@@ -41,8 +41,8 @@
             <span>{{ __('Menus') }}</span>
         </div>
     </a>
-    <a class="sidebar-item-link" href="#">
-        <div class="sidebar-item">
+    <a class="sidebar-item-link" href="{{ route('dealer.website.slides.index') }}">
+        <div class="sidebar-item {{ request()->routeIs('dealer.website.slides.*') ? 'active' : '' }}">
             <i class="bi bi-collection-play"></i>
             <span>{{ __('Slides') }}</span>
         </div>

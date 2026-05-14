@@ -81,6 +81,18 @@ Route::prefix('dealer')->name('dealer.')
                 Route::get('/by-tag/{tag}', [WebsiteBlogPostController::class, 'getByTag'])->name('by-tag');
             });
 
+            // ── Slides (CMS) ───────────────────────────────────────────────────────────
+            Route::prefix('slides')->name('slides.')->group(function () {
+                Route::get('/', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'index'])->name('index');
+                Route::get('/create', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'create'])->name('create');
+                Route::post('/', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'store'])->name('store');
+                Route::get('/{slide}/edit', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'edit'])->name('edit');
+                Route::match(['PUT', 'PATCH'], '/{slide}', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'update'])->name('update');
+                Route::delete('/{slide}', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'destroy'])->name('destroy');
+                Route::post('/{slide}/duplicate', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'duplicate'])->name('duplicate');
+                Route::get('/by-tag/{tag}', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'getByTag'])->name('by-tag');
+            });
+
             // ── FAQs (Reusable Content) ──────────────────────────────────────────────────
             Route::prefix('faqs')->name('faqs.')->group(function () {
                 Route::get('/', [WebsiteFaqController::class, 'index'])->name('index');
