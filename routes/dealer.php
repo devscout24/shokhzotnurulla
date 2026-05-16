@@ -28,8 +28,16 @@ use App\Http\Controllers\Dealer\WebsiteStaticPageContentController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('dealer')->name('dealer.')
-    ->middleware(['auth', 'verified', 'all.active', 'isDealer'])
+    ->middleware(['auth', 'verified', 'all.active', 'isDealer', \App\Http\Middleware\EnsureTwoFactorAuthenticated::class])
     ->group(function () {
+
+        // ─── 2FA ──────────────────────────────────────────────────────────────────
+        Route::prefix('2fa')->name('2fa.')->group(function () {
+            Route::get('/verify', [\App\Http\Controllers\Dealer\TwoFactorController::class, 'showVerifyForm'])->name('verify');
+            Route::post('/verify', [\App\Http\Controllers\Dealer\TwoFactorController::class, 'verifyLogin'])->name('verify.post');
+            Route::post('/enable', [\App\Http\Controllers\Dealer\TwoFactorController::class, 'enable'])->name('enable');
+            Route::post('/disable', [\App\Http\Controllers\Dealer\TwoFactorController::class, 'disable'])->name('disable');
+        });
 
         // ─── Website ──────────────────────────────────────────────────────────────
 

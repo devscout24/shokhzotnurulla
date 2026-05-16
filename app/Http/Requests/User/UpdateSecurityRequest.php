@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,8 +22,8 @@ class UpdateSecurityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'is_2fa_required' => ['required', 'boolean'],
-            'password_complexity' => ['required', 'boolean'],
+            'is_2fa_required'       => ['required', 'boolean'],
+            'password_complexity'   => ['required', 'boolean'],
             'password_reuse_policy' => ['required', 'integer', 'between:1,5'],
         ];
     }
