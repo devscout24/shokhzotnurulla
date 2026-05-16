@@ -28,9 +28,6 @@ jobs:
           # Install PHP dependencies
           composer install --no-dev --optimize-autoloader
           
-          # Install Node dependencies and build Vite/Mix assets
-          # npm install
-          # npm run build
 
       - name: 📂 Rsync Deployment
         uses: Burnett01/rsync-deployments@7.0.0
