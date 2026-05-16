@@ -153,7 +153,8 @@
 
                         @forelse($photos as $photo)
                             @php
-                                $photoUrl         = Storage::disk($photo->disk)->url($photo->path);
+                                // $photoUrl         = Storage::disk($photo->disk)->url($photo->path);
+                                $photoUrl         = asset('storage/' . $photo->path);
                                 $urlStatus        = route('dealer.inventory.vdp.gallery.photo.status',  [$vehicle, $photo]);
                                 $urlPhotoDestroy  = route('dealer.inventory.vdp.gallery.photo.destroy', [$vehicle, $photo]);
                                 $urlPhotoPrimary = route('dealer.inventory.vdp.gallery.photo.primary', [$vehicle, $photo]);
