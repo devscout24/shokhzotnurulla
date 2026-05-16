@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services\Integrations;
 
 use App\Models\Dealership\Dealer;
@@ -12,7 +11,7 @@ class ScriptInjector
 
     public function __construct(Dealer $dealer)
     {
-        $this->dealer = $dealer;
+        $this->dealer      = $dealer;
         $this->operational = $dealer->integrations()
             ->operational()
             ->get()
@@ -25,21 +24,25 @@ class ScriptInjector
     public function ga4Head(): string
     {
         $integration = $this->operational->get('ga4');
-        if (! $integration) return '';
+        if (! $integration) {
+            return '';
+        }
 
         $measurementId = $integration->getSetting('measurement_id', '');
-        if (! $measurementId) return '';
+        if (! $measurementId) {
+            return '';
+        }
 
         return <<<HTML
-<!-- Google Analytics 4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id={$measurementId}"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', '{$measurementId}');
-</script>
-HTML;
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={$measurementId}"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '{$measurementId}');
+    </script>
+    HTML;
     }
 
     /**
@@ -48,10 +51,14 @@ HTML;
     public function gtmHead(): string
     {
         $integration = $this->operational->get('gtm');
-        if (! $integration) return '';
+        if (! $integration) {
+            return '';
+        }
 
         $containerId = $integration->getSetting('container_id', '');
-        if (! $containerId) return '';
+        if (! $containerId) {
+            return '';
+        }
 
         return <<<HTML
 <!-- Google Tag Manager -->
@@ -69,10 +76,14 @@ HTML;
     public function gtmBody(): string
     {
         $integration = $this->operational->get('gtm');
-        if (! $integration) return '';
+        if (! $integration) {
+            return '';
+        }
 
         $containerId = $integration->getSetting('container_id', '');
-        if (! $containerId) return '';
+        if (! $containerId) {
+            return '';
+        }
 
         return <<<HTML
 <!-- Google Tag Manager (noscript) -->
@@ -87,10 +98,14 @@ HTML;
     public function carnowScript(): string
     {
         $integration = $this->operational->get('carnow');
-        if (! $integration) return '';
+        if (! $integration) {
+            return '';
+        }
 
         $embedUrl = $integration->getSetting('embed_script', '');
-        if (! $embedUrl) return '';
+        if (! $embedUrl) {
+            return '';
+        }
 
         return <<<HTML
 <!-- CarNow -->
