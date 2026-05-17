@@ -45,4 +45,17 @@ class VehiclePrice extends Model
     {
         return $this->belongsTo(Vehicle::class);
     }
+
+    protected static function booted()
+    {
+        static::saved(function ($price) {
+            if ($price->isDirty('internet_price') && $price->internet_price > 0) {
+                VehiclePriceHistory::create([
+                    'vehicle_id' => $price->vehicle_id,
+                    'old_price'  => $price->getOriginal('internet_price'),
+                    'new_price'  => $price->internet_price,
+                ]);
+            }
+        });
+    }
 }

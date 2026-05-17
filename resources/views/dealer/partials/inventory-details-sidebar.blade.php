@@ -29,9 +29,9 @@
         <a href="#" class="vd-nav-item" data-nav="printables">
             <i class="bi bi-printer"></i> Printables
         </a>
-        {{-- <a href="#" class="vd-nav-item" data-nav="analytics">
+        <a href="{{ route('dealer.inventory.vdp.analytics', $vehicle) }}" class="vd-nav-item {{ Route::is('dealer.inventory.vdp.analytics') ? 'active' : '' }}" data-nav="analytics">
             <i class="bi bi-bar-chart-line"></i> Analytics
-        </a> --}}
+        </a>
         <a href="#" class="vd-nav-item" data-nav="syndication">
             <i class="bi bi-broadcast"></i> Syndication
         </a>

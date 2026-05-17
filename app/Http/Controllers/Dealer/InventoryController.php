@@ -42,6 +42,8 @@ use App\Models\Inventory\Vehicle;
 use App\Models\Inventory\VehicleHiddenIncentive;
 use App\Models\Inventory\VehiclePhoto;
 use App\Models\Inventory\VehiclePremiumOption;
+use App\Models\Inventory\VehiclePriceHistory;
+use App\Services\Analytics\Ga4ReportingService;
 use App\Services\Inventory\VdpFormDataService;
 use App\Services\Inventory\VinDecodeService;
 use App\Support\AuditLogger;
@@ -1069,6 +1071,46 @@ class InventoryController extends Controller
             'soldMakes', 'dealers', 'currentDealerId', 'dateRange',
             'chartLabels', 'chartViews', 'chartStock', 'chartDays', 'daysStats',
             'locationStats'
+        ));
+    }
+
+    public function analytics(Request $request, Vehicle $vehicle): View
+    {
+        $this->authorizeVehicle($request, $vehicle);
+
+        $vehicle->load([
+            'make', 'makeModel', 'prices',
+        ]);
+
+        $dealer = $request->user()->currentDealer;
+
+        // Fetch GA4 Analytics using the Ga4ReportingService
+        $ga4Service = new Ga4ReportingService($dealer);
+        
+        $isConfigured = $ga4Service->isConfigured();
+        $ga4Data = null;
+        $chartData = [];
+        $days = (int) $request->get('days', 30);
+
+        if ($isConfigured) {
+            // URL slug pattern matching VDP pages, e.g. using the vehicle's unique slug
+            $vehicleSlug = $vehicle->slug;
+            $ga4Data = $ga4Service->getVehicleMetrics($vehicleSlug);
+            $chartData = $ga4Service->getVehicleViewsOverTime($vehicleSlug, $days) ?: [];
+        }
+
+        // Fetch local price history
+        $priceHistory = VehiclePriceHistory::where('vehicle_id', $vehicle->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('dealer.pages.inventory.analytics', compact(
+            'vehicle',
+            'isConfigured',
+            'ga4Data',
+            'chartData',
+            'priceHistory',
+            'days'
         ));
     }
 

@@ -339,6 +339,9 @@ Route::prefix('dealer')->name('dealer.')
                 // Main VDP page (default tab: Pricing)
                 Route::get('/', [InventoryController::class, 'show'])->name('show');
 
+                // VDP Analytics Page
+                Route::get('/analytics', [InventoryController::class, 'analytics'])->name('analytics');
+
                 // Tab updates
                 Route::patch('/pricing', [InventoryController::class, 'updatePricing'])->name('pricing');
                 Route::patch('/details', [InventoryController::class, 'updateDetails'])->name('details');
