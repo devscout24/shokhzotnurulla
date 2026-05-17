@@ -372,7 +372,7 @@
         if (!item) return;
         var key = item.dataset.nav || item.dataset.svNav;
         if (!key) return;
-        if (key === 'photos') return;
+        if (key === 'photos' || key === 'analytics') return;
         e.preventDefault();
         showNav(key);
     });

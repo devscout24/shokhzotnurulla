@@ -40,8 +40,8 @@
     }
     .fs-sidebar .menu-item:hover { background: #f8f8f8; }
     .fs-sidebar .menu-item.active {
-        border-left-color: #c0392b;
-        color: #c0392b;
+        border-left-color: #ce4f4b;
+        color: #ce4f4b;
         font-weight: 600;
         background: #fdf5f5;
     }
@@ -82,7 +82,7 @@
         color: #222;
     }
     .syn-btn-request {
-        background: #c0392b;
+        background: #ce4f4b;
         color: #fff;
         border: none;
         border-radius: 4px;

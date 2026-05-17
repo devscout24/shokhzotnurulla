@@ -36,6 +36,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_system_user',
         'current_dealer_id',
         'is_2fa_required',
+        'google2fa_secret',
         'password_complexity',
         'password_reuse_policy',
         'last_login_at',

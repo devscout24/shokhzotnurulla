@@ -21,6 +21,10 @@ return [
             'fields' => [
                 ['key' => 'measurement_id', 'label' => 'Measurement ID', 'type' => 'text',
                  'placeholder' => 'G-XXXXXXXXXX', 'required' => true],
+                ['key' => 'property_id', 'label' => 'Property ID', 'type' => 'text',
+                 'placeholder' => '123456789', 'required' => false],
+                ['key' => 'service_account_json', 'label' => 'Service Account JSON', 'type' => 'textarea',
+                 'placeholder' => '{"type": "service_account"...}', 'required' => false],
             ],
             'type' => 'script',
         ],

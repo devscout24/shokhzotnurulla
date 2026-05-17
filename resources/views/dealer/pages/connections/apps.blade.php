@@ -33,8 +33,8 @@
     }
     .ai-sidebar .menu-item:hover { background: #f8f8f8; }
     .ai-sidebar .menu-item.active {
-        border-left-color: #c0392b;
-        color: #c0392b;
+        border-left-color: #ce4f4b;
+        color: #ce4f4b;
         font-weight: 600;
         background: #fdf5f5;
     }
@@ -225,7 +225,7 @@
         color: #444;
         margin-bottom: 5px;
     }
-    .int-label .req { color: #c0392b; }
+    .int-label .req { color: #ce4f4b; }
     .int-control {
         width: 100%;
         padding: 8px 10px;
@@ -268,7 +268,7 @@
     }
     .int-btn-cancel:hover { background: #f5f5f5; }
     .int-btn-save {
-        background: #c0392b;
+        background: #ce4f4b;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -360,7 +360,7 @@
                     <div class="ai-card" data-app="generic" data-name="ComplyAuto">
                         <div class="ai-card-name">ComplyAuto</div>
                         <div class="ai-card-logo">
-                            <div class="logo-text logo-complyauto">COMPLYA<span style="color:#c0392b;">&#10003;</span></div>
+                            <div class="logo-text logo-complyauto">COMPLYA<span style="color:#ce4f4b;">&#10003;</span></div>
                         </div>
                         <div class="ai-card-status {{ isset($integrations['complyauto']) && $integrations['complyauto']->is_active ? 'configured' : '' }}">
                             @if(isset($integrations['complyauto']) && $integrations['complyauto']->is_active)
@@ -471,7 +471,7 @@
                     <div class="ai-card" data-app="generic" data-name="ProMax">
                         <div class="ai-card-name">ProMax</div>
                         <div class="ai-card-logo">
-                            <div class="logo-text logo-promax"><span style="color:#c0392b;">&#9650;</span>ProMax</div>
+                            <div class="logo-text logo-promax"><span style="color:#ce4f4b;">&#9650;</span>ProMax</div>
                         </div>
                         <div class="ai-card-status {{ isset($integrations['promax']) && $integrations['promax']->is_active ? 'configured' : '' }}">
                             @if(isset($integrations['promax']) && $integrations['promax']->is_active)

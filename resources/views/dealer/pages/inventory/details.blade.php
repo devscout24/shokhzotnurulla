@@ -460,7 +460,7 @@
 
                                 {{-- ── Powertrain ── --}}
                                 <div id="det-powertrain" class="vd-det-section">
-                                    <i class="bi bi-cpu-fill" style="color:#c0392b;"></i> Powertrain
+                                    <i class="bi bi-cpu-fill" style="color:#ce4f4b;"></i> Powertrain
                                 </div>
                                 <div class="vd-det-grid">
                                     <div class="vd-det-field vd-det-field-span2">
@@ -554,7 +554,7 @@
 
                                 {{-- ── Fuel / Battery ── --}}
                                 <div id="det-fuel" class="vd-det-section">
-                                    <i class="bi bi-fuel-pump-fill" style="color:#c0392b;"></i> Fuel / Battery
+                                    <i class="bi bi-fuel-pump-fill" style="color:#ce4f4b;"></i> Fuel / Battery
                                 </div>
                                 <div class="vd-det-grid">
                                     <div class="vd-det-field">
@@ -592,7 +592,7 @@
 
                                 {{-- ── Dimensions & sizes ── --}}
                                 <div id="det-dimensions" class="vd-det-section">
-                                    <i class="bi bi-pencil-fill" style="color:#c0392b;"></i> Dimensions &amp; sizes
+                                    <i class="bi bi-pencil-fill" style="color:#ce4f4b;"></i> Dimensions &amp; sizes
                                 </div>
                                 <div class="vd-det-grid">
                                     <div class="vd-det-field">

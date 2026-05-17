@@ -78,7 +78,36 @@ class SettingController extends Controller
 
     public function authentication(): View
     {
-        return view('dealer.pages.settings.authentication');
+        $user = Auth::user();
+        $google2fa = app('pragmarx.google2fa');
+
+        $QR_Image = null;
+        $secret = null;
+
+        if (!$user->google2fa_secret) {
+            // Generate a new secret and store in session temporarily
+            if (!session('google2fa_secret_setup')) {
+                session(['google2fa_secret_setup' => $google2fa->generateSecretKey()]);
+            }
+            $secret = session('google2fa_secret_setup');
+
+            // Generate the QR code image
+            $qrCodeUrl = $google2fa->getQRCodeUrl(
+                config('app.name'),
+                $user->email,
+                $secret
+            );
+
+            // Generate inline QR Code image using BaconQrCode
+            $renderer = new \BaconQrCode\Renderer\ImageRenderer(
+                new \BaconQrCode\Renderer\RendererStyle\RendererStyle(200),
+                new \BaconQrCode\Renderer\Image\SvgImageBackEnd()
+            );
+            $writer = new \BaconQrCode\Writer($renderer);
+            $QR_Image = base64_encode($writer->writeString($qrCodeUrl));
+        }
+
+        return view('dealer.pages.settings.authentication', compact('user', 'QR_Image', 'secret'));
     }
 
     public function security(): View
@@ -90,7 +119,15 @@ class SettingController extends Controller
 
     public function updateSecurity(UpdateSecurityRequest $request): RedirectResponse
     {
-        $updated = ($this->updateSecurity)(Auth::user(), $request->validated());
+        $user = Auth::user();
+
+        // Check if user is trying to enable 2FA without setting it up
+        if ($request->validated('is_2fa_required') && !$user->google2fa_secret) {
+            return redirect()->route('dealer.settings.authentication')
+                ->with('warning', 'Please set up your Google Authenticator before enabling 2FA.');
+        }
+
+        $updated = ($this->updateSecurity)($user, $request->validated());
 
         if (!$updated) {
             return back()->with('info', 'No changes were made.');

@@ -14,7 +14,7 @@
         <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
             <h2 class="view-title">Menus</h2>
             <button type="button" class="mn-btn-add-link" id="btnAddLink"
-                style="background:#c0392b;color:#fff;border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+                style="background:#ce4f4b;color:#fff;border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
                 + Add Link
             </button>
         </div>

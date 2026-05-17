@@ -31,14 +31,14 @@
         transition: border-color 0.2s;
     }
     .form-control:focus {
-        border-color: #c0392b;
+        border-color: #ce4f4b;
         outline: none;
         box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
     }
     .text-danger { color: #d93025; font-size: 12px; margin-top: 4px; }
     
     .btn-save {
-        background: #c0392b;
+        background: #ce4f4b;
         color: #fff;
         border: none;
         padding: 10px 24px;

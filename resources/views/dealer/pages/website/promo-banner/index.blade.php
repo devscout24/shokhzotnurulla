@@ -105,7 +105,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff;
             border: none;
             padding: 10px 22px;
@@ -197,7 +197,7 @@
         }
 
         .rc-row-btn.trash-btn {
-            color: #c0392b;
+            color: #ce4f4b;
         }
 
         /* Status Dot */
@@ -220,7 +220,7 @@
         }
 
         .status-dot.expired {
-            background: #c0392b !important;
+            background: #ce4f4b !important;
         }
 
         .status-dot.draft {
@@ -241,7 +241,7 @@
         }
 
         .bulk-col-label span {
-            color: #c0392b;
+            color: #ce4f4b;
             margin-left: 2px;
         }
 
@@ -258,7 +258,7 @@
         }
 
         .bulk-input:focus {
-            border-color: #c0392b;
+            border-color: #ce4f4b;
             outline: none;
         }
 
@@ -502,7 +502,7 @@
         }
 
         .media-btn-select {
-            color: #c0392b;
+            color: #ce4f4b;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
@@ -683,12 +683,12 @@
         }
 
         .media-card:hover {
-            border-color: #c0392b;
+            border-color: #ce4f4b;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .media-card.selected {
-            border-color: #c0392b;
+            border-color: #ce4f4b;
             border-width: 2px;
             box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
         }
@@ -810,9 +810,9 @@
         }
 
         .pag-btn.active {
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff;
-            border-color: #c0392b;
+            border-color: #ce4f4b;
         }
 
         .pag-btn.disabled {
@@ -918,7 +918,7 @@
         }
 
         .btn-save-red {
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -999,7 +999,7 @@
         }
 
         .bulk-edit-input:focus {
-            border-color: #c0392b;
+            border-color: #ce4f4b;
             outline: none;
         }
 
@@ -1847,7 +1847,7 @@
                         var btn = document.getElementById('confirmMediaBtn');
                         btn.style.opacity = '1';
                         btn.style.pointerEvents = 'auto';
-                        btn.style.background = '#c0392b';
+                        btn.style.background = '#ce4f4b';
                     };
                 });
             }

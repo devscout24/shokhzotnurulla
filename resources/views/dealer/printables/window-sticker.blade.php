@@ -229,7 +229,7 @@
         }
 
         .ws-btn-print {
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff;
             border: none;
             border-radius: 5px;
