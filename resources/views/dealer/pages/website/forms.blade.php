@@ -56,8 +56,8 @@
         display: flex; align-items: center; justify-content: space-between;
     }
     .fs-filter-item:hover { background: #f8f8f8; }
-    .fs-filter-item.active { color: #c0392b; font-weight: 600; background: #fff5f5; }
-    .fs-filter-item.active::after { content: '✓'; font-size: 12px; color: #c0392b; }
+    .fs-filter-item.active { color: #ce4f4b; font-weight: 600; background: #fff5f5; }
+    .fs-filter-item.active::after { content: '✓'; font-size: 12px; color: #ce4f4b; }
     .fs-filter-divider { border: none; border-top: 1px solid #f0f0f0; margin: 4px 0; }
     .date-picker-box{padding: 3px 24px;}
 
@@ -90,7 +90,7 @@
     .fs-btn-unread.enabled:hover { background: #f5f5f5; }
 
     .fs-btn-delete {
-        background: #c0392b; border: none; border-radius: 5px;
+        background: #ce4f4b; border: none; border-radius: 5px;
         color: #fff; font-size: 12px; padding: 6px 14px; cursor: pointer;
         display: inline-flex; align-items: center; gap: 5px;
         opacity: 0.4; pointer-events: none; transition: background 0.2s, opacity 0.2s;
@@ -107,7 +107,7 @@
         transition: color 0.15s, border-color 0.15s; white-space: nowrap;
     }
     .fs-tab:hover { color: #333; }
-    .fs-tab.active { color: #c0392b; border-bottom-color: #c0392b; font-weight: 600; }
+    .fs-tab.active { color: #ce4f4b; border-bottom-color: #ce4f4b; font-weight: 600; }
 
     /* ── Table ── */
     .fs-table-wrap {
@@ -137,13 +137,13 @@
     .fs-table tbody td:first-child { padding-left: 18px; width: 40px; }
     .fs-table tbody td:last-child { width: 36px; text-align: center; }
 
-    .fs-cb { width: 16px; height: 16px; accent-color: #c0392b; cursor: pointer; display: block; }
+    .fs-cb { width: 16px; height: 16px; accent-color: #ce4f4b; cursor: pointer; display: block; }
 
     .fs-badge {
         display: inline-block; background: #e8e8e8; color: #555;
         font-size: 11.5px; padding: 3px 8px; border-radius: 4px; font-family: monospace;
     }
-    .fs-vehicle-link { color: #c0392b; text-decoration: none; font-size: 13px; }
+    .fs-vehicle-link { color: #ce4f4b; text-decoration: none; font-size: 13px; }
     .fs-vehicle-link:hover { text-decoration: underline; }
 
     .fs-status { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }

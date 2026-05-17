@@ -33,8 +33,8 @@
     }
     .ai-sidebar .menu-item:hover { background: #f8f8f8; }
     .ai-sidebar .menu-item.active {
-        border-left-color: #c0392b;
-        color: #c0392b;
+        border-left-color: #ce4f4b;
+        color: #ce4f4b;
         font-weight: 600;
         background: #fdf5f5;
     }
@@ -66,7 +66,7 @@
         color: #333;
     }
     .ls-btn-shorten {
-        background: #c0392b;
+        background: #ce4f4b;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -227,7 +227,7 @@
         padding: 14px 18px;
     }
     .sl-btn-save {
-        background: #c0392b;
+        background: #ce4f4b;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -290,7 +290,7 @@
                                 <tr>
                                     <td>
                                         <a href="{{ $link->short_url }}" target="_blank"
-                                           style="color:#c0392b;text-decoration:none;">
+                                           style="color:#ce4f4b;text-decoration:none;">
                                             {{ $link->short_url }}
                                         </a>
                                     </td>

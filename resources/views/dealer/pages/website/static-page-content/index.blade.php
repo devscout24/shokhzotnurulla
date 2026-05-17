@@ -104,7 +104,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff;
             border: none;
             padding: 10px 22px;
@@ -200,7 +200,7 @@
         }
 
         .rc-row-btn.trash-btn {
-            color: #c0392b;
+            color: #ce4f4b;
         }
 
         .rc-row-btn.trash-btn:hover {
@@ -241,7 +241,7 @@
         }
 
         .bulk-col-label span {
-            color: #c0392b;
+            color: #ce4f4b;
             margin-left: 2px;
         }
 
@@ -256,7 +256,7 @@
         }
 
         .bulk-input:focus {
-            border-color: #c0392b;
+            border-color: #ce4f4b;
             outline: none;
         }
 
@@ -477,7 +477,7 @@
         }
 
         .bulk-header-label span {
-            color: #c0392b;
+            color: #ce4f4b;
             margin-left: 2px;
         }
 
@@ -511,7 +511,7 @@
         }
 
         .btn-save-red {
-            background: #c0392b !important;
+            background: #ce4f4b !important;
             color: #fff !important;
             border: none !important;
             border-radius: 4px !important;

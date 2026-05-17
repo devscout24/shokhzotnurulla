@@ -159,7 +159,7 @@
 
         .hs-btn-remove {
             background: #fff5f5;
-            color: #c0392b;
+            color: #ce4f4b;
             border: 1px solid #ffe3e3;
             padding: 10px 15px;
             border-radius: 8px;
@@ -174,7 +174,7 @@
         }
 
         .hs-btn-remove:hover {
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff
         }
 
@@ -300,7 +300,7 @@
 
         .btn-restore {
             background: #fff5f5;
-            color: #c0392b;
+            color: #ce4f4b;
             border: 1px solid #ffe3e3;
             padding: 4px 12px;
             border-radius: 6px;
@@ -310,7 +310,7 @@
         }
 
         .btn-restore:hover {
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff;
         }
 
@@ -541,7 +541,7 @@
                 </div>
                 <div class="side-panel-footer">
                     <button type="button" class="btn btn-danger w-100 fw-bold" onclick="toggleSidePanel('page-settings')"
-                        style="background:#c0392b">Apply Settings</button>
+                        style="background:#ce4f4b">Apply Settings</button>
                 </div>
             </div>
 

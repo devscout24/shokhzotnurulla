@@ -59,7 +59,7 @@
         }
 
         .btn-add-page {
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff;
             border: none;
             padding: 8px 20px;
@@ -166,11 +166,11 @@
         }
 
         .btn-action.action-trash {
-            color: #c0392b;
+            color: #ce4f4b;
         }
 
         .btn-action.action-trash i {
-            color: #c0392b;
+            color: #ce4f4b;
         }
 
         /* Custom Modal */
@@ -259,7 +259,7 @@
 
         .btn-modal-continue {
             padding: 8px 25px;
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff;
             border: none;
             border-radius: 6px;

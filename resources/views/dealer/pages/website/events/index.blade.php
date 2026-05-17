@@ -1589,7 +1589,7 @@
                         var btn = document.getElementById('confirmMediaBtn');
                         btn.style.opacity = '1';
                         btn.style.pointerEvents = 'auto';
-                        btn.style.background = '#c0392b';
+                        btn.style.background = '#ce4f4b';
                     };
                 });
             }
