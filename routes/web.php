@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 // ── Auth Routes ───────────────────────────────────────────────────────────────
+Route::get('/test-route/menus', function () {
+        $menus = \App\Models\Website\Menu::with('children')->where('dealer_id', 2)->whereNull('parent_id')->get();
+        return $menus;
+    })->name('test.menus');
+
 Auth::routes(['verify' => true]);
 
 Route::get('setup-account/{token}', [\App\Http\Controllers\Auth\DealerSetupController::class, 'showSetupForm'])->name('dealer.setup');
@@ -96,6 +101,7 @@ Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class])->name('frontend
 
     // Dynamic Pages (Catch-all for slugs)
     Route::get('/{slug}', [FrontendController::class, 'showPage'])->name('page.show');
+
 });
 
 // ── Test Routes (local only) ──────────────────────────────────────────────────
