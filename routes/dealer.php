@@ -31,6 +31,28 @@ Route::prefix('dealer')->name('dealer.')
     ->middleware(['auth', 'verified', 'all.active', 'isDealer', \App\Http\Middleware\EnsureTwoFactorAuthenticated::class])
     ->group(function () {
 
+        // ─── Location Switcher ────────────────────────────────────────────────────
+        Route::post('/switch-location', function (\Illuminate\Http\Request $request) {
+            $locationId = (int) $request->input('location_id');
+            $locationContext = app(\App\Services\Location\LocationContext::class);
+
+            if ($locationId === 0) {
+                $locationContext->clearActiveLocationId();
+            } else {
+                $dealer = app()->bound('currentDealer') ? app('currentDealer') : null;
+                $exists = \App\Models\Website\Location::query()
+                    ->when($dealer, fn($q) => $q->where('dealer_id', $dealer->id))
+                    ->where('id', $locationId)
+                    ->exists();
+
+                if ($exists) {
+                    $locationContext->setActiveLocationId($locationId);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Location context switched successfully!');
+        })->name('switch-location');
+
         // ─── 2FA ──────────────────────────────────────────────────────────────────
         Route::prefix('2fa')->name('2fa.')->group(function () {
             Route::get('/verify', [\App\Http\Controllers\Dealer\TwoFactorController::class, 'showVerifyForm'])->name('verify');

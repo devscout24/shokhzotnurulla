@@ -10,8 +10,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FormEntry extends Model
 {
+    use \App\Traits\BelongsToLocation;
+
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'form_type',
         'borrower_type',
         'status',

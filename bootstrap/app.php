@@ -15,6 +15,7 @@ use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsDealer;
 use App\Http\Middleware\TeamsPermission;
+use App\Http\Middleware\SetLocationContext;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -30,6 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             TeamsPermission::class,
+            SetLocationContext::class,
         ]);
         $middleware->priority([
             TeamsPermission::class,

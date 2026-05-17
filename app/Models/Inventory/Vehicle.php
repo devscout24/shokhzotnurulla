@@ -35,10 +35,11 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
 class Vehicle extends Model
 {
-    use HasFactory, SoftDeletes, \App\Traits\BelongsToDealer;
+    use HasFactory, SoftDeletes, \App\Traits\BelongsToDealer, \App\Traits\BelongsToLocation;
 
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'ulid',
         'stock_number',
         'vin',
