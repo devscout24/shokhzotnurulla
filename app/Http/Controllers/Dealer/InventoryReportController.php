@@ -17,6 +17,7 @@ class InventoryReportController extends Controller
     public function index(Request $request): View
     {
         $dealerId = $request->user()->current_dealer_id;
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
 
         $query = Vehicle::with([
             'make',
@@ -25,7 +26,8 @@ class InventoryReportController extends Controller
             'prices',
             'specs',
         ])
-            ->forDealer($dealerId);
+            ->forDealer($dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId));
 
         // ── Filters ───────────────────────────────────────────────────────────
 
@@ -61,10 +63,9 @@ class InventoryReportController extends Controller
             });
         }
 
-        // Location
-        if ($request->filled('location_id')) {
-            // If vehicles table had location_id, we would filter here.
-            // For now, it's a placeholder as per user request.
+        // Location (from session context or explicit filter)
+        if ($request->filled('location_id') && !$locationId) {
+            $query->where('location_id', $request->location_id);
         }
 
         $vehicles = $query->orderByDesc('inventory_date')->get();
@@ -141,12 +142,14 @@ class InventoryReportController extends Controller
     public function export(Request $request): StreamedResponse
     {
         $dealerId = $request->user()->current_dealer_id;
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
         $filename = 'inventory-report-' . now()->format('Y-m-d') . '.csv';
 
         $query = Vehicle::with([
             'make', 'makeModel', 'bodyType', 'exteriorColor', 'drivetrainType', 'prices', 'specs', 'dealer',
         ])
-            ->forDealer($dealerId);
+            ->forDealer($dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId));
 
         // Apply same filters as index
         if ($request->filled(['from', 'to'])) {

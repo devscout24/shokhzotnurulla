@@ -37,5 +37,11 @@ class LocationObserver
         Cache::forget("dealer_{$dealerId}_frontend_settings");
         Cache::forget("dealer_{$dealerId}_location_menu");
         Cache::forget("dealer_locations:{$dealerId}");
+        
+        try {
+            app(\App\Services\Inventory\InventoryListingService::class)->invalidateFilterCache($dealerId);
+        } catch (\Exception $e) {
+            // Ignore if service is not bound
+        }
     }
 }

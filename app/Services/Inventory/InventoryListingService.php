@@ -65,9 +65,12 @@ class InventoryListingService
         int $dealerId,
         array $bodyTypeNames
     ): Builder {
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+
         $query = Vehicle::forDealer($dealerId)
             ->active()
             ->select(self::VEHICLE_COLUMNS)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->withCount('photos')
             ->with([
                 'make:id,name',
@@ -220,9 +223,10 @@ class InventoryListingService
     // old cache keys become stale without needing wildcard deletes
     private function buildFilterData(int $dealerId, array $bodyTypeNames): array
     {
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
         $version  = Cache::get("inv_filters_v:{$dealerId}", 1);
         $bodyKey  = empty($bodyTypeNames) ? 'all' : md5(implode(',', $bodyTypeNames));
-        $cacheKey = "inv_filters:{$dealerId}:{$version}:{$bodyKey}";
+        $cacheKey = "inv_filters:{$dealerId}:{$locationId}:{$version}:{$bodyKey}";
 
         return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($dealerId, $bodyTypeNames, $cacheKey) {
 
@@ -257,9 +261,12 @@ class InventoryListingService
     // Pure Eloquent — groupBy FK + eager load — no raw JOINs, no ambiguous IDs
     private function runFilterQueries(int $dealerId, array $bodyTypeNames): array
     {
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+
         // Fresh Builder factory — closure returns new instance on each call
         $base = fn (): Builder => Vehicle::forDealer($dealerId)
             ->active()
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->when(
                 ! empty($bodyTypeNames),
                 fn (Builder $q) => $q->whereHas(
@@ -401,14 +408,14 @@ class InventoryListingService
             ->first();
 
         // ── Features (via Feature model — cleaner reverse relation) ───────────
-        $features = Feature::whereHas('vehicles', function (Builder $q) use ($dealerId, $bodyTypeNames) {
-                $q->forDealer($dealerId)->active();
+        $features = Feature::whereHas('vehicles', function (Builder $q) use ($dealerId, $bodyTypeNames, $locationId) {
+                $q->forDealer($dealerId)->active()->when($locationId, fn($q) => $q->where('location_id', $locationId));
                 if (! empty($bodyTypeNames)) {
                     $q->whereHas('bodyType', fn (Builder $bt) => $bt->whereIn('name', $bodyTypeNames));
                 }
             })
-            ->withCount(['vehicles' => function (Builder $q) use ($dealerId, $bodyTypeNames) {
-                $q->forDealer($dealerId)->active();
+            ->withCount(['vehicles' => function (Builder $q) use ($dealerId, $bodyTypeNames, $locationId) {
+                $q->forDealer($dealerId)->active()->when($locationId, fn($q) => $q->where('location_id', $locationId));
                 if (! empty($bodyTypeNames)) {
                     $q->whereHas('bodyType', fn (Builder $bt) => $bt->whereIn('name', $bodyTypeNames));
                 }

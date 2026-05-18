@@ -342,6 +342,17 @@
                                         </select>
                                     </div>
                                     <div class="vd-det-field">
+                                        <label class="vd-field-label">Location <span class="req">*</span></label>
+                                        <select name="location_id" class="vd-select" required>
+                                            <option value="">Select Location</option>
+                                            @foreach($availableLocations as $loc)
+                                                <option value="{{ $loc->id }}" {{ $vehicle->location_id == $loc->id ? 'selected' : '' }}>
+                                                    {{ $loc->name }} ({{ $loc->city }}, {{ $loc->state }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="vd-det-field">
                                         <label class="vd-field-label">Year <span class="req">*</span></label>
                                         <input type="number" name="year" class="vd-input"
                                                value="{{ $vehicle->year }}"

@@ -11,9 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Faq extends Model
 {
     use SoftDeletes;
+    use \App\Models\Traits\HasLocationScope;
 
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'faq_category_id',
         'question',
         'answer',

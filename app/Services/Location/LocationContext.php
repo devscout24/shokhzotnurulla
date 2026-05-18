@@ -54,7 +54,12 @@ class LocationContext
         }
 
         // Fetch location and ensure it belongs to the current dealer context to prevent cross-tenant access.
-        $dealer = app()->bound('currentDealer') ? app('currentDealer') : null;
+        $dealer = null;
+        if (auth()->check() && auth()->user()->current_dealer_id) {
+            $dealer = auth()->user()->currentDealer;
+        } elseif (app()->bound('currentDealer')) {
+            $dealer = app('currentDealer');
+        }
 
         $query = Location::query();
         if ($dealer) {

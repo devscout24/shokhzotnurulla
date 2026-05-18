@@ -13,7 +13,15 @@
 
     <div class="p-2 bg-light offcanvas-body">
         @php
-            $loc          = $locationMenuData[0] ?? null;
+            $activeLocationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+            $loc = null;
+            if ($activeLocationId) {
+                $loc = collect($locationMenuData)->firstWhere('id', $activeLocationId);
+            }
+            if (!$loc) {
+                $loc = $locationMenuData[0] ?? null;
+            }
+
             $salesHours   = $loc['hours_by_department']['sales']   ?? [];
             $serviceHours = $loc['hours_by_department']['service'] ?? [];
             $phones       = $loc['phones'] ?? [];
@@ -30,6 +38,48 @@
                     ]))
                   );
         @endphp
+
+        @if(count($locationMenuData) > 1)
+            <div class="mb-3 p-3 bg-white rounded border">
+                <label class="form-label text-muted small text-uppercase font-weight-bold mb-2 d-block">Viewing Location:</label>
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary w-100 dropdown-toggle d-flex align-items-center justify-content-between text-start" type="button" id="frontendLocationSelect" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span>
+                            <i class="fa-solid fa-location-dot me-2 text-primary"></i>
+                            {{ $activeLocationId ? (collect($locationMenuData)->firstWhere('id', $activeLocationId)['name'] ?? __('All Locations')) : __('All Locations') }}
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu w-100" aria-labelledby="frontendLocationSelect">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center justify-content-between {{ !$activeLocationId ? 'active bg-primary text-white' : '' }}" href="javascript:void(0)" onclick="event.preventDefault(); document.getElementById('switch-frontend-location-form-0').submit();">
+                                <span>{{ __('All Locations') }}</span>
+                                @if(!$activeLocationId)
+                                    <i class="fa-solid fa-check ms-2"></i>
+                                @endif
+                            </a>
+                            <form id="switch-frontend-location-form-0" action="{{ route('frontend.switch-location') }}" method="POST" class="d-none">
+                                @csrf
+                                <input type="hidden" name="location_id" value="0">
+                            </form>
+                        </li>
+                        @foreach($locationMenuData as $l)
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between {{ $activeLocationId == $l['id'] ? 'active bg-primary text-white' : '' }}" href="javascript:void(0)" onclick="event.preventDefault(); document.getElementById('switch-frontend-location-form-{{ $l['id'] }}').submit();">
+                                    <span>{{ $l['name'] }}</span>
+                                    @if($activeLocationId == $l['id'])
+                                        <i class="fa-solid fa-check ms-2"></i>
+                                    @endif
+                                </a>
+                                <form id="switch-frontend-location-form-{{ $l['id'] }}" action="{{ route('frontend.switch-location') }}" method="POST" class="d-none">
+                                    @csrf
+                                    <input type="hidden" name="location_id" value="{{ $l['id'] }}">
+                                </form>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
 
         @if ($loc)
             <div class="p-1 bg-white rounded border p-3 text-center">

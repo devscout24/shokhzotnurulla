@@ -12,6 +12,7 @@ class LeadEvent extends Model
     protected $fillable = [
         'vehicle_id',
         'dealer_id',
+        'location_id',
         'type',
         'source',
     ];

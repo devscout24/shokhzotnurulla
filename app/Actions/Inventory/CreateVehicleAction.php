@@ -18,6 +18,7 @@ class CreateVehicleAction
 
             $vehicle = Vehicle::create([
                 'dealer_id'            => $dealer->id,
+                'location_id'          => $data['location_id'],
                 'ulid'                 => Str::ulid(),
                 'stock_number'         => $data['stock_number'],
                 'mileage'              => $data['mileage'],

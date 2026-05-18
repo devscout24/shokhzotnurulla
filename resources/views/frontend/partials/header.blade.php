@@ -1,5 +1,12 @@
 @php
-    $loc = $locationMenuData[0] ?? null;
+    $activeLocationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+    $loc = null;
+    if ($activeLocationId) {
+        $loc = collect($locationMenuData)->firstWhere('id', $activeLocationId);
+    }
+    if (!$loc) {
+        $loc = $locationMenuData[0] ?? null;
+    }
 
     $salesHours = $loc['hours_by_department']['sales'] ?? [];
     $phones     = $loc['phones'] ?? [];

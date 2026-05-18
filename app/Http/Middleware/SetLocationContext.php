@@ -21,6 +21,13 @@ class SetLocationContext
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $dealer = null;
+        if (auth()->check() && auth()->user()->current_dealer_id) {
+            $dealer = auth()->user()->currentDealer;
+        } elseif (app()->bound('currentDealer')) {
+            $dealer = app('currentDealer');
+        }
+
         // 1. Allow switching the location context via query parameter (e.g., ?location_context_id=X)
         if ($request->has('location_context_id')) {
             $newLocationId = (int) $request->query('location_context_id');
@@ -30,7 +37,6 @@ class SetLocationContext
                 $this->locationContext->clearActiveLocationId();
             } else {
                 // Ensure the location exists and belongs to the resolved dealer
-                $dealer = app()->bound('currentDealer') ? app('currentDealer') : null;
                 $exists = \App\Models\Website\Location::query()
                     ->when($dealer, fn($q) => $q->where('dealer_id', $dealer->id))
                     ->where('id', $newLocationId)
@@ -44,9 +50,8 @@ class SetLocationContext
 
         // 2. Default to the first added location for this dealer if no context is set in the session yet
         if (!\Illuminate\Support\Facades\Session::has('active_location_id')) {
-            $dealer = app()->bound('currentDealer') ? app('currentDealer') : null;
             if ($dealer) {
-                $firstLocation = $dealer->locations()->first();
+                $firstLocation = $dealer->locations()->orderBy('order')->first();
                 if ($firstLocation) {
                     $this->locationContext->setActiveLocationId($firstLocation->id);
                 }
@@ -65,12 +70,11 @@ class SetLocationContext
         }
 
         // 4. Also share all available locations for this dealer (e.g. to populate context switcher dropdowns in blade/views)
-        $dealer = app()->bound('currentDealer') ? app('currentDealer') : null;
         if ($dealer) {
             $availableLocations = \Illuminate\Support\Facades\Cache::remember(
                 "dealer_locations:{$dealer->id}",
                 now()->addMinutes(15),
-                fn() => $dealer->locations()->get(['id', 'name', 'city', 'state'])
+                fn() => $dealer->locations()->orderBy('order')->get(['id', 'name', 'city', 'state'])
             );
             view()->share('availableLocations', $availableLocations);
         } else {

@@ -85,6 +85,7 @@ class InventoryController extends Controller
     {
         $dealerId = $request->user()->current_dealer_id;
         $dealer   = $request->user()->currentDealer;
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
 
         $query = Vehicle::with([
             'make',
@@ -92,7 +93,8 @@ class InventoryController extends Controller
             'primaryPhoto',
             'prices:vehicle_id,msrp,internet_price,dealer_cost',
         ])
-            ->forDealer($dealerId);
+            ->forDealer($dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId));
 
         // ── Sorting ───────────────────────────────────────────────────────────
         $sortBy    = $request->input('sortby', 'listed_at');
@@ -151,11 +153,11 @@ class InventoryController extends Controller
 
         // ── Sidebar filter data ───────────────────────────────────────────────
 
-        $baseQuery  = Vehicle::forDealer($dealerId);
+        $baseQuery  = Vehicle::forDealer($dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId));
         $totalCount = $baseQuery->count();
 
-        $makeCounts = Make::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)])
-            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId))
+        $makeCounts = Make::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name']);
 
@@ -177,28 +179,28 @@ class InventoryController extends Controller
             ->orderBy('body_types.name')
             ->pluck('total', 'body_types.name');
 
-        $exteriorColorCounts = Color::withCount(['vehiclesExterior' => fn($q) => $q->where('dealer_id', $dealerId)])
-            ->whereHas('vehiclesExterior', fn($q) => $q->where('dealer_id', $dealerId))
+        $exteriorColorCounts = Color::withCount(['vehiclesExterior' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehiclesExterior', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name', 'hex']);
 
-        $interiorColorCounts = Color::withCount(['vehiclesInterior' => fn($q) => $q->where('dealer_id', $dealerId)])
-            ->whereHas('vehiclesInterior', fn($q) => $q->where('dealer_id', $dealerId))
+        $interiorColorCounts = Color::withCount(['vehiclesInterior' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehiclesInterior', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name', 'hex']);
 
-        $fuelTypeCounts = FuelType::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)])
-            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId))
+        $fuelTypeCounts = FuelType::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        $transmissionCounts = TransmissionType::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)])
-            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId))
+        $transmissionCounts = TransmissionType::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        $drivetrainCounts = DrivetrainType::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)])
-            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId))
+        $drivetrainCounts = DrivetrainType::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name']);
 
@@ -650,7 +652,10 @@ class InventoryController extends Controller
             }
         }
 
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+
         $query = Vehicle::whereIn('dealer_id', $targetDealerIds)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->where('make_id', $makeId)
             ->sold();
 
@@ -707,7 +712,10 @@ class InventoryController extends Controller
             }
         }
 
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+
         $query = Vehicle::whereIn('dealer_id', $targetDealerIds)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->sold()
             ->with(['make', 'makeModel', 'prices']);
 
@@ -791,7 +799,10 @@ class InventoryController extends Controller
 
         $makeName = \App\Models\Catalog\Make::find($make_id)?->name ?? 'make';
 
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+
         $query = Vehicle::whereIn('dealer_id', $targetDealerIds)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->where('make_id', $make_id)
             ->sold()
             ->with(['makeModel', 'make', 'prices']);
@@ -877,17 +888,19 @@ class InventoryController extends Controller
         $user            = $request->user();
         $dealerIds       = $user->dealers()->pluck('dealers.id')->toArray();
         $currentDealerId = $request->integer('dealer_id');
-
+ 
         // If no dealer_id is provided or it's 0 (All Locations), use all dealer IDs the user belongs to
         $targetDealerIds = ($currentDealerId && in_array($currentDealerId, $dealerIds))
             ? [$currentDealerId]
             : $dealerIds;
+ 
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
 
         // Date Range Filter
         $dateRange = $request->input('date_range');
         $startDate = null;
         $endDate   = null;
-
+ 
         if ($dateRange) {
             $dates = explode(' - ', $dateRange);
             if (count($dates) === 2) {
@@ -899,9 +912,10 @@ class InventoryController extends Controller
                 }
             }
         }
-
+ 
         // Summary Cards Data
-        $baseQuery = Vehicle::whereIn('dealer_id', $targetDealerIds);
+        $baseQuery = Vehicle::whereIn('dealer_id', $targetDealerIds)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId));
 
         // In Stock: Active vehicles
         $inStockQuery = (clone $baseQuery)->active();
@@ -975,7 +989,11 @@ class InventoryController extends Controller
         $chartStartDate = $startDate ? $startDate->copy() : now()->subDays(29)->startOfDay();
         $chartEndDate   = $endDate ? $endDate->copy() : now()->endOfDay();
 
-        $stats = \App\Models\Inventory\VehicleDailyStat::whereIn('dealer_id', $targetDealerIds)
+        $stats = \App\Models\Inventory\VehicleDailyStat::whereIn('vehicle_daily_stats.dealer_id', $targetDealerIds)
+            ->when($locationId, function($q) use ($locationId) {
+                $q->join('vehicles', 'vehicle_daily_stats.vehicle_id', '=', 'vehicles.id')
+                  ->where('vehicles.location_id', $locationId);
+            })
             ->where('date', '>=', $chartStartDate->format('Y-m-d'))
             ->where('date', '<=', $chartEndDate->format('Y-m-d'))
             ->select('date', DB::raw('SUM(views) as total_views'))
@@ -983,6 +1001,7 @@ class InventoryController extends Controller
             ->pluck('total_views', 'date');
 
         $vehicles = Vehicle::whereIn('dealer_id', $targetDealerIds)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereIn('status', ['active', 'sold'])
             ->whereNotNull('listed_at')
             ->with('prices')

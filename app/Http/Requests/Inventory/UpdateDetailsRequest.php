@@ -21,6 +21,10 @@ class UpdateDetailsRequest extends FormRequest
                 'required', 'string', 'max:50',
                 "unique:vehicles,stock_number,{$vehicle->id},id,dealer_id,{$dealerId},deleted_at,NULL",
             ],
+            'location_id'          => [
+                'required', 'integer',
+                "exists:locations,id,dealer_id,{$dealerId}",
+            ],
             'vin'                  => [
                 'required', 'string', 'size:17',
                 "unique:vehicles,vin,{$vehicle->id},id,dealer_id,{$dealerId},deleted_at,NULL",

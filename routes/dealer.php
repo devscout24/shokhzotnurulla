@@ -39,7 +39,13 @@ Route::prefix('dealer')->name('dealer.')
             if ($locationId === 0) {
                 $locationContext->clearActiveLocationId();
             } else {
-                $dealer = app()->bound('currentDealer') ? app('currentDealer') : null;
+                $dealer = null;
+                if (auth()->check() && auth()->user()->current_dealer_id) {
+                    $dealer = auth()->user()->currentDealer;
+                } elseif (app()->bound('currentDealer')) {
+                    $dealer = app('currentDealer');
+                }
+
                 $exists = \App\Models\Website\Location::query()
                     ->when($dealer, fn($q) => $q->where('dealer_id', $dealer->id))
                     ->where('id', $locationId)

@@ -36,9 +36,11 @@ class FrontendController extends Controller
     public function home(): View
     {
         $dealerId = $this->dealerResolver->resolve();
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
 
         $newArrivals = Vehicle::forDealer($dealerId)
             ->active()
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->select([
                 'id', 'dealer_id', 'year', 'make_id', 'make_model_id', 'trim', 'vin',
                 'stock_number', 'mileage', 'list_price', 'original_price',
@@ -234,9 +236,11 @@ class FrontendController extends Controller
     public function aboutUs(): View
     {
         $dealerId = $this->dealerResolver->resolve();
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
 
         $newArrivals = Vehicle::forDealer($dealerId)
             ->active()
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->select([
                 'id', 'dealer_id', 'year', 'make_id', 'make_model_id', 'trim', 'vin',
                 'stock_number', 'mileage', 'list_price', 'original_price',

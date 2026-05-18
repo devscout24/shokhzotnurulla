@@ -274,16 +274,21 @@
                             </div>
                         </div>
 
-                        {{-- Location — read only, always current dealer --}}
+                        {{-- Location --}}
                         <div class="inv-form-field inv-form-field-full">
                             <label class="inv-form-label">
                                 Location <span class="inv-req">*</span>
                             </label>
-                            <input type="text"
-                                   class="inv-form-input"
-                                   value="{{ $dealer->name }}"
-                                   readonly
-                                   style="background:#f7f7f7;color:#888;cursor:default;">
+                            <div class="inv-form-select-wrap">
+                                <select class="inv-form-select" name="location_id" required>
+                                    <option value="">Select Location</option>
+                                    @foreach($availableLocations as $loc)
+                                        <option value="{{ $loc->id }}" {{ (isset($currentLocation) && $currentLocation && $currentLocation->id == $loc->id) ? 'selected' : '' }}>
+                                            {{ $loc->name }} ({{ $loc->city }}, {{ $loc->state }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                     </div>{{-- end .inv-form-grid --}}

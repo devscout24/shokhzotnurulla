@@ -28,6 +28,26 @@ Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class])->name('frontend
 
     // Pages
     Route::get('/', [FrontendController::class, 'home'])->name('home');
+    Route::post('/switch-location', function (\Illuminate\Http\Request $request) {
+        $locationId = (int) $request->input('location_id');
+        $locationContext = app(\App\Services\Location\LocationContext::class);
+
+        if ($locationId === 0) {
+            $locationContext->clearActiveLocationId();
+        } else {
+            $dealerId = app(\App\Services\Website\DealerResolverService::class)->resolve();
+            $exists = \App\Models\Website\Location::query()
+                ->where('dealer_id', $dealerId)
+                ->where('id', $locationId)
+                ->exists();
+
+            if ($exists) {
+                $locationContext->setActiveLocationId($locationId);
+            }
+        }
+
+        return redirect()->back();
+    })->name('switch-location');
     Route::get('/inventory', [FrontendController::class, 'inventory'])->name('inventory');
 
     // ── AJAX filter endpoint — MUST be before /inventory/{slug} ──────────────
