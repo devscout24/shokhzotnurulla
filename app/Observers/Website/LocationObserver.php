@@ -36,5 +36,6 @@ class LocationObserver
     {
         Cache::forget("dealer_{$dealerId}_frontend_settings");
         Cache::forget("dealer_{$dealerId}_location_menu");
+        Cache::forget("dealer_locations:{$dealerId}");
     }
 }
