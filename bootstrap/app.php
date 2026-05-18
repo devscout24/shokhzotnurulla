@@ -35,6 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->priority([
             TeamsPermission::class,
+            SetLocationContext::class,
             SubstituteBindings::class,
         ]);
         $middleware->appendToGroup('all.active', [
