@@ -126,6 +126,10 @@ class InventoryController extends Controller
             $query->where('make_id', $request->make_id);
         }
 
+        if ($request->filled('location')) {
+            $query->whereIn('location_id', (array) $request->location);
+        }
+
         if ($request->filled('year_min')) {
             $query->where('year', '>=', $request->year_min);
         }

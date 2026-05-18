@@ -28,6 +28,10 @@ class SetLocationContext
             $dealer = app('currentDealer');
         }
 
+        if ($dealer) {
+            app()->instance('currentDealer', $dealer);
+        }
+
         // 1. Allow switching the location context via query parameter (e.g., ?location_context_id=X)
         if ($request->has('location_context_id')) {
             $newLocationId = (int) $request->query('location_context_id');

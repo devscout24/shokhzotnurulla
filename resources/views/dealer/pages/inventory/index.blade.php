@@ -50,15 +50,23 @@
                             <span class="inv-filter-head-label">Location</span>
                         </div>
                         <div class="inv-filter-body">
-                            <label class="inv-filter-item">
-                                <input type="checkbox"
-                                       class="inv-filter-cb"
-                                       data-filter="location"
-                                       value="{{ $dealer->id }}"
-                                       {{ request('location') == $dealer->id ? 'checked' : '' }}>
-                                {{ $dealer->name }}
-                                <span class="inv-filter-count">({{ $totalCount }})</span>
-                            </label>
+                            @foreach($availableLocations as $loc)
+                                @php
+                                    $locCount = \App\Models\Inventory\Vehicle::withoutGlobalScope(\App\Models\Scopes\LocationScope::class)
+                                        ->forDealer($dealer->id)
+                                        ->where('location_id', $loc->id)
+                                        ->count();
+                                @endphp
+                                <label class="inv-filter-item">
+                                    <input type="checkbox"
+                                           class="inv-filter-cb"
+                                           data-filter="location"
+                                           value="{{ $loc->id }}"
+                                           {{ in_array($loc->id, (array) request('location')) ? 'checked' : '' }}>
+                                    {{ $loc->name }}
+                                    <span class="inv-filter-count">({{ $locCount }})</span>
+                                </label>
+                            @endforeach
                         </div>
                     </div>
 
