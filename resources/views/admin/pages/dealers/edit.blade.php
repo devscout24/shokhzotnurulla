@@ -201,35 +201,37 @@
         const div = document.createElement('div');
         div.className = 'location-row';
         div.style.cssText = 'background: #fdfdfd; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 12px; position: relative;';
-        div.innerHTML = `
-            <button type="button" class="btn-action text-danger" onclick="this.parentElement.remove()" style="position: absolute; top: 10px; right: 10px; border: none; background: transparent; cursor: pointer;">
-                <i class="bi bi-trash" style="font-size: 16px;"></i>
-            </button>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div>
-                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Location Name</label>
-                    <input type="text" name="locations[\${locationRowIndex}][name]" class="form-control" placeholder="e.g. Los Angeles" required>
-                </div>
-                <div>
-                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Street Address</label>
-                    <input type="text" name="locations[\${locationRowIndex}][street1]" class="form-control" placeholder="e.g. 123 Main St" required>
-                </div>
-            </div>
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-top: 8px;">
-                <div>
-                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">City</label>
-                    <input type="text" name="locations[\${locationRowIndex}][city]" class="form-control" placeholder="e.g. Los Angeles" required>
-                </div>
-                <div>
-                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">State</label>
-                    <input type="text" name="locations[\${locationRowIndex}][state]" class="form-control" placeholder="e.g. CA" required>
-                </div>
-                <div>
-                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Zip Code</label>
-                    <input type="text" name="locations[\${locationRowIndex}][postalcode]" class="form-control" placeholder="e.g. 90001" required>
-                </div>
-            </div>
-        `;
+        
+        let html = '';
+        html += '<button type="button" class="btn-action text-danger" onclick="this.parentElement.remove()" style="position: absolute; top: 10px; right: 10px; border: none; background: transparent; cursor: pointer;">';
+        html += '    <i class="bi bi-trash" style="font-size: 16px;"></i>';
+        html += '</button>';
+        html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">';
+        html += '    <div>';
+        html += '        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Location Name</label>';
+        html += '        <input type="text" name="locations[' + locationRowIndex + '][name]" class="form-control" placeholder="e.g. Los Angeles" required>';
+        html += '    </div>';
+        html += '    <div>';
+        html += '        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Street Address</label>';
+        html += '        <input type="text" name="locations[' + locationRowIndex + '][street1]" class="form-control" placeholder="e.g. 123 Main St" required>';
+        html += '    </div>';
+        html += '</div>';
+        html += '<div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-top: 8px;">';
+        html += '    <div>';
+        html += '        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">City</label>';
+        html += '        <input type="text" name="locations[' + locationRowIndex + '][city]" class="form-control" placeholder="e.g. Los Angeles" required>';
+        html += '    </div>';
+        html += '    <div>';
+        html += '        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">State</label>';
+        html += '        <input type="text" name="locations[' + locationRowIndex + '][state]" class="form-control" placeholder="e.g. CA" required>';
+        html += '    </div>';
+        html += '    <div>';
+        html += '        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Zip Code</label>';
+        html += '        <input type="text" name="locations[' + locationRowIndex + '][postalcode]" class="form-control" placeholder="e.g. 90001" required>';
+        html += '    </div>';
+        html += '</div>';
+
+        div.innerHTML = html;
         container.appendChild(div);
         locationRowIndex++;
     }

@@ -58,6 +58,7 @@ class DealerController extends Controller
             }
 
             if ($request->has('locations')) {
+                $locOrder = 0;
                 foreach ($request->input('locations') as $index => $locData) {
                     if (empty($locData['name'])) continue;
 
@@ -68,7 +69,7 @@ class DealerController extends Controller
                         'state' => $locData['state'] ?? '',
                         'postalcode' => $locData['postalcode'] ?? '',
                         'country' => 'US',
-                        'order' => $index,
+                        'order' => $locOrder++,
                     ]);
                 }
             }
@@ -200,6 +201,7 @@ class DealerController extends Controller
             // Sync locations
             $submittedLocationIds = [];
             if ($request->has('locations')) {
+                $locOrder = 0;
                 foreach ($request->input('locations') as $index => $locData) {
                     if (empty($locData['name'])) continue;
 
@@ -210,7 +212,7 @@ class DealerController extends Controller
                         'state' => $locData['state'] ?? '',
                         'postalcode' => $locData['postalcode'] ?? '',
                         'country' => 'US',
-                        'order' => $index,
+                        'order' => $locOrder++,
                     ];
 
                     if (!empty($locData['id'])) {
