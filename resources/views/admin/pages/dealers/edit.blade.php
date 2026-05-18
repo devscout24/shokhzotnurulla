@@ -125,6 +125,50 @@
                     @error('status') <div class="text-danger">{{ $message }}</div> @enderror
                 </div>
 
+                <!-- Locations Management Section -->
+                <div class="form-group" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <label class="form-label" style="font-size: 15px; color: #ce4f4b;">Dealer Locations</label>
+                    
+                    <div id="locations-container">
+                        @foreach($dealer->locations as $index => $location)
+                            <div class="location-row" style="background: #fdfdfd; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 12px; position: relative;">
+                                <button type="button" class="btn-action text-danger" onclick="this.parentElement.remove()" style="position: absolute; top: 10px; right: 10px; border: none; background: transparent; cursor: pointer;">
+                                    <i class="bi bi-trash" style="font-size: 16px;"></i>
+                                </button>
+                                <input type="hidden" name="locations[{{ $index }}][id]" value="{{ $location->id }}">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <div>
+                                        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Location Name</label>
+                                        <input type="text" name="locations[{{ $index }}][name]" class="form-control" value="{{ $location->name }}" required>
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Street Address</label>
+                                        <input type="text" name="locations[{{ $index }}][street1]" class="form-control" value="{{ $location->street1 }}" required>
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-top: 8px;">
+                                    <div>
+                                        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">City</label>
+                                        <input type="text" name="locations[{{ $index }}][city]" class="form-control" value="{{ $location->city }}" required>
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">State</label>
+                                        <input type="text" name="locations[{{ $index }}][state]" class="form-control" value="{{ $location->state }}" required>
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Zip Code</label>
+                                        <input type="text" name="locations[{{ $index }}][postalcode]" class="form-control" value="{{ $location->postalcode }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    
+                    <button type="button" class="btn-save" onclick="addLocationRow()" style="background: #2e7d32; padding: 8px 16px; font-size: 12px; margin-top: 10px;">
+                        + Add Location
+                    </button>
+                </div>
+
                 <div style="margin-top: 30px; display: flex; align-items: center;">
                     <button type="submit" class="btn-save">Update Dealer</button>
                     <a href="{{ route('admin.dealers.index') }}" class="btn-cancel">Cancel</a>
@@ -149,6 +193,45 @@
             <button type="button" class="btn-action text-danger" onclick="this.parentElement.remove()" style="padding: 10px;"><i class="bi bi-trash"></i></button>
         `;
         container.appendChild(div);
+    }
+
+    let locationRowIndex = {{ $dealer->locations->count() }};
+    function addLocationRow() {
+        const container = document.getElementById('locations-container');
+        const div = document.createElement('div');
+        div.className = 'location-row';
+        div.style.cssText = 'background: #fdfdfd; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 12px; position: relative;';
+        div.innerHTML = `
+            <button type="button" class="btn-action text-danger" onclick="this.parentElement.remove()" style="position: absolute; top: 10px; right: 10px; border: none; background: transparent; cursor: pointer;">
+                <i class="bi bi-trash" style="font-size: 16px;"></i>
+            </button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Location Name</label>
+                    <input type="text" name="locations[\${locationRowIndex}][name]" class="form-control" placeholder="e.g. Los Angeles" required>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Street Address</label>
+                    <input type="text" name="locations[\${locationRowIndex}][street1]" class="form-control" placeholder="e.g. 123 Main St" required>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-top: 8px;">
+                <div>
+                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">City</label>
+                    <input type="text" name="locations[\${locationRowIndex}][city]" class="form-control" placeholder="e.g. Los Angeles" required>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">State</label>
+                    <input type="text" name="locations[\${locationRowIndex}][state]" class="form-control" placeholder="e.g. CA" required>
+                </div>
+                <div>
+                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Zip Code</label>
+                    <input type="text" name="locations[\${locationRowIndex}][postalcode]" class="form-control" placeholder="e.g. 90001" required>
+                </div>
+            </div>
+        `;
+        container.appendChild(div);
+        locationRowIndex++;
     }
 </script>
 @endpush

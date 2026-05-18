@@ -36,39 +36,57 @@ class DealerController extends Controller
             'domains.*' => 'required|string|unique:domains,domain',
         ]);
 
-        $dealerData = [
-            'name' => $validated['company_name'],
-            'company_name' => $validated['company_name'],
-            'slug' => Str::slug($validated['company_name']),
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'status' => DealerStatus::INACTIVE,
-            'is_active' => false,
-            'domain' => $validated['domains'][0], // Set the first one as the primary on dealer table too
-        ];
+        DB::transaction(function () use ($validated, $request) {
+            $dealerData = [
+                'name' => $validated['company_name'],
+                'company_name' => $validated['company_name'],
+                'slug' => Str::slug($validated['company_name']),
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'status' => DealerStatus::INACTIVE,
+                'is_active' => false,
+                'domain' => $validated['domains'][0], // Set the first one as the primary on dealer table too
+            ];
 
-        $dealer = Dealer::create($dealerData);
+            $dealer = Dealer::create($dealerData);
 
-        foreach ($validated['domains'] as $index => $domainName) {
-            $dealer->domains()->create([
-                'domain' => $domainName,
-                'is_primary' => $index === 0,
+            foreach ($validated['domains'] as $index => $domainName) {
+                $dealer->domains()->create([
+                    'domain' => $domainName,
+                    'is_primary' => $index === 0,
+                ]);
+            }
+
+            if ($request->has('locations')) {
+                foreach ($request->input('locations') as $index => $locData) {
+                    if (empty($locData['name'])) continue;
+
+                    $dealer->locations()->create([
+                        'name' => $locData['name'],
+                        'street1' => $locData['street1'] ?? '',
+                        'city' => $locData['city'] ?? '',
+                        'state' => $locData['state'] ?? '',
+                        'postalcode' => $locData['postalcode'] ?? '',
+                        'country' => 'US',
+                        'order' => $index,
+                    ]);
+                }
+            }
+
+            $user = User::create([
+                'first_name' => $validated['company_name'],
+                'last_name' => 'Admin',
+                'email' => $validated['email'],
+                'password' => Hash::make(Str::random(16)),
+                'is_system_user' => false,
+                'current_dealer_id' => $dealer->id,
             ]);
-        }
 
-        $user = User::create([
-            'first_name' => $validated['company_name'],
-            'last_name' => 'Admin',
-            'email' => $validated['email'],
-            'password' => Hash::make(Str::random(16)),
-            'is_system_user' => false,
-            'current_dealer_id' => $dealer->id,
-        ]);
+            $dealer->owners()->attach($user->id, ['is_owner' => true]);
 
-        $dealer->owners()->attach($user->id, ['is_owner' => true]);
-
-        // Initialize Dealer Roles and Assign Owner Role
-        $this->initializeDealerRoles($dealer, $user);
+            // Initialize Dealer Roles and Assign Owner Role
+            $this->initializeDealerRoles($dealer, $user);
+        });
 
         return redirect()->route('admin.dealers.index')->with('success', 'Dealer created successfully.');
     }
@@ -159,24 +177,56 @@ class DealerController extends Controller
             'domains.*' => 'required|string|unique:domains,domain,' . $dealer->id . ',dealer_id',
         ]);
 
-        $dealer->update([
-            'name' => $validated['company_name'],
-            'company_name' => $validated['company_name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'status' => $validated['status'],
-            'is_active' => $validated['status'] === DealerStatus::ACTIVE->value,
-            'domain' => $validated['domains'][0],
-        ]);
-
-        // Sync domains
-        $dealer->domains()->delete();
-        foreach ($validated['domains'] as $index => $domainName) {
-            $dealer->domains()->create([
-                'domain' => $domainName,
-                'is_primary' => $index === 0,
+        DB::transaction(function () use ($validated, $request, $dealer) {
+            $dealer->update([
+                'name' => $validated['company_name'],
+                'company_name' => $validated['company_name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'status' => $validated['status'],
+                'is_active' => $validated['status'] === DealerStatus::ACTIVE->value,
+                'domain' => $validated['domains'][0],
             ]);
-        }
+
+            // Sync domains
+            $dealer->domains()->delete();
+            foreach ($validated['domains'] as $index => $domainName) {
+                $dealer->domains()->create([
+                    'domain' => $domainName,
+                    'is_primary' => $index === 0,
+                ]);
+            }
+
+            // Sync locations
+            $submittedLocationIds = [];
+            if ($request->has('locations')) {
+                foreach ($request->input('locations') as $index => $locData) {
+                    if (empty($locData['name'])) continue;
+
+                    $locPayload = [
+                        'name' => $locData['name'],
+                        'street1' => $locData['street1'] ?? '',
+                        'city' => $locData['city'] ?? '',
+                        'state' => $locData['state'] ?? '',
+                        'postalcode' => $locData['postalcode'] ?? '',
+                        'country' => 'US',
+                        'order' => $index,
+                    ];
+
+                    if (!empty($locData['id'])) {
+                        $location = $dealer->locations()->find($locData['id']);
+                        if ($location) {
+                            $location->update($locPayload);
+                            $submittedLocationIds[] = $location->id;
+                        }
+                    } else {
+                        $location = $dealer->locations()->create($locPayload);
+                        $submittedLocationIds[] = $location->id;
+                    }
+                }
+            }
+            $dealer->locations()->whereNotIn('id', $submittedLocationIds)->delete();
+        });
 
         return redirect()->route('admin.dealers.index')->with('success', 'Dealer updated successfully.');
     }
