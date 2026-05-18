@@ -356,12 +356,15 @@
                             <div class="inv-cols-wrap">
                                 <button type="button" class="inv-btn-columns" id="btnColumns">
                                     <i class="bi bi-layout-three-columns"></i>
-                                    <span id="colsLabel">7 Columns Displayed</span>
+                                    <span id="colsLabel">8 Columns Displayed</span>
                                     <i class="bi bi-chevron-down inv-cols-chevron"></i>
                                 </button>
                                 <div class="inv-cols-dropdown" id="colsDropdown">
                                     <label class="inv-col-item locked">
                                         <input type="checkbox" checked disabled> Vehicle
+                                    </label>
+                                    <label class="inv-col-item">
+                                        <input type="checkbox" class="col-toggle" data-col="status" checked> Status
                                     </label>
                                     <label class="inv-col-item">
                                         <input type="checkbox" class="col-toggle" data-col="stock" checked> Stock #
@@ -380,9 +383,6 @@
                                     </label>
                                     <label class="inv-col-item">
                                         <input type="checkbox" class="col-toggle" data-col="days" checked> Days
-                                    </label>
-                                    <label class="inv-col-item">
-                                        <input type="checkbox" class="col-toggle" data-col="status"> Status
                                     </label>
                                     <label class="inv-col-item">
                                         <input type="checkbox" class="col-toggle" data-col="model"> Model Number
@@ -410,6 +410,9 @@
                                     <tr>
                                         <th class="inv-thumb-cell"></th>
                                         <th>Vehicle <i class="bi bi-arrow-down-up inv-sort-icon"></i></th>
+                                        <th class="col-th" data-col="status">
+                                            Status <i class="bi bi-arrow-down-up inv-sort-icon"></i>
+                                        </th>
                                         <th class="col-th" data-col="stock">
                                             Stock # <i class="bi bi-arrow-down-up inv-sort-icon"></i>
                                         </th>
@@ -427,10 +430,6 @@
                                         </th>
                                         <th class="col-th sorted" data-col="days">
                                             Days <i class="bi bi-arrow-up inv-sort-icon"></i>
-                                        </th>
-                                        {{-- Hidden by default --}}
-                                        <th class="col-th" data-col="status" style="display:none;">
-                                            Status <i class="bi bi-arrow-down-up inv-sort-icon"></i>
                                         </th>
                                         <th class="col-th" data-col="model" style="display:none;">
                                             Model # <i class="bi bi-arrow-down-up inv-sort-icon"></i>
@@ -468,6 +467,19 @@
                                             </a>
                                         </td>
 
+                                        {{-- Status --}}
+                                        <td class="col-td" data-col="status">
+                                            @if($vehicle->status === 'sold')
+                                                <span class="inv-badge-sold">SOLD</span>
+                                            @elseif($vehicle->status === 'draft')
+                                                <span class="inv-badge-draft">DRAFT</span>
+                                            @elseif($vehicle->status === 'active')
+                                                <span class="inv-badge-active">ACTIVE</span>
+                                            @else
+                                                <span class="inv-badge-draft">{{ strtoupper($vehicle->status) }}</span>
+                                            @endif
+                                        </td>
+
                                         {{-- Stock # --}}
                                         <td class="col-td" data-col="stock">
                                             {{ $vehicle->stock_number }}
@@ -475,12 +487,10 @@
 
                                         {{-- Status Override --}}
                                         <td class="col-td" data-col="override">
-                                            @if($vehicle->status === 'sold')
-                                                <span class="inv-badge-sold">SOLD</span>
-                                            @elseif($vehicle->is_on_hold)
+                                            @if($vehicle->is_on_hold)
                                                 <span class="inv-badge-hold">ON HOLD</span>
-                                            @elseif($vehicle->status === 'draft')
-                                                <span class="inv-badge-draft">DRAFT</span>
+                                            @else
+                                                <span class="text-muted">—</span>
                                             @endif
                                         </td>
 
@@ -530,9 +540,6 @@
                                         </td>
 
                                         {{-- Hidden columns --}}
-                                        <td class="col-td" data-col="status" style="display:none;">
-                                            {{ ucfirst($vehicle->status) }}
-                                        </td>
                                         <td class="col-td" data-col="model" style="display:none;">
                                             {{ $vehicle->model_number ?? '—' }}
                                         </td>
