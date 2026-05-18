@@ -51,6 +51,7 @@ class UploadMediaAction
 
         return Media::create([
             'dealer_id'     => $dealerId,
+            'location_id'   => Media::getActiveLocationId(),
             'original_name' => $original,
             'name'          => $unique,
             'path'          => $path,

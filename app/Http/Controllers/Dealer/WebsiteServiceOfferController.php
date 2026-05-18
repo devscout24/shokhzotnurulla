@@ -15,7 +15,7 @@ class WebsiteServiceOfferController extends Controller
     public function index(): View
     {
         $categories = ServiceOfferCategory::orderBy('sort_order')->withCount('serviceOffers')->get();
-        $offers = ServiceOffer::with('category')->orderBy('sort_order', 'desc')->get();
+        $offers = ServiceOffer::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
 
         return view('dealer.pages.website.service-offers.index', compact('offers', 'categories'));
     }
@@ -34,8 +34,9 @@ class WebsiteServiceOfferController extends Controller
             'status'                    => 'required|string',
         ]);
 
+        $validated['location_id'] = ServiceOffer::getActiveLocationId();
         $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = ServiceOffer::max('sort_order') + 1;
+        $validated['sort_order'] = ServiceOffer::forActiveLocation()->max('sort_order') + 1;
 
         $offer = ServiceOffer::create($validated);
         $offer->load('category');
@@ -83,6 +84,7 @@ class WebsiteServiceOfferController extends Controller
             }
 
             $payload = [
+                'location_id'               => ServiceOffer::getActiveLocationId(),
                 'title'                     => $item['title'] ?? '',
                 'subtitle'                  => $item['subtitle'] ?? null,
                 'description'               => $item['description'] ?? '',
@@ -103,7 +105,7 @@ class WebsiteServiceOfferController extends Controller
             }
         }
 
-        $all = ServiceOffer::with('category')->orderBy('sort_order')->get();
+        $all = ServiceOffer::forActiveLocation()->with('category')->orderBy('sort_order')->get();
         return response()->json($all);
     }
 

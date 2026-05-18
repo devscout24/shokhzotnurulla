@@ -16,7 +16,7 @@ class WebsiteEventController extends Controller
     public function index(): View
     {
         $categories = EventCategory::orderBy('sort_order')->withCount('events')->get();
-        $events = Event::with('category')->orderBy('sort_order', 'desc')->get();
+        $events = Event::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
 
         return view('dealer.pages.website.events.index', compact('events', 'categories'));
     }
@@ -36,8 +36,9 @@ class WebsiteEventController extends Controller
             'status'            => 'required|string',
         ]);
 
+        $validated['location_id'] = Event::getActiveLocationId();
         $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = Event::max('sort_order') + 1;
+        $validated['sort_order'] = Event::forActiveLocation()->max('sort_order') + 1;
 
         $event = Event::create($validated);
         $event->load('category');
@@ -86,6 +87,7 @@ class WebsiteEventController extends Controller
             }
 
             $payload = [
+                'location_id'       => Event::getActiveLocationId(),
                 'title'             => $item['title'] ?? '',
                 'event_category_id' => $item['event_category_id'] ?? null,
                 'photo_url'         => $item['photo_url'] ?? '',
@@ -107,7 +109,7 @@ class WebsiteEventController extends Controller
             }
         }
 
-        $all = Event::with('category')->orderBy('sort_order')->get();
+        $all = Event::forActiveLocation()->with('category')->orderBy('sort_order')->get();
         return response()->json($all);
     }
 

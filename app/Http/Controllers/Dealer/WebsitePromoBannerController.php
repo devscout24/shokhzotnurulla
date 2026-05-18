@@ -16,7 +16,7 @@ class WebsitePromoBannerController extends Controller
     public function index(): View
     {
         $categories = PromoCategory::orderBy('sort_order')->withCount('banners')->get();
-        $banners = PromoBanner::with('category')->orderBy('sort_order')->get();
+        $banners = PromoBanner::forActiveLocation()->with('category')->orderBy('sort_order')->get();
 
         return view('dealer.pages.website.promo-banner.index', compact('banners', 'categories'));
     }
@@ -42,8 +42,9 @@ class WebsitePromoBannerController extends Controller
             'content'                => 'nullable|string',
         ]);
 
+        $validated['location_id'] = PromoBanner::getActiveLocationId();
         $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = PromoBanner::max('sort_order') + 1;
+        $validated['sort_order'] = PromoBanner::forActiveLocation()->max('sort_order') + 1;
 
         $banner = PromoBanner::create($validated);
         $banner->load('category');
@@ -212,6 +213,7 @@ class WebsitePromoBannerController extends Controller
                 }
 
                 $payload = [
+                    'location_id'            => PromoBanner::getActiveLocationId(),
                     'title'                  => $item['title'] ?? '',
                     'disclaimer'             => $item['disclaimer'] ?? null,
                     'promo_category_id'      => $item['promo_category_id'] ?? null,
@@ -240,7 +242,7 @@ class WebsitePromoBannerController extends Controller
             }
         });
 
-        $all = PromoBanner::with('category')->orderBy('sort_order')->get();
+        $all = PromoBanner::forActiveLocation()->with('category')->orderBy('sort_order')->get();
         return response()->json($all);
     }
 }

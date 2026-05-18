@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ServiceOffer extends Model
 {
+    use \App\Models\Traits\HasLocationScope;
+
     protected $fillable = [
+        'location_id',
         'service_offer_category_id',
         'title',
         'subtitle',

@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class StaffMember extends Model
 {
+    use \App\Models\Traits\HasLocationScope;
+
     protected $fillable = [
+        'location_id',
         'staff_member_category_id',
         'full_name',
         'job_title',

@@ -11,7 +11,7 @@ class WebsiteSrpContentController extends Controller
 {
     public function index()
     {
-        $contents = SrpContent::orderBy('sort_order')->get();
+        $contents = SrpContent::forActiveLocation()->orderBy('sort_order')->get();
         return view('dealer.pages.website.srp-content.index', compact('contents'));
     }
 
@@ -32,6 +32,8 @@ class WebsiteSrpContentController extends Controller
         if (empty($validated['author'])) {
             $validated['author'] = Auth::user()->name ?? 'System';
         }
+
+        $validated['location_id'] = SrpContent::getActiveLocationId();
 
         $content = SrpContent::create($validated);
         return response()->json($content);
@@ -65,8 +67,9 @@ class WebsiteSrpContentController extends Controller
     {
         $data   = $request->input('contents', []);
         $author = Auth::user()->name ?? 'System';
+        $locationId = SrpContent::getActiveLocationId();
 
-        DB::transaction(function () use ($data, $author) {
+        DB::transaction(function () use ($data, $author, $locationId) {
             foreach ($data as $item) {
                 $id = $item['id'] ?? null;
 
@@ -76,6 +79,7 @@ class WebsiteSrpContentController extends Controller
                 }
 
                 $payload = [
+                    'location_id'      => $locationId,
                     'nickname'         => $item['nickname'],
                     'slug'             => $item['slug'],
                     'h1_override'      => $item['h1_override'] ?? null,
@@ -95,6 +99,6 @@ class WebsiteSrpContentController extends Controller
             }
         });
 
-        return response()->json(SrpContent::orderBy('sort_order')->get());
+        return response()->json(SrpContent::forActiveLocation()->orderBy('sort_order')->get());
     }
 }

@@ -23,6 +23,7 @@ class WebsiteFaqController extends Controller
             ->get();
 
         $faqs = Faq::forDealer($dealerId)
+            ->forActiveLocation()
             ->with('category')
             ->ordered()
             ->get();
@@ -45,12 +46,13 @@ class WebsiteFaqController extends Controller
 
         $faq = Faq::create([
             'dealer_id'       => $dealerId,
+            'location_id'     => Faq::getActiveLocationId(),
             'faq_category_id' => $validated['faq_category_id'] ?? null,
             'question'        => $validated['question'],
             'answer'          => $validated['answer'] ?? null,
             'author'          => $request->user()->name,
             'status'          => $validated['status'] ?? 'Published',
-            'sort_order'      => Faq::forDealer($dealerId)->max('sort_order') + 1,
+            'sort_order'      => Faq::forDealer($dealerId)->forActiveLocation()->max('sort_order') + 1,
         ]);
 
         $faq->load('category');
@@ -186,6 +188,7 @@ class WebsiteFaqController extends Controller
 
             $data = [
                 'dealer_id' => $dealerId,
+                'location_id' => Faq::getActiveLocationId(),
                 'question' => $faqData['question'],
                 'answer' => $faqData['answer'],
                 'faq_category_id' => $faqData['faq_category_id'],
@@ -204,7 +207,7 @@ class WebsiteFaqController extends Controller
             }
         }
 
-        $allFaqs = Faq::forDealer($dealerId)->with('category')->ordered()->get();
+        $allFaqs = Faq::forDealer($dealerId)->forActiveLocation()->with('category')->ordered()->get();
         return response()->json($allFaqs);
     }
 }

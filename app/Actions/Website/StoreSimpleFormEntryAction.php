@@ -19,8 +19,14 @@ class StoreSimpleFormEntryAction
         string                 $formType,
         array                  $extraData = []
     ): FormEntry {
+        $vehicle = $request->vehicle_id ? \App\Models\Inventory\Vehicle::find($request->vehicle_id) : null;
+        $locationId = $request->location_id 
+            ?? $vehicle?->location_id 
+            ?? (app()->bound('currentLocation') ? app('currentLocation')->id : null);
+
         return FormEntry::create([
             'dealer_id'    => $this->dealerResolver->resolve(),
+            'location_id'  => $locationId,
             'form_type'    => $formType,
             'status'       => 'complete',
             'vehicle_id'   => $request->vehicle_id,

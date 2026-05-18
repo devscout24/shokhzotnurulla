@@ -35,6 +35,7 @@ class WebsiteMenuController extends Controller
 
         $build = function (string $location) use ($dealerId) {
             return Menu::forDealer($dealerId)
+                ->forActiveLocation()
                 ->forLocation($location)
                 ->topLevel()
                 ->with('children')
@@ -65,12 +66,14 @@ class WebsiteMenuController extends Controller
 
         // Sort order — last position
         $sortOrder = Menu::forDealer($dealerId)
+            ->forActiveLocation()
             ->forLocation($request->location)
             ->where('parent_id', $request->parent_id)
             ->max('sort_order') + 1;
 
         $menu = Menu::create([
             'dealer_id'  => $dealerId,
+            'location_id'=> Menu::getActiveLocationId(),
             'location'   => $request->location,
             'label'      => $request->label,
             'url'        => $request->url,
@@ -162,8 +165,11 @@ class WebsiteMenuController extends Controller
         }
 
         // Clear cache
-        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealerId}_main_menu");
-        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealerId}_footer_menu");
+        $activeLocationId = Menu::getActiveLocationId();
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealerId}_location_{$activeLocationId}_main_menu");
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealerId}_location_{$activeLocationId}_footer_menu");
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealerId}_location__main_menu");
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealerId}_location__footer_menu");
 
         return response()->json(['success' => true, 'message' => 'Order saved.']);
     }

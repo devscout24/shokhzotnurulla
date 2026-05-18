@@ -16,7 +16,7 @@ class WebsiteStaticPageContentController extends Controller
     public function index(): View
     {
         $categories = StaticPageCategory::orderBy('sort_order')->withCount('contents')->get();
-        $contents = StaticPageContent::with('category')->orderBy('sort_order')->get();
+        $contents = StaticPageContent::forActiveLocation()->with('category')->orderBy('sort_order')->get();
 
         return view('dealer.pages.website.static-page-content.index', compact('contents', 'categories'));
     }
@@ -36,7 +36,8 @@ class WebsiteStaticPageContentController extends Controller
         ]);
 
         $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = StaticPageContent::max('sort_order') + 1;
+        $validated['location_id'] = StaticPageContent::getActiveLocationId();
+        $validated['sort_order'] = StaticPageContent::forActiveLocation()->max('sort_order') + 1;
 
         $content = StaticPageContent::create($validated);
         $content->load('category');
@@ -114,8 +115,9 @@ class WebsiteStaticPageContentController extends Controller
     {
         $data   = $request->input('contents', []);
         $author = Auth::user()->name;
+        $locationId = StaticPageContent::getActiveLocationId();
 
-        DB::transaction(function () use ($data, $author) {
+        DB::transaction(function () use ($data, $author, $locationId) {
             foreach ($data as $index => $item) {
                 $id = $item['id'] ?? null;
 
@@ -125,6 +127,7 @@ class WebsiteStaticPageContentController extends Controller
                 }
 
                 $payload = [
+                    'location_id'             => $locationId,
                     'nickname'                => $item['nickname'] ?? null,
                     'slug'                    => $item['slug'],
                     'static_page_category_id' => $item['static_page_category_id'] ?? null,
@@ -146,7 +149,7 @@ class WebsiteStaticPageContentController extends Controller
             }
         });
 
-        $all = StaticPageContent::with('category')->orderBy('sort_order')->get();
+        $all = StaticPageContent::forActiveLocation()->with('category')->orderBy('sort_order')->get();
         return response()->json($all);
     }
 }

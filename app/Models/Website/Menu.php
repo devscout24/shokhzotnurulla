@@ -14,8 +14,11 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
 class Menu extends Model
 {
+    use \App\Models\Traits\HasLocationScope;
+
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'location',
         'label',
         'url',

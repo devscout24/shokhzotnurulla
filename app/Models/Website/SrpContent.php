@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Builder;
 class SrpContent extends Model
 {
     use SoftDeletes;
+    use \App\Models\Traits\HasLocationScope;
 
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'nickname',
         'slug',
         'h1_override',

@@ -70,12 +70,14 @@ class ViewServiceProvider extends ServiceProvider
 
         View::composer('frontend.partials.header', function ($view): void {
             $dealerId = $this->resolveDealerId();
+            $locationId = app()->bound('currentLocation') ? app('currentLocation')->id : null;
 
             $view->with('mainMenu', $dealerId
                 ? Cache::remember(
-                    "dealer_{$dealerId}_main_menu",
+                    "dealer_{$dealerId}_location_{$locationId}_main_menu",
                     3600,
                     fn () => Menu::forDealer($dealerId)
+                        ->where('location_id', $locationId)
                         ->forLocation('main')
                         ->topLevel()
                         ->with('children')
@@ -88,12 +90,14 @@ class ViewServiceProvider extends ServiceProvider
 
         View::composer('frontend.partials.footer', function ($view): void {
             $dealerId = $this->resolveDealerId();
+            $locationId = app()->bound('currentLocation') ? app('currentLocation')->id : null;
 
             $view->with('footerMenu', $dealerId
                 ? Cache::remember(
-                    "dealer_{$dealerId}_footer_menu",
+                    "dealer_{$dealerId}_location_{$locationId}_footer_menu",
                     3600,
                     fn () => Menu::forDealer($dealerId)
+                        ->where('location_id', $locationId)
                         ->forLocation('footer')
                         ->topLevel()
                         ->orderBy('sort_order')

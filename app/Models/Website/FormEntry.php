@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class FormEntry extends Model
 {
     use \App\Traits\BelongsToLocation;
+    use \App\Models\Traits\HasLocationScope;
 
     protected $fillable = [
         'dealer_id',
