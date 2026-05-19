@@ -50,7 +50,7 @@
         .section-title {
             font-size: 11px;
             font-weight: 800;
-            color: #adb5bd;
+            color: #ce4f4b;
             text-transform: uppercase;
             letter-spacing: 1.2px;
             margin: 25px 0 15px
@@ -215,7 +215,7 @@
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
-            color: #adb5bd;
+            color: #ce4f4b;
             margin-bottom: 15px;
             letter-spacing: 1px;
         }
@@ -237,7 +237,7 @@
 
         .featured-image-box i {
             font-size: 32px;
-            color: #adb5bd;
+            color: #ce4f4b;
             margin-bottom: 12px;
         }
 
@@ -319,7 +319,7 @@
             padding: 10px 0;
             border-bottom: 1px solid #f1f3f5;
             margin-bottom: 20px;
-            color: #adb5bd;
+            color: #ce4f4b;
         }
 
         .editor-empty-badge {
@@ -338,7 +338,7 @@
             border: none;
             background: transparent;
             font-size: 14px;
-            color: #adb5bd;
+            color: #ce4f4b;
             width: 100%;
             outline: none;
         }

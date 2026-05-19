@@ -147,7 +147,7 @@
             border: 2px dashed var(--of-border);
             border-radius: 12px;
             text-align: center;
-            color: #adb5bd;
+            color: #ce4f4b;
         }
 
         .block-placeholder i {
