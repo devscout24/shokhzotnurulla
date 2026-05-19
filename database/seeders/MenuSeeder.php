@@ -27,37 +27,134 @@ class MenuSeeder extends Seeder
      */
     public static function seedForDealer(Dealer $dealer): void
     {
-        // Create parent "Inventory" menu
-        $inventoryMenu = Menu::create([
-            'dealer_id'  => $dealer->id,
-            'location'   => 'main',
-            'label'      => 'Inventory',
-            'url'        => '/inventory',
-            'target'     => '_self',
-            'parent_id'  => null,
-            'sort_order' => 0,
-        ]);
+        $menus = [
+            [
+                'location' => 'main',
+                'label' => 'Inventory',
+                'url' => '#',
+                'target' => '_self',
+                'sort_order' => 0,
+                'children' => [
+                    ['label' => 'All Inventory', 'url' => '/inventory', 'target' => '_self', 'sort_order' => 0],
+                    ['label' => 'Cars', 'url' => '/cars', 'target' => '_self', 'sort_order' => 1],
+                    ['label' => 'Trucks', 'url' => '/trucks', 'target' => '_self', 'sort_order' => 2],
+                    ['label' => 'SUVs', 'url' => '/suvs', 'target' => '_self', 'sort_order' => 3],
+                    ['label' => 'Vans', 'url' => '/vans', 'target' => '_self', 'sort_order' => 4],
+                    ['label' => 'Convertibles', 'url' => '/convertibles', 'target' => '_self', 'sort_order' => 5],
+                    ['label' => 'Hatchbacks', 'url' => '/hatchbacks', 'target' => '_self', 'sort_order' => 6],
+                ],
+            ],
+            [
+                'location' => 'main',
+                'label' => 'Finance',
+                'url' => '#',
+                'target' => '_self',
+                'sort_order' => 1,
+                'children' => [
+                    ['label' => 'Get Approved', 'url' => '/get-approved', 'target' => '_self', 'sort_order' => 0],
+                ],
+            ],
+            [
+                'location' => 'main',
+                'label' => 'Service',
+                'url' => '/schedule-service',
+                'target' => '_self',
+                'sort_order' => 2,
+                'children' => [],
+            ],
+            [
+                'location' => 'main',
+                'label' => 'About',
+                'url' => '#',
+                'target' => '_self',
+                'sort_order' => 3,
+                'children' => [
+                    ['label' => 'About Us', 'url' => '/about-us', 'target' => '_self', 'sort_order' => 0],
+                    ['label' => 'Contact Us', 'url' => '/contact-us', 'target' => '_self', 'sort_order' => 1],
+                ],
+            ],
+            [
+                'location' => 'footer',
+                'label' => 'View Inventory',
+                'url' => '/inventory',
+                'target' => '_self',
+                'sort_order' => 0,
+                'children' => [],
+            ],
+            [
+                'location' => 'footer',
+                'label' => 'Direction',
+                'url' => '#',
+                'target' => '_blank',
+                'sort_order' => 1,
+                'children' => [],
+            ],
+            [
+                'location' => 'footer',
+                'label' => 'About us',
+                'url' => '/about-us',
+                'target' => '_self',
+                'sort_order' => 2,
+                'children' => [],
+            ],
+            [
+                'location' => 'footer',
+                'label' => 'Get approved',
+                'url' => '/get-approved',
+                'target' => '_self',
+                'sort_order' => 3,
+                'children' => [],
+            ],
+            [
+                'location' => 'footer',
+                'label' => 'Contact us',
+                'url' => '/contact-us',
+                'target' => '_self',
+                'sort_order' => 4,
+                'children' => [],
+            ],
+            [
+                'location' => 'footer',
+                'label' => 'Privacy policy',
+                'url' => '/privacy-policy',
+                'target' => '_self',
+                'sort_order' => 5,
+                'children' => [],
+            ],
+            [
+                'location' => 'footer',
+                'label' => 'Terms of service',
+                'url' => '/terms-of-service',
+                'target' => '_self',
+                'sort_order' => 6,
+                'children' => [],
+            ],
+        ];
 
-        // Create child "All Inventory" menu
-        Menu::create([
-            'dealer_id'  => $dealer->id,
-            'location'   => 'main',
-            'label'      => 'All Inventory',
-            'url'        => '/inventory',
-            'target'     => '_self',
-            'parent_id'  => $inventoryMenu->id,
-            'sort_order' => 0,
-        ]);
+        foreach ($menus as $menuData) {
+            $parentMenu = Menu::create([
+                'dealer_id'  => $dealer->id,
+                'location'   => $menuData['location'],
+                'label'      => $menuData['label'],
+                'url'        => $menuData['url'],
+                'target'     => $menuData['target'],
+                'parent_id'  => null,
+                'sort_order' => $menuData['sort_order'],
+            ]);
 
-        // Create child "Cars" menu
-        Menu::create([
-            'dealer_id'  => $dealer->id,
-            'location'   => 'main',
-            'label'      => 'Cars',
-            'url'        => '/cars',
-            'target'     => '_self',
-            'parent_id'  => $inventoryMenu->id,
-            'sort_order' => 1,
-        ]);
+            if (!empty($menuData['children'])) {
+                foreach ($menuData['children'] as $childData) {
+                    Menu::create([
+                        'dealer_id'  => $dealer->id,
+                        'location'   => $menuData['location'],
+                        'label'      => $childData['label'],
+                        'url'        => $childData['url'],
+                        'target'     => $childData['target'] ?? '_self',
+                        'parent_id'  => $parentMenu->id,
+                        'sort_order' => $childData['sort_order'],
+                    ]);
+                }
+            }
+        }
     }
 }
