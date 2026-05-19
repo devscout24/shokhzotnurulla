@@ -35,19 +35,29 @@
                             $hasMultipleLocations = count($locationMenuData ?? []) > 1;
                         @endphp
                         @if($hasMultipleLocations)
-                            <div class="mb-3 text-start">
-                                <form action="{{ route('frontend.switch-location') }}" method="POST">
-                                    @csrf
-                                    <label class="form-label text-dark font-weight-bold mb-1 small">Select Location</label>
-                                    <select name="location_id" class="form-select text-dark" onchange="this.form.submit()">
-                                        <option value="0" {{ $activeLocationId === 0 ? 'selected' : '' }}>All Locations</option>
-                                        @foreach($locationMenuData as $loc)
-                                            <option value="{{ $loc['id'] }}" {{ $activeLocationId === (int) $loc['id'] ? 'selected' : '' }}>
-                                                {{ $loc['name'] }}{{ !empty($loc['city']) ? ' ('.$loc['city'].', '.$loc['state'].')' : '' }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </form>
+                            <div class="mb-3 d-flex flex-wrap gap-2 justify-content-center">
+                                @foreach($locationMenuData as $loc)
+                                    @php $isActive = $activeLocationId === (int) $loc['id']; @endphp
+                                    <form action="{{ route('frontend.switch-location') }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <input type="hidden" name="location_id" value="{{ $loc['id'] }}">
+                                        <button type="submit"
+                                            class="location-pill {{ $isActive ? 'location-pill--active' : '' }}"
+                                            title="Switch to {{ $loc['name'] }}">
+                                            <i class="fa-solid fa-location-dot me-1"></i>
+                                            {{ $loc['name'] }}{{ !empty($loc['city']) ? ' · '.$loc['city'] : '' }}
+                                        </button>
+                                    </form>
+                                @endforeach
+                            </div>
+                        @elseif(!empty($locationMenuData))
+                            {{-- Single location: just show a non-interactive label --}}
+                            @php $loc = $locationMenuData[0]; @endphp
+                            <div class="mb-3 d-flex justify-content-center">
+                                <span class="location-pill location-pill--active">
+                                    <i class="fa-solid fa-location-dot me-1"></i>
+                                    {{ $loc['name'] }}{{ !empty($loc['city']) ? ' · '.$loc['city'] : '' }}
+                                </span>
                             </div>
                         @endif
                         <div class="position-relative">

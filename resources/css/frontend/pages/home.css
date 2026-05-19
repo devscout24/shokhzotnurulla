@@ -599,3 +599,45 @@ small {
         grid-template-columns: repeat(2, 1fr) !important;
     }
 }
+
+/* ── Location Pill Switcher ─────────────────────────────────────────────── */
+.location-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.4;
+    border: 1.5px solid #166B87;
+    background: transparent;
+    color: #166B87;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    white-space: nowrap;
+    text-decoration: none;
+    /* Reset button defaults */
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.location-pill:hover {
+    background: rgba(22, 107, 135, 0.08);
+    color: #135e77;
+    box-shadow: 0 2px 6px rgba(22, 107, 135, 0.15);
+}
+
+.location-pill--active {
+    background: #166B87;
+    border-color: #166B87;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(22, 107, 135, 0.35);
+    cursor: default;
+    pointer-events: none;
+}
+
+span.location-pill--active {
+    pointer-events: none;
+}
