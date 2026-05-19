@@ -83,4 +83,39 @@ class LocationContext
     {
         return $this->getActiveLocationId() !== null;
     }
+
+    /**
+     * Get the resolved location ID (active location if set, otherwise the first/primary location).
+     */
+    public function getResolvedLocationId(?int $dealerId = null): ?int
+    {
+        if (Session::has('active_location_id')) {
+            return (int) Session::get('active_location_id');
+        }
+
+        // Logic for primary location
+        $query = Location::query();
+        
+        if ($dealerId) {
+            $query->where('dealer_id', $dealerId);
+        } else {
+            $dealer = null;
+            if (auth()->check() && auth()->user()->current_dealer_id) {
+                $dealer = auth()->user()->currentDealer;
+            } elseif (app()->bound('currentDealer')) {
+                $dealer = app('currentDealer');
+            }
+            if ($dealer) {
+                $query->where('dealer_id', $dealer->id);
+            } else {
+                $dealerId = app(\App\Services\Website\DealerResolverService::class)->resolve();
+                if ($dealerId) {
+                    $query->where('dealer_id', $dealerId);
+                }
+            }
+        }
+
+        $location = $query->orderBy('order')->first();
+        return $location ? $location->id : null;
+    }
 }

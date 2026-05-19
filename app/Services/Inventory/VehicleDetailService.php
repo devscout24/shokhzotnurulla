@@ -75,7 +75,7 @@ final class VehicleDetailService
 
     public function relatedVehicles(Vehicle $vehicle, int $dealerId): Collection
     {
-        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+        $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
         $related = Vehicle::forDealer($dealerId)
             ->active()

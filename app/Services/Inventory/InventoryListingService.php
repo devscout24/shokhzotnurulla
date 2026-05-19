@@ -65,7 +65,7 @@ class InventoryListingService
         int $dealerId,
         array $bodyTypeNames
     ): Builder {
-        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+        $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
         $query = Vehicle::forDealer($dealerId)
             ->active()
@@ -223,7 +223,7 @@ class InventoryListingService
     // old cache keys become stale without needing wildcard deletes
     private function buildFilterData(int $dealerId, array $bodyTypeNames): array
     {
-        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+        $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
         $version  = Cache::get("inv_filters_v:{$dealerId}", 1);
         $bodyKey  = empty($bodyTypeNames) ? 'all' : md5(implode(',', $bodyTypeNames));
         $cacheKey = "inv_filters:{$dealerId}:{$locationId}:{$version}:{$bodyKey}";
@@ -261,7 +261,7 @@ class InventoryListingService
     // Pure Eloquent — groupBy FK + eager load — no raw JOINs, no ambiguous IDs
     private function runFilterQueries(int $dealerId, array $bodyTypeNames): array
     {
-        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+        $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
         // Fresh Builder factory — closure returns new instance on each call
         $base = fn (): Builder => Vehicle::forDealer($dealerId)

@@ -36,7 +36,7 @@ class FrontendController extends Controller
     public function home(): View
     {
         $dealerId = $this->dealerResolver->resolve();
-        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+        $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
         $newArrivals = Vehicle::forDealer($dealerId)
             ->active()
@@ -236,7 +236,7 @@ class FrontendController extends Controller
     public function aboutUs(): View
     {
         $dealerId = $this->dealerResolver->resolve();
-        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+        $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
         $newArrivals = Vehicle::forDealer($dealerId)
             ->active()

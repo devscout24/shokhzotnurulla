@@ -29,6 +29,27 @@
                     <h2 class="font-weight-bold">Quality pre-owned vehicles, transparent pricing, and trusted
                         service</h2>
                     <div class="bg-light p-3 rounded border">
+                        @php
+                            // $activeLocationId: null = no session (will resolve to primary), 0 = "All Locations", int = specific location
+                            $activeLocationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($_resolvedDealerId ?? null);
+                            $hasMultipleLocations = count($locationMenuData ?? []) > 1;
+                        @endphp
+                        @if($hasMultipleLocations)
+                            <div class="mb-3 text-start">
+                                <form action="{{ route('frontend.switch-location') }}" method="POST">
+                                    @csrf
+                                    <label class="form-label text-dark font-weight-bold mb-1 small">Select Location</label>
+                                    <select name="location_id" class="form-select text-dark" onchange="this.form.submit()">
+                                        <option value="0" {{ $activeLocationId === 0 ? 'selected' : '' }}>All Locations</option>
+                                        @foreach($locationMenuData as $loc)
+                                            <option value="{{ $loc['id'] }}" {{ $activeLocationId === (int) $loc['id'] ? 'selected' : '' }}>
+                                                {{ $loc['name'] }}{{ !empty($loc['city']) ? ' ('.$loc['city'].', '.$loc['state'].')' : '' }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                            </div>
+                        @endif
                         <div class="position-relative">
                             <span class="d-inline-block position-absolute search-icon iconPostion">
                                 <i class="fa-solid fa-magnifying-glass greyIcon"></i>
