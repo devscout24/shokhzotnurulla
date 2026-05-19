@@ -29,37 +29,6 @@
                     <h2 class="font-weight-bold">Quality pre-owned vehicles, transparent pricing, and trusted
                         service</h2>
                     <div class="bg-light p-3 rounded border">
-                        @php
-                            // $activeLocationId: null = no session (will resolve to primary), 0 = "All Locations", int = specific location
-                            $activeLocationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($_resolvedDealerId ?? null);
-                            $hasMultipleLocations = count($locationMenuData ?? []) > 1;
-                        @endphp
-                        @if($hasMultipleLocations)
-                            <div class="mb-3 d-flex flex-wrap gap-2 justify-content-center">
-                                @foreach($locationMenuData as $loc)
-                                    @php $isActive = $activeLocationId === (int) $loc['id']; @endphp
-                                    <form action="{{ route('frontend.switch-location') }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <input type="hidden" name="location_id" value="{{ $loc['id'] }}">
-                                        <button type="submit"
-                                            class="location-pill {{ $isActive ? 'location-pill--active' : '' }}"
-                                            title="Switch to {{ $loc['name'] }}">
-                                            <i class="fa-solid fa-location-dot me-1"></i>
-                                            {{ $loc['name'] }}{{ !empty($loc['city']) ? ' · '.$loc['city'] : '' }}
-                                        </button>
-                                    </form>
-                                @endforeach
-                            </div>
-                        @elseif(!empty($locationMenuData))
-                            {{-- Single location: just show a non-interactive label --}}
-                            @php $loc = $locationMenuData[0]; @endphp
-                            <div class="mb-3 d-flex justify-content-center">
-                                <span class="location-pill location-pill--active">
-                                    <i class="fa-solid fa-location-dot me-1"></i>
-                                    {{ $loc['name'] }}{{ !empty($loc['city']) ? ' · '.$loc['city'] : '' }}
-                                </span>
-                            </div>
-                        @endif
                         <div class="position-relative">
                             <span class="d-inline-block position-absolute search-icon iconPostion">
                                 <i class="fa-solid fa-magnifying-glass greyIcon"></i>
