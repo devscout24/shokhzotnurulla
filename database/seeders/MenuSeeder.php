@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders;
 
 use App\Models\Dealership\Dealer;
@@ -29,12 +28,12 @@ class MenuSeeder extends Seeder
     {
         $menus = [
             [
-                'location' => 'main',
-                'label' => 'Inventory',
-                'url' => '#',
-                'target' => '_self',
+                'location'   => 'main',
+                'label'      => 'Inventory',
+                'url'        => '#',
+                'target'     => '_self',
                 'sort_order' => 0,
-                'children' => [
+                'children'   => [
                     ['label' => 'All Inventory', 'url' => '/inventory', 'target' => '_self', 'sort_order' => 0],
                     ['label' => 'Cars', 'url' => '/cars', 'target' => '_self', 'sort_order' => 1],
                     ['label' => 'Trucks', 'url' => '/trucks', 'target' => '_self', 'sort_order' => 2],
@@ -45,89 +44,89 @@ class MenuSeeder extends Seeder
                 ],
             ],
             [
-                'location' => 'main',
-                'label' => 'Finance',
-                'url' => '#',
-                'target' => '_self',
+                'location'   => 'main',
+                'label'      => 'Finance',
+                'url'        => '#',
+                'target'     => '_self',
                 'sort_order' => 1,
-                'children' => [
+                'children'   => [
                     ['label' => 'Get Approved', 'url' => '/get-approved', 'target' => '_self', 'sort_order' => 0],
                 ],
             ],
             [
-                'location' => 'main',
-                'label' => 'Service',
-                'url' => '/schedule-service',
-                'target' => '_self',
+                'location'   => 'main',
+                'label'      => 'Service',
+                'url'        => '/schedule-service',
+                'target'     => '_self',
                 'sort_order' => 2,
-                'children' => [],
+                'children'   => [],
             ],
             [
-                'location' => 'main',
-                'label' => 'About',
-                'url' => '#',
-                'target' => '_self',
+                'location'   => 'main',
+                'label'      => 'About',
+                'url'        => '#',
+                'target'     => '_self',
                 'sort_order' => 3,
-                'children' => [
+                'children'   => [
                     ['label' => 'About Us', 'url' => '/about-us', 'target' => '_self', 'sort_order' => 0],
                     ['label' => 'Contact Us', 'url' => '/contact-us', 'target' => '_self', 'sort_order' => 1],
                 ],
             ],
             [
-                'location' => 'footer',
-                'label' => 'View Inventory',
-                'url' => '/inventory',
-                'target' => '_self',
+                'location'   => 'footer',
+                'label'      => 'View Inventory',
+                'url'        => '/inventory',
+                'target'     => '_self',
                 'sort_order' => 0,
-                'children' => [],
+                'children'   => [],
             ],
             [
-                'location' => 'footer',
-                'label' => 'Direction',
-                'url' => '#',
-                'target' => '_blank',
+                'location'   => 'footer',
+                'label'      => 'Direction',
+                'url'        => '#',
+                'target'     => '_blank',
                 'sort_order' => 1,
-                'children' => [],
+                'children'   => [],
             ],
             [
-                'location' => 'footer',
-                'label' => 'About us',
-                'url' => '/about-us',
-                'target' => '_self',
+                'location'   => 'footer',
+                'label'      => 'About us',
+                'url'        => '/about-us',
+                'target'     => '_self',
                 'sort_order' => 2,
-                'children' => [],
+                'children'   => [],
             ],
             [
-                'location' => 'footer',
-                'label' => 'Get approved',
-                'url' => '/get-approved',
-                'target' => '_self',
+                'location'   => 'footer',
+                'label'      => 'Get approved',
+                'url'        => '/get-approved',
+                'target'     => '_self',
                 'sort_order' => 3,
-                'children' => [],
+                'children'   => [],
             ],
             [
-                'location' => 'footer',
-                'label' => 'Contact us',
-                'url' => '/contact-us',
-                'target' => '_self',
+                'location'   => 'footer',
+                'label'      => 'Contact us',
+                'url'        => '/contact-us',
+                'target'     => '_self',
                 'sort_order' => 4,
-                'children' => [],
+                'children'   => [],
             ],
             [
-                'location' => 'footer',
-                'label' => 'Privacy policy',
-                'url' => '/privacy-policy',
-                'target' => '_self',
+                'location'   => 'footer',
+                'label'      => 'Privacy policy',
+                'url'        => '/privacy-policy',
+                'target'     => '_self',
                 'sort_order' => 5,
-                'children' => [],
+                'children'   => [],
             ],
             [
-                'location' => 'footer',
-                'label' => 'Terms of service',
-                'url' => '/terms-of-service',
-                'target' => '_self',
+                'location'   => 'footer',
+                'label'      => 'Terms of service',
+                'url'        => '/terms-of-service',
+                'target'     => '_self',
                 'sort_order' => 6,
-                'children' => [],
+                'children'   => [],
             ],
         ];
 
@@ -142,7 +141,7 @@ class MenuSeeder extends Seeder
                 'sort_order' => $menuData['sort_order'],
             ]);
 
-            if (!empty($menuData['children'])) {
+            if (! empty($menuData['children'])) {
                 foreach ($menuData['children'] as $childData) {
                     Menu::create([
                         'dealer_id'  => $dealer->id,

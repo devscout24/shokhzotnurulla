@@ -1,0 +1,1 @@
+Illuminate\Database\Eloquent\Collection empty
