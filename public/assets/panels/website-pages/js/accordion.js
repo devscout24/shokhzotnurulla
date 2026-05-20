@@ -25,7 +25,9 @@ document.getElementById('as-add-item')?.addEventListener('click', () => {
     newItem.style.borderRadius = '4px';
     newItem.innerHTML = `
       <div class="acc-header" style="padding:10px;background:#f8f9fa;cursor:pointer;font-weight:600;" contenteditable="true">New Item Title</div>
-      <div class="acc-content col-drop-zone" style="padding:15px;display:none;min-height:50px;"></div>
+      <div class="acc-content col-drop-zone" style="padding:15px;display:none;min-height:50px;">
+        <p contenteditable="true" spellcheck="false" data-placeholder="Enter content here..." style="min-height:40px; padding:5px; margin:0; width:100%; display:block; outline:none;"></p>
+      </div>
     `;
     activeEl.appendChild(newItem);
     
@@ -82,7 +84,9 @@ function dropAccordionBlock(returnBlock = false) {
       <div class="editor-accordion" style="width: 100%;">
         <div class="acc-item" style="border: 1px solid #dee2e6; margin-bottom: 5px; border-radius: 4px;">
           <div class="acc-header" style="padding:10px; background:#f8f9fa; cursor:pointer; font-weight:600; min-height:40px; display:block;" contenteditable="true">Accordion Item #1</div>
-          <div class="acc-content col-drop-zone" style="padding:15px; min-height:50px;"></div>
+          <div class="acc-content col-drop-zone" style="padding:15px; min-height:50px;">
+            <p contenteditable="true" spellcheck="false" data-placeholder="Enter content here..." style="min-height:40px; padding:5px; margin:0; width:100%; display:block; outline:none;"></p>
+          </div>
         </div>
       </div>
     </div>`;
