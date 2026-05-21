@@ -347,10 +347,11 @@
                         </div>
 
                         <div class="inv-topbar-right">
-
-                            <button type="button" class="inv-btn-export">
-                                <i class="bi bi-upload"></i> Export
-                            </button>
+                            <a id="exportAllBtn"
+                                href="{{ route('dealer.inventory.export-inventory', ['dealer_id' => $dealer->id]) }}"
+                                class="btn-export-all" title="Download CSV of inventory">
+                                <i class="bi bi-cloud-arrow-down"></i> Export
+                            </a>
 
                             {{-- Columns Displayed --}}
                             <div class="inv-cols-wrap">
