@@ -193,7 +193,7 @@
             @foreach($newArrivals as $vehicle)
                 <a href="{{ route('frontend.inventory.show', $vehicle->slug) }}" class="arrival-card">
                     <div class="arrival-img-wrap">
-                        <img src="{{ $vehicle->thumbnail ?? asset('images/placeholder-car.jpg') }}"
+                        <img src="{{ $vehicle->primaryPhoto?->url ?? asset('images/placeholder-car.jpg') }}"
                             alt="{{ $vehicle->make->name }} {{ $vehicle->makeModel->name }}"
                             style="width:100%; height:100%; object-fit:cover;">
                     </div>

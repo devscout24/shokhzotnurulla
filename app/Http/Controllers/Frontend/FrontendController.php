@@ -382,29 +382,23 @@ class FrontendController extends Controller
             ->active()
             ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->select([
-                'id', 'dealer_id', 'year', 'make_id', 'make_model_id', 'trim', 'vin',
+                'id', 'dealer_id',  'make_model_id', , 'vin',
                 'stock_number', 'mileage', 'list_price', 'original_price',
-                'is_spotlight', 'featured', 'listed_at',
-                'vehicle_condition', 'is_certified', 'body_style_id',
-                'exterior_color_id', 'model_number',
+
+                 'model_number',
             ])
-            ->withCount('photos')
             ->with([
                 'make:id,name',
                 'makeModel:id,name',
                 'primaryPhoto' => fn($q) => $q
                     ->select(['id', 'vehicle_id', 'path', 'disk', 'url'])
                     ->live(),
-                'photos'       => fn($q)       => $q
-                    ->select(['id', 'vehicle_id', 'path', 'disk', 'url', 'sort_order', 'is_primary'])
-                    ->live()
-                    ->orderBy('sort_order')
-                    ->limit(3),
                 'prices:vehicle_id,special_price,msrp',
             ])
             ->orderByDesc('listed_at')
             ->limit(12)
             ->get();
+
 
         return view('frontend.pages.blog-page', compact('page', 'dealerName', 'latestBlogs', 'newArrivals'));
     }
