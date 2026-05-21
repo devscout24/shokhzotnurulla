@@ -382,7 +382,7 @@ class FrontendController extends Controller
             ->active()
             ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->select([
-                'id', 'dealer_id',  'make_model_id', , 'vin',
+                'id', 'dealer_id', 'year', 'make_id', 'make_model_id', 'trim', 'vin',
                 'stock_number', 'mileage', 'list_price', 'original_price',
 
                  'model_number',
