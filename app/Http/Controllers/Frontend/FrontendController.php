@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Inventory\VinDecodeRequest;
 use App\Models\Catalog\Make;
 use App\Models\Catalog\MakeModel;
+use App\Models\Dealership\Dealer;
 use App\Models\Inventory\DealerInventoryFee;
 use App\Models\Inventory\Vehicle;
 use App\Models\Inventory\VehiclePrintable;
@@ -357,6 +358,8 @@ class FrontendController extends Controller
         $query = \App\Models\Website\BlogPost::where('slug', $slug)
             ->where('dealer_id', $dealerId);
 
+        $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
+
         $canPreview = auth()->check() && auth()->user()->current_dealer_id === $dealerId;
         if (! $canPreview) {
             $query->where('is_active', true)
@@ -364,9 +367,46 @@ class FrontendController extends Controller
                     $q->whereNull('published_at')->orWhere('published_at', '<=', now());
                 });
         }
-
+        
+        $dealerName = Dealer::where('id', $dealerId)->value('name') ?? 'the dealership';
         $page = $query->firstOrFail();
-        return view('frontend.pages.dynamic-page', compact('page'));
+
+        $latestBlogs = \App\Models\Website\BlogPost::forDealer($dealerId)
+            ->active()
+            ->published()
+            ->orderByDesc('published_at')
+            ->limit(5)
+            ->get(['id', 'title', 'slug', 'published_at']);
+
+        $newArrivals = Vehicle::forDealer($dealerId)
+            ->active()
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
+            ->select([
+                'id', 'dealer_id', 'year', 'make_id', 'make_model_id', 'trim', 'vin',
+                'stock_number', 'mileage', 'list_price', 'original_price',
+                'is_spotlight', 'featured', 'listed_at',
+                'vehicle_condition', 'is_certified', 'body_style_id',
+                'exterior_color_id', 'model_number',
+            ])
+            ->withCount('photos')
+            ->with([
+                'make:id,name',
+                'makeModel:id,name',
+                'primaryPhoto' => fn($q) => $q
+                    ->select(['id', 'vehicle_id', 'path', 'disk', 'url'])
+                    ->live(),
+                'photos'       => fn($q)       => $q
+                    ->select(['id', 'vehicle_id', 'path', 'disk', 'url', 'sort_order', 'is_primary'])
+                    ->live()
+                    ->orderBy('sort_order')
+                    ->limit(3),
+                'prices:vehicle_id,special_price,msrp',
+            ])
+            ->orderByDesc('listed_at')
+            ->limit(12)
+            ->get();
+
+        return view('frontend.pages.blog-page', compact('page', 'dealerName', 'latestBlogs', 'newArrivals'));
     }
 
     public function showSlide(string $slug): View
