@@ -738,20 +738,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Shared logic for sidebar panels (Blocks settings)
-            ['vs', 'crs', 'tbs', 'inv', 'plg', 'frm', 'blg', 'sch', 'mh'].forEach(function (p) {
-                var btn = document.getElementById(p + '-back-btn');
-                if (btn) btn.addEventListener('click', function () {
-                    document.querySelectorAll('[id$="-settings-panel"]').forEach(function (el) { el.style.display = 'none'; });
-                    var d = document.getElementById('sidebar-default-content'); if (d) d.style.display = 'block';
-                });
-                var rm = document.getElementById(p + '-remove-btn');
-                if (rm) rm.addEventListener('click', function () {
-                    if (window.activeEl) { var b = window.activeEl.closest('.dropped-block'); if (b) b.remove(); }
-                    document.querySelectorAll('[id$="-settings-panel"]').forEach(function (el) { el.style.display = 'none'; });
-                    var d = document.getElementById('sidebar-default-content'); if (d) d.style.display = 'block';
-                });
-            });
+            // Shared logic for sidebar panels is handled inside individual block JS files.
 
             // Fix layout overflow
             var layout = document.querySelector('.layout');
