@@ -19,6 +19,22 @@ function openCSSSettings(el) {
 }
 
 // Side Panel Listeners for HTML/CSS
+['html-remove-btn', 'css-remove-btn'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', () => {
+        if (activeEl) {
+            const block = activeEl.closest('.dropped-block');
+            if (block) {
+                block.remove();
+                if (typeof checkEmptyBlocks === 'function') checkEmptyBlocks();
+                if (typeof saveHistory === 'function') saveHistory();
+            }
+        }
+        closeAllPanels();
+    });
+});
+['html-back-btn', 'css-back-btn', 'html-cancel-btn', 'css-cancel-btn'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', closeAllPanels);
+});
 document.getElementById('html-code')?.addEventListener('input', e => {
     if (activeEl) {
         activeEl.dataset.code = e.target.value;

@@ -46,6 +46,16 @@ class DefaultDealerUserSeeder extends Seeder
             $dealer->id => ['is_owner' => true],
         ]);
 
+        $dealer->locations()->create([
+            'name' => 'name',
+            'street1' => 'street1',
+            'city' => 'city',
+            'state' => 'state',
+            'postalcode' => 'postalcode',
+            'country' => 'US',
+            'order' => 2,
+        ]);
+
         // --- 3 Dealer Staff Users ---
         for ($i = 1; $i <= 3; $i++) {
             $staff = User::firstOrCreate(
