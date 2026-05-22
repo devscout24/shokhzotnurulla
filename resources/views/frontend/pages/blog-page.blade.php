@@ -156,6 +156,45 @@
             display: block;
         }
 
+        .tradein-card {
+            background-color: #166b87;
+            border-radius: 10px;
+            padding: 20px 16px;
+            text-align: center;
+            color: white;
+        }
+        .tradein-card h3 {
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1.5;
+            margin: 0;
+            color: white;
+        }
+        .tradein-card img {
+            width: 56px;
+            opacity: 0.6;
+            display: block;
+            margin: 12px auto;
+        }
+        .tradein-card .btn-tradein {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: 6px;
+            padding: 6px 14px;
+            text-decoration: none;
+            margin-top: 4px;
+            background: transparent;
+            transition: background 0.15s ease;
+        }
+        .tradein-card .btn-tradein:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+        }
+
         /* iOS Safari Fixes */
         @supports (-webkit-touch-callout: none) {
             .dynamic-content-wrapper {
@@ -188,7 +227,21 @@
                 <!-- Content will be rendered here via JS -->
             </div>
         </div>
-        <div class="col-2">
+        <div class="col-2" >
+            <div class="tradein-card m-3">
+                <h5>Trading in? Find out your car's trade-in value today.</h5>
+                <img src="{{ asset('assets/frontend/img/streamlinehq-car-tool-keys-transportation-white-200.png') }}"
+                    alt="Car keys icon" loading="lazy">
+                <a href="javascript:void(0)"
+                class="btn-tradein"
+                title="Get your trade-in value"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#getTrade"
+                aria-controls="offcanvasRight">
+                    Get your trade-in value
+                    <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </div>
             <div class="sidebar-divider">New arrivals</div>
             @foreach($newArrivals as $vehicle)
                 <a href="{{ route('frontend.inventory.show', $vehicle->slug) }}" class="arrival-card">
@@ -203,6 +256,11 @@
         </div>
     </div>
 @endsection
+
+@push('page-modals')
+    @include('frontend.offcanvas.get-trade-in')
+    @include('frontend.offcanvas.unlock-eprice')
+@endpush
 
 @push('page-scripts')
 <script>
