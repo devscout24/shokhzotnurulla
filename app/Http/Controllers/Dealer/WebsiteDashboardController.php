@@ -56,7 +56,8 @@ class WebsiteDashboardController extends Controller
             $prevCalls = $prevStats ? $prevStats['calls'] : 0;
             $stats['calls_change'] = $prevCalls > 0 ? (int) round((($currCalls - $prevCalls) / $prevCalls) * 100) : ($currCalls > 0 ? 100 : 0);
         }
-        unset($stats);
+        
+        // unset($stats);
 
         // Demo Data Fallback (if real data is zero OR demo mode is explicitly enabled)
         if (env('DASHBOARD_DEMO_MODE', false) || ($stats['totalLeads'] === 0 && $stats['totalVisits'] === 0)) {
