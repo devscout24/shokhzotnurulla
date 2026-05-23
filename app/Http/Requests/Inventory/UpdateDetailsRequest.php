@@ -75,6 +75,14 @@ class UpdateDetailsRequest extends FormRequest
             'rear_wheel'           => ['nullable', 'string', 'max:30'],
             'front_tire'           => ['nullable', 'string', 'max:30'],
             'rear_tire'            => ['nullable', 'string', 'max:30'],
+
+            // ─── Certification & Color Codes ─────────────────────────────────
+            'factory_certified'    => ['nullable', 'boolean'],
+            'dealer_certified'     => ['nullable', 'boolean'],
+            'chrome_style_id'      => ['nullable', 'string', 'max:50'],
+            'exterior_color_code'  => ['nullable', 'string', 'max:50'],
+            'interior_color_code'  => ['nullable', 'string', 'max:50'],
+            'interior_material'    => ['nullable', 'string', 'max:100'],
         ];
     }
 }

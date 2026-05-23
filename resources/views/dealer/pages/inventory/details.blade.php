@@ -662,6 +662,42 @@
                                         <input type="text" name="rear_tire" class="vd-input"
                                                value="{{ $vehicle->specs->rear_tire ?? '' }}">
                                     </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Factory Certified</label>
+                                        <select name="factory_certified" class="vd-select">
+                                            <option value="">—</option>
+                                            <option value="1" {{ ($vehicle->specs->factory_certified ?? null) == 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ ($vehicle->specs->factory_certified ?? null) === 0 || ($vehicle->specs->factory_certified ?? null) === '0' ? 'selected' : '' }}>No</option>
+                                        </select>
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Dealer Certified</label>
+                                        <select name="dealer_certified" class="vd-select">
+                                            <option value="">—</option>
+                                            <option value="1" {{ ($vehicle->specs->dealer_certified ?? null) == 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ ($vehicle->specs->dealer_certified ?? null) === 0 || ($vehicle->specs->dealer_certified ?? null) === '0' ? 'selected' : '' }}>No</option>
+                                        </select>
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Chrome Style ID</label>
+                                        <input type="text" name="chrome_style_id" class="vd-input"
+                                               value="{{ $vehicle->specs->chrome_style_id ?? '' }}">
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Exterior Color Code</label>
+                                        <input type="text" name="exterior_color_code" class="vd-input"
+                                               value="{{ $vehicle->specs->exterior_color_code ?? '' }}">
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Interior Color Code</label>
+                                        <input type="text" name="interior_color_code" class="vd-input"
+                                               value="{{ $vehicle->specs->interior_color_code ?? '' }}">
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Interior Material</label>
+                                        <input type="text" name="interior_material" class="vd-input"
+                                               value="{{ $vehicle->specs->interior_material ?? '' }}">
+                                    </div>
                                 </div>
 
                                 <button type="button" class="vd-btn-save" data-form="formDetails">
