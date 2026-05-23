@@ -246,9 +246,9 @@ hr {
 
 .vd-tab.active {
     color: #fff;
-    background: linear-gradient(45deg, rgb(48, 0, 103), rgb(111, 45, 58));
+    background: linear-gradient(90deg, #a86ef5, #6a9ef8, #3ab5f5) !important;
     border-radius: 6px 6px 0 0;
-    border-bottom: 2px solid #5b2d8e;
+    border-bottom: 2px solid #6a9ef8;
     font-weight: 600;
 }
 
