@@ -66,18 +66,21 @@
                                         <p class="text-muted small">Select where your video is hosted.</p>
                                     </div>
                                     <div class="col-md-8">
-                                        <div class="d-flex gap-4 p-2 bg-light border rounded">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="video_source" id="sourceNone" value="" {{ !$dealer->video_source ? 'checked' : '' }}>
-                                                <label class="form-check-label cursor-pointer" for="sourceNone">None</label>
+                                        <div class="d-flex flex-wrap gap-3">
+                                            <div class="source-card border rounded p-2 text-center cursor-pointer {{ !$dealer->video_source ? 'active' : '' }}" data-value="">
+                                                <i class="bi bi-x-circle d-block mb-1"></i>
+                                                <small>None</small>
+                                                <input type="radio" name="video_source" value="" class="d-none" {{ !$dealer->video_source ? 'checked' : '' }}>
                                             </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="video_source" id="sourceYoutube" value="youtube" {{ $dealer->video_source == 'youtube' ? 'checked' : '' }}>
-                                                <label class="form-check-label cursor-pointer" for="sourceYoutube">YouTube</label>
+                                            <div class="source-card border rounded p-2 text-center cursor-pointer {{ $dealer->video_source == 'youtube' ? 'active' : '' }}" data-value="youtube">
+                                                <i class="bi bi-youtube d-block mb-1"></i>
+                                                <small>YouTube</small>
+                                                <input type="radio" name="video_source" value="youtube" class="d-none" {{ $dealer->video_source == 'youtube' ? 'checked' : '' }}>
                                             </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="video_source" id="sourceFile" value="overfuel" {{ $dealer->video_source == 'overfuel' ? 'checked' : '' }}>
-                                                <label class="form-check-label cursor-pointer" for="sourceFile">Upload MP4 Video</label>
+                                            <div class="source-card border rounded p-2 text-center cursor-pointer {{ $dealer->video_source == 'overfuel' ? 'active' : '' }}" data-value="overfuel">
+                                                <i class="bi bi-cloud-upload d-block mb-1"></i>
+                                                <small>Upload MP4</small>
+                                                <input type="radio" name="video_source" value="overfuel" class="d-none" {{ $dealer->video_source == 'overfuel' ? 'checked' : '' }}>
                                             </div>
                                         </div>
                                     </div>
@@ -89,7 +92,7 @@
                                         <p class="text-muted small">Provide the Video ID or full URL for YouTube.</p>
                                     </div>
                                     <div class="col-md-8">
-                                        <input type="text" name="video_url" class="form-control form-control-sm" value="{{ $dealer->video_source == 'youtube' ? $dealer->video_url : '' }}" placeholder="e.g. dQw4w9WgXcQ or https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                                        <input type="text" name="video_url" class="form-control form-control-sm" value="{{ $dealer->video_source == 'youtube' ? $dealer->video_url : '' }}" placeholder="dQw4w9WgXcQ or https://www.youtube.com/watch?v=dQw4w9WgXcQ">
                                     </div>
                                 </div>
 
@@ -99,26 +102,27 @@
                                         <p class="text-muted small">Select an MP4 video from your computer.</p>
                                     </div>
                                     <div class="col-md-8">
-                                        <div class="p-3 border rounded bg-white mt-1">
+                                        <div class="p-3 border rounded bg-light">
                                             <input type="file" name="video_file" class="form-control form-control-sm" accept="video/mp4" id="videoFileInput">
-                                            <div class="progress mt-2 d-none" style="height: 5px;" id="uploadProgressContainer">
-                                                <div class="progress-bar" role="progressbar" style="width: 0%;" id="uploadProgressBar"></div>
+                                            <div class="progress mt-2 d-none" style="height: 6px;" id="uploadProgressContainer">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" id="uploadProgressBar"></div>
                                             </div>
                                             <div class="mt-2" id="currentVideoInfo">
                                                 @if($dealer->video_source == 'overfuel' && $dealer->video_url)
-                                                    <small class="text-muted">Current file: <a href="{{ asset($dealer->video_url) }}" target="_blank">View Video</a></small>
+                                                    <small class="text-muted">Current file: <a href="{{ asset($dealer->video_url) }}" target="_blank" class="text-decoration-none"><i class="bi bi-play-circle"></i> View Saved Video</a></small>
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div id="videoPreviewContainer" class="mt-4 {{ !$dealer->video_url ? 'd-none' : '' }}">
-                                    <label class="form-label fw-semibold">Preview</label>
-                                    <div class="ratio ratio-16x9 bg-black rounded overflow-hidden">
-                                        <iframe id="videoPreview" src="" allowfullscreen></iframe>
-                                        <video id="videoFilePreview" src="" controls class="d-none"></video>
+                                <div id="videoPreviewContainer" class="mt-4 d-none">
+                                    <label class="form-label fw-semibold">Video Preview</label>
+                                    <div class="ratio ratio-16x9 bg-black rounded shadow-sm overflow-hidden border">
+                                        <iframe id="videoPreview" src="" allowfullscreen class="d-none border-0"></iframe>
+                                        <video id="videoFilePreview" src="" controls class="d-none w-100 h-100"></video>
                                     </div>
+                                </div>
                                 </div>
                             </div>
                         </form>
@@ -133,7 +137,7 @@
 <script>
 $(function() {
     const $form = $('#videoSettingsForm');
-    const $sourceRadios = $('input[name="video_source"]');
+    const $sourceCards = $('.source-card');
     const $urlInput = $('input[name="video_url"]');
     const $fileInput = $('input[name="video_file"]');
     const $preview = $('#videoPreview');
@@ -142,37 +146,44 @@ $(function() {
     const $youtubeContainer = $('#youtubeInputContainer');
     const $fileContainer = $('#videoFileInputContainer');
 
+    let activeVideoFileUrl = {!! json_encode($dealer->video_source === 'overfuel' && $dealer->video_url ? asset($dealer->video_url) : null) !!};
+
     function updatePreview() {
         const source = $('input[name="video_source"]:checked').val();
-        const url = $urlInput.val();
+        const youtubeUrl = $urlInput.val();
 
         $youtubeContainer.hide();
         $fileContainer.hide();
-        $preview.addClass('d-none');
-        $videoFilePreview.addClass('d-none');
+        $preview.addClass('d-none').attr('src', '');
+        $videoFilePreview.addClass('d-none').attr('src', '');
         $previewContainer.addClass('d-none');
 
         if (source === 'youtube') {
             $youtubeContainer.show();
-            if (url) {
-                const videoId = url.split('v=').pop().split('&')[0];
-                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
-                $preview.attr('src', embedUrl).removeClass('d-none');
-                $previewContainer.removeClass('d-none');
+            if (youtubeUrl) {
+                const videoId = youtubeUrl.includes('v=') ? youtubeUrl.split('v=').pop().split('&')[0] : youtubeUrl.split('/').pop();
+                if (videoId && videoId.length > 5) {
+                    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
+                    $preview.attr('src', embedUrl).removeClass('d-none');
+                    $previewContainer.removeClass('d-none');
+                }
             }
         } else if (source === 'overfuel') {
             $fileContainer.show();
-            @if($dealer->video_url)
-                const currentUrl = "{{ asset($dealer->video_url) }}";
-                if (currentUrl && "{{ $dealer->video_source }}" === "overfuel") {
-                    $videoFilePreview.attr('src', currentUrl).removeClass('d-none');
-                    $previewContainer.removeClass('d-none');
-                }
-            @endif
+            if (activeVideoFileUrl) {
+                $videoFilePreview.attr('src', activeVideoFileUrl).removeClass('d-none');
+                $previewContainer.removeClass('d-none');
+            }
         }
     }
 
-    $sourceRadios.on('change', updatePreview);
+    $sourceCards.on('click', function() {
+        const val = $(this).data('value');
+        $sourceCards.removeClass('active');
+        $(this).addClass('active').find('input').prop('checked', true);
+        updatePreview();
+    });
+
     $urlInput.on('input', updatePreview);
     updatePreview();
 
@@ -200,8 +211,8 @@ $(function() {
                 const xhr = new window.XMLHttpRequest();
                 xhr.upload.addEventListener("progress", function(evt) {
                     if (evt.lengthComputable) {
-                        const percentComplete = (evt.loaded / evt.total) * 100;
-                        $progressBar.css('width', percentComplete + '%');
+                        const percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                        $progressBar.css('width', percentComplete + '%').text(percentComplete + '%');
                     }
                 }, false);
                 return xhr;
@@ -210,22 +221,21 @@ $(function() {
                 if (response.success) {
                     toastr.success(response.message);
                     if (response.video_url && source === 'overfuel') {
-                         const fullUrl = response.video_url.startsWith('http') ? response.video_url : window.location.origin + response.video_url;
-                         $videoFilePreview.attr('src', fullUrl).removeClass('d-none');
-                         $previewContainer.removeClass('d-none');
-                         $('#currentVideoInfo').html(`<small class="text-muted">Current file: <a href="${fullUrl}" target="_blank">View Video</a></small>`);
+                         activeVideoFileUrl = response.video_url.startsWith('http') ? response.video_url : window.location.origin + response.video_url;
+                         $('#currentVideoInfo').html(`<small class="text-muted">Current file: <a href="${activeVideoFileUrl}" target="_blank" class="text-decoration-none"><i class="bi bi-play-circle"></i> View Saved Video</a></small>`);
+                         updatePreview();
                     }
                     $fileInput.val('');
                 }
             },
             error: function(xhr) {
-                const message = xhr.responseJSON?.message || 'Something went wrong';
+                const message = xhr.responseJSON?.message || 'Something went wrong. Check file size.';
                 toastr.error(message);
             },
             complete: function() {
                 $btn.prop('disabled', false).text('Save Changes');
                 $progressContainer.addClass('d-none');
-                $progressBar.css('width', '0%');
+                $progressBar.css('width', '0%').text('0%');
             }
         });
     });
@@ -240,5 +250,11 @@ $(function() {
     .ws-sidebar .menu-item:hover { background: #f9f9f9; }
     .ws-sidebar .menu-item.active { background: #eef4ff; color: #0056b3; font-weight: 600; border-right: 3px solid #0056b3; }
     .ws-sidebar .ws-icon { margin-right: 12px; font-size: 18px; width: 24px; text-align: center; }
+    
+    .source-card { width: 100px; transition: all 0.2s; border: 2px solid #eee !important; background: #fff; }
+    .source-card:hover { border-color: #0056b3 !important; background: #f8fbff; }
+    .source-card.active { border-color: #0056b3 !important; background: #eef4ff; color: #0056b3; font-weight: 600; }
+    .source-card i { font-size: 1.5rem; }
+    .cursor-pointer { cursor: pointer; }
 </style>
 @endpush
