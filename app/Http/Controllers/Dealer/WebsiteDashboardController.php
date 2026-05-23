@@ -8,7 +8,7 @@ class WebsiteDashboardController extends Controller
 {
     public function dashboard(Request $request)
     {
-        $dealerId = $request->user()->current_dealer_id;
+        $dealerId   = $request->user()->current_dealer_id;
         $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
 
         // Date range handling
@@ -42,21 +42,21 @@ class WebsiteDashboardController extends Controller
             $prevStats = $prevTrafficData['summary'][$channel] ?? null;
 
             // Visits change
-            $currVisits = $stats['visits'];
-            $prevVisits = $prevStats ? $prevStats['visits'] : 0;
+            $currVisits             = $stats['visits'];
+            $prevVisits             = $prevStats ? $prevStats['visits'] : 0;
             $stats['visits_change'] = $prevVisits > 0 ? (int) round((($currVisits - $prevVisits) / $prevVisits) * 100) : ($currVisits > 0 ? 100 : 0);
 
             // Forms change
-            $currForms = $stats['forms'];
-            $prevForms = $prevStats ? $prevStats['forms'] : 0;
+            $currForms             = $stats['forms'];
+            $prevForms             = $prevStats ? $prevStats['forms'] : 0;
             $stats['forms_change'] = $prevForms > 0 ? (int) round((($currForms - $prevForms) / $prevForms) * 100) : ($currForms > 0 ? 100 : 0);
 
             // Calls change
-            $currCalls = $stats['calls'];
-            $prevCalls = $prevStats ? $prevStats['calls'] : 0;
+            $currCalls             = $stats['calls'];
+            $prevCalls             = $prevStats ? $prevStats['calls'] : 0;
             $stats['calls_change'] = $prevCalls > 0 ? (int) round((($currCalls - $prevCalls) / $prevCalls) * 100) : ($currCalls > 0 ? 100 : 0);
         }
-        unset($stats);
+        // unset($stats);
 
         // Demo Data Fallback (if real data is zero OR demo mode is explicitly enabled)
         if (env('DASHBOARD_DEMO_MODE', false) || ($stats['totalLeads'] === 0 && $stats['totalVisits'] === 0)) {
@@ -84,59 +84,59 @@ class WebsiteDashboardController extends Controller
 
             // Mock Traffic Data matching screenshot
             $trafficData = [
-                'labels' => $activityData['labels'],
+                'labels'   => $activityData['labels'],
                 'channels' => [],
-                'summary' => []
+                'summary'  => [],
             ];
 
             $mockSummary = [
-                'Direct' => [
-                    'visits' => 1676, 'visitors' => 1412, 'visits_change' => -18,
-                    'forms' => 42, 'forms_change' => 27,
-                    'calls' => 4, 'calls_change' => -60,
-                    'conversion' => 3.0, 'avg_session' => '2m 30s'
+                'Direct'                  => [
+                    'visits'     => 1676, 'visitors'   => 1412, 'visits_change' => -18,
+                    'forms'      => 42, 'forms_change' => 27,
+                    'calls'      => 4, 'calls_change'  => -60,
+                    'conversion' => 3.0, 'avg_session' => '2m 30s',
                 ],
                 'Google Business Profile' => [
-                    'visits' => 479, 'visitors' => 380, 'visits_change' => 3,
-                    'forms' => 24, 'forms_change' => 60,
-                    'calls' => 7, 'calls_change' => 40,
-                    'conversion' => 6.6, 'avg_session' => '4m 49s'
+                    'visits'     => 479, 'visitors'    => 380, 'visits_change' => 3,
+                    'forms'      => 24, 'forms_change' => 60,
+                    'calls'      => 7, 'calls_change'  => 40,
+                    'conversion' => 6.6, 'avg_session' => '4m 49s',
                 ],
-                'Referral' => [
-                    'visits' => 777, 'visitors' => 620, 'visits_change' => -9,
-                    'forms' => 8, 'forms_change' => -20,
-                    'calls' => 3, 'calls_change' => 200,
-                    'conversion' => 1.5, 'avg_session' => '1m 55s'
+                'Referral'                => [
+                    'visits'     => 777, 'visitors'    => 620, 'visits_change' => -9,
+                    'forms'      => 8, 'forms_change'  => -20,
+                    'calls'      => 3, 'calls_change'  => 200,
+                    'conversion' => 1.5, 'avg_session' => '1m 55s',
                 ],
-                'Organic Search' => [
-                    'visits' => 509, 'visitors' => 420, 'visits_change' => 43,
-                    'forms' => 7, 'forms_change' => 17,
-                    'calls' => 3, 'calls_change' => 200,
-                    'conversion' => 2.3, 'avg_session' => '3m 45s'
+                'Organic Search'          => [
+                    'visits'     => 509, 'visitors'    => 420, 'visits_change' => 43,
+                    'forms'      => 7, 'forms_change'  => 17,
+                    'calls'      => 3, 'calls_change'  => 200,
+                    'conversion' => 2.3, 'avg_session' => '3m 45s',
                 ],
-                'Paid Social' => [
-                    'visits' => 22, 'visitors' => 18, 'visits_change' => 120,
-                    'forms' => 4, 'forms_change' => 300,
-                    'calls' => 0, 'calls_change' => 0,
-                    'conversion' => 18.2, 'avg_session' => '3m 28s'
+                'Paid Social'             => [
+                    'visits'     => 22, 'visitors'      => 18, 'visits_change' => 120,
+                    'forms'      => 4, 'forms_change'   => 300,
+                    'calls'      => 0, 'calls_change'   => 0,
+                    'conversion' => 18.2, 'avg_session' => '3m 28s',
                 ],
-                'Social' => [
-                    'visits' => 506, 'visitors' => 395, 'visits_change' => -25,
-                    'forms' => 1, 'forms_change' => -50,
-                    'calls' => 0, 'calls_change' => -100,
-                    'conversion' => 0.2, 'avg_session' => '1m 15s'
+                'Social'                  => [
+                    'visits'     => 506, 'visitors'    => 395, 'visits_change' => -25,
+                    'forms'      => 1, 'forms_change'  => -50,
+                    'calls'      => 0, 'calls_change'  => -100,
+                    'conversion' => 0.2, 'avg_session' => '1m 15s',
                 ],
-                'Display' => [
-                    'visits' => 5, 'visitors' => 4, 'visits_change' => 0,
-                    'forms' => 0, 'forms_change' => 0,
-                    'calls' => 0, 'calls_change' => 0,
-                    'conversion' => 0.0, 'avg_session' => '0m 40s'
+                'Display'                 => [
+                    'visits'     => 5, 'visitors'      => 4, 'visits_change' => 0,
+                    'forms'      => 0, 'forms_change'  => 0,
+                    'calls'      => 0, 'calls_change'  => 0,
+                    'conversion' => 0.0, 'avg_session' => '0m 40s',
                 ],
-                'Email' => [
-                    'visits' => 1, 'visitors' => 1, 'visits_change' => 0,
-                    'forms' => 0, 'forms_change' => 0,
-                    'calls' => 0, 'calls_change' => 0,
-                    'conversion' => 0.0, 'avg_session' => '0m 51s'
+                'Email'                   => [
+                    'visits'     => 1, 'visitors'      => 1, 'visits_change' => 0,
+                    'forms'      => 0, 'forms_change'  => 0,
+                    'calls'      => 0, 'calls_change'  => 0,
+                    'conversion' => 0.0, 'avg_session' => '0m 51s',
                 ],
             ];
 
@@ -145,18 +145,21 @@ class WebsiteDashboardController extends Controller
             // Generate daily values for line chart that roughly sum/average to mock values
             $numDays = count($activityData['labels']);
             foreach ($mockSummary as $ch => $s) {
-                $avgDaily = $s['visits'] / $numDays;
+                $avgDaily  = $s['visits'] / $numDays;
                 $dailyData = [];
                 for ($i = 0; $i < $numDays; $i++) {
-                    $dailyVal = max(0, (int) round($avgDaily + rand(-(int)($avgDaily*0.4), (int)($avgDaily*0.4))));
+                    $dailyVal    = max(0, (int) round($avgDaily + rand(-(int) ($avgDaily * 0.4), (int) ($avgDaily * 0.4))));
                     $dailyData[] = $dailyVal;
                 }
                 // Adjust sum to match total exactly
                 $currentSum = array_sum($dailyData);
-                $diff = $s['visits'] - $currentSum;
+                $diff       = $s['visits'] - $currentSum;
                 if ($diff != 0 && $numDays > 0) {
                     $dailyData[0] += $diff;
-                    if ($dailyData[0] < 0) $dailyData[0] = 0;
+                    if ($dailyData[0] < 0) {
+                        $dailyData[0] = 0;
+                    }
+
                 }
                 $trafficData['channels'][$ch] = $dailyData;
             }
@@ -173,16 +176,16 @@ class WebsiteDashboardController extends Controller
         }
 
         // Filter Traffic Data for dashboard view (all 8 channels)
-        $coreChannels = ['Direct', 'Google Business Profile', 'Referral', 'Organic Search', 'Paid Social', 'Social', 'Display', 'Email'];
+        $coreChannels    = ['Direct', 'Google Business Profile', 'Referral', 'Organic Search', 'Paid Social', 'Social', 'Display', 'Email'];
         $orderedChannels = [];
-        $orderedSummary = [];
+        $orderedSummary  = [];
         foreach ($coreChannels as $ch) {
             $orderedChannels[$ch] = $trafficData['channels'][$ch] ?? array_fill(0, count($trafficData['labels']), 0);
-            $orderedSummary[$ch] = $trafficData['summary'][$ch] ?? [
-                'visits' => 0, 'visitors' => 0, 'visits_change' => 0,
-                'forms' => 0, 'forms_change' => 0,
-                'calls' => 0, 'calls_change' => 0,
-                'conversion' => 0.0, 'avg_session' => $this->getStaticAvgSession($ch)
+            $orderedSummary[$ch]  = $trafficData['summary'][$ch] ?? [
+                'visits'     => 0, 'visitors'      => 0, 'visits_change' => 0,
+                'forms'      => 0, 'forms_change'  => 0,
+                'calls'      => 0, 'calls_change'  => 0,
+                'conversion' => 0.0, 'avg_session' => $this->getStaticAvgSession($ch),
             ];
         }
         $trafficData['channels'] = $orderedChannels;
@@ -261,7 +264,7 @@ class WebsiteDashboardController extends Controller
                 continue;
             }
 
-            $idx = $dayToIndex[$date];
+            $idx     = $dayToIndex[$date];
             $channel = $this->classifyChannel($log->referrer, $log->utm_medium, $log->utm_source);
 
             $data['channels'][$channel][$idx]++;
@@ -276,10 +279,10 @@ class WebsiteDashboardController extends Controller
 
         // Attribute Forms (Leads)
         foreach ($formEntries as $form) {
-            $referrer = $form->referrer;
+            $referrer  = $form->referrer;
             $utmMedium = $form->visitor_data['traffic']['utm_medium'] ?? null;
             $utmSource = $form->visitor_data['traffic']['utm_source'] ?? null;
-            
+
             $channel = $this->classifyChannel($referrer, $utmMedium, $utmSource);
             $data['summary'][$channel]['forms']++;
         }
@@ -301,9 +304,9 @@ class WebsiteDashboardController extends Controller
             if ($ch === 'Paid Social') {
                 $data['summary'][$ch]['calls'] = $remainingCalls;
             } else {
-                $allocated = (int) round($clickToCallsCount * $pct);
-                $data['summary'][$ch]['calls'] = $allocated;
-                $remainingCalls -= $allocated;
+                $allocated                      = (int) round($clickToCallsCount * $pct);
+                $data['summary'][$ch]['calls']  = $allocated;
+                $remainingCalls                -= $allocated;
             }
         }
         if ($remainingCalls > 0) {
@@ -320,7 +323,7 @@ class WebsiteDashboardController extends Controller
         $source   = strtolower($source ?? '');
 
         // 1. Paid Social
-        if ((str_contains($medium, 'social') || str_contains($source, 'social')) && 
+        if ((str_contains($medium, 'social') || str_contains($source, 'social')) &&
             (str_contains($medium, 'paid') || str_contains($medium, 'cpc') || str_contains($medium, 'ppc') || str_contains($medium, 'ad'))) {
             return 'Paid Social';
         }
@@ -557,10 +560,10 @@ class WebsiteDashboardController extends Controller
 
     public function exportWebsiteActivity(Request $request)
     {
-        $dealerId = $request->user()->current_dealer_id;
+        $dealerId   = $request->user()->current_dealer_id;
         $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
-        $from     = $request->get('from', now()->subDays(30)->format('Y-m-d'));
-        $to       = $request->get('to', now()->format('Y-m-d'));
+        $from       = $request->get('from', now()->subDays(30)->format('Y-m-d'));
+        $to         = $request->get('to', now()->format('Y-m-d'));
 
         $startDate = \Carbon\Carbon::parse($from)->startOfDay();
         $endDate   = \Carbon\Carbon::parse($to)->endOfDay();
@@ -693,13 +696,13 @@ class WebsiteDashboardController extends Controller
                 $row = [$day];
                 foreach (array_slice($columns, 1) as $col) {
                     $key = match ($col) {
-                        'organic search' => 'Organic Search',
+                        'organic search'          => 'Organic Search',
                         'google business profile' => 'Google Business Profile',
-                        'paid social' => 'Paid Social',
-                        'ai' => 'Ai',
-                        default => ucwords($col)
+                        'paid social'             => 'Paid Social',
+                        'ai'                      => 'Ai',
+                        default                   => ucwords($col)
                     };
-                    
+
                     if ($isDemo) {
                         $row[] = rand(10, 50);
                     } else {
