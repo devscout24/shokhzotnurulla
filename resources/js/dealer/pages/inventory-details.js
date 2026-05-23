@@ -365,6 +365,17 @@
             if (panel) panel.classList.add('active');
             if (key === 'analytics') initAnalyticsChart();
         }
+
+        // Update URL query parameter without page reload
+        if (history.replaceState) {
+            var url = new URL(window.location.href);
+            if (key === 'overview') {
+                url.searchParams.delete('nav');
+            } else {
+                url.searchParams.set('nav', key);
+            }
+            history.replaceState(null, '', url.pathname + url.search);
+        }
     }
 
     document.addEventListener('click', function (e) {
@@ -373,6 +384,13 @@
         var key = item.dataset.nav || item.dataset.svNav;
         if (!key) return;
         if (key === 'photos' || key === 'analytics') return;
+
+        // If the corresponding subview panel does not exist on the current page,
+        // let the browser perform normal navigation instead of intercepting it.
+        var panelId = navMap[key];
+        var panelExists = (panelId === null) ? !!document.querySelector('.vd-middle') : !!document.getElementById(panelId);
+        if (!panelExists) return;
+
         e.preventDefault();
         showNav(key);
     });
@@ -822,7 +840,12 @@
         updateVideoPreview();
     }
 
-    showNav('overview');
+    // Only initialize and run showNav if we are on the main VDP details page
+    if (document.querySelector('.vd-middle')) {
+        var urlParams = new URLSearchParams(window.location.search);
+        var navKey = urlParams.get('nav') || 'overview';
+        showNav(navKey);
+    }
 
     /* ══════════════════════════════════
        PREMIUM BUILD OPTIONS
