@@ -303,7 +303,7 @@
         padding: 2px 9px;
         border: none;
         background: transparent;
-        color: #ce4f4b;
+        color: #000000;
         transition: all 0.15s ease-in-out;
         line-height: 1.2;
     }
