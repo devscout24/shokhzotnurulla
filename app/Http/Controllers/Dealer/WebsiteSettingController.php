@@ -28,6 +28,7 @@ use App\Http\Requests\Website\StoreLocationRequest;
 use App\Http\Requests\Website\UpdateLocationRequest;
 use App\Http\Requests\Website\UpdateBannerSettingsRequest;
 use App\Http\Requests\Website\UpdateDigitalRetailRequest;
+use App\Http\Requests\Website\UpdateVideoRequest;
 use App\Http\Requests\Website\StoreRedirectRequest;
 use App\Http\Requests\Website\UpdateRedirectRequest;
 use App\Http\Requests\Website\StoreDealerIpRequest;
@@ -54,6 +55,7 @@ class WebsiteSettingController extends Controller
         $dealer = $request->user()->currentDealer;
         $validated = $request->validated();
         $dealer->update($validated);
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
         $this->auditLogger->info($request, 'General settings updated');
         return response()->json(['success' => true, 'message' => 'General settings saved.']);
     }
@@ -63,6 +65,7 @@ class WebsiteSettingController extends Controller
         $dealer = $request->user()->currentDealer;
         $validated = $request->validated();
         $dealer->update($validated);
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
         $this->auditLogger->info($request, 'Disclaimer settings updated');
         return response()->json(['success' => true, 'message' => 'Disclaimers saved.']);
     }
@@ -73,6 +76,7 @@ class WebsiteSettingController extends Controller
         $validated = $request->validated();
         $dealer->social_links = $validated;
         $dealer->save();
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
         $this->auditLogger->info($request, 'Social links updated');
         return response()->json(['success' => true, 'message' => 'Social links saved.']);
     }
@@ -143,18 +147,47 @@ class WebsiteSettingController extends Controller
         abort_if($location->dealer_id !== $dealer->id, 403);
 
         $location = $updateLocation($location, $request->validated());
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
         $this->auditLogger->info($request, 'Location updated', ['location_id' => $location->id]);
         return response()->json(['success' => true, 'message' => 'Location updated successfully.', 'location' => $location]);
     }
 
-    public function destroyLocation(Request $request, Location $location, DeleteLocationAction $deleteLocation): JsonResponse
+    public function video(Request $request): View
     {
-        $dealer = request()->user()->currentDealer;
-        abort_if($location->dealer_id !== $dealer->id, 403);
+        
+        $dealer = $request->user()->currentDealer;
+        return view('dealer.pages.website.settings.video', compact('dealer'));
+    }
 
-        $deleteLocation($location);
-        $this->auditLogger->info($request, 'Location deleted', ['location_id' => $location->id]);
-        return response()->json(['success' => true, 'message' => 'Location deleted successfully.']);
+    public function updateVideo(UpdateVideoRequest $request, UploadMediaAction $uploadMedia): JsonResponse
+    {
+        $dealer = $request->user()->currentDealer;
+        $data = $request->validated();
+
+        if ($request->video_source === 'overfuel') {
+            if ($request->hasFile('video_file')) {
+                $uploaded = $uploadMedia->execute($dealer->id, [$request->file('video_file')]);
+                $media = $uploaded[0];
+                $data['video_url'] = $media->url;
+            } elseif ($dealer->video_source === 'overfuel') {
+                $data['video_url'] = $dealer->video_url;
+            } else {
+                $data['video_url'] = null;
+            }
+        }
+
+        unset($data['video_file']);
+        $dealer->update($data);
+
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
+
+        $this->auditLogger->info($request, 'Website background video updated');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Video settings saved.',
+            'video_url' => $dealer->video_url
+        ]);
     }
 
     public function reorderLocations(Request $request, ReorderLocationsAction $reorderLocations): JsonResponse
@@ -166,9 +199,9 @@ class WebsiteSettingController extends Controller
         return response()->json(['success' => true, 'message' => 'Locations reordered.']);
     }
 
-    public function banners(): View
+    public function banners(Request $request): View
     {
-        $dealer = auth()->user()->currentDealer;
+        $dealer = $request->user()->currentDealer;
         $dealer->load(['bannerDesktopMedia', 'bannerMobileMedia']);
         return view('dealer.pages.website.settings.banners', compact('dealer'));
     }
@@ -203,20 +236,21 @@ class WebsiteSettingController extends Controller
         unset($data['banner_desktop_image'], $data['banner_mobile_image']);
 
         $dealer->update($data);
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
 
         $this->auditLogger->info($request, 'Banner settings updated');
 
         return response()->json(['success' => true, 'message' => 'Banner settings saved.']);
     }
 
-    public function finance(): View
+    public function finance(Request $request): View
     {
         return view('dealer.pages.website.settings.finance');
     }
 
-    public function retail(): View
+    public function retail(Request $request): View
     {
-        $dealer = auth()->user()->currentDealer;
+        $dealer = $request->user()->currentDealer;
         $settings = $dealer->digitalRetailSettings ?? new DigitalRetailSetting();
         return view('dealer.pages.website.settings.retail', compact('settings'));
     }
@@ -247,9 +281,9 @@ class WebsiteSettingController extends Controller
         return response()->json(['success' => true, 'message' => 'Digital Retail settings saved.']);
     }
 
-    public function redirects(): View
+    public function redirects(Request $request): View
     {
-        $dealer = auth()->user()->currentDealer;
+        $dealer = $request->user()->currentDealer;
         $redirects = $dealer->redirects()->latest()->get();
         return view('dealer.pages.website.settings.redirects', compact('redirects'));
     }
@@ -356,9 +390,9 @@ class WebsiteSettingController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    public function ips(): View
+    public function ips(Request $request): View
     {
-        $dealer = auth()->user()->currentDealer;
+        $dealer = $request->user()->currentDealer;
         $dealerIps = $dealer->dealerIps()->latest()->get();
         return view('dealer.pages.website.settings.ips', compact('dealerIps'));
     }

@@ -81,6 +81,8 @@ class DealerFrontendComposer
                 'banner_bg_color',
                 'banner_desktop_media_id',
                 'banner_mobile_media_id',
+                'video_url',
+                'video_source',
             ])
             ->with([
                 'bannerDesktopMedia:id,url',
@@ -129,6 +131,10 @@ class DealerFrontendComposer
             'bannerBgColor'        => $dealer->banner_bg_color,
             'bannerDesktopMedia'   => $dealer->bannerDesktopMedia,
             'bannerMobileMedia'    => $dealer->bannerMobileMedia,
+
+            // ── Video ─────────────────────────────────────────────────────
+            'videoUrl'             => $dealer->video_url,
+            'videoSource'          => $dealer->video_source,
 
             // ── Location offcanvas data ───────────────────────────────────
             'locationMenuData'     => $this->buildLocationMenuData($allLocations),

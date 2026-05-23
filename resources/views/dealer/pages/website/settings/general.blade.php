@@ -39,8 +39,10 @@
                     <a href="{{ route('dealer.website.settings.retail') }}" class="menu-item">
                         <span class="ws-icon"><i class="bi bi-grid"></i></span>
                         <span>Digital Retail</span>
-                    </a>
-                    {{-- <a href="{{ route('dealer.website.settings.domains') }}" class="menu-item">
+                    </a>                    <a href="{{ route('dealer.website.settings.video') }}" class="menu-item">
+                        <span class="ws-icon"><i class="bi bi-camera-video"></i></span>
+                        <span>Background Video</span>
+                    </a>                    {{-- <a href="{{ route('dealer.website.settings.domains') }}" class="menu-item">
                         <span class="ws-icon"><i class="bi bi-globe"></i></span>
                         <span>Domains</span>
                     </a> --}}
