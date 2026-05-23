@@ -24,12 +24,6 @@
     </div>
 
     <div class="chart-wrapper">
-        <div class="legend-row">
-            <div class="legend-item"><span class="legend-line organic"></span> Organic Search</div>
-            <div class="legend-item"><span class="legend-line direct"></span> Direct</div>
-            <div class="legend-item"><span class="legend-line referral"></span> Referral</div>
-            <div class="legend-item"><span class="legend-line social"></span> Social</div>
-        </div>
         <div style="height: 300px; position: relative;">
             <canvas id="trafficChart"></canvas>
         </div>
@@ -37,22 +31,6 @@
 </div>
 
 <style>
-    .legend-line.organic {
-        background: #3498db;
-    }
-
-    .legend-line.direct {
-        background: #e67e22;
-    }
-
-    .legend-line.referral {
-        background: #2ecc71;
-    }
-
-    .legend-line.social {
-        background: #9b59b6;
-    }
-
     .analytics-dropdown {
         position: relative;
         display: inline-block;
@@ -113,10 +91,14 @@
 
             const trafficData = @json($trafficData);
             const colors = {
-                'Organic Search': '#3498db',
-                'Direct': '#e67e22',
-                'Referral': '#2ecc71',
-                'Social': '#9b59b6'
+                'Direct': '#e05e4d',
+                'Google Business Profile': '#1b6ce6',
+                'Referral': '#f7943c',
+                'Organic Search': '#8e44ad',
+                'Paid Social': '#f89db2',
+                'Social': '#3498db',
+                'Display': '#9bcdf7',
+                'Email': '#d1abf6'
             };
 
             const datasets = Object.entries(trafficData.channels).map(([channel, data]) => ({
@@ -129,7 +111,7 @@
                 fill: false
             }));
 
-            new Chart(trafficCtx.getContext('2d'), {
+            window.trafficChartInstance = new Chart(trafficCtx.getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: trafficData.labels,
@@ -171,6 +153,7 @@
                                     size: 10
                                 },
                                 color: '#999',
+                                maxTicksLimit: 6
                             },
                             min: 0,
                         }
