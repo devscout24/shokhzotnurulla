@@ -40,3 +40,20 @@ custom_label_1
 custom_label_2	
 link	
 url
+
+
+=ASKED FOR ========= FOUND =============
+Body Type ==> body Type
+model number ==> model code
+Special Price => Special Price
+Cost Price ==> Cost Price
+Wheelbase ==> Wheelbase
+door count  ==> # Doors
+Engine ==> Engine
+Engine Displacement => Displacement
+Cylinders => Cylinders
+
+Dealer Comments on Vehicle ==> Dealer Notes
+
+Option Code ==> Premium Build Option ==> Factory Code
+Option Description ==> Premium Build Option ==> Description

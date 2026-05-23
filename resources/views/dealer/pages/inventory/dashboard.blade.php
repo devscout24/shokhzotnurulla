@@ -762,19 +762,19 @@
                                 <table class="inv-mini-table">
                                     <thead>
                                         <tr>
-                                            <th>Days</th>
+                                            <th style="padding-left: 12px !important;">Days</th>
                                             <th>Units</th>
                                             <th>Total</th>
-                                            <th>Average</th>
+                                            <th style="padding-right: 12px !important;">Average</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($daysStats as $range => $stat)
                                             <tr>
-                                                <td>{{ $range }}</td>
+                                                <td style="padding-left: 12px !important;">{{ $range }}</td>
                                                 <td>{{ $stat['units'] }}</td>
                                                 <td>${{ number_format($stat['total']) }}</td>
-                                                <td>${{ number_format($stat['avg']) }}</td>
+                                                <td style="padding-right: 12px !important;">${{ number_format($stat['avg']) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -791,21 +791,21 @@
                             <table class="inv-mini-table">
                                 <thead>
                                     <tr>
-                                        <th>Units</th>
+                                        <th style="padding-left: 12px !important;">Units</th>
                                         <th>Total</th>
-                                        <th>Average</th>
+                                        <th style="padding-right: 12px !important;">Average</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($locationStats as $stat)
                                         <tr class="bg-light">
                                             <td colspan="3" class="fw-bold py-2"
-                                                style="font-size: 14px; color: #333;">{{ $stat['name'] }}</td>
+                                                style="font-size: 14px; color: #333; text-align: left !important; padding-left: 12px !important;">{{ $stat['name'] }}</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ $stat['units'] }}</td>
+                                            <td style="padding-left: 12px !important;">{{ $stat['units'] }}</td>
                                             <td>${{ number_format($stat['total']) }}</td>
-                                            <td>${{ number_format($stat['avg']) }}</td>
+                                            <td style="padding-right: 12px !important;">${{ number_format($stat['avg']) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

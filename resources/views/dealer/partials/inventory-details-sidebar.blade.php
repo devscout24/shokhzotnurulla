@@ -2,7 +2,7 @@
     <img class="vd-vehicle-img" src="{{ $vehicleImgSrc }}" alt="{{ $vehicleTitle }}">
 
     <nav class="vd-nav">
-        <a href="#" class="vd-nav-item active" data-nav="overview">
+        <a href="{{ route('dealer.inventory.vdp.show', $vehicle) }}?nav=overview" class="vd-nav-item {{ Route::is('dealer.inventory.vdp.show') ? 'active' : '' }}" data-nav="overview">
             <i class="bi bi-info-circle"></i> Overview
         </a>
         <a href="{{ route('dealer.inventory.vdp.gallery.show', $vehicle) }}" class="vd-nav-item" data-nav="photos">
@@ -11,28 +11,28 @@
                 <span class="vd-nav-badge">{{ $vehicle->photos->count() }}</span>
             @endif
         </a>
-        <a href="#" class="vd-nav-item" data-nav="videos">
+        <a href="{{ route('dealer.inventory.vdp.show', $vehicle) }}?nav=videos" class="vd-nav-item" data-nav="videos">
             <i class="bi bi-camera-video"></i> Videos
         </a>
-        <a href="#" class="vd-nav-item" data-nav="notes">
+        <a href="{{ route('dealer.inventory.vdp.show', $vehicle) }}?nav=notes" class="vd-nav-item" data-nav="notes">
             <i class="bi bi-pencil"></i> Notes
         </a>
-        <a href="#" class="vd-nav-item" data-nav="factory-options">
+        <a href="{{ route('dealer.inventory.vdp.show', $vehicle) }}?nav=factory-options" class="vd-nav-item" data-nav="factory-options">
             <i class="bi bi-check2-square"></i> Installed Factory Options
         </a>
-        <a href="#" class="vd-nav-item" data-nav="premium-build">
+        <a href="{{ route('dealer.inventory.vdp.show', $vehicle) }}?nav=premium-build" class="vd-nav-item" data-nav="premium-build">
             <i class="bi bi-gear"></i> Premium Build Options
         </a>
-        <a href="#" class="vd-nav-item" data-nav="incentives">
+        <a href="{{ route('dealer.inventory.vdp.show', $vehicle) }}?nav=incentives" class="vd-nav-item" data-nav="incentives">
             <i class="bi bi-gift"></i> Incentives
         </a>
-        <a href="#" class="vd-nav-item" data-nav="printables">
+        <a href="{{ route('dealer.inventory.vdp.show', $vehicle) }}?nav=printables" class="vd-nav-item" data-nav="printables">
             <i class="bi bi-printer"></i> Printables
         </a>
         <a href="{{ route('dealer.inventory.vdp.analytics', $vehicle) }}" class="vd-nav-item {{ Route::is('dealer.inventory.vdp.analytics') ? 'active' : '' }}" data-nav="analytics">
             <i class="bi bi-bar-chart-line"></i> Analytics
         </a>
-        <a href="#" class="vd-nav-item" data-nav="syndication">
+        <a href="{{ route('dealer.inventory.vdp.show', $vehicle) }}?nav=syndication" class="vd-nav-item" data-nav="syndication">
             <i class="bi bi-broadcast"></i> Syndication
         </a>
     </nav>
