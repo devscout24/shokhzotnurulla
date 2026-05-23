@@ -38,25 +38,26 @@ class WebsiteDashboardController extends Controller
         $popularSearches = $this->getPopularSearches($dealerId, $locationId, $startDate, $endDate);
 
         // Compute changes for each channel
-        foreach ($trafficData['summary'] as $channel => &$stats) {
+        foreach ($trafficData['summary'] as $channel => &$channelStats) {
             $prevStats = $prevTrafficData['summary'][$channel] ?? null;
 
             // Visits change
-            $currVisits             = $stats['visits'];
+            $currVisits             = $channelStats['visits'];
             $prevVisits             = $prevStats ? $prevStats['visits'] : 0;
-            $stats['visits_change'] = $prevVisits > 0 ? (int) round((($currVisits - $prevVisits) / $prevVisits) * 100) : ($currVisits > 0 ? 100 : 0);
+            $channelStats['visits_change'] = $prevVisits > 0 ? (int) round((($currVisits - $prevVisits) / $prevVisits) * 100) : ($currVisits > 0 ? 100 : 0);
 
             // Forms change
-            $currForms             = $stats['forms'];
+            $currForms             = $channelStats['forms'];
             $prevForms             = $prevStats ? $prevStats['forms'] : 0;
-            $stats['forms_change'] = $prevForms > 0 ? (int) round((($currForms - $prevForms) / $prevForms) * 100) : ($currForms > 0 ? 100 : 0);
+            $channelStats['forms_change'] = $prevForms > 0 ? (int) round((($currForms - $prevForms) / $prevForms) * 100) : ($currForms > 0 ? 100 : 0);
 
             // Calls change
-            $currCalls             = $stats['calls'];
+            $currCalls             = $channelStats['calls'];
             $prevCalls             = $prevStats ? $prevStats['calls'] : 0;
-            $stats['calls_change'] = $prevCalls > 0 ? (int) round((($currCalls - $prevCalls) / $prevCalls) * 100) : ($currCalls > 0 ? 100 : 0);
+            $channelStats['calls_change'] = $prevCalls > 0 ? (int) round((($currCalls - $prevCalls) / $prevCalls) * 100) : ($currCalls > 0 ? 100 : 0);
         }
-        // unset($stats);
+
+        unset($channelStats);
 
         // Demo Data Fallback (if real data is zero OR demo mode is explicitly enabled)
         if (env('DASHBOARD_DEMO_MODE', false) || ($stats['totalLeads'] === 0 && $stats['totalVisits'] === 0)) {
