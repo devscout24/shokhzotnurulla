@@ -21,6 +21,6 @@ class FactoryOptionCategory extends Model
 
     public function groups(): HasMany
     {
-        return $this->hasMany(FactoryOptionGroup::class, 'category_id');
+        return $this->hasMany(FactoryOptionGroup::class, 'category_id')->orderBy('id');
     }
 }

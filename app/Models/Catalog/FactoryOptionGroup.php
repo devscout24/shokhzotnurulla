@@ -29,6 +29,6 @@ class FactoryOptionGroup extends Model
 
     public function options(): HasMany
     {
-        return $this->hasMany(FactoryOption::class, 'group_id');
+        return $this->hasMany(FactoryOption::class, 'group_id')->orderBy('id');
     }
 }

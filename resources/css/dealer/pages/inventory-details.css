@@ -1395,7 +1395,7 @@ hr {
 }
 
 .vd-ifo-title {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
     color: #222;
 }
@@ -1403,21 +1403,31 @@ hr {
 .vd-ifo-keyfeatures {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    font-size: 13px;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
     color: #888;
     cursor: pointer;
     background: none;
     border: none;
-    transition: color 0.15s;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
 }
 
 .vd-ifo-keyfeatures:hover {
     color: #333;
+    background: #f5f5f5;
+}
+
+.vd-ifo-keyfeatures.is-active {
+    color: #333;
+    background: #fff8e6;
 }
 
 .vd-ifo-keyfeatures i {
     color: #f5a623;
+    font-size: 15px;
 }
 
 /* Accordion */
@@ -1439,9 +1449,10 @@ hr {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 18px;
+    padding: 16px 20px;
     cursor: pointer;
-    font-size: 13.5px;
+    font-size: 15px;
+    font-weight: 500;
     color: #333;
     background: none;
     border: none;
@@ -1466,7 +1477,7 @@ hr {
 
 .vd-accordion-body {
     display: none;
-    padding: 16px 18px 20px;
+    padding: 18px 20px 24px;
     background: #fff;
     border-top: 1px solid #eee;
 }
@@ -1478,58 +1489,60 @@ hr {
 /* 3-col feature grid */
 .vd-feat-grid {
     column-count: 3;
-    column-gap: 20px;
+    column-gap: 28px;
 }
 
 .vd-feat-group {
     break-inside: avoid;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 /* Group title */
 .vd-feat-group-title {
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 700;
     color: #222;
-    margin-bottom: 8px;
-    margin-top: 14px;
+    margin-bottom: 10px;
+    margin-top: 16px;
 }
 
 .vd-feat-group-title:first-child {
     margin-top: 0;
 }
 
-/* Sub-label — gray italic text (e.g. "Auxiliary audio input") */
+/* Sub-label — gray text (e.g. "Auxiliary audio input") */
 .vd-feat-sub-label {
-    font-size: 12px;
+    font-size: 13.5px;
     color: #666;
-    margin-top: 8px;
-    margin-bottom: 4px;
+    margin-top: 10px;
+    margin-bottom: 6px;
 }
 
 /* Feature item row */
 .vd-feat-item {
     display: flex;
     align-items: center;
-    margin-bottom: 4px;
+    gap: 4px;
+    margin-bottom: 7px;
 }
 
 /* Indented items (under sub-label) */
 .vd-feat-item-indented {
-    margin-left: 10px;
+    margin-left: 14px;
 }
 
 /* Clickable label wrapping checkbox + icon + text */
 .vd-feat-check-label {
     display: flex;
-    align-items: center;
-    gap: 6px;
+    align-items: flex-start;
+    gap: 8px;
     cursor: pointer;
-    font-size: 12.5px;
+    font-size: 14px;
     color: #444;
     user-select: none;
-    line-height: 1.4;
-    width: 100%;
+    line-height: 1.45;
+    flex: 1;
+    min-width: 0;
 }
 
 /* Hide native checkbox — replaced by icon */
@@ -1539,11 +1552,12 @@ hr {
 
 /* Checkbox icon — unchecked state */
 .vd-feat-checkbox-icon i {
-    font-size: 14px;
+    font-size: 17px;
     color: #ccc;
     transition: color 0.12s;
     flex-shrink: 0;
     line-height: 1;
+    margin-top: 1px;
 }
 
 /* Checkbox icon — checked state (red) */
@@ -1551,10 +1565,54 @@ hr {
     color: #c0392b;
 }
 
+/* Starred key feature — gold star icon */
+.vd-feat-checkbox-icon.is-starred i,
+.vd-feat-check-label:has(input:checked) .vd-feat-checkbox-icon.is-starred i {
+    color: #e67e22;
+}
+
+/* Key feature star toggle */
+.vd-feat-star-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #ccc;
+    transition: color 0.12s, background 0.12s;
+}
+
+.vd-feat-star-btn:hover {
+    background: #fff8e6;
+    color: #f5a623;
+}
+
+.vd-feat-star-btn.is-starred {
+    color: #f5a623;
+}
+
+.vd-feat-star-btn i {
+    font-size: 15px;
+}
+
+#svFactoryOptions.vd-key-features-mode .vd-feat-item:has(input:checked) .vd-feat-check-label {
+    background: #fffdf5;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin: -2px -4px;
+}
+
 /* Label text */
 .vd-feat-label {
     flex: 1;
-    line-height: 1.4;
+    line-height: 1.45;
+    padding-top: 1px;
 }
 
 /* ── Premium Build Options ── */

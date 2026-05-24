@@ -13,8 +13,13 @@ class FactoryOptionCategorySeeder extends Seeder
         $data = [
             'Entertainment and Technology' => [
                 'Audio System',
+                'Watts',
                 'In Car Entertainment',
+                'Smartphone integration',
                 'Telematics',
+                'Voice Operated',
+                'Navigation system',
+                'Smart device app function',
             ],
             'Exterior' => [
                 'Exterior Features',
@@ -22,6 +27,7 @@ class FactoryOptionCategorySeeder extends Seeder
                 'Mirrors',
                 'Wheels and Tires',
                 'Windows',
+                'Roof',
             ],
             'Interior' => [
                 'Air Conditioning',
@@ -46,11 +52,19 @@ class FactoryOptionCategorySeeder extends Seeder
         ];
 
         foreach ($data as $categoryName => $groups) {
-            $categoryId = DB::table('factory_option_categories')->insertGetId([
-                'name'       => $categoryName,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            $category = DB::table('factory_option_categories')
+                ->where('name', $categoryName)
+                ->first();
+
+            if (! $category) {
+                $categoryId = DB::table('factory_option_categories')->insertGetId([
+                    'name'       => $categoryName,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            } else {
+                $categoryId = $category->id;
+            }
 
             foreach ($groups as $groupName) {
                 DB::table('factory_option_groups')->insertOrIgnore([

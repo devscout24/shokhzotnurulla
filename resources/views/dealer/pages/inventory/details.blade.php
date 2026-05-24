@@ -997,13 +997,17 @@
 
                         <div class="vd-ifo-header">
                             <div class="vd-ifo-title">Installed Factory Options</div>
+                            <button type="button" class="vd-ifo-keyfeatures" id="vdKeyFeaturesToggle" aria-pressed="false">
+                                <i class="bi bi-star-fill"></i> Key features
+                            </button>
                         </div>
 
                         <div class="vd-accordion" id="factoryOptionsAccordion">
                             @foreach($factoryOptionCategories as $category)
                                 <div class="vd-accordion-item">
-                                    <button class="vd-accordion-trigger"
-                                            data-accordion="cat-{{ $category->id }}">
+                                    <button type="button" class="vd-accordion-trigger {{ $loop->first ? 'open' : '' }}"
+                                            data-accordion="cat-{{ $category->id }}"
+                                            aria-expanded="{{ $loop->first ? 'true' : 'false' }}">
                                         {{ $category->name }}
                                         <i class="bi bi-chevron-down"></i>
                                     </button>
@@ -1012,36 +1016,22 @@
                                             @foreach($category->groups as $group)
                                                 <div class="vd-feat-group">
                                                     <div class="vd-feat-group-title">{{ $group->name }}</div>
-                                                    @php $grouped = $group->options->groupBy('sub_label'); @endphp
+                                                    @php $grouped = $group->options->groupBy(fn ($o) => $o->sub_label ?? ''); @endphp
                                                     @foreach($grouped as $subLabel => $options)
-                                                        @if($subLabel)
+                                                        @if($subLabel !== '')
                                                             <div class="vd-feat-sub-label">{{ $subLabel }}</div>
                                                             @foreach($options as $option)
-                                                                <div class="vd-feat-item vd-feat-item-indented">
-                                                                    <label class="vd-feat-check-label">
-                                                                        <input type="checkbox" class="vd-factory-option-cb"
-                                                                               data-option-id="{{ $option->id }}"
-                                                                               {{ in_array($option->id, $selectedOptionIds) ? 'checked' : '' }}>
-                                                                        <span class="vd-feat-checkbox-icon">
-                                                                            <i class="bi {{ in_array($option->id, $selectedOptionIds) ? 'bi-check-square-fill' : 'bi-square' }}"></i>
-                                                                        </span>
-                                                                        <span class="vd-feat-label">{{ $option->label }}</span>
-                                                                    </label>
-                                                                </div>
+                                                                @include('dealer.components.factory-option-item', [
+                                                                    'option' => $option,
+                                                                    'indented' => true,
+                                                                ])
                                                             @endforeach
                                                         @else
                                                             @foreach($options as $option)
-                                                                <div class="vd-feat-item">
-                                                                    <label class="vd-feat-check-label">
-                                                                        <input type="checkbox" class="vd-factory-option-cb"
-                                                                               data-option-id="{{ $option->id }}"
-                                                                               {{ in_array($option->id, $selectedOptionIds) ? 'checked' : '' }}>
-                                                                        <span class="vd-feat-checkbox-icon">
-                                                                            <i class="bi {{ in_array($option->id, $selectedOptionIds) ? 'bi-check-square-fill' : 'bi-square' }}"></i>
-                                                                        </span>
-                                                                        <span class="vd-feat-label">{{ $option->label }}</span>
-                                                                    </label>
-                                                                </div>
+                                                                @include('dealer.components.factory-option-item', [
+                                                                    'option' => $option,
+                                                                    'indented' => false,
+                                                                ])
                                                             @endforeach
                                                         @endif
                                                     @endforeach
