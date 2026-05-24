@@ -14,18 +14,17 @@ return new class extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('dealer_id')
-                ->constrained()
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
+            $table->foreignId('dealer_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
 
             $table->string('name');
             $table->string('street1');
             $table->string('street2')->nullable();
             $table->string('city');
-            $table->string('state', 2);
+            $table->string('state', 150);
             $table->string('postalcode', 10);
-            $table->string('country', 2);
+            
+            $table->string('country', 50);
+
             $table->string('map_override')->nullable(); // map address override
             $table->unsignedSmallInteger('order')->default(0);
 

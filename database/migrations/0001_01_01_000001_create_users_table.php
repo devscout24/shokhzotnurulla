@@ -32,6 +32,8 @@ return new class extends Migration
                   ->nullOnDelete();
 
             $table->boolean('is_2fa_required')->default(false);
+            $table->string('google2fa_secret')->nullable();
+
             $table->boolean('password_complexity')->default(false);
             $table->tinyInteger('password_reuse_policy')->default(5);
 

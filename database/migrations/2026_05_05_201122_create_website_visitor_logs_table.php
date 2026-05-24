@@ -13,15 +13,28 @@ return new class extends Migration
     {
         Schema::create('website_visitor_logs', function (Blueprint $table) {
             $table->id();
+            $table->string('language')->nullable();
+
             $table->foreignId('dealer_id')->constrained()->cascadeOnDelete();
+
+            $table->foreignId('location_id')->ullable()->on('locations')->onDelete('set null');
+
             $table->string('ip_address')->nullable();
             $table->string('device_brand')->nullable();
             $table->string('device_model')->nullable();
             $table->string('device_type')->nullable();
+            
+            $table->string('referrer')->nullable();
+            $table->string('utm_source')->nullable();
+            $table->string('utm_medium')->nullable();
+            $table->string('utm_campaign')->nullable();
+            $table->string('session_id')->nullable();
+
             $table->string('country')->nullable();
             $table->string('state')->nullable();
             $table->string('city')->nullable();
             $table->string('url')->nullable();
+
             $table->timestamps();
         });
     }

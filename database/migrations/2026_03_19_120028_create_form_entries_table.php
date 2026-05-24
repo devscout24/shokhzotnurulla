@@ -12,11 +12,12 @@ return new class extends Migration
 
             $table->id();
 
-            // ── Dealer scope ──────────────────────────────────────────────
-            $table->foreignId('dealer_id')
-                  ->constrained('dealers')
-                  ->cascadeOnDelete();
 
+            // ── Dealer scope ──────────────────────────────────────────────
+            $table->foreignId('dealer_id')->constrained('dealers')->cascadeOnDelete();
+
+            $table->foreignId('location_id')->nullable()->constrained('locations')->nullOnDelete();
+            
             // ── Form type ─────────────────────────────────────────────────
             $table->enum('form_type', [
                 'trade_in',
@@ -40,10 +41,7 @@ return new class extends Migration
             $table->timestamp('read_at')->nullable();
 
             // ── Vehicle reference ─────────────────────────────────────────
-            $table->foreignId('vehicle_id')
-                  ->nullable()
-                  ->constrained('vehicles')
-                  ->nullOnDelete();
+            $table->foreignId('vehicle_id')->nullable()->constrained('vehicles')->nullOnDelete();
 
             // ── Referrer URL ──────────────────────────────────────────────
             $table->string('referrer', 1000)->nullable();

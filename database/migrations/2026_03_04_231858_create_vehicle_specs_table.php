@@ -70,6 +70,16 @@ return new class extends Migration
             $table->string('front_tire', 30)->nullable();
             $table->string('rear_tire', 30)->nullable();
 
+            // Certification flags
+            $table->tinyInteger('factory_certified')->default(0);
+            $table->tinyInteger('dealer_certified')->default(0);
+
+            // Chrome & color codes
+            $table->string('chrome_style_id', 50)->nullable();
+            $table->string('exterior_color_code', 50)->nullable();
+            $table->string('interior_color_code', 50)->nullable();
+            $table->string('interior_material', 100)->nullable();
+
             $table->unique('vehicle_id');
             $table->timestamps();
             $table->softDeletes('deleted_at', precision: 0);

@@ -14,16 +14,9 @@ return new class extends Migration
         Schema::create('media', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('dealer_id')
-                  ->constrained()
-                  ->cascadeOnUpdate()
-                  ->cascadeOnDelete();
+            $table->foreignId('dealer_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
 
-            $table->foreignId('user_id')
-                  ->nullable()
-                  ->constrained()
-                  ->cascadeOnUpdate()
-                  ->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnUpdate()->nullOnDelete();
 
             $table->string('original_name');          // user ka original filename
             $table->string('name');                   // stored filename (unique)

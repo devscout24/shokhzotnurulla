@@ -25,7 +25,29 @@ return new class extends Migration
             $table->string('domain')->nullable()->unique();
             $table->string('staging_domain')->nullable()->unique();
 
+            $table->string('legal_name')->nullable();
+            $table->text('corporate_address')->nullable();
+
+            $table->string('support_email')->nullable();
+            $table->unsignedSmallInteger('abandoned_form_minutes')->default(45);
+
+            // Social links (JSON)
+            $table->json('social_links')->nullable();
+
+            // Disclaimers
+            $table->text('finance_disclaimer')->nullable();
+            $table->text('inventory_disclaimer')->nullable();
+            $table->text('deposit_disclaimer')->nullable();
+            $table->text('pricing_disclaimer')->nullable();
+            $table->text('optional_disclaimer')->nullable();
+
+            $table->string('banner_text')->nullable();
+            $table->string('banner_hover_title')->nullable();
+            $table->string('banner_text_color')->nullable()->default('#ffffff');
+            $table->string('banner_bg_color')->nullable()->default('#c0392b');
+
             $table->boolean('is_active')->default(true)->index();
+            $table->string('status')->default('active');
 
             $table->timestamps();
             $table->softDeletes('deleted_at', precision: 0);
