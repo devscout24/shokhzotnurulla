@@ -322,52 +322,75 @@ class FactoryOptionSeeder extends Seeder
 
             'Safety and Security' => [
                 'Airbags' => [
-                    ['option_key' => 'airbagdeactivation_occupant',          'label' => 'Occupant Sensing Passenger Airbag deactivation','sub_label' => null],
+                    ['option_key' => 'airbagdeactivation_occupant',          'label' => 'Occupant Sensing Passenger Airbag deactivation', 'sub_label' => null],
                     ['option_key' => 'frontairbags_dual',                    'label' => 'Dual Front airbags',                           'sub_label' => null],
-                    ['option_key' => 'kneeairbags_dualfront',                'label' => 'Dual Front Knee airbags',                      'sub_label' => null],
+                    ['option_key' => 'kneeairbags_driver',                   'label' => 'Driver Knee airbags',                          'sub_label' => null],
                     ['option_key' => 'sideairbags_front',                    'label' => 'Front Side airbags',                           'sub_label' => null],
                     ['option_key' => 'sidecurtainairbags_front',             'label' => 'Front',                                        'sub_label' => 'Side curtain airbags'],
                     ['option_key' => 'sidecurtainairbags_rear',              'label' => 'Rear',                                         'sub_label' => 'Side curtain airbags'],
+                    ['option_key' => 'sidecurtainairbags_third_row',         'label' => 'Third Row',                                    'sub_label' => 'Side curtain airbags'],
                 ],
                 'Brakes' => [
                     ['option_key' => 'abs_4wheel',                           'label' => '4-wheel ABS',                                  'sub_label' => null],
                     ['option_key' => 'brakingassist',                        'label' => 'Braking assist',                               'sub_label' => null],
+                    ['option_key' => 'cornering_brake_control',              'label' => 'Cornering brake control',                      'sub_label' => null],
                     ['option_key' => 'electronicbrakeforcedistribution',     'label' => 'Electronic brakeforce distribution',           'sub_label' => null],
+                    ['option_key' => 'electronic_parking_brake_auto_off',    'label' => 'Auto Off Electronic parking brake',            'sub_label' => null],
+                    ['option_key' => 'emergency_braking_preparation',        'label' => 'Emergency braking preparation',                'sub_label' => null],
                     ['option_key' => 'frontbraketype_ventilateddisc',        'label' => 'Ventilated Disc Front brake',                  'sub_label' => null],
                     ['option_key' => 'powerbrakes',                          'label' => 'Power brakes',                                 'sub_label' => null],
-                    ['option_key' => 'rearbraketype_drum',                   'label' => 'Drum Rear brake',                              'sub_label' => null],
+                    ['option_key' => 'rearbraketype_ventilateddisc',         'label' => 'Ventilated Disc Rear brake',                   'sub_label' => null],
+                    ['option_key' => 'regenerative_braking_system',          'label' => 'Regenerative braking system',                  'sub_label' => null],
+                    ['option_key' => 'painted_brake_calipers',               'label' => 'Painted brake calipers',                       'sub_label' => null],
                 ],
                 'Safety' => [
-                    ['option_key' => 'activeheadrestraints_dualfront',       'label' => 'Dual Front Active head restraints',            'sub_label' => null],
                     ['option_key' => 'automaticemergencybraking_front',      'label' => 'Front',                                        'sub_label' => 'Automatic emergency braking'],
                     ['option_key' => 'automaticemergencybraking_pedestrian', 'label' => 'Front Pedestrian',                             'sub_label' => 'Automatic emergency braking'],
-                    ['option_key' => 'camerasystem_rearview',                'label' => 'Rearview Camera system',                       'sub_label' => null],
+                    ['option_key' => 'camerasystem_surround_view',           'label' => 'Surround View',                                 'sub_label' => 'Camera system'],
+                    ['option_key' => 'camerasystem_trailer_rearview',        'label' => 'Trailer Rearview',                             'sub_label' => 'Camera system'],
                     ['option_key' => 'childseatanchors_latch',               'label' => 'LATCH System Child seat anchors',              'sub_label' => null],
-                    ['option_key' => 'impactsensor_fuelcutoff',              'label' => 'Fuel Cut-off Impact sensor',                   'sub_label' => null],
+                    ['option_key' => 'driver_attention_alert',               'label' => 'Driver attention alert system',                'sub_label' => null],
+                    ['option_key' => 'impactsensor_door_unlock',             'label' => 'Door Unlock',                                  'sub_label' => 'Impact sensor'],
+                    ['option_key' => 'impactsensor_fuelcutoff',              'label' => 'Fuel Cut-off',                                 'sub_label' => 'Impact sensor'],
+                    ['option_key' => 'impactsensor_post_collision',          'label' => 'Post-collision Safety System',                 'sub_label' => 'Impact sensor'],
                     ['option_key' => 'lanedeviationsensors',                 'label' => 'Lane deviation sensors',                       'sub_label' => null],
+                    ['option_key' => 'lane_keeping_assist',                'label' => 'Lane keeping assist',                          'sub_label' => null],
+                    ['option_key' => 'parkingsensors_front',                 'label' => 'Front',                                        'sub_label' => 'Parking sensors'],
+                    ['option_key' => 'parkingsensors_rear',                  'label' => 'Rear',                                         'sub_label' => 'Parking sensors'],
                     ['option_key' => 'precollisionwarning_audible',          'label' => 'Audible Warning',                              'sub_label' => 'Pre-collision warning system'],
                     ['option_key' => 'precollisionwarning_pedestrian',       'label' => 'Pedestrian Detection',                         'sub_label' => 'Pre-collision warning system'],
                     ['option_key' => 'precollisionwarning_visual',           'label' => 'Visual Warning',                               'sub_label' => 'Pre-collision warning system'],
                     ['option_key' => 'rearviewmonitor_indash',               'label' => 'In Dash Rearview monitor',                     'sub_label' => null],
+                    ['option_key' => 'traffic_sign_recognition',             'label' => 'Adaptive Speed Limiting Traffic sign recognition', 'sub_label' => null],
+                    ['option_key' => 'blind_spot_safety',                    'label' => 'Sensor/alert Blind spot safety',               'sub_label' => null],
+                    ['option_key' => 'rear_cross_traffic_alert',             'label' => 'Rear Cross traffic alert',                     'sub_label' => null],
                     ['option_key' => 'firstaidkit',                          'label' => 'First aid kit',                                'sub_label' => null],
+                    ['option_key' => 'vehicle_exit_safety',                  'label' => 'Vehicle exit safety system',                   'sub_label' => null],
                 ],
                 'Seatbelts' => [
                     ['option_key' => 'emergencylockingretractors_front',     'label' => 'Front',                                        'sub_label' => 'Emergency locking retractors'],
                     ['option_key' => 'emergencylockingretractors_rear',      'label' => 'Rear',                                         'sub_label' => 'Emergency locking retractors'],
-                    ['option_key' => 'seatbeltforcelimiters_front',          'label' => 'Front Seatbelt force limiters',                'sub_label' => null],
-                    ['option_key' => 'seatbeltpretensioners_front',          'label' => 'Front Seatbelt pretensioners',                 'sub_label' => null],
+                    ['option_key' => 'seatbeltforcelimiters_front',          'label' => 'Front',                                        'sub_label' => 'Seatbelt force limiters'],
+                    ['option_key' => 'seatbeltforcelimiters_third_row',      'label' => 'Third Row',                                    'sub_label' => 'Seatbelt force limiters'],
+                    ['option_key' => 'seatbeltpretensioners_front',          'label' => 'Front',                                        'sub_label' => 'Seatbelt pretensioners'],
+                    ['option_key' => 'seatbeltpretensioners_third_row',      'label' => 'Third Row',                                    'sub_label' => 'Seatbelt pretensioners'],
                     ['option_key' => 'seatbeltwarningsensor_front',          'label' => 'Front Seatbelt warning sensor',                'sub_label' => null],
                 ],
                 'Security' => [
-                    ['option_key' => 'antitheft_immobilizer',                'label' => 'Vehicle Immobilizer',                          'sub_label' => 'Anti-theft system'],
                     ['option_key' => 'antitheft_alarm',                      'label' => 'Alarm',                                        'sub_label' => 'Anti-theft system'],
-                    ['option_key' => 'antitheft_glassbreakage',              'label' => 'Glass Breakage Sensor',                        'sub_label' => 'Anti-theft system'],
-                    ['option_key' => 'powerdoorlocks_autolocking',           'label' => 'Auto-locking Power door locks',                'sub_label' => null],
+                    ['option_key' => 'antitheft_perimeter_alarm',            'label' => 'Perimeter Alarm',                              'sub_label' => 'Anti-theft system'],
+                    ['option_key' => 'antitheft_immobilizer',                'label' => 'Vehicle Immobilizer',                          'sub_label' => 'Anti-theft system'],
+                    ['option_key' => 'powerdoorlocks_autolocking',           'label' => 'Auto-locking',                                 'sub_label' => 'Power door locks'],
+                    ['option_key' => 'powerdoorlocks_antilockout',           'label' => 'Anti-lockout',                                 'sub_label' => 'Power door locks'],
                 ],
                 'Stability and Traction' => [
                     ['option_key' => 'hillholdercontrol',                    'label' => 'Hill holder control',                          'sub_label' => null],
+                    ['option_key' => 'offroad_hill_ascent',                  'label' => 'Hill Ascent',                                  'sub_label' => 'Off-road driving assist'],
+                    ['option_key' => 'offroad_hill_descent',                 'label' => 'Hill Descent',                                 'sub_label' => 'Off-road driving assist'],
+                    ['option_key' => 'roll_stability_control',               'label' => 'Roll stability control',                       'sub_label' => null],
                     ['option_key' => 'stabilitycontrol',                     'label' => 'Stability control',                            'sub_label' => null],
                     ['option_key' => 'tractioncontrol',                      'label' => 'Traction control',                             'sub_label' => null],
+                    ['option_key' => 'trailer_stability_control',            'label' => 'Trailer stability control',                    'sub_label' => null],
                 ],
             ],
         ];
@@ -386,15 +409,29 @@ class FactoryOptionSeeder extends Seeder
                     ->first();
 
                 foreach ($options as $option) {
-                    DB::table('factory_options')->insertOrIgnore([
-                        'category_id' => $category->id,
-                        'group_id'    => $group?->id,
-                        'option_key'  => $option['option_key'],
-                        'label'       => $option['label'],
-                        'sub_label'   => $option['sub_label'],
-                        'created_at'  => now(),
-                        'updated_at'  => now(),
-                    ]);
+                    $exists = DB::table('factory_options')
+                        ->where('category_id', $category->id)
+                        ->where('option_key', $option['option_key'])
+                        ->exists();
+
+                    $payload = [
+                        'group_id'   => $group?->id,
+                        'label'      => $option['label'],
+                        'sub_label'  => $option['sub_label'],
+                        'updated_at' => now(),
+                    ];
+
+                    if (! $exists) {
+                        $payload['created_at'] = now();
+                    }
+
+                    DB::table('factory_options')->updateOrInsert(
+                        [
+                            'category_id' => $category->id,
+                            'option_key'  => $option['option_key'],
+                        ],
+                        $payload,
+                    );
                 }
             }
         }
