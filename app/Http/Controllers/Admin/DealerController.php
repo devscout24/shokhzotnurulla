@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\DealerStatus;
+use App\Helpers\TimeHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\DealerVerificationMail;
 use App\Models\Dealership\Dealer;
@@ -50,7 +51,7 @@ class DealerController extends Controller
                 'status' => DealerStatus::INACTIVE,
                 'is_active' => false,
                 'domain' => $validated['domains'][0], // Set the first one as the primary on dealer table too
-                'internal_id' => timeHelper::generateNumericId(),
+                'internal_id' => TimeHelper::generateNumericId(),
             ];
 
             $dealer = Dealer::create($dealerData);
