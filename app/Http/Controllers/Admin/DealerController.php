@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Dealership\Dealer;
-use App\Models\User;
-use App\Models\Role;
-use App\Models\Permission;
 use App\Enums\DealerStatus;
+use App\Http\Controllers\Controller;
+use App\Mail\DealerVerificationMail;
+use App\Models\Dealership\Dealer;
+use App\Models\Permission;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class DealerController extends Controller
 {
     public function index()
     {
         $dealers = Dealer::latest()->paginate(15);
+
         return view('admin.pages.dealers.index', compact('dealers'));
     }
 
@@ -46,6 +50,7 @@ class DealerController extends Controller
                 'status' => DealerStatus::INACTIVE,
                 'is_active' => false,
                 'domain' => $validated['domains'][0], // Set the first one as the primary on dealer table too
+                'internal_id' => timeHelper::generateNumericId(),
             ];
 
             $dealer = Dealer::create($dealerData);
@@ -60,7 +65,9 @@ class DealerController extends Controller
             if ($request->has('locations')) {
                 $locOrder = 0;
                 foreach ($request->input('locations') as $index => $locData) {
-                    if (empty($locData['name'])) continue;
+                    if (empty($locData['name'])) {
+                        continue;
+                    }
 
                     $dealer->locations()->create([
                         'name' => $locData['name'],
@@ -116,7 +123,7 @@ class DealerController extends Controller
         foreach ($allPermissions as $perm) {
             Permission::firstOrCreate([
                 'name' => $perm,
-                'guard_name' => 'web'
+                'guard_name' => 'web',
             ]);
         }
 
@@ -175,7 +182,7 @@ class DealerController extends Controller
             'phone' => 'nullable|string|max:16',
             'status' => 'required|string',
             'domains' => 'required|array|min:1',
-            'domains.*' => 'required|string|unique:domains,domain,' . $dealer->id . ',dealer_id',
+            'domains.*' => 'required|string|unique:domains,domain,'.$dealer->id.',dealer_id',
         ]);
 
         DB::transaction(function () use ($validated, $request, $dealer) {
@@ -203,7 +210,9 @@ class DealerController extends Controller
             if ($request->has('locations')) {
                 $locOrder = 0;
                 foreach ($request->input('locations') as $index => $locData) {
-                    if (empty($locData['name'])) continue;
+                    if (empty($locData['name'])) {
+                        continue;
+                    }
 
                     $locPayload = [
                         'name' => $locData['name'],
@@ -215,7 +224,7 @@ class DealerController extends Controller
                         'order' => $locOrder++,
                     ];
 
-                    if (!empty($locData['id'])) {
+                    if (! empty($locData['id'])) {
                         $location = $dealer->locations()->find($locData['id']);
                         if ($location) {
                             $location->update($locPayload);
@@ -245,6 +254,7 @@ class DealerController extends Controller
     public function destroy(Dealer $dealer)
     {
         $dealer->delete();
+
         return redirect()->route('admin.dealers.index')->with('success', 'Dealer deleted.');
     }
 
@@ -252,7 +262,7 @@ class DealerController extends Controller
     {
         $user = $dealer->owners()->first() ?? $dealer->users()->first();
 
-        if (!$user) {
+        if (! $user) {
             return back()->with('error', 'No user associated with this dealer.');
         }
 
@@ -260,9 +270,9 @@ class DealerController extends Controller
             return back()->with('error', 'Dealer has already been verified.');
         }
 
-        $token = \Illuminate\Support\Facades\Password::broker()->createToken($user);
+        $token = Password::broker()->createToken($user);
 
-        \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\DealerVerificationMail($token, $user->email));
+        Mail::to($user->email)->send(new DealerVerificationMail($token, $user->email));
 
         return back()->with('success', 'Verification notification sent to dealer.');
     }

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('company_name', 50)->index();
             $table->string('slug', 100)->unique();
 
+            $table->string('internal_id', 10)->nullable()->unique();
+
             $table->string('email')->nullable();
             $table->string('phone', 16)->nullable();
 
