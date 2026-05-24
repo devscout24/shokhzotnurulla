@@ -21,6 +21,8 @@ Route::prefix('admin')
             ->name('dealers.toggle-status');
         Route::post('dealers/{dealer}/notify', [\App\Http\Controllers\Admin\DealerController::class, 'notify'])
             ->name('dealers.notify');
+        Route::get('dealers/{dealer}/export-vehicles', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportDealerVehiclesCsv'])
+            ->name('dealers.export.vehicles');
 
         // Profile
         Route::get('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'edit'])
