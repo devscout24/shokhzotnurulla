@@ -11,10 +11,7 @@ return new class extends Migration
         Schema::create('vehicle_specs', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('vehicle_id')
-                  ->constrained()
-                  ->cascadeOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
 
             // Powertrain
             $table->string('aspiration', 100)->nullable();   // "N/A", "Turbocharged"
