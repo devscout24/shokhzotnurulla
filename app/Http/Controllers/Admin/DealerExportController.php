@@ -64,6 +64,7 @@ class DealerExportController extends Controller
         $columns = [
             'title', 'description',
             'dealer_id', 'dealer_name', 'dealer_phone',
+            'vehicle_id',
             'state_of_vehicle', 'status', 'availability', 'vin', 'stock_number',
             'year', 'make', 'model', 'trim', 'body_style', 'body_type',
             'list_price', 'price', 'special_price', 'cost_price',
@@ -75,8 +76,14 @@ class DealerExportController extends Controller
             'days_on_lot', 'link', 'url', 'video_link', 'custom_label_0', 'custom_label_1', 'custom_label_2',
             'address', 'address.city', 'address.region', 'address.country', 'address.postal_code',
             'latitude', 'longitude',
-            'vehicle_id',
+
         ];
+
+        $columns = array_merge($columns, [
+            'Interior Material', 'Wheelbase', 'Door Count', 'Engine Displacement', 'Cylinders',
+            'Engine', 'Transmission Speed', 'Option Description', 'Option Code', 'Photo Timestamp',
+            'Dealer Comments on Vehicle', 'Last Modified Date', 'ExtraPrice1', 'ExtraPrice2', 'ExtraPrice3',
+        ]);
 
         $dealer->load('locations');
         $location = $dealer->locations->first();
@@ -96,6 +103,7 @@ class DealerExportController extends Controller
                 ->with([
                     'make', 'makeModel', 'bodyType', 'bodyStyle', 'fuelType', 'exteriorColor', 'interiorColor',
                     'drivetrainType', 'transmissionType', 'photos', 'notes', 'specs', 'prices', 'video',
+                    'factoryOptions', 'primaryPhoto',
                 ])
                 ->chunk(100, function ($vehicles) use ($file, $dealer, $dealerAddress) {
                     foreach ($vehicles as $vehicle) {
@@ -108,6 +116,8 @@ class DealerExportController extends Controller
                             $dealer->internal_id ?? $dealer->id,
                             $dealer->company_name,
                             $dealer->phone ?? '',
+                            $vehicle->ulid ?? $vehicle->id, // vehicle_id
+
                             $vehicle->vehicle_condition ?? '',
                             $vehicle->status ?? '',
                             $vehicle->status === 'active' ? 'in stock' : 'out of stock',
@@ -141,7 +151,7 @@ class DealerExportController extends Controller
                             $url, // link
                             $url, // url
                             $vehicle->video?->url ?? '', // video_link
-                            '', // custom_label_0
+                            $vehicle->bodyStyle?->name ?? '', // custom_label_0
                             '', // custom_label_1
                             '', // custom_label_2
                             $dealerAddress['address'],
@@ -152,6 +162,23 @@ class DealerExportController extends Controller
                             '', // latitude
                             '', // longitude
                             $vehicle->ulid ?? $vehicle->id, // vehicle_id
+
+                            // Appended Columns
+                            $vehicle->specs?->interior_material ?? '', // Interior Material
+                            $vehicle->specs?->wheelbase ?? '', // Wheelbase
+                            $vehicle->doors ?? '', // Door Count
+                            $vehicle->specs?->displacement ?? '', // Engine Displacement
+                            $vehicle->specs?->cylinders ?? '', // Cylinders
+                            $vehicle->engine ?? '', // Engine
+                            $vehicle->specs?->transmission_standard ?? '', // Transmission Speed
+                            $vehicle->factoryOptions?->pluck('label')->implode(' | ') ?? '', // Option Description
+                            $vehicle->factoryOptions?->pluck('option_key')->implode(' | ') ?? '', // Option Code
+                            $vehicle->primaryPhoto?->updated_at?->toIso8601String() ?? '', // Photo Timestamp
+                            $vehicle->notes?->dealer_notes ?? '', // Dealer Comments on Vehicle
+                            $vehicle->updated_at?->toIso8601String() ?? '', // Last Modified Date
+                            $vehicle->original_price ?? '', // ExtraPrice1 (originalprice)
+                            $vehicle->prices?->addon_price ?? '', // ExtraPrice2 (addonprice)
+                            $vehicle->prices?->internet_price ?? '', // ExtraPrice3 (Internet Price)
                         ];
 
                         $row = array_merge($row, $remainingRow);
