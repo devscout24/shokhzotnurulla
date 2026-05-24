@@ -34,7 +34,7 @@ class VdpFormDataService
             'drivetrainTypes'         => DrivetrainType::orderBy('name')->get(['id', 'name']),
             'factoryOptionCategories' => FactoryOptionCategory::with([
                                           'groups.options',
-                                        ])->get(),
+                                        ])->orderBy('id')->get(),
         ];
     }
 

@@ -14,6 +14,7 @@ class FactoryOption extends Model
         'group_id',
         'option_key',
         'label',
+        'sub_label',
     ];
 
     public function category(): BelongsTo
