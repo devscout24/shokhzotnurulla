@@ -50,9 +50,8 @@
                 {{-- ── RIGHT CONTENT ── --}}
                 <div class="flex-grow-1 p-4 overflow-auto">
                     <div class="bg-white border rounded" style="max-width: 1200px;">
-                        <form id="videoSettingsForm" enctype="multipart/form-data" method="POST">
+                        <form id="videoSettingsForm" action="{{ route('dealer.website.settings.video.update') }}" enctype="multipart/form-data" method="POST">
                             @csrf
-                            @method('PATCH')
 
                             <div class="px-3 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <span class="fw-semibold" style="font-size: 14px; color: #333;">Background Video</span>
@@ -62,53 +61,15 @@
                             <div class="p-4">
                                 <div class="row mb-4">
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Video source</label>
-                                        <p class="text-muted small">Select where your video is hosted.</p>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="d-flex flex-wrap gap-3">
-                                            <div class="source-card border rounded p-2 text-center cursor-pointer {{ !$dealer->video_source ? 'active' : '' }}" data-value="">
-                                                <i class="bi bi-x-circle d-block mb-1"></i>
-                                                <small>None</small>
-                                                <input type="radio" name="video_source" value="" class="d-none" {{ !$dealer->video_source ? 'checked' : '' }}>
-                                            </div>
-                                            <div class="source-card border rounded p-2 text-center cursor-pointer {{ $dealer->video_source == 'youtube' ? 'active' : '' }}" data-value="youtube">
-                                                <i class="bi bi-youtube d-block mb-1"></i>
-                                                <small>YouTube</small>
-                                                <input type="radio" name="video_source" value="youtube" class="d-none" {{ $dealer->video_source == 'youtube' ? 'checked' : '' }}>
-                                            </div>
-                                            <div class="source-card border rounded p-2 text-center cursor-pointer {{ $dealer->video_source == 'overfuel' ? 'active' : '' }}" data-value="overfuel">
-                                                <i class="bi bi-cloud-upload d-block mb-1"></i>
-                                                <small>Upload MP4</small>
-                                                <input type="radio" name="video_source" value="overfuel" class="d-none" {{ $dealer->video_source == 'overfuel' ? 'checked' : '' }}>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-4" id="youtubeInputContainer" style="display: none;">
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">YouTube Video ID / URL</label>
-                                        <p class="text-muted small">Provide the Video ID or full URL for YouTube.</p>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input type="text" name="video_url" class="form-control form-control-sm" value="{{ $dealer->video_source == 'youtube' ? $dealer->video_url : '' }}" placeholder="dQw4w9WgXcQ or https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-                                    </div>
-                                </div>
-
-                                <div class="row mb-4" id="videoFileInputContainer" style="display: none;">
-                                    <div class="col-md-4">
                                         <label class="form-label fw-semibold">Upload Video File</label>
                                         <p class="text-muted small">Select an MP4 video from your computer.</p>
                                     </div>
                                     <div class="col-md-8">
-                                        <div class="p-3 border rounded bg-light">
+                                        <div class="p-3 border rounded bg-light cursor-pointer" onclick="document.getElementById('videoFileInput').click()">
                                             <input type="file" name="video_file" class="form-control form-control-sm" accept="video/mp4" id="videoFileInput">
-                                            <div class="progress mt-2 d-none" style="height: 6px;" id="uploadProgressContainer">
-                                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" id="uploadProgressBar"></div>
-                                            </div>
+                                            <input type="hidden" name="video_source" value="overfuel">
                                             <div class="mt-2" id="currentVideoInfo">
-                                                @if($dealer->video_source == 'overfuel' && $dealer->video_url)
+                                                @if($dealer->video_url)
                                                     <small class="text-muted">Current file: <a href="{{ asset($dealer->video_url) }}" target="_blank" class="text-decoration-none"><i class="bi bi-play-circle"></i> View Saved Video</a></small>
                                                 @endif
                                             </div>
@@ -119,11 +80,10 @@
                                 <div id="videoPreviewContainer" class="mt-4 d-none">
                                     <label class="form-label fw-semibold">Video Preview</label>
                                     <div class="ratio ratio-16x9 bg-black rounded shadow-sm overflow-hidden border">
-                                        <iframe id="videoPreview" src="" allowfullscreen class="d-none border-0"></iframe>
                                         <video id="videoFilePreview" src="" controls class="d-none w-100 h-100"></video>
                                     </div>
                                 </div>
-                                </div>
+                            </div>
                             </div>
                         </form>
                     </div>
@@ -136,109 +96,36 @@
 @push('page-scripts')
 <script>
 $(function() {
-    const $form = $('#videoSettingsForm');
-    const $sourceCards = $('.source-card');
-    const $urlInput = $('input[name="video_url"]');
-    const $fileInput = $('input[name="video_file"]');
-    const $preview = $('#videoPreview');
+    const $fileInput = $('#videoFileInput');
     const $videoFilePreview = $('#videoFilePreview');
     const $previewContainer = $('#videoPreviewContainer');
-    const $youtubeContainer = $('#youtubeInputContainer');
-    const $fileContainer = $('#videoFileInputContainer');
 
-    let activeVideoFileUrl = {!! json_encode($dealer->video_source === 'overfuel' && $dealer->video_url ? asset($dealer->video_url) : null) !!};
+    let activeVideoFileUrl = {!! json_encode($dealer->video_url ? asset($dealer->video_url) : null) !!};
 
     function updatePreview() {
-        const source = $('input[name="video_source"]:checked').val();
-        const youtubeUrl = $urlInput.val();
-
-        $youtubeContainer.hide();
-        $fileContainer.hide();
-        $preview.addClass('d-none').attr('src', '');
         $videoFilePreview.addClass('d-none').attr('src', '');
         $previewContainer.addClass('d-none');
 
-        if (source === 'youtube') {
-            $youtubeContainer.show();
-            if (youtubeUrl) {
-                const videoId = youtubeUrl.includes('v=') ? youtubeUrl.split('v=').pop().split('&')[0] : youtubeUrl.split('/').pop();
-                if (videoId && videoId.length > 5) {
-                    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
-                    $preview.attr('src', embedUrl).removeClass('d-none');
-                    $previewContainer.removeClass('d-none');
-                }
-            }
-        } else if (source === 'overfuel') {
-            $fileContainer.show();
-            if (activeVideoFileUrl) {
-                $videoFilePreview.attr('src', activeVideoFileUrl).removeClass('d-none');
-                $previewContainer.removeClass('d-none');
-            }
+        if (activeVideoFileUrl) {
+            $videoFilePreview.attr('src', activeVideoFileUrl).removeClass('d-none');
+            $previewContainer.removeClass('d-none');
         }
     }
 
-    $sourceCards.on('click', function() {
-        const val = $(this).data('value');
-        $sourceCards.removeClass('active');
-        $(this).addClass('active').find('input').prop('checked', true);
-        updatePreview();
-    });
-
-    $urlInput.on('input', updatePreview);
-    updatePreview();
-
-    $form.on('submit', function(e) {
-        e.preventDefault();
-        const $btn = $('#btnSaveVideo');
-        const $progressBar = $('#uploadProgressBar');
-        const $progressContainer = $('#uploadProgressContainer');
-        const source = $('input[name="video_source"]:checked').val();
-        
-        $btn.prop('disabled', true).text('Saving...');
-        if (source === 'overfuel' && $fileInput[0].files.length > 0) {
-            $progressContainer.removeClass('d-none');
-        }
-
-        const formData = new FormData(this);
-
-        $.ajax({
-            url: "{{ route('dealer.website.settings.video.update') }}",
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            xhr: function() {
-                const xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", function(evt) {
-                    if (evt.lengthComputable) {
-                        const percentComplete = Math.round((evt.loaded / evt.total) * 100);
-                        $progressBar.css('width', percentComplete + '%').text(percentComplete + '%');
-                    }
-                }, false);
-                return xhr;
-            },
-            success: function(response) {
-                if (response.success) {
-                    toastr.success(response.message);
-                    if (response.video_url && source === 'overfuel') {
-                         activeVideoFileUrl = response.video_url.startsWith('http') ? response.video_url : window.location.origin + response.video_url;
-                         $('#currentVideoInfo').html(`<small class="text-muted">Current file: <a href="${activeVideoFileUrl}" target="_blank" class="text-decoration-none"><i class="bi bi-play-circle"></i> View Saved Video</a></small>`);
-                         updatePreview();
-                    }
-                    $fileInput.val('');
-                }
-            },
-            error: function(xhr) {
-                const message = xhr.responseJSON?.message || 'Something went wrong. Check file size.';
-                toastr.error(message);
-            },
-            complete: function() {
-                $btn.prop('disabled', false).text('Save Changes');
-                $progressContainer.addClass('d-none');
-                $progressBar.css('width', '0%').text('0%');
+    $fileInput.on('change', function() {
+        if (this.files && this.files[0]) {
+            const file = this.files[0];
+            if (file.type !== 'video/mp4') {
+                toastr.error('Please select an MP4 video file.');
+                this.value = '';
+                return;
             }
-        });
+            activeVideoFileUrl = URL.createObjectURL(file);
+            updatePreview();
+        }
     });
+
+    updatePreview();
 });
 </script>
 @endpush

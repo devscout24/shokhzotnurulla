@@ -14,8 +14,7 @@ class UpdateVideoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'video_url'    => ['nullable', 'string', 'max:500'],
-            'video_source' => ['nullable', 'string', 'in:youtube,glo3d,lesautomotive,dealerimagepro,dealervideopro,spincar,unityworks,flickfusion,overfuel'],
+            'video_source' => ['nullable', 'string', 'in:overfuel'],
             'video_file'   => ['nullable', 'file', 'mimes:mp4', 'max:51200'], // 50MB max
         ];
     }

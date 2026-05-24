@@ -319,7 +319,7 @@ Route::prefix('dealer')->name('dealer.')
 
                 // video
                 Route::get('/video', [WebsiteSettingController::class, 'video'])->name('video');
-                Route::patch('/video', [WebsiteSettingController::class, 'updateVideo'])->name('video.update');
+                Route::post('/video', [WebsiteSettingController::class, 'updateVideo'])->name('video.update');
                 
 
                 // Domains

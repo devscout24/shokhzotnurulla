@@ -18,22 +18,10 @@
     <div class="position-relative">
         <div class="hero-video-container" id="hero-video">
             <div class="hero-video-overlay"></div>
+
             <div class="hero-video">
-                @if(($videoSource ?? null) === 'youtube' && ($videoUrl ?? null))
-                    @php
-                        $videoId = \Illuminate\Support\Str::afterLast($videoUrl, 'v=');
-                        if (\Illuminate\Support\Str::contains($videoId, '&')) {
-                            $videoId = \Illuminate\Support\Str::before($videoId, '&');
-                        }
-                    @endphp
-                    <iframe src="https://www.youtube.com/embed/{{ $videoId }}?autoplay=1&mute=1&loop=1&playlist={{ $videoId }}&controls=0&showinfo=0&rel=0&modestbranding=1" 
-                            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen
-                            style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;"></iframe>
-                @elseif(($videoSource ?? null) === 'overfuel' && ($videoUrl ?? null))
-                    <video loop="" muted="" autoplay="" playsinline="" src="{{ asset($videoUrl) }}" class="video"></video>
-                @else
-                    <video loop="" muted="" autoplay="" playsinline="" src="{{ asset('assets/frontend/img/angel-motors-hero-video.mp4') }}"
-                        poster="{{ asset('assets/frontend/img/angel-motors-hero-video.mp4_poster.webp') }}" class="video"></video>
+                @if($videoUrl ?? null)
+                    <video src="{{ asset($videoUrl) }}" muted playsinline autoplay loop></video>
                 @endif
             </div>
 

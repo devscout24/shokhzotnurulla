@@ -33,6 +33,7 @@ use App\Http\Requests\Website\StoreRedirectRequest;
 use App\Http\Requests\Website\UpdateRedirectRequest;
 use App\Http\Requests\Website\StoreDealerIpRequest;
 use App\Http\Requests\Website\UpdateDealerIpRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
 use App\Support\AuditLogger;
 use Illuminate\Http\Request;
@@ -154,41 +155,36 @@ class WebsiteSettingController extends Controller
 
     public function video(Request $request): View
     {
-        
+      
         $dealer = $request->user()->currentDealer;
         return view('dealer.pages.website.settings.video', compact('dealer'));
     }
 
-    public function updateVideo(UpdateVideoRequest $request, UploadMediaAction $uploadMedia): JsonResponse
+    public function updateVideo(UpdateVideoRequest $request): RedirectResponse
     {
         $dealer = $request->user()->currentDealer;
-        $data = $request->validated();
 
-        if ($request->video_source === 'overfuel') {
-            if ($request->hasFile('video_file')) {
-                $uploaded = $uploadMedia->execute($dealer->id, [$request->file('video_file')]);
-                $media = $uploaded[0];
-                $data['video_url'] = $media->url;
-            } elseif ($dealer->video_source === 'overfuel') {
-                $data['video_url'] = $dealer->video_url;
-            } else {
-                $data['video_url'] = null;
-            }
+        if ($request->hasFile('video_file')) {
+            $file = $request->file('video_file');
+            $fileName = 'video_' . time() . '.' . $file->getClientOriginalExtension();
+            $destinationPath = public_path('assets/frontend/video');
+            
+            // Move file manually to public/assets/frontend/video
+            $file->move($destinationPath, $fileName);
+            
+            $dealer->update([
+                'video_url' => 'assets/frontend/video/' . $fileName,
+                'video_source' => 'overfuel',
+            ]);
+
+            \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
+            $this->auditLogger->info($request, 'Website background video updated manually');
         }
 
-        unset($data['video_file']);
-        $dealer->update($data);
-
-        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
-
-        $this->auditLogger->info($request, 'Website background video updated');
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Video settings saved.',
-            'video_url' => $dealer->video_url
-        ]);
+        return redirect()->back()->with('success', 'Video updated successfully.');
     }
+
+  
 
     public function reorderLocations(Request $request, ReorderLocationsAction $reorderLocations): JsonResponse
     {
