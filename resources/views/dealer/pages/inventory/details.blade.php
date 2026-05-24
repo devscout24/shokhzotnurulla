@@ -665,17 +665,15 @@
                                     <div class="vd-det-field">
                                         <label class="vd-field-label">Factory Certified</label>
                                         <select name="factory_certified" class="vd-select">
-                                            <option value="">—</option>
-                                            <option value="1" {{ ($vehicle->specs->factory_certified ?? null) == 1 ? 'selected' : '' }}>Yes</option>
-                                            <option value="0" {{ ($vehicle->specs->factory_certified ?? null) === 0 || ($vehicle->specs->factory_certified ?? null) === '0' ? 'selected' : '' }}>No</option>
+                                            <option value="1" {{ ($vehicle->specs->factory_certified ?? 1) === 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ ($vehicle->specs->factory_certified ?? 0) === 0 || ($vehicle->specs->factory_certified ?? 0) === '0' ? 'selected' : '' }}>No</option>
                                         </select>
                                     </div>
                                     <div class="vd-det-field">
                                         <label class="vd-field-label">Dealer Certified</label>
                                         <select name="dealer_certified" class="vd-select">
-                                            <option value="">—</option>
-                                            <option value="1" {{ ($vehicle->specs->dealer_certified ?? null) == 1 ? 'selected' : '' }}>Yes</option>
-                                            <option value="0" {{ ($vehicle->specs->dealer_certified ?? null) === 0 || ($vehicle->specs->dealer_certified ?? null) === '0' ? 'selected' : '' }}>No</option>
+                                            <option value="1" {{ ($vehicle->specs->dealer_certified ?? 1) === 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ ($vehicle->specs->dealer_certified ?? 0) === 0 || ($vehicle->specs->dealer_certified ?? 0) === '0' ? 'selected' : '' }}>No</option>
                                         </select>
                                     </div>
                                     <div class="vd-det-field">

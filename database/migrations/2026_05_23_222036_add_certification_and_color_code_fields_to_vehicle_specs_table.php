@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::table('vehicle_specs', function (Blueprint $table) {
             // Certification flags
-            $table->boolean('factory_certified')->nullable()->after('rear_tire');
-            $table->boolean('dealer_certified')->nullable()->after('factory_certified');
+            $table->tinyInteger('factory_certified')->default(0)->after('rear_tire');
+            $table->tinyInteger('dealer_certified')->default(0)->after('factory_certified');
 
             // Chrome & color codes
             $table->string('chrome_style_id', 50)->nullable()->after('dealer_certified');

@@ -3,8 +3,8 @@
 namespace App\Models\Inventory;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class VehicleSpec extends Model
 {
@@ -55,14 +55,14 @@ class VehicleSpec extends Model
     ];
 
     protected $casts = [
-        'displacement'         => 'decimal:1',
-        'mpg_city'             => 'decimal:1',
-        'mpg_highway'          => 'decimal:1',
-        'ev_battery_capacity'  => 'decimal:1',
-        'ev_charger_rating'    => 'decimal:1',
-        'axle_ratio'           => 'decimal:2',
-        'factory_certified'    => 'boolean',
-        'dealer_certified'     => 'boolean',
+        'displacement' => 'decimal:1',
+        'mpg_city' => 'decimal:1',
+        'mpg_highway' => 'decimal:1',
+        'ev_battery_capacity' => 'decimal:1',
+        'ev_charger_rating' => 'decimal:1',
+        'axle_ratio' => 'decimal:2',
+        // 'factory_certified'    => 'boolean',
+        // 'dealer_certified'     => 'boolean',
     ];
 
     // ─── Relationships ────────────────────────────────────────────────────────

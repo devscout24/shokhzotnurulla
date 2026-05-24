@@ -350,6 +350,7 @@ class InventoryController extends Controller
     public function updateDetails(UpdateDetailsRequest $request, Vehicle $vehicle): JsonResponse|RedirectResponse
     {
         $this->authorizeVehicle($request, $vehicle);
+        // dd($request->validated()); // Run validation first to catch any errors before updating
         ($this->updateDetails)($vehicle, $request->validated());
 
         AuditLogger::info($request, 'Vehicle details updated', ['vehicle_id' => $vehicle->id]);
