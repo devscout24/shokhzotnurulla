@@ -29,7 +29,7 @@ return new class extends Migration
 
             $table->foreignId('make_model_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
 
-            $table->string('trim', 100)->nullable();
+            $table->string('trim')->nullable();
 
             $table->foreignId('body_type_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
 

@@ -33,7 +33,7 @@ class UpdateDetailsRequest extends FormRequest
             'year'                 => ['required', 'integer', 'min:1900', 'max:' . (date('Y') + 2)],
             'make_id'              => ['required', 'integer', 'exists:makes,id'],
             'make_model_id'        => ['required', 'integer', 'exists:make_models,id'],
-            'trim'                 => ['nullable', 'string', 'max:100'],
+            'trim'                 => ['nullable', 'string', 'max:255'],
             'body_type_id'         => ['required', 'integer', 'exists:body_types,id'],
             'body_style_id'        => ['nullable', 'integer', 'exists:body_styles,id'],
             'vehicle_condition'    => ['required', 'string', 'in:Used,New,Certified Pre-Owned'],
