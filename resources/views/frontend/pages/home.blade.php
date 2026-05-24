@@ -18,9 +18,11 @@
     <div class="position-relative">
         <div class="hero-video-container" id="hero-video">
             <div class="hero-video-overlay"></div>
+
             <div class="hero-video">
-                <video loop="" muted="" autoplay="" playsinline="" src="{{ asset('assets/frontend/img/angel-motors-hero-video.mp4') }}"
-                    poster="./assets/img/angel-motors-hero-video.mp4_poster.webp') }}" class="video"></video>
+                @if($videoUrl ?? null)
+                    <video src="{{ asset($videoUrl) }}" muted playsinline autoplay loop></video>
+                @endif
             </div>
 
             <div class="hero-caption text-center text-white">

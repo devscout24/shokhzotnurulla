@@ -324,6 +324,11 @@ Route::prefix('dealer')->name('dealer.')
                     Route::delete('/{dealerIp}', [WebsiteSettingController::class, 'destroyDealerIp'])->name('destroy');
                 });
 
+                // video
+                Route::get('/video', [WebsiteSettingController::class, 'video'])->name('video');
+                Route::post('/video', [WebsiteSettingController::class, 'updateVideo'])->name('video.update');
+                
+
                 // Domains
                 // Route::get('/domains',    [WebsiteSettingController::class, 'domains'])->name('domains');
             });

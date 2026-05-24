@@ -60,6 +60,8 @@ class Dealer extends Model
         'banner_bg_color',
         'banner_desktop_media_id',
         'banner_mobile_media_id',
+        'video_url',
+        'video_source',
         'status',
     ];
 
