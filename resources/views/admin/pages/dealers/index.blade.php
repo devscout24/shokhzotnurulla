@@ -78,9 +78,19 @@
 <main class="main-content" id="mainContent">
     <div class="page-header header-flex">
         <h2 class="view-title">Dealer Management</h2>
-        <a href="{{ route('admin.dealers.create') }}" class="btn-action btn-primary-scout">
-            <i class="bi bi-plus-lg"></i> Add New Dealer
-        </a>
+        <div style="display: flex; gap: 10px;">
+            <div class="dropdown">
+                <button class="btn-action dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="background: #fff; border: 1px solid #ddd; cursor: pointer;">
+                    <i class="bi bi-download"></i> Export
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                    <li><a class="dropdown-item" href="{{ route('admin.dealers.export.csv') }}"><i class="bi bi-filetype-csv"></i> Export as CSV</a></li>
+                </ul>
+            </div>
+            <a href="{{ route('admin.dealers.create') }}" class="btn-action btn-primary-scout">
+                <i class="bi bi-plus-lg"></i> Add New Dealer
+            </a>
+        </div>
     </div>
 
     <hr>

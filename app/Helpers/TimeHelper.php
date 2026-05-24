@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Dealership\Dealer;
 use DateTime;
 
 class TimeHelper

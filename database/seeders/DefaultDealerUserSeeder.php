@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\TimeHelper;
+use App\Models\Dealership\Dealer;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
-use App\Models\Dealership\Dealer;
 use Illuminate\Support\Facades\Hash;
 
 class DefaultDealerUserSeeder extends Seeder
@@ -23,7 +24,8 @@ class DefaultDealerUserSeeder extends Seeder
                 'name' => 'Dealer 1',
                 'email' => 'admin@admin.com',
                 'phone' => '+923280287525',
-                'is_active' => true
+                'is_active' => true,
+                'internal_id' => TimeHelper::generateNumericId()
             ]
         );
 

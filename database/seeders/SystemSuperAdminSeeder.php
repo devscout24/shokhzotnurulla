@@ -2,11 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\TimeHelper;
+use App\Models\Dealership\Dealer;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Dealership\Dealer;
 
 class SystemSuperAdminSeeder extends Seeder
 {
@@ -24,7 +25,8 @@ class SystemSuperAdminSeeder extends Seeder
                 'name' => 'System Dealer',
                 'email' => 'superadmin@gmail.com',
                 'phone' => '+923280287524',
-                'is_active' => true
+                'is_active' => true,
+                'internal_id' => TimeHelper::generateNumericId()                
             ]
         );
 
