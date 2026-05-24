@@ -63,6 +63,24 @@
     margin-left: 6px;
 }
 
+@media (max-width: 768px) {
+    .vd-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .vd-header-title {
+        font-size: 16px;
+    }
+    .vd-header-title span {
+        font-size: 13px;
+    }
+    .vd-btn-view-listing, 
+    .vd-btn-remove-listing {
+        padding: 4px 12px;
+    }
+}
+
 .vd-header-actions {
     display: flex;
     gap: 10px;
@@ -2075,4 +2093,130 @@ canvas#analyticsChart {
 .vd-select.is-invalid {
     border-color: #c0392b !important;
     box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.08);
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE — VEHICLE DETAIL PAGE (vd-)
+   Breakpoints: 992px (tablet), 768px (mobile)
+══════════════════════════════════════════════════ */
+
+@media (max-width: 992px) {
+    .vd-page {
+        height: auto;
+        overflow: visible;
+        padding: 0 12px;
+    }
+
+    .vd-body {
+        flex-direction: column;
+        overflow: visible;
+        margin-bottom: 0;
+    }
+
+    .vd-left {
+        width: 100%;
+        min-width: 0;
+        border-right: none;
+        border-bottom: 1px solid #e8e8e8;
+        overflow: visible;
+    }
+
+    .vd-vehicle-img { max-height: 220px; }
+
+    .vd-right {
+        width: 100%;
+        min-width: 0;
+        border-left: none;
+        border-top: 1px solid #e8e8e8;
+    }
+
+    .vd-middle {
+        border-left: none;
+        border-right: none;
+    }
+
+    .vd-tabs {
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding: 8px 12px 12px;
+        flex-wrap: nowrap;
+    }
+    .vd-tabs::-webkit-scrollbar { display: none; }
+    .vd-tab { flex-shrink: 0; padding: 8px 16px; }
+
+    .vd-det-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 767px) {
+    .vd-page { padding: 0 10px; }
+
+    /* Header: title above buttons */
+    .vd-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 0 8px;
+    }
+    .vd-header-title { font-size: 15px; line-height: 1.4; max-width: 100%; }
+    .vd-header-title span { font-size: 13px; }
+    .vd-header-actions { width: 100%; gap: 8px; }
+    .vd-btn-view-listing,
+    .vd-btn-remove-listing {
+        flex: 1;
+        justify-content: center;
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    /* Body */
+    .vd-body { flex-direction: column; border-top: none; padding-top: 0; }
+    .vd-left { width: 100%; min-width: 0; border-right: none; border-bottom: 1px solid #e8e8e8; }
+    .vd-vehicle-img { max-height: 200px; }
+
+    /* Nav: horizontal scroll strip */
+    .vd-nav {
+        display: flex;
+        padding: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .vd-nav::-webkit-scrollbar { display: none; }
+    .vd-nav-item {
+        flex-shrink: 0;
+        padding: 10px 14px;
+        font-size: 12.5px;
+        border-bottom: 2px solid transparent;
+        gap: 6px;
+    }
+    .vd-nav-item.active { border-bottom-color: #c0392b; border-left: none; background: transparent; }
+    .vd-nav-badge { font-size: 11px; }
+
+    /* Middle */
+    .vd-middle { width: 100%; border: none; }
+    .vd-tabs { padding: 6px 8px 10px; gap: 4px; }
+    .vd-tab { padding: 7px 12px; font-size: 12px; gap: 5px; }
+    .vd-tab i { font-size: 11px; }
+    .vd-tab-content { overflow: visible; }
+    .vd-tab-pane { padding: 14px; }
+    .vd-tab-nav { display: none; }
+
+    /* Pricing forms */
+    .vd-price-row { flex-direction: column; gap: 12px; }
+    .vd-price-field { min-width: 0; }
+    .vd-addon-row { grid-template-columns: 1fr 1fr; }
+    .vd-sold-row { flex-direction: column; gap: 12px; }
+
+    /* Edit details */
+    .vd-det-grid { grid-template-columns: 1fr 1fr; gap: 10px 12px; }
+    .vd-det-field-span2 { grid-column: span 1; }
+    .vd-jumpto { padding: 0 8px; }
+    .vd-jumpto-item { padding: 9px 10px; font-size: 12px; }
+
+    /* Right panel */
+    .vd-right { width: 100%; min-width: 0; border-left: none; border-top: 1px solid #e8e8e8; padding: 12px; }
+
+    /* Sync table: 2-col on mobile */
+    .vd-sync-row { grid-template-columns: 1fr 1fr; font-size: 12px; }
 }

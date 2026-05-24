@@ -23,12 +23,21 @@
             {{-- ══════════════════════════════
                  MAIN SPLIT
             ══════════════════════════════ --}}
+            {{-- Mobile filter toggle (only visible on small screens) --}}
+            <div class="inv-mobile-filter-bar">
+                <button type="button" class="inv-mobile-filter-btn" id="btnFilterToggle">
+                    <i class="bi bi-funnel"></i> Filters
+                </button>
+            </div>
+
             <div class="inv-main">
+
+                <div class="inv-sidebar-overlay" id="sidebarOverlay"></div>
 
                 {{-- ════════════════════════
                      LEFT SIDEBAR
                 ════════════════════════ --}}
-                <aside class="inv-sidebar">
+                <aside class="inv-sidebar" id="invSidebar">
 
                     {{-- Add Unit --}}
                     <button type="button" class="inv-btn-add" id="btnAddUnit">
@@ -463,8 +472,9 @@
                                         {{-- Vehicle Name --}}
                                         <td>
                                             <a href="{{ route('dealer.inventory.vdp.show', $vehicle) }}"
-                                               class="inv-veh-link">
-                                                {{ strtoupper($vehicle->display_title) }}
+                                               class="inv-veh-link" title="{{ $vehicle->display_title }}">
+                                                <span class="inv-veh-desktop">{{ strtoupper($vehicle->display_title) }}</span>
+                                                <span class="inv-veh-mobile">{{ \Illuminate\Support\Str::limit($vehicle->display_title, 10) }}<br><small>({{ $vehicle->stock_number }})</small></span>
                                             </a>
                                         </td>
 

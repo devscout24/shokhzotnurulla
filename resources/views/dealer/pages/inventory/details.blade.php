@@ -49,8 +49,9 @@
                  TOP HEADER
             ═══════════════════ --}}
             <div class="vd-header">
-                <div class="vd-header-title">
-                    {{ $vehicleTitle }}
+                <div class="vd-header-title" title="{{ $vehicleTitle }}">
+                     <span class="inv-veh-desktop">{{ strtoupper($vehicle->display_title) }}</span>
+                                                <span class="inv-veh-mobile">{{ \Illuminate\Support\Str::limit($vehicle->display_title, 20) }}<br><small>({{ $vehicle->stock_number }})</small></span>
                     <span>({{ $vehicle->stock_number }})</span>
                 </div>
                 <div class="vd-header-actions">
