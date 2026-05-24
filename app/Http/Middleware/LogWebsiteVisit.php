@@ -46,6 +46,7 @@ class LogWebsiteVisit
 
             WebsiteVisitorLog::create([
                 'dealer_id'    => $dealerId,
+                // 'location_id'  => $locationId ?: 1,
                 'location_id'  => $locationId ?: null,
                 'ip_address'   => $ip,
                 'device_brand' => $agent->device(),

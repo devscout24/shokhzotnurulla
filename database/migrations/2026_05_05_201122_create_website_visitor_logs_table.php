@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->foreignId('dealer_id')->constrained()->cascadeOnDelete();
 
-            $table->foreignId('location_id')->ullable()->on('locations')->onDelete('set null');
+            $table->foreignId('location_id')->nullable()->on('locations')->onDelete('set null');
 
             $table->string('ip_address')->nullable();
             $table->string('device_brand')->nullable();

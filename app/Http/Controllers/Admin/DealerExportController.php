@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dealership\Dealer;
+use App\Models\Inventory\Vehicle;
+
 use Illuminate\Http\Request;
 
 class DealerExportController extends Controller
@@ -87,7 +89,7 @@ class DealerExportController extends Controller
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
-            \App\Models\Inventory\Vehicle::where('dealer_id', $dealer->id)
+            Vehicle::withoutGlobalScopes()->where('dealer_id', $dealer->id)
                 ->with([
                     'make', 'makeModel', 'bodyStyle', 'fuelType', 'exteriorColor', 'interiorColor', 
                     'drivetrainType', 'transmissionType', 'photos', 'notes'

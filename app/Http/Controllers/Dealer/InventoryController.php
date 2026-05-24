@@ -718,7 +718,7 @@ class InventoryController extends Controller
             ->with([
                 'make', 'makeModel', 'bodyType', 'fuelType', 'drivetrainType',
                 'exteriorColor', 'interiorColor', 'prices', 'location', 'dealer',
-                'dailyStats'
+                'dailyStats',
             ])
             ->withCount('photos');
 
@@ -736,7 +736,7 @@ class InventoryController extends Controller
             'status', 'statusoverride', 'inventorydays', 'views', 'location',
             'photocount', 'price', 'cost', 'msrp', 'originalprice',
             'specialprice', 'addonprice', 'url', 'dealer_name', 'dealer_street',
-            'dealer_city', 'dealer_state', 'dealer_postalcode'
+            'dealer_city', 'dealer_state', 'dealer_postalcode',
         ];
 
         return response()->stream(function () use ($query, $columns) {
