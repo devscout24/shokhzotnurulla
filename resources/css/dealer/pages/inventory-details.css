@@ -1449,8 +1449,23 @@ hr {
 }
 
 /* Accordion */
-.vd-accordion {
+#svFactoryOptions .vd-accordion {
+    background: #f3f1f1;
+    border-radius: 6px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#svFactoryOptions .vd-accordion-item {
     background: #fff;
+    border-radius: 4px;
+    border-bottom: none;
+    overflow: hidden;
+}
+
+.vd-accordion {
     border-radius: 6px;
     overflow: hidden;
 }
@@ -1472,11 +1487,20 @@ hr {
     font-size: 15px;
     font-weight: 500;
     color: #333;
-    background: none;
+    background: #fff;
     border: none;
     width: 100%;
     text-align: left;
     transition: background 0.12s;
+}
+
+#svFactoryOptions .vd-accordion-trigger {
+    background: #fff;
+}
+
+#svFactoryOptions .vd-accordion-trigger:hover,
+#svFactoryOptions .vd-accordion-trigger.open {
+    background: #fafafa;
 }
 
 .vd-accordion-trigger:hover {
@@ -1498,6 +1522,10 @@ hr {
     padding: 18px 20px 24px;
     background: #fff;
     border-top: 1px solid #eee;
+}
+
+#svFactoryOptions .vd-accordion-body {
+    background: #fff;
 }
 
 .vd-accordion-body.open {
