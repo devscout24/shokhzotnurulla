@@ -107,6 +107,7 @@ class DealerExportController extends Controller
                     'drivetrainType', 'transmissionType', 'photos', 'notes', 'specs', 'prices', 'video',
                     'factoryOptions', 'primaryPhoto',
                 ])
+                ->whereIn('status', ['active', 'sold'])
                 ->chunk(100, function ($vehicles) use ($file, $dealer, $dealerAddress) {
                     foreach ($vehicles as $vehicle) {
                         $images = collect($vehicle->photos)->pluck('url')->take(20)->pad(20, '')->toArray();
