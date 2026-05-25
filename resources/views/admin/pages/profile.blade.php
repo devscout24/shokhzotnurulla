@@ -149,7 +149,7 @@
                     Two-Factor Authentication is currently <strong>enabled</strong> on your account.
                 </div>
 
-                <form method="POST" action="{{ route('admin.2fa.disable') }}" onsubmit="return confirm('Are you sure you want to disable Two-Factor Authentication? This will reduce your account security.');">
+                <form method="POST" action="{{ route('admin.2fa.disable') }}" data-swal-confirm="Are you sure you want to disable Two-Factor Authentication? This will reduce your account security." data-swal-title="Are you sure?">
                     @csrf
                     <button type="submit" style="background: transparent; color: #d93025; border: 1px solid #d93025; border-radius: 6px; padding: 10px 20px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 13px;"
                             onmouseover="this.style.background='#d93025'; this.style.color='#fff';"

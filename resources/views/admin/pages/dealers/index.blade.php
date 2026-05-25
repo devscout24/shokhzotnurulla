@@ -142,7 +142,7 @@
                                     </button>
                                 </form>
 
-                                <form action="{{ route('admin.dealers.destroy', $dealer) }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                                <form action="{{ route('admin.dealers.destroy', $dealer) }}" method="POST" data-swal-confirm="Are you sure you want to delete this dealer?" data-swal-title="Are you sure?">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-action text-danger">

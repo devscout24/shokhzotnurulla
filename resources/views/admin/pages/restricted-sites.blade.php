@@ -167,7 +167,7 @@
                             <tr>
                                 <td><strong>{{ $site->domain }}</strong></td>
                                 <td style="text-align: right;">
-                                    <form action="{{ route('admin.restricted-sites.destroy', $site->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this domain?');" style="display: inline-block;">
+                                    <form action="{{ route('admin.restricted-sites.destroy', $site->id) }}" method="POST" data-swal-confirm="Are you sure you want to remove this domain?" data-swal-title="Are you sure?" style="display: inline-block;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn-delete">
