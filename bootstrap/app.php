@@ -16,6 +16,7 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsDealer;
 use App\Http\Middleware\TeamsPermission;
 use App\Http\Middleware\SetLocationContext;
+use App\Http\Middleware\CheckAdminRestrictedSite;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -49,6 +50,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role.active'   => EnsureRoleIsActive::class,
             'isAdmin'       => IsAdmin::class,
             'isDealer'      => IsDealer::class,
+            'check.admin.restricted.site' => CheckAdminRestrictedSite::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -44,4 +44,14 @@ Route::prefix('admin')
         Route::patch('integrations/{integration}/revoke', [\App\Http\Controllers\Admin\IntegrationController::class, 'revoke'])
             ->name('integrations.revoke');
 
+        // Admin Restricted Sites
+        Route::get('restricted-sites', [\App\Http\Controllers\Admin\AdminRestrictedSiteController::class, 'index'])
+            ->name('restricted-sites.index');
+        Route::post('restricted-sites/setting', [\App\Http\Controllers\Admin\AdminRestrictedSiteController::class, 'updateSetting'])
+            ->name('restricted-sites.setting');
+        Route::post('restricted-sites', [\App\Http\Controllers\Admin\AdminRestrictedSiteController::class, 'store'])
+            ->name('restricted-sites.store');
+        Route::delete('restricted-sites/{id}', [\App\Http\Controllers\Admin\AdminRestrictedSiteController::class, 'destroy'])
+            ->name('restricted-sites.destroy');
+
     });

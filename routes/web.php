@@ -15,7 +15,11 @@ Route::get('/test-route/menus', function () {
         return $menus;
     })->name('test.menus');
 
-Auth::routes(['verify' => true]);
+Auth::routes(['verify' => true, 'login' => false]);
+
+Route::get('login', [\App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login', [\App\Http\Controllers\Auth\LoginController::class, 'login'])
+    ->middleware('check.admin.restricted.site');
 
 Route::get('setup-account/{token}', [\App\Http\Controllers\Auth\DealerSetupController::class, 'showSetupForm'])->name('dealer.setup');
 Route::post('setup-account', [\App\Http\Controllers\Auth\DealerSetupController::class, 'setupAccount'])->name('dealer.setup.submit');
