@@ -70,6 +70,17 @@
     if ($spec?->dimension_width && $spec?->dimension_length && $spec?->dimension_height) {
         $dimensions = "{$spec->dimension_width}\" w x {$spec->dimension_length}\" l x {$spec->dimension_height}\" h";
     }
+
+    $estimateRate = ($pricing['applied_special'] ?? null)
+        && $pricing['applied_special']?->discount_type === 'special'
+        && $pricing['applied_special']?->finance_rate
+            ? (float) $pricing['applied_special']->finance_rate
+            : 6.79;
+    $estimateTerm = ($pricing['applied_special'] ?? null)
+        && $pricing['applied_special']?->discount_type === 'special'
+        && $pricing['applied_special']?->finance_term
+            ? (int) $pricing['applied_special']->finance_term
+            : 60;
 @endphp
 
 @section('page-content')
@@ -256,6 +267,11 @@
                                 <div class="col-12">
                                     <span class="rounded bg-light p-2 d-block text-end border mt-1"
                                           data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                                          data-vehicle-title="{{ $mainVehicleTitle }}"
+                                          data-vehicle-price="{{ $pricing['final_price'] }}"
+                                          data-vehicle-monthly="{{ $pricing['monthly'] }}"
+                                          data-vehicle-rate="{{ $estimateRate }}"
+                                          data-vehicle-term="{{ $estimateTerm }}"
                                           aria-controls="getEstimate">
                                         <span class="badge badge-secondary text-uppercase me-2 float-start">
                                             Estimated Payment
@@ -817,6 +833,11 @@
                                     <div class="col-12">
                                         <div class="bg-lighter border rounded py-2 px-3 mt-2 align-items-center text-center cursor-pointer"
                                             data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                                            data-vehicle-title="{{ $mainVehicleTitle }}"
+                                            data-vehicle-price="{{ $pricing['final_price'] }}"
+                                            data-vehicle-monthly="{{ $pricing['monthly'] }}"
+                                            data-vehicle-rate="{{ $estimateRate }}"
+                                            data-vehicle-term="{{ $estimateTerm }}"
                                             aria-controls="getEstimate">
                                             <span class="badge badge-secondary text-uppercase mb-2">Estimated Payment</span>
                                             <div class="text-large">

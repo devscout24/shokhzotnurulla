@@ -18,10 +18,16 @@
     $isFormfill = $p ? $p['is_formfill'] : false;
     $isSpecialFin = $p ? $p['is_special_finance'] : false;
     $btnText = $p ? $p['button_text'] : null;
+    $estimateRate = ($p && $p['applied_special']?->discount_type === 'special' && $p['applied_special']?->finance_rate)
+        ? (float) $p['applied_special']->finance_rate
+        : 6.79;
+    $estimateTerm = ($p && $p['applied_special']?->discount_type === 'special' && $p['applied_special']?->finance_term)
+        ? (int) $p['applied_special']->finance_term
+        : 60;
 
     if (!$monthly && $finalPrice > 0) {
-        $r = (6.79 / 100) / 12;
-        $monthly = ($finalPrice * $r) / (1 - pow(1 + $r, -60));
+        $r = ($estimateRate / 100) / 12;
+        $monthly = ($finalPrice * $r) / (1 - pow(1 + $r, -$estimateTerm));
     }
 @endphp
 
@@ -175,6 +181,11 @@
                                     <div class="text-end text-nowrap ms-auto my-1">
                                         <span class="cursor-pointer" role="button"
                                             data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                                            data-vehicle-title="{{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}"
+                                            data-vehicle-price="{{ $finalPrice }}"
+                                            data-vehicle-monthly="{{ $monthly }}"
+                                            data-vehicle-rate="{{ $estimateRate }}"
+                                            data-vehicle-term="{{ $estimateTerm }}"
                                             aria-controls="getEstimate">
                                             <small class="opacity-75">Est. Payment</small><br>
                                             <span class="fw-bold">${{ number_format($monthly) }}/mo</span>
@@ -195,6 +206,11 @@
             <div class="px-2 pb-2 mt-n2">
                 <button class="btn btn-estimate-payment w-100 py-2 font-weight-bold"
                     data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                    data-vehicle-title="{{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}"
+                    data-vehicle-price="{{ $finalPrice }}"
+                    data-vehicle-monthly="{{ $monthly }}"
+                    data-vehicle-rate="{{ $estimateRate }}"
+                    data-vehicle-term="{{ $estimateTerm }}"
                     aria-controls="getEstimate">
                     Estimate payment
                     <div style="font-size: 10px; font-weight: normal; opacity: 0.9;">No impact to your credit score</div>

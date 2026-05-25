@@ -6,6 +6,7 @@
     @vite([
         'resources/css/frontend/pages/home.css',
         'resources/js/frontend/pages/trade-in.js',
+        'resources/js/frontend/pages/get-approved-offcanvas.js',
         'resources/js/frontend/pages/unlock-eprice.js',
         'resources/js/frontend/pages/nps.js',
     ])
@@ -476,6 +477,7 @@
 @push('page-modals')
     @include('frontend.offcanvas.get-estimate')
     @include('frontend.offcanvas.get-trade-in')
+    @include('frontend.offcanvas.get-approved')
     @include('frontend.offcanvas.unlock-eprice')
 @endpush
 
@@ -485,6 +487,9 @@
             tradeIn:       '{{ route('frontend.forms.trade-in') }}',
             tradeInPhotos: '{{ route('frontend.forms.trade-in.photos') }}',
             makeModels:    '{{ route('frontend.data.make-models', ['make' => '__make__']) }}',
+        };
+        window.gaRoutes = {
+            submit: '{{ route('frontend.forms.get-approved') }}',
         };
         window.npsRouteTemplate = '{{ route('frontend.forms.nps', ['formEntry' => '__id__']) }}';
     </script>

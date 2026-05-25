@@ -5,6 +5,7 @@
 @push('page-assets')
     @vite([
         'resources/css/frontend/pages/about.css',
+        'resources/js/frontend/pages/get-approved-offcanvas.js',
     ])
 @endpush
 
@@ -383,3 +384,16 @@
     <!-- Dealership Info -->
     @include('frontend.partials.dealership-info')
 @endsection
+
+@push('page-modals')
+    @include('frontend.offcanvas.get-estimate')
+    @include('frontend.offcanvas.get-approved')
+@endpush
+
+@push('page-scripts')
+    <script>
+        window.gaRoutes = {
+            submit: '{{ route('frontend.forms.get-approved') }}',
+        };
+    </script>
+@endpush

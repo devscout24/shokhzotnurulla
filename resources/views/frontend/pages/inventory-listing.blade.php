@@ -244,6 +244,7 @@
 @push('page-modals')
     @include('frontend.offcanvas.mobile-filters')
     @include('frontend.offcanvas.get-trade-in')
+    @include('frontend.offcanvas.get-estimate')
     @include('frontend.offcanvas.get-approved')
     @include('frontend.offcanvas.unlock-eprice')
     @include('frontend.modals.sort-inventory')

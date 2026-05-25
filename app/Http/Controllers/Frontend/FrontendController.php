@@ -39,6 +39,8 @@ class FrontendController extends Controller
         $dealerId = $this->dealerResolver->resolve();
         $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
+        // dd($dealerId, $locationId, auth()->user()->current_dealer_id);
+        
         $newArrivals = Vehicle::forDealer($dealerId)
             ->active()
             ->when($locationId, fn($q) => $q->where('location_id', $locationId))
