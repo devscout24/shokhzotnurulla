@@ -106,9 +106,9 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="text-truncate me-2">
                             <a href="{{ route('frontend.inventory.show', $vehicle->slug) }}">
-                                <h2 class="h5 m-0 font-weight-bold text-truncate notranslate">
+                                <h5 class="h5 m-0 font-weight-bold text-truncate notranslate">
                                     {{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}
-                                </h2>
+                                </h5>
                             </a>
                         </div>
                         <div class="flex-shrink-0">

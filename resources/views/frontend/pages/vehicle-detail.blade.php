@@ -195,7 +195,7 @@
                             <div class="text-start">
 
                                 <h1 data-cy="vehicle-title"
-                                    class="h3 mt-0 mb-2 font-weight-bold notranslate">
+                                    class="vdp-vehicle-title mt-0 mb-2 font-weight-bold notranslate">
                                     {{ $vehicleTitle }}
                                 </h1>
 
@@ -459,9 +459,9 @@
                     <div class="px-4 py-3 bg-lighter font-weight-bold card-footer">
                         <div class="d-flex align-items-center row">
                             <div class="text-center text-md-start col-md-8 col-12">
-                                <h2 class="h5 my-0 font-weight-bold">
+                                <p class="h5 my-0 font-weight-bold">
                                     {{ $vehicleTitle }} Details
-                                </h2>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -714,7 +714,7 @@
                     @foreach($groupedOptions as $categoryName => $options)
                         <div class="px-4 py-3 card-footer">
                             <div class="collapse-header cursor-pointer d-flex align-items-center justify-content-between">
-                                <h3 class="h5 my-0 fw-bold mb-0">{{ $categoryName }}</h3>
+                                <h5 class="h5 my-0 fw-bold mb-0">{{ $categoryName }}</h5>
                                 <span class="text-primary d-inline-block collapse-icon">
                                     <svg width="16" height="16" viewBox="0 0 448 512" fill="currentColor">
                                         <path d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z"/>
@@ -740,9 +740,9 @@
                     @if(count($faqs) > 0)
                         <div class="px-4 py-3 card-footer">
                             <div class="collapse-header cursor-pointer d-flex align-items-center justify-content-between">
-                                <h3 class="h5 my-0 fw-bold mb-0">
+                                <h5 class="h5 my-0 fw-bold mb-0">
                                     Frequently asked questions about {{ $vehicleTitle }}
-                                </h3>
+                                </h5>
                                 <span class="text-primary d-inline-block collapse-icon">
                                     <svg width="16" height="16" viewBox="0 0 448 512" fill="currentColor">
                                         <path d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z"/>
@@ -756,7 +756,7 @@
                                 @foreach($faqs as $faq)
                                     <div class="accordion-item bg-white border border-bottom px-3 py-2">
                                         <div class="d-flex align-items-center justify-content-between cursor-pointer accordion-header">
-                                            <h3 class="h5 my-0 fw-bold mb-0">{{ $faq['question'] }}</h3>
+                                            <h5 class="h5 my-0 fw-bold mb-0">{{ $faq['question'] }}</h5>
                                             <span class="text-primary d-inline-block collapse-icon">
                                                 <svg width="16" height="16" viewBox="0 0 448 512" fill="currentColor">
                                                     <path d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z"/>
