@@ -9,8 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Media extends Model
 {
+    use \App\Models\Traits\HasLocationScope;
+
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'user_id',
         'original_name',
         'name',

@@ -15,7 +15,7 @@ class CustomerReviewController extends Controller
     public function index(): View
     {
         $categories = CustomerReviewCategory::orderBy('sort_order')->withCount('reviews')->get();
-        $reviews = CustomerReview::with('category')->orderBy('sort_order', 'desc')->get();
+        $reviews = CustomerReview::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
 
         return view('dealer.pages.website.customer-reviews.index', compact('reviews', 'categories'));
     }
@@ -34,8 +34,9 @@ class CustomerReviewController extends Controller
             'status'                      => 'required|string',
         ]);
 
+        $validated['location_id'] = CustomerReview::getActiveLocationId();
         $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = CustomerReview::max('sort_order') + 1;
+        $validated['sort_order'] = CustomerReview::forActiveLocation()->max('sort_order') + 1;
 
         $review = CustomerReview::create($validated);
         $review->load('category');
@@ -83,6 +84,7 @@ class CustomerReviewController extends Controller
             }
 
             $payload = [
+                'location_id'                 => CustomerReview::getActiveLocationId(),
                 'reviewer_name'               => $item['reviewer_name'] ?? '',
                 'review_headline'             => $item['review_headline'] ?? null,
                 'review_date'                 => $item['review_date'] ?? null,
@@ -103,7 +105,7 @@ class CustomerReviewController extends Controller
             }
         }
 
-        $all = CustomerReview::with('category')->orderBy('sort_order')->get();
+        $all = CustomerReview::forActiveLocation()->with('category')->orderBy('sort_order')->get();
         return response()->json($all);
     }
 

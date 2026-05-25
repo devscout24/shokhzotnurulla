@@ -10,7 +10,7 @@
             <div class="vd-modal-row" style="margin-bottom:14px;">
                 <div class="vd-modal-field" style="margin-bottom:0;">
                     <label class="vd-modal-label">
-                        Name <span class="req" style="color:#c0392b;">*</span>
+                        Name <span class="req" style="color:#ce4f4b;">*</span>
                     </label>
                     <select class="vd-select" id="printableNameSelect">
                         <option value="">Select...</option>

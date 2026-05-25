@@ -26,15 +26,31 @@
         </div>
         <div class="mobile-row-2">
             <div class="mobile-admin" id="mobileAdminToggle">
-                <i class="bi bi-building"></i>
-                <span>{{ __('Admin') }}</span>
+                <i class="bi bi-geo-alt"></i>
+                <span>{{ $currentLocation ? $currentLocation->name : __('All Locations') }}</span>
             </div>
             <div class="mobile-settings" id="mobileSettingsToggle">
                 <i class="bi bi-gear"></i>
                 <span>{{ __('Settings') }}</span>
             </div>
             <div class="mobile-admin-menu" id="mobileAdminMenu" role="menu" aria-hidden="true">
-                <a href="javascript:void(0)" class="settings-item" role="menuitem">{{ __('Admin Motors Inc') }}</a>
+                <a href="javascript:void(0)" class="settings-item" role="menuitem" onclick="event.preventDefault(); document.getElementById('switch-location-form-mobile-0').submit();">
+                    {{ __('All Locations') }}
+                </a>
+                <form id="switch-location-form-mobile-0" action="{{ route('dealer.switch-location') }}" method="POST" class="d-none">
+                    @csrf
+                    <input type="hidden" name="location_id" value="0">
+                </form>
+                
+                @foreach($availableLocations as $loc)
+                    <a href="javascript:void(0)" class="settings-item" role="menuitem" onclick="event.preventDefault(); document.getElementById('switch-location-form-mobile-{{ $loc->id }}').submit();">
+                        {{ $loc->name }}
+                    </a>
+                    <form id="switch-location-form-mobile-{{ $loc->id }}" action="{{ route('dealer.switch-location') }}" method="POST" class="d-none">
+                        @csrf
+                        <input type="hidden" name="location_id" value="{{ $loc->id }}">
+                    </form>
+                @endforeach
             </div>
             <div class="mobile-settings-menu" id="mobileSettingsMenu" role="menu" aria-hidden="true">
                 <a href="{{ route('dealer.settings.profile') }}" class="settings-item" role="menuitem">{{ __('My profile') }}</a>
@@ -103,10 +119,33 @@
         </div>
 
         <div class="topbar-right">
-            <div class="admin-dropdown">
-                <i class="bi bi-building"></i>
-                <span>{{ __('Admin Motors Inc') }}</span>
-                <i class="bi bi-chevron-down"></i>
+            <div class="settings-dropdown" id="locationDropdown" style="margin-right: 15px;">
+                <button class="settings-toggle" id="locationToggle" aria-expanded="false"
+                    aria-controls="locationMenu">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>{{ $currentLocation ? $currentLocation->name : __('All Locations') }}</span>
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+
+                <div class="settings-menu" id="locationMenu" role="menu" aria-hidden="true" style="min-width: 180px;">
+                    <a href="javascript:void(0)" class="settings-item" role="menuitem" onclick="event.preventDefault(); document.getElementById('switch-location-form-0').submit();">
+                        {{ __('All Locations') }}
+                    </a>
+                    <form id="switch-location-form-0" action="{{ route('dealer.switch-location') }}" method="POST" class="d-none">
+                        @csrf
+                        <input type="hidden" name="location_id" value="0">
+                    </form>
+                    
+                    @foreach($availableLocations as $loc)
+                        <a href="javascript:void(0)" class="settings-item" role="menuitem" onclick="event.preventDefault(); document.getElementById('switch-location-form-{{ $loc->id }}').submit();">
+                            {{ $loc->name }}
+                        </a>
+                        <form id="switch-location-form-{{ $loc->id }}" action="{{ route('dealer.switch-location') }}" method="POST" class="d-none">
+                            @csrf
+                            <input type="hidden" name="location_id" value="{{ $loc->id }}">
+                        </form>
+                    @endforeach
+                </div>
             </div>
 
             <div class="settings-dropdown" id="settingsDropdown">

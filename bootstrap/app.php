@@ -15,19 +15,27 @@ use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsDealer;
 use App\Http\Middleware\TeamsPermission;
+use App\Http\Middleware\SetLocationContext;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: [
+            '127.0.0.1',
+        ]);
+
         $middleware->web(append: [
             TeamsPermission::class,
+            SetLocationContext::class,
         ]);
         $middleware->priority([
             TeamsPermission::class,
+            SetLocationContext::class,
             SubstituteBindings::class,
         ]);
         $middleware->appendToGroup('all.active', [

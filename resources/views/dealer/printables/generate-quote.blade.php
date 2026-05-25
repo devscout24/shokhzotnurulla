@@ -46,7 +46,7 @@
         .quote-title h2 {
             font-size: 20px;
             font-weight: 700;
-            color: #c0392b;
+            color: #ce4f4b;
             text-transform: uppercase;
         }
         .quote-date {
@@ -61,7 +61,7 @@
             background: #f9fafb;
             padding: 8px 12px;
             margin: 20px 0 15px;
-            border-left: 4px solid #c0392b;
+            border-left: 4px solid #ce4f4b;
         }
         .grid {
             display: grid;
@@ -113,7 +113,7 @@
         .pricing-table .total-value {
             font-size: 20px;
             font-weight: 800;
-            color: #c0392b;
+            color: #ce4f4b;
         }
         .footer {
             margin-top: 50px;
@@ -140,7 +140,7 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #c0392b;
+            background: #ce4f4b;
             color: white;
             padding: 10px 20px;
             border-radius: 6px;

@@ -36,7 +36,7 @@
     </div>
     <div class="ps-footer mt-4 pt-3 border-top">
         <p class="mb-1 text-dark fw-bold" style="font-size: 14px;">Looking for Hot/Cold cars?</p>
-        <a href="{{ route('dealer.website.reports.hot-vehicles') }}" class="text-primary text-decoration-none" style="font-size: 13px;">View the report &rarr;</a>
+        <a href="{{ route('dealer.website.reports.hot-vehicles') }}" class="text-decoration-none" style="color: #333; font-size: 13px;">View the report &rarr;</a>
     </div>
 </div>
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dealer\ConnectionController;
 use App\Http\Controllers\Dealer\CustomerReviewController;
+use App\Http\Controllers\Dealer\DealerUserController;
 use App\Http\Controllers\Dealer\IncentiveController;
 use App\Http\Controllers\Dealer\InventoryController;
 use App\Http\Controllers\Dealer\InventoryReportController;
@@ -9,6 +10,8 @@ use App\Http\Controllers\Dealer\InventorySettingController;
 use App\Http\Controllers\Dealer\PricingSpecialController;
 use App\Http\Controllers\Dealer\PrintableController;
 use App\Http\Controllers\Dealer\SettingController;
+use App\Http\Controllers\Dealer\TwoFactorController;
+use App\Http\Controllers\Dealer\WebsiteBlogPostController;
 use App\Http\Controllers\Dealer\WebsiteDashboardController;
 use App\Http\Controllers\Dealer\WebsiteEventController;
 use App\Http\Controllers\Dealer\WebsiteFaqController;
@@ -17,26 +20,58 @@ use App\Http\Controllers\Dealer\WebsiteJobPostController;
 use App\Http\Controllers\Dealer\WebsiteMediaController;
 use App\Http\Controllers\Dealer\WebsiteMenuController;
 use App\Http\Controllers\Dealer\WebsitePageController;
-use App\Http\Controllers\Dealer\WebsiteBlogPostController;
 use App\Http\Controllers\Dealer\WebsitePromoBannerController;
 use App\Http\Controllers\Dealer\WebsiteReportController;
 use App\Http\Controllers\Dealer\WebsiteServiceOfferController;
 use App\Http\Controllers\Dealer\WebsiteSettingController;
+use App\Http\Controllers\Dealer\WebsiteSlideController;
 use App\Http\Controllers\Dealer\WebsiteSrpContentController;
 use App\Http\Controllers\Dealer\WebsiteStaffMemberController;
 use App\Http\Controllers\Dealer\WebsiteStaticPageContentController;
+use App\Http\Middleware\EnsureTwoFactorAuthenticated;
+use App\Models\Website\Location;
+use App\Services\Location\LocationContext;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('dealer')->name('dealer.')
-    ->middleware(['auth', 'verified', 'all.active', 'isDealer', \App\Http\Middleware\EnsureTwoFactorAuthenticated::class])
+    ->middleware(['auth', 'verified', 'all.active', 'isDealer', EnsureTwoFactorAuthenticated::class])
     ->group(function () {
+
+        // ─── Location Switcher ────────────────────────────────────────────────────
+        Route::post('/switch-location', function (Request $request) {
+            $locationId = (int) $request->input('location_id');
+            $locationContext = app(LocationContext::class);
+
+            if ($locationId === 0) {
+                $locationContext->clearActiveLocationId();
+            } else {
+                $dealer = null;
+                if (auth()->check() && auth()->user()->current_dealer_id) {
+                    $dealer = auth()->user()->currentDealer;
+                } elseif (app()->bound('currentDealer')) {
+                    $dealer = app('currentDealer');
+                }
+
+                $exists = Location::query()
+                    ->when($dealer, fn ($q) => $q->where('dealer_id', $dealer->id))
+                    ->where('id', $locationId)
+                    ->exists();
+
+                if ($exists) {
+                    $locationContext->setActiveLocationId($locationId);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Location context switched successfully!');
+        })->name('switch-location');
 
         // ─── 2FA ──────────────────────────────────────────────────────────────────
         Route::prefix('2fa')->name('2fa.')->group(function () {
-            Route::get('/verify', [\App\Http\Controllers\Dealer\TwoFactorController::class, 'showVerifyForm'])->name('verify');
-            Route::post('/verify', [\App\Http\Controllers\Dealer\TwoFactorController::class, 'verifyLogin'])->name('verify.post');
-            Route::post('/enable', [\App\Http\Controllers\Dealer\TwoFactorController::class, 'enable'])->name('enable');
-            Route::post('/disable', [\App\Http\Controllers\Dealer\TwoFactorController::class, 'disable'])->name('disable');
+            Route::get('/verify', [TwoFactorController::class, 'showVerifyForm'])->name('verify');
+            Route::post('/verify', [TwoFactorController::class, 'verifyLogin'])->name('verify.post');
+            Route::post('/enable', [TwoFactorController::class, 'enable'])->name('enable');
+            Route::post('/disable', [TwoFactorController::class, 'disable'])->name('disable');
         });
 
         // ─── Website ──────────────────────────────────────────────────────────────
@@ -91,14 +126,14 @@ Route::prefix('dealer')->name('dealer.')
 
             // ── Slides (CMS) ───────────────────────────────────────────────────────────
             Route::prefix('slides')->name('slides.')->group(function () {
-                Route::get('/', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'index'])->name('index');
-                Route::get('/create', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'create'])->name('create');
-                Route::post('/', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'store'])->name('store');
-                Route::get('/{slide}/edit', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'edit'])->name('edit');
-                Route::match(['PUT', 'PATCH'], '/{slide}', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'update'])->name('update');
-                Route::delete('/{slide}', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'destroy'])->name('destroy');
-                Route::post('/{slide}/duplicate', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'duplicate'])->name('duplicate');
-                Route::get('/by-tag/{tag}', [\App\Http\Controllers\Dealer\WebsiteSlideController::class, 'getByTag'])->name('by-tag');
+                Route::get('/', [WebsiteSlideController::class, 'index'])->name('index');
+                Route::get('/create', [WebsiteSlideController::class, 'create'])->name('create');
+                Route::post('/', [WebsiteSlideController::class, 'store'])->name('store');
+                Route::get('/{slide}/edit', [WebsiteSlideController::class, 'edit'])->name('edit');
+                Route::match(['PUT', 'PATCH'], '/{slide}', [WebsiteSlideController::class, 'update'])->name('update');
+                Route::delete('/{slide}', [WebsiteSlideController::class, 'destroy'])->name('destroy');
+                Route::post('/{slide}/duplicate', [WebsiteSlideController::class, 'duplicate'])->name('duplicate');
+                Route::get('/by-tag/{tag}', [WebsiteSlideController::class, 'getByTag'])->name('by-tag');
             });
 
             // ── FAQs (Reusable Content) ──────────────────────────────────────────────────
@@ -301,6 +336,7 @@ Route::prefix('dealer')->name('dealer.')
 
             // Listing page
             Route::get('/', [InventoryController::class, 'index'])->name('index');
+            Route::get('/export-inventory', [InventoryController::class, 'exportInventory'])->name('export-inventory');
 
             // Dashboard / Reports
             Route::get('/dashboard', [InventoryController::class, 'dashboard'])->name('dashboard');
@@ -442,12 +478,12 @@ Route::prefix('dealer')->name('dealer.')
             Route::get('/authentication', [SettingController::class, 'authentication'])->name('authentication');
             Route::get('/security', [SettingController::class, 'security'])->name('security');
             Route::patch('/security', [SettingController::class, 'updateSecurity'])->name('security.update');
-            
+
             // User Management
-            Route::get('/users', [\App\Http\Controllers\Dealer\DealerUserController::class, 'index'])->name('users.index');
-            Route::post('/users', [\App\Http\Controllers\Dealer\DealerUserController::class, 'store'])->name('users.store');
-            Route::patch('/users/{user}', [\App\Http\Controllers\Dealer\DealerUserController::class, 'update'])->name('users.update');
-            Route::delete('/users/{user}', [\App\Http\Controllers\Dealer\DealerUserController::class, 'destroy'])->name('users.destroy');
+            Route::get('/users', [DealerUserController::class, 'index'])->name('users.index');
+            Route::post('/users', [DealerUserController::class, 'store'])->name('users.store');
+            Route::patch('/users/{user}', [DealerUserController::class, 'update'])->name('users.update');
+            Route::delete('/users/{user}', [DealerUserController::class, 'destroy'])->name('users.destroy');
         });
 
     });

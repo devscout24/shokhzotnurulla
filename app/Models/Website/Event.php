@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
+    use \App\Models\Traits\HasLocationScope;
+
     protected $fillable = [
+        'location_id',
         'event_category_id',
         'title',
         'photo_url',

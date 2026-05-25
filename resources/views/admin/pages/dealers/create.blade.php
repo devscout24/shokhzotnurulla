@@ -31,14 +31,14 @@
         transition: border-color 0.2s;
     }
     .form-control:focus {
-        border-color: #c0392b;
+        border-color: #ce4f4b;
         outline: none;
         box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
     }
     .text-danger { color: #d93025; font-size: 12px; margin-top: 4px; }
     
     .btn-save {
-        background: #c0392b;
+        background: #ce4f4b;
         color: #fff;
         border: none;
         padding: 10px 24px;
@@ -101,6 +101,48 @@
                     @error('phone') <div class="text-danger">{{ $message }}</div> @enderror
                 </div>
 
+                <!-- Locations Management Section -->
+                <div class="form-group" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <label class="form-label" style="font-size: 15px; color: #ce4f4b;">Dealer Locations</label>
+                    
+                    <div id="locations-container">
+                        <!-- Add first location by default for convenience -->
+                        <div class="location-row" style="background: #fdfdfd; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 12px; position: relative;">
+                            <button type="button" class="btn-action text-danger" onclick="this.parentElement.remove()" style="position: absolute; top: 10px; right: 10px; border: none; background: transparent; cursor: pointer;">
+                                <i class="bi bi-trash" style="font-size: 16px;"></i>
+                            </button>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Location Name</label>
+                                    <input type="text" name="locations[0][name]" class="form-control" placeholder="e.g. Main Location" required>
+                                </div>
+                                <div>
+                                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Street Address</label>
+                                    <input type="text" name="locations[0][street1]" class="form-control" placeholder="e.g. 123 Main St" required>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-top: 8px;">
+                                <div>
+                                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">City</label>
+                                    <input type="text" name="locations[0][city]" class="form-control" placeholder="e.g. Los Angeles" required>
+                                </div>
+                                <div>
+                                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">State</label>
+                                    <input type="text" name="locations[0][state]" class="form-control" placeholder="e.g. CA" required>
+                                </div>
+                                <div>
+                                    <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Zip Code</label>
+                                    <input type="text" name="locations[0][postalcode]" class="form-control" placeholder="e.g. 90001" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn-save" onclick="addLocationRow()" style="background: #2e7d32; padding: 8px 16px; font-size: 12px; margin-top: 10px;">
+                        + Add Location
+                    </button>
+                </div>
+
                 <div style="margin-top: 30px; display: flex; align-items: center;">
                     <button type="submit" class="btn-save">Create Dealer</button>
                     <a href="{{ route('admin.dealers.index') }}" class="btn-cancel">Cancel</a>
@@ -125,6 +167,47 @@
             <button type="button" class="btn-action text-danger" onclick="this.parentElement.remove()" style="padding: 10px;"><i class="bi bi-trash"></i></button>
         `;
         container.appendChild(div);
+    }
+
+    let locationRowIndex = 1;
+    function addLocationRow() {
+        const container = document.getElementById('locations-container');
+        const div = document.createElement('div');
+        div.className = 'location-row';
+        div.style.cssText = 'background: #fdfdfd; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 12px; position: relative;';
+        
+        let html = '';
+        html += '<button type="button" class="btn-action text-danger" onclick="this.parentElement.remove()" style="position: absolute; top: 10px; right: 10px; border: none; background: transparent; cursor: pointer;">';
+        html += '    <i class="bi bi-trash" style="font-size: 16px;"></i>';
+        html += '</button>';
+        html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">';
+        html += '    <div>';
+        html += '        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Location Name</label>';
+        html += '        <input type="text" name="locations[' + locationRowIndex + '][name]" class="form-control" placeholder="e.g. Los Angeles" required>';
+        html += '    </div>';
+        html += '    <div>';
+        html += '        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Street Address</label>';
+        html += '        <input type="text" name="locations[' + locationRowIndex + '][street1]" class="form-control" placeholder="e.g. 123 Main St" required>';
+        html += '    </div>';
+        html += '</div>';
+        html += '<div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-top: 8px;">';
+        html += '    <div>';
+        html += '        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">City</label>';
+        html += '        <input type="text" name="locations[' + locationRowIndex + '][city]" class="form-control" placeholder="e.g. Los Angeles" required>';
+        html += '    </div>';
+        html += '    <div>';
+        html += '        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">State</label>';
+        html += '        <input type="text" name="locations[' + locationRowIndex + '][state]" class="form-control" placeholder="e.g. CA" required>';
+        html += '    </div>';
+        html += '    <div>';
+        html += '        <label style="font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 4px;">Zip Code</label>';
+        html += '        <input type="text" name="locations[' + locationRowIndex + '][postalcode]" class="form-control" placeholder="e.g. 90001" required>';
+        html += '    </div>';
+        html += '</div>';
+
+        div.innerHTML = html;
+        container.appendChild(div);
+        locationRowIndex++;
     }
 </script>
 @endpush

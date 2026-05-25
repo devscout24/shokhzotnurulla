@@ -365,6 +365,17 @@
             if (panel) panel.classList.add('active');
             if (key === 'analytics') initAnalyticsChart();
         }
+
+        // Update URL query parameter without page reload
+        if (history.replaceState) {
+            var url = new URL(window.location.href);
+            if (key === 'overview') {
+                url.searchParams.delete('nav');
+            } else {
+                url.searchParams.set('nav', key);
+            }
+            history.replaceState(null, '', url.pathname + url.search);
+        }
     }
 
     document.addEventListener('click', function (e) {
@@ -373,6 +384,13 @@
         var key = item.dataset.nav || item.dataset.svNav;
         if (!key) return;
         if (key === 'photos' || key === 'analytics') return;
+
+        // If the corresponding subview panel does not exist on the current page,
+        // let the browser perform normal navigation instead of intercepting it.
+        var panelId = navMap[key];
+        var panelExists = (panelId === null) ? !!document.querySelector('.vd-middle') : !!document.getElementById(panelId);
+        if (!panelExists) return;
+
         e.preventDefault();
         showNav(key);
     });
@@ -764,15 +782,65 @@
     /* ══════════════════════════════════
        FACTORY OPTIONS
     ══════════════════════════════════ */
+    var svFactoryOptions  = document.getElementById('svFactoryOptions');
     var svMain            = document.querySelector('#svFactoryOptions .vd-sv-main');
     var urlFactoryOptions = svMain ? svMain.dataset.urlFactoryOptions : '';
+    var keyFeaturesToggle = document.getElementById('vdKeyFeaturesToggle');
+    var starredOptionIds  = new Set(
+        Array.from(document.querySelectorAll('.vd-feat-star-btn.is-starred'))
+            .map(function (btn) { return parseInt(btn.dataset.optionId, 10); })
+    );
+
+    function updateFactoryOptionIcon(item, isChecked, isStarred) {
+        var iconWrap = item.querySelector('.vd-feat-checkbox-icon');
+        var icon     = item.querySelector('.vd-feat-checkbox-icon i');
+        if (!icon || !iconWrap) return;
+
+        iconWrap.classList.toggle('is-starred', !!(isChecked && isStarred));
+
+        if (!isChecked) {
+            icon.className = 'bi bi-square';
+            return;
+        }
+
+        icon.className = isStarred ? 'bi bi-star-fill' : 'bi bi-check-square-fill';
+    }
+
+    function ensureStarButton(item, isChecked, isStarred) {
+        var optionId = item.dataset.optionId;
+        var btn      = item.querySelector('.vd-feat-star-btn');
+
+        if (!isChecked) {
+            if (btn) btn.remove();
+            starredOptionIds.delete(parseInt(optionId, 10));
+            return;
+        }
+
+        if (!btn) {
+            btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'vd-feat-star-btn';
+            btn.dataset.optionId = optionId;
+            btn.innerHTML = '<i class="bi bi-star"></i>';
+            item.appendChild(btn);
+        }
+
+        btn.classList.toggle('is-starred', !!isStarred);
+        btn.title = isStarred ? 'Remove from key features' : 'Mark as key feature';
+        btn.setAttribute('aria-label', btn.title);
+        btn.querySelector('i').className = isStarred ? 'bi bi-star-fill' : 'bi bi-star';
+    }
 
     function saveFactoryOptions() {
         if (!urlFactoryOptions) return;
 
         var selectedIds = [];
-        document.querySelectorAll('.vd-factory-option-cb:checked').forEach(function (cb) {
-            selectedIds.push(parseInt(cb.dataset.optionId));
+        document.querySelectorAll('#svFactoryOptions .vd-factory-option-cb:checked').forEach(function (cb) {
+            selectedIds.push(parseInt(cb.dataset.optionId, 10));
+        });
+
+        var starredIds = selectedIds.filter(function (id) {
+            return starredOptionIds.has(id);
         });
 
         fetch(urlFactoryOptions, {
@@ -785,7 +853,7 @@
             },
             body: JSON.stringify({
                 selected_ids: selectedIds,
-                starred_ids:  [],
+                starred_ids:  starredIds,
             }),
         })
         .then(function (res) { return res.json(); })
@@ -801,17 +869,66 @@
         });
     }
 
+    if (keyFeaturesToggle && svFactoryOptions) {
+        keyFeaturesToggle.addEventListener('click', function () {
+            var isActive = svFactoryOptions.classList.toggle('vd-key-features-mode');
+            keyFeaturesToggle.classList.toggle('is-active', isActive);
+            keyFeaturesToggle.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+    }
+
     document.addEventListener('click', function (e) {
-        var label = e.target.closest('.vd-feat-check-label');
-        if (!label) return;
-        e.preventDefault();
-        var cb   = label.querySelector('.vd-factory-option-cb');
-        var icon = label.querySelector('.vd-feat-checkbox-icon i');
-        if (!cb) return;
-        cb.checked = !cb.checked;
-        if (icon) {
-            icon.className = cb.checked ? 'bi bi-check-square-fill' : 'bi bi-square';
+        var starBtn = e.target.closest('.vd-feat-star-btn');
+        if (starBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            var starItem = starBtn.closest('.vd-feat-item');
+            var starId   = parseInt(starBtn.dataset.optionId, 10);
+            var starred  = !starredOptionIds.has(starId);
+
+            if (starred) {
+                starredOptionIds.add(starId);
+            } else {
+                starredOptionIds.delete(starId);
+            }
+
+            ensureStarButton(starItem, true, starred);
+            updateFactoryOptionIcon(starItem, true, starred);
+            saveFactoryOptions();
+            return;
         }
+
+        var label = e.target.closest('.vd-feat-check-label');
+        if (!label || !label.closest('#svFactoryOptions')) return;
+
+        e.preventDefault();
+        var item = label.closest('.vd-feat-item');
+        var cb   = label.querySelector('.vd-factory-option-cb');
+        if (!cb || !item) return;
+
+        var optionId = parseInt(cb.dataset.optionId, 10);
+        var keyMode  = svFactoryOptions && svFactoryOptions.classList.contains('vd-key-features-mode');
+
+        if (keyMode && cb.checked) {
+            var togglingStar = !starredOptionIds.has(optionId);
+            if (togglingStar) {
+                starredOptionIds.add(optionId);
+            } else {
+                starredOptionIds.delete(optionId);
+            }
+            ensureStarButton(item, true, togglingStar);
+            updateFactoryOptionIcon(item, true, togglingStar);
+            saveFactoryOptions();
+            return;
+        }
+
+        cb.checked = !cb.checked;
+        if (!cb.checked) {
+            starredOptionIds.delete(optionId);
+        }
+
+        ensureStarButton(item, cb.checked, starredOptionIds.has(optionId));
+        updateFactoryOptionIcon(item, cb.checked, starredOptionIds.has(optionId));
         saveFactoryOptions();
     });
 
@@ -822,7 +939,12 @@
         updateVideoPreview();
     }
 
-    showNav('overview');
+    // Only initialize and run showNav if we are on the main VDP details page
+    if (document.querySelector('.vd-middle')) {
+        var urlParams = new URLSearchParams(window.location.search);
+        var navKey = urlParams.get('nav') || 'overview';
+        showNav(navKey);
+    }
 
     /* ══════════════════════════════════
        PREMIUM BUILD OPTIONS

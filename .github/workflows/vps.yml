@@ -27,10 +27,8 @@ jobs:
         run: |
           # Install PHP dependencies
           composer install --no-dev --optimize-autoloader
-          
-          # Install Node dependencies and build Vite/Mix assets
-          npm install
-          npm run build
+
+          # install node packages
 
       - name: 📂 Rsync Deployment
         uses: Burnett01/rsync-deployments@7.0.0
@@ -39,9 +37,9 @@ jobs:
           # --no-perms/owner/group: Let CloudPanel's Site User handle permissions on arrival
           switches: -avzr --delete --no-perms --no-owner --no-group --exclude-from='.deployignore'
           path: ./
-          remote_path: /home/webgurus365/htdocs/webgurus365.com/
-          remote_host: webgurus365.com
-          remote_user: webgurus365
+          remote_path: /home/webgurus365-dealers/htdocs/dealers.webgurus365.com/
+          remote_host: dealers.webgurus365.com
+          remote_user: webgurus365-dealers
           remote_port: 22
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
@@ -49,8 +47,8 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key webgurus365@webgurus365.com << 'EOF'
-            cd /home/webgurus365/htdocs/webgurus365.com
+          ssh -o StrictHostKeyChecking=no -i private_key webgurus365-dealers@dealers.webgurus365.com << 'EOF'
+            cd /home/webgurus365-dealers/htdocs/dealers.webgurus365.com
             
             # Run Laravel optimizations
             # Note: We don't run 'npm install' here because we built assets in the CI step above
@@ -58,5 +56,5 @@ jobs:
             php artisan optimize:clear
             
             chmod -R 775 storage bootstrap/cache
-            chown -R webgurus365:webgurus365 storage bootstrap/cache
+            chown -R webgurus365-dealers:webgurus365-dealers storage bootstrap/cache
           EOF

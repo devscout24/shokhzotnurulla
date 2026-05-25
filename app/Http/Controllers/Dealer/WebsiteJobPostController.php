@@ -15,7 +15,7 @@ class WebsiteJobPostController extends Controller
     public function index(): View
     {
         $categories = JobPostCategory::orderBy('sort_order')->withCount('jobPosts')->get();
-        $jobs = JobPost::with('category')->orderBy('sort_order', 'desc')->get();
+        $jobs = JobPost::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
 
         return view('dealer.pages.website.job-posts.index', compact('jobs', 'categories'));
     }
@@ -29,8 +29,9 @@ class WebsiteJobPostController extends Controller
             'status'               => 'required|string',
         ]);
 
+        $validated['location_id'] = JobPost::getActiveLocationId();
         $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = JobPost::max('sort_order') + 1;
+        $validated['sort_order'] = JobPost::forActiveLocation()->max('sort_order') + 1;
 
         $job = JobPost::create($validated);
         $job->load('category');
@@ -73,6 +74,7 @@ class WebsiteJobPostController extends Controller
             }
 
             $payload = [
+                'location_id'          => JobPost::getActiveLocationId(),
                 'job_title'            => $item['job_title'] ?? '',
                 'job_post_category_id' => $item['job_post_category_id'] ?? null,
                 'job_description'      => $item['job_description'] ?? '',
@@ -88,7 +90,7 @@ class WebsiteJobPostController extends Controller
             }
         }
 
-        $all = JobPost::with('category')->orderBy('sort_order')->get();
+        $all = JobPost::forActiveLocation()->with('category')->orderBy('sort_order')->get();
         return response()->json($all);
     }
 

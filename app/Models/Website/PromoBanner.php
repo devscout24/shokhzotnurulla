@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class PromoBanner extends Model
 {
+    use \App\Models\Traits\HasLocationScope;
+
     protected $fillable = [
+        'location_id',
         'promo_category_id',
         'title',
         'disclaimer',

@@ -8,6 +8,7 @@ class WebsiteVisitorLog extends Model
 {
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'ip_address',
         'device_brand',
         'device_model',

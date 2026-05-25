@@ -46,6 +46,12 @@ class VehicleSpec extends Model
         'rear_wheel',
         'front_tire',
         'rear_tire',
+        'factory_certified',
+        'dealer_certified',
+        'chrome_style_id',
+        'exterior_color_code',
+        'interior_color_code',
+        'interior_material',
     ];
 
     protected $casts = [
@@ -55,6 +61,8 @@ class VehicleSpec extends Model
         'ev_battery_capacity'  => 'decimal:1',
         'ev_charger_rating'    => 'decimal:1',
         'axle_ratio'           => 'decimal:2',
+        'factory_certified'    => 'boolean',
+        'dealer_certified'     => 'boolean',
     ];
 
     // ─── Relationships ────────────────────────────────────────────────────────

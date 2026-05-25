@@ -9,8 +9,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CustomerReview extends Model
 {
     use HasFactory;
+    use \App\Models\Traits\HasLocationScope;
 
     protected $fillable = [
+        'location_id',
         'reviewer_name',
         'review_headline',
         'review_date',

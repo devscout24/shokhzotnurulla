@@ -11,11 +11,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class BlogPost extends Model
 {
     use SoftDeletes;
+    use \App\Models\Traits\HasLocationScope;
 
     protected $table = 'blog_posts';
 
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'title',
         'slug',
         'content',

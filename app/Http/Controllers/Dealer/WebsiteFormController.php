@@ -19,6 +19,7 @@ class WebsiteFormController extends Controller
         $dealerId = $request->user()->current_dealer_id;
 
         $query = FormEntry::where('dealer_id', $dealerId)
+            ->forActiveLocation()
             ->with('vehicle')
             ->latest('submitted_at');
 
@@ -165,6 +166,7 @@ class WebsiteFormController extends Controller
         $filename = 'form-entries-' . now()->format('Y-m-d') . '.csv';
 
         $entries = FormEntry::where('dealer_id', $dealerId)
+            ->forActiveLocation()
             ->with('vehicle')
             ->latest('submitted_at')
             ->get();
@@ -211,7 +213,7 @@ class WebsiteFormController extends Controller
 
     private function getCounts(int $dealerId): array
     {
-        $base = FormEntry::where('dealer_id', $dealerId);
+        $base = FormEntry::where('dealer_id', $dealerId)->forActiveLocation();
 
         return [
             'all'      => (clone $base)->count(),

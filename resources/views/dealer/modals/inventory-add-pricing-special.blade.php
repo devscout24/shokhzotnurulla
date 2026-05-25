@@ -115,7 +115,7 @@
 
                 <label class="ps-form-label">Location(s):</label>
                 <button type="button" class="ps-locations-btn">
-                    <i class="bi bi-geo-alt-fill" style="color:#c0392b;font-size:12px;"></i>
+                    <i class="bi bi-geo-alt-fill" style="color:#ce4f4b;font-size:12px;"></i>
                     All Locations
                     <i class="bi bi-chevron-down ms-auto" style="font-size:10px;color:#888;"></i>
                 </button>

@@ -9,32 +9,37 @@ class MenuObserver
 {
     public function created(Menu $menu): void
     {
-        $this->bustCache($menu->dealer_id);
+        $this->bustCache($menu);
     }
 
     public function updated(Menu $menu): void
     {
-        $this->bustCache($menu->dealer_id);
+        $this->bustCache($menu);
     }
 
     public function deleted(Menu $menu): void
     {
-        $this->bustCache($menu->dealer_id);
+        $this->bustCache($menu);
     }
 
     public function restored(Menu $menu): void
     {
-        $this->bustCache($menu->dealer_id);
+        $this->bustCache($menu);
     }
 
     public function forceDeleted(Menu $menu): void
     {
-        $this->bustCache($menu->dealer_id);
+        $this->bustCache($menu);
     }
 
-    private function bustCache(int $dealerId): void
+    private function bustCache(Menu $menu): void
     {
-        Cache::forget("dealer_{$dealerId}_main_menu");
-        Cache::forget("dealer_{$dealerId}_footer_menu");
+        $dealerId = $menu->dealer_id;
+        $locationId = $menu->location_id;
+
+        Cache::forget("dealer_{$dealerId}_location_{$locationId}_main_menu");
+        Cache::forget("dealer_{$dealerId}_location_{$locationId}_footer_menu");
+        Cache::forget("dealer_{$dealerId}_location__main_menu");
+        Cache::forget("dealer_{$dealerId}_location__footer_menu");
     }
 }

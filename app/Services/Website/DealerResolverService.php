@@ -43,8 +43,8 @@ class DealerResolverService
                 }
 
                 // Fallback for local development
-                if (app()->isLocal() || config('app.debug') || str_ends_with($domain, '.test') || str_ends_with($domain, '.team') || in_array($domain, ['localhost', '127.0.0.1', '::1'])) {
-                    $firstDealer = Dealer::first(['id']);
+                if (app()->isLocal() || config('app.fallback_allowed') || str_ends_with($domain, '.test') || str_ends_with($domain, '.team') || in_array($domain, ['localhost', '127.0.0.1', '::1'])) {
+                    $firstDealer = Dealer::find(2);
                     if ($firstDealer) {
                         return $firstDealer->id;
                     }

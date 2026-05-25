@@ -42,8 +42,11 @@ class LogWebsiteVisit
                 return null;
             });
 
+            $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
+
             WebsiteVisitorLog::create([
                 'dealer_id'    => $dealerId,
+                'location_id'  => $locationId ?: null,
                 'ip_address'   => $ip,
                 'device_brand' => $agent->device(),
                 'device_model' => $agent->platform(),

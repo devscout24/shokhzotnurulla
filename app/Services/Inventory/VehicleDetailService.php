@@ -75,8 +75,11 @@ final class VehicleDetailService
 
     public function relatedVehicles(Vehicle $vehicle, int $dealerId): Collection
     {
+        $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
+
         $related = Vehicle::forDealer($dealerId)
             ->active()
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->where('id', '!=', $vehicle->id)
             ->where('make_id', $vehicle->make_id)
             ->select(self::RELATED_COLUMNS)
@@ -91,6 +94,7 @@ final class VehicleDetailService
 
             $fallback = Vehicle::forDealer($dealerId)
                 ->active()
+                ->when($locationId, fn($q) => $q->where('location_id', $locationId))
                 ->whereNotIn('id', $existingIds)
                 ->select(self::RELATED_COLUMNS)
                 ->with($this->relatedWith())

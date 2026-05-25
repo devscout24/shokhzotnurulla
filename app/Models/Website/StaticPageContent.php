@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Builder;
 class StaticPageContent extends Model
 {
     use SoftDeletes;
+    use \App\Models\Traits\HasLocationScope;
 
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'static_page_category_id',
         'nickname',
         'slug',

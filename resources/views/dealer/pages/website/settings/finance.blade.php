@@ -34,7 +34,7 @@
     .ws-sidebar .menu-item:last-child { border-bottom: none; }
     .ws-sidebar .menu-item:hover { background: #f8f8f8; color: #555; }
     .ws-sidebar .menu-item.active {
-        color: #c0392b;
+        color: #ce4f4b;
         font-weight: 700;
         background: #fff;
     }
@@ -45,7 +45,7 @@
         color: #aaa;
         flex-shrink: 0;
     }
-    .ws-sidebar .menu-item.active .ws-icon { color: #c0392b; }
+    .ws-sidebar .menu-item.active .ws-icon { color: #ce4f4b; }
 
     /* ── Right Content ── */
     .ir-content {
@@ -76,7 +76,7 @@
         color: #333;
     }
     .ir-btn-add {
-        background: #c0392b;
+        background: #ce4f4b;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -99,7 +99,7 @@
         line-height: 1.6;
     }
     .ir-notice a {
-        color: #c0392b;
+        color: #ce4f4b;
         text-decoration: underline;
         transition: color 0.15s;
     }

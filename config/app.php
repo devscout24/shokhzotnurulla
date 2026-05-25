@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'fallback_allowed' => env('FALLBACK_ALLOWED', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

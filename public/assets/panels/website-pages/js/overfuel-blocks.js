@@ -110,6 +110,19 @@ function openOverlaySettings(el) {
 ['inv-cancel-btn', 'fs-cancel-btn', 'search-cancel-btn', 'car-cancel-btn', 'map-cancel-btn', 'blg-cancel-btn', 'cb-cancel-btn', 'bt-cancel-btn', 'plg-cancel-btn', 'tabs-cancel-btn', 'ov-cancel-btn'].forEach(id => {
     document.getElementById(id)?.addEventListener('click', closeAllPanels);
 });
+['inv-remove-btn', 'fs-remove-btn', 'search-remove-btn', 'car-remove-btn', 'map-remove-btn', 'blg-remove-btn', 'cb-remove-btn', 'bt-remove-btn', 'plg-remove-btn', 'tabs-remove-btn', 'ov-remove-btn'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', () => {
+        if (activeEl) {
+            const block = activeEl.closest('.dropped-block');
+            if (block) {
+                block.remove();
+                if (typeof checkEmptyBlocks === 'function') checkEmptyBlocks();
+                if (typeof saveHistory === 'function') saveHistory();
+            }
+        }
+        closeAllPanels();
+    });
+});
 
 // Tabs Add Item
 document.getElementById('tabs-add-btn')?.addEventListener('click', () => {

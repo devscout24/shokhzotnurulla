@@ -35,10 +35,11 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
 class Vehicle extends Model
 {
-    use HasFactory, SoftDeletes, \App\Traits\BelongsToDealer;
+    use HasFactory, SoftDeletes, \App\Traits\BelongsToDealer, \App\Traits\BelongsToLocation;
 
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'ulid',
         'stock_number',
         'vin',
@@ -282,5 +283,19 @@ class Vehicle extends Model
     public function scopeOnHold($query)
     {
         return $query->where('is_on_hold', true);
+    }
+
+    /**
+     * Retrieve the model for a bound value.
+     *
+     * @param  mixed  $value
+     * @param  string|null  $field
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->withoutGlobalScope(\App\Models\Scopes\LocationScope::class)
+            ->where($field ?? $this->getRouteKeyName(), $value)
+            ->firstOrFail();
     }
 }

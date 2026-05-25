@@ -17,6 +17,7 @@ class WebsiteBlogPostController extends Controller
         $dealerId = $request->user()->current_dealer_id;
 
         $posts = BlogPost::forDealer($dealerId)
+            ->forActiveLocation()
             ->orderByPublished()
             ->paginate(20);
 
@@ -63,6 +64,7 @@ class WebsiteBlogPostController extends Controller
 
         // Check slug uniqueness for this dealer
         $exists = BlogPost::forDealer($dealerId)
+            ->forActiveLocation()
             ->where('slug', $validated['slug'])
             ->exists();
 
@@ -78,6 +80,7 @@ class WebsiteBlogPostController extends Controller
 
         BlogPost::create([
             'dealer_id'        => $dealerId,
+            'location_id'      => BlogPost::getActiveLocationId(),
             'title'            => $validated['title'],
             'slug'             => $validated['slug'],
             'content'          => $validated['content'] ?? '[]',
@@ -136,6 +139,7 @@ class WebsiteBlogPostController extends Controller
 
         // Check slug uniqueness (excluding current post)
         $exists = BlogPost::forDealer($dealerId)
+            ->forActiveLocation()
             ->where('slug', $validated['slug'])
             ->where('id', '!=', $blogPost->id)
             ->exists();
@@ -207,6 +211,7 @@ class WebsiteBlogPostController extends Controller
         $dealerId = $request->user()->current_dealer_id;
 
         $posts = BlogPost::forDealer($dealerId)
+            ->forActiveLocation()
             ->active()
             ->published()
             ->byTag($tag)

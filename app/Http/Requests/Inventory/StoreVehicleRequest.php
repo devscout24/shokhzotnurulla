@@ -16,6 +16,10 @@ class StoreVehicleRequest extends FormRequest
         $dealerId = $this->user()->current_dealer_id;
 
         return [
+            'location_id'       => [
+                'required', 'integer',
+                "exists:locations,id,dealer_id,{$dealerId}",
+            ],
             // ── Core identity ──────────────────────────────────────────────────
             'vin'               => [
                 'nullable', 'string', 'size:17',

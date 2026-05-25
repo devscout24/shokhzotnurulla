@@ -17,6 +17,7 @@ class WebsitePageController extends Controller
         $dealerId = $request->user()->current_dealer_id;
 
         $pages = Page::forDealer($dealerId)
+            ->forActiveLocation()
             ->orderByPublished()
             ->paginate(20);
 
@@ -63,6 +64,7 @@ class WebsitePageController extends Controller
 
         // Check slug uniqueness for this dealer
         $exists = Page::forDealer($dealerId)
+            ->forActiveLocation()
             ->where('slug', $validated['slug'])
             ->exists();
 
@@ -78,6 +80,7 @@ class WebsitePageController extends Controller
 
         Page::create([
             'dealer_id'        => $dealerId,
+            'location_id'      => Page::getActiveLocationId(),
             'title'            => $validated['title'],
             'slug'             => $validated['slug'],
             'content'          => $validated['content'] ?? '[]',
@@ -136,6 +139,7 @@ class WebsitePageController extends Controller
 
         // Check slug uniqueness (excluding current page)
         $exists = Page::forDealer($dealerId)
+            ->forActiveLocation()
             ->where('slug', $validated['slug'])
             ->where('id', '!=', $page->id)
             ->exists();
@@ -206,6 +210,7 @@ class WebsitePageController extends Controller
         $dealerId = $request->user()->current_dealer_id;
 
         $pages = Page::forDealer($dealerId)
+            ->forActiveLocation()
             ->active()
             ->published()
             ->byTag($tag)

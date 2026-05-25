@@ -18,6 +18,7 @@ class WebsiteSlideController extends Controller
         $dealerId = $request->user()->current_dealer_id;
 
         $slides = Slide::forDealer($dealerId)
+            ->forActiveLocation()
             ->orderByPublished()
             ->paginate(20);
 
@@ -64,6 +65,7 @@ class WebsiteSlideController extends Controller
 
         // Check slug uniqueness for this dealer
         $exists = Slide::forDealer($dealerId)
+            ->forActiveLocation()
             ->where('slug', $validated['slug'])
             ->exists();
 
@@ -79,6 +81,7 @@ class WebsiteSlideController extends Controller
 
         Slide::create([
             'dealer_id'        => $dealerId,
+            'location_id'      => Slide::getActiveLocationId(),
             'title'            => $validated['title'],
             'slug'             => $validated['slug'],
             'content'          => $validated['content'] ?? '[]',
@@ -137,6 +140,7 @@ class WebsiteSlideController extends Controller
 
         // Check slug uniqueness (excluding current slide)
         $exists = Slide::forDealer($dealerId)
+            ->forActiveLocation()
             ->where('slug', $validated['slug'])
             ->where('id', '!=', $slide->id)
             ->exists();
@@ -207,6 +211,7 @@ class WebsiteSlideController extends Controller
         $dealerId = $request->user()->current_dealer_id;
 
         $slides = Slide::forDealer($dealerId)
+            ->forActiveLocation()
             ->active()
             ->published()
             ->byTag($tag)

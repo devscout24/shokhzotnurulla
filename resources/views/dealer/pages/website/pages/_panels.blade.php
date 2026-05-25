@@ -39,7 +39,7 @@ $visibilityHtml = '
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
 <div class="hs-actions">
-    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" onclick="closeAllPanels()" style="background:#c0392b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
+    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" onclick="closeAllPanels()" style="background:#ce4f4b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
     <button type="button" class="hs-btn-remove" id="hs-remove-btn" style="flex:1"><i class="fa-regular fa-trash-can"></i> Remove</button>
 </div>
 <div class="hs-actions mt-2">
@@ -56,7 +56,7 @@ $visibilityHtml = '
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
 <div class="hs-actions">
-    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" onclick="closeAllPanels()" style="background:#c0392b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
+    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" onclick="closeAllPanels()" style="background:#ce4f4b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
     <button type="button" class="hs-btn-remove" id="ts-remove-btn" style="flex:1"><i class="fa-regular fa-trash-can"></i> Remove</button>
 </div>
 <div class="hs-actions mt-2">
@@ -74,7 +74,7 @@ $visibilityHtml = '
 {!! $visibilityHtml !!}
 <hr class="bs-divider"/>
 <div class="hs-actions">
-    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" onclick="closeAllPanels()" style="background:#c0392b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
+    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" onclick="closeAllPanels()" style="background:#ce4f4b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
     <button type="button" class="hs-btn-remove" id="bs-remove-btn" style="flex:1"><i class="fa-regular fa-trash-can"></i> Remove</button>
 </div>
 <div class="hs-actions mt-2">
@@ -100,7 +100,7 @@ $visibilityHtml = '
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
 <div class="hs-actions">
-    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" id="is-apply-btn" style="background:#c0392b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
+    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" id="is-apply-btn" style="background:#ce4f4b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
     <button type="button" class="hs-btn-remove" id="is-remove-btn" style="flex:1"><i class="fa-regular fa-trash-can"></i> Remove</button>
 </div>
 <div class="hs-actions mt-2">
@@ -125,7 +125,7 @@ $visibilityHtml = '
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
 <div class="hs-actions">
-    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" id="vs-apply-btn" style="background:#c0392b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
+    <button type="button" class="btn btn-danger btn-sm flex-1 fw-bold" id="vs-apply-btn" style="background:#ce4f4b; border-radius:8px; padding:10px; flex:1">Apply Changes</button>
     <button type="button" class="hs-btn-remove" id="vs-remove-btn" style="flex:1"><i class="fa-regular fa-trash-can"></i> Remove</button>
 </div>
 <div class="hs-actions mt-2">

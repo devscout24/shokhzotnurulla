@@ -11,9 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Slide extends Model
 {
     use SoftDeletes;
+    use \App\Models\Traits\HasLocationScope;
 
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'title',
         'slug',
         'content',

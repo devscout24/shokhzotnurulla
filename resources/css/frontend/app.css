@@ -980,3 +980,61 @@ svg.text-primary,
     align-items: flex-start;
     gap: 8px;
 }
+
+/* ── Location Pill Switcher ─────────────────────────────────────────────── */
+/*  Used in the preheader (dark bg) and mobile strip (dark bg).              */
+.location-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 11px;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    line-height: 1.5;
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    white-space: nowrap;
+    text-decoration: none;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.location-pill:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.75);
+    color: #fff;
+}
+
+.location-pill--active {
+    background: rgba(255, 255, 255, 0.92);
+    border-color: #fff;
+    color: #166B87;
+    font-weight: 600;
+    pointer-events: none;
+    cursor: default;
+}
+
+/* Smaller variant for the mobile strip */
+.location-pill--sm {
+    padding: 2px 9px;
+    font-size: 0.72rem;
+}
+
+/* Mobile location strip — sits below the main mobile nav row */
+.mobile-location-strip {
+    background: #1a1a1a;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.72rem;
+    min-height: 26px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mobile-location-strip i {
+    color: rgba(255, 255, 255, 0.55);
+}

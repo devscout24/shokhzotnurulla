@@ -51,7 +51,7 @@
         .section-title {
             font-size: 11px;
             font-weight: 800;
-            color: #adb5bd;
+            color: #ce4f4b;
             text-transform: uppercase;
             letter-spacing: 1.2px;
             margin: 25px 0 15px
@@ -84,7 +84,7 @@
             font-size: 22px;
             display: block;
             margin-bottom: 10px;
-            color: #adb5bd
+            color: #ce4f4b
         }
 
         .block-item span {
@@ -157,7 +157,7 @@
 
         .hs-btn-remove {
             background: #fff5f5;
-            color: #c0392b;
+            color: #ce4f4b;
             border: 1px solid #ffe3e3;
             padding: 10px 15px;
             border-radius: 8px;
@@ -172,7 +172,7 @@
         }
 
         .hs-btn-remove:hover {
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff
         }
 
@@ -230,7 +230,7 @@
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
-            color: #adb5bd;
+            color: #ce4f4b;
             margin-bottom: 15px;
             letter-spacing: 1px;
         }
@@ -246,13 +246,13 @@
         }
 
         .featured-image-box:hover {
-            border-color: #adb5bd;
+            border-color: #ce4f4b;
             background: #fffcfc;
         }
 
         .featured-image-box i {
             font-size: 32px;
-            color: #adb5bd;
+            color: #ce4f4b;
             margin-bottom: 12px;
         }
 
@@ -298,7 +298,7 @@
 
         .btn-restore {
             background: #fff5f5;
-            color: #c0392b;
+            color: #ce4f4b;
             border: 1px solid #ffe3e3;
             padding: 4px 12px;
             border-radius: 6px;
@@ -308,13 +308,13 @@
         }
 
         .btn-restore:hover {
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff;
         }
 
         #drop-indicator {
             height: 4px;
-            background: #adb5bd;
+            background: #ce4f4b;
             border-radius: 2px;
             margin: 10px 0;
             width: 100%;
@@ -324,7 +324,7 @@
 
         .drag-over {
             background-color: rgba(0, 0, 0, 0.02) !important;
-            outline: 2px dashed #adb5bd !important;
+            outline: 2px dashed #ce4f4b !important;
             outline-offset: -2px;
         }
 
@@ -334,7 +334,7 @@
             padding: 10px 0;
             border-bottom: 1px solid #f1f3f5;
             margin-bottom: 20px;
-            color: #adb5bd;
+            color: #ce4f4b;
         }
 
         .editor-empty-badge {
@@ -353,7 +353,7 @@
             border: none;
             background: transparent;
             font-size: 14px;
-            color: #adb5bd;
+            color: #ce4f4b;
             width: 100%;
             outline: none;
         }
@@ -582,7 +582,7 @@
                 </div>
                 <div class="side-panel-footer">
                     <button type="button" class="btn btn-danger w-100 fw-bold" onclick="toggleSidePanel('page-settings')"
-                        style="background:#c0392b">Apply Settings</button>
+                        style="background:#ce4f4b">Apply Settings</button>
                 </div>
             </div>
 

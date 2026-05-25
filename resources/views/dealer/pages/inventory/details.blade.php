@@ -342,6 +342,17 @@
                                         </select>
                                     </div>
                                     <div class="vd-det-field">
+                                        <label class="vd-field-label">Location <span class="req">*</span></label>
+                                        <select name="location_id" class="vd-select" required>
+                                            <option value="">Select Location</option>
+                                            @foreach($availableLocations as $loc)
+                                                <option value="{{ $loc->id }}" {{ $vehicle->location_id == $loc->id ? 'selected' : '' }}>
+                                                    {{ $loc->name }} ({{ $loc->city }}, {{ $loc->state }})
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="vd-det-field">
                                         <label class="vd-field-label">Year <span class="req">*</span></label>
                                         <input type="number" name="year" class="vd-input"
                                                value="{{ $vehicle->year }}"
@@ -460,7 +471,7 @@
 
                                 {{-- ── Powertrain ── --}}
                                 <div id="det-powertrain" class="vd-det-section">
-                                    <i class="bi bi-cpu-fill" style="color:#c0392b;"></i> Powertrain
+                                    <i class="bi bi-cpu-fill" style="color:#ce4f4b;"></i> Powertrain
                                 </div>
                                 <div class="vd-det-grid">
                                     <div class="vd-det-field vd-det-field-span2">
@@ -554,7 +565,7 @@
 
                                 {{-- ── Fuel / Battery ── --}}
                                 <div id="det-fuel" class="vd-det-section">
-                                    <i class="bi bi-fuel-pump-fill" style="color:#c0392b;"></i> Fuel / Battery
+                                    <i class="bi bi-fuel-pump-fill" style="color:#ce4f4b;"></i> Fuel / Battery
                                 </div>
                                 <div class="vd-det-grid">
                                     <div class="vd-det-field">
@@ -592,7 +603,7 @@
 
                                 {{-- ── Dimensions & sizes ── --}}
                                 <div id="det-dimensions" class="vd-det-section">
-                                    <i class="bi bi-pencil-fill" style="color:#c0392b;"></i> Dimensions &amp; sizes
+                                    <i class="bi bi-pencil-fill" style="color:#ce4f4b;"></i> Dimensions &amp; sizes
                                 </div>
                                 <div class="vd-det-grid">
                                     <div class="vd-det-field">
@@ -650,6 +661,42 @@
                                         <label class="vd-field-label">Rear tire size</label>
                                         <input type="text" name="rear_tire" class="vd-input"
                                                value="{{ $vehicle->specs->rear_tire ?? '' }}">
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Factory Certified</label>
+                                        <select name="factory_certified" class="vd-select">
+                                            <option value="">—</option>
+                                            <option value="1" {{ ($vehicle->specs->factory_certified ?? null) == 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ ($vehicle->specs->factory_certified ?? null) === 0 || ($vehicle->specs->factory_certified ?? null) === '0' ? 'selected' : '' }}>No</option>
+                                        </select>
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Dealer Certified</label>
+                                        <select name="dealer_certified" class="vd-select">
+                                            <option value="">—</option>
+                                            <option value="1" {{ ($vehicle->specs->dealer_certified ?? null) == 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ ($vehicle->specs->dealer_certified ?? null) === 0 || ($vehicle->specs->dealer_certified ?? null) === '0' ? 'selected' : '' }}>No</option>
+                                        </select>
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Chrome Style ID</label>
+                                        <input type="text" name="chrome_style_id" class="vd-input"
+                                               value="{{ $vehicle->specs->chrome_style_id ?? '' }}">
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Exterior Color Code</label>
+                                        <input type="text" name="exterior_color_code" class="vd-input"
+                                               value="{{ $vehicle->specs->exterior_color_code ?? '' }}">
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Interior Color Code</label>
+                                        <input type="text" name="interior_color_code" class="vd-input"
+                                               value="{{ $vehicle->specs->interior_color_code ?? '' }}">
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Interior Material</label>
+                                        <input type="text" name="interior_material" class="vd-input"
+                                               value="{{ $vehicle->specs->interior_material ?? '' }}">
                                     </div>
                                 </div>
 
@@ -950,13 +997,17 @@
 
                         <div class="vd-ifo-header">
                             <div class="vd-ifo-title">Installed Factory Options</div>
+                            <button type="button" class="vd-ifo-keyfeatures" id="vdKeyFeaturesToggle" aria-pressed="false">
+                                <i class="bi bi-star-fill"></i> Key features
+                            </button>
                         </div>
 
                         <div class="vd-accordion" id="factoryOptionsAccordion">
                             @foreach($factoryOptionCategories as $category)
                                 <div class="vd-accordion-item">
-                                    <button class="vd-accordion-trigger"
-                                            data-accordion="cat-{{ $category->id }}">
+                                    <button type="button" class="vd-accordion-trigger {{ $loop->first ? 'open' : '' }}"
+                                            data-accordion="cat-{{ $category->id }}"
+                                            aria-expanded="{{ $loop->first ? 'true' : 'false' }}">
                                         {{ $category->name }}
                                         <i class="bi bi-chevron-down"></i>
                                     </button>
@@ -965,36 +1016,22 @@
                                             @foreach($category->groups as $group)
                                                 <div class="vd-feat-group">
                                                     <div class="vd-feat-group-title">{{ $group->name }}</div>
-                                                    @php $grouped = $group->options->groupBy('sub_label'); @endphp
+                                                    @php $grouped = $group->options->groupBy(fn ($o) => $o->sub_label ?? ''); @endphp
                                                     @foreach($grouped as $subLabel => $options)
-                                                        @if($subLabel)
+                                                        @if($subLabel !== '')
                                                             <div class="vd-feat-sub-label">{{ $subLabel }}</div>
                                                             @foreach($options as $option)
-                                                                <div class="vd-feat-item vd-feat-item-indented">
-                                                                    <label class="vd-feat-check-label">
-                                                                        <input type="checkbox" class="vd-factory-option-cb"
-                                                                               data-option-id="{{ $option->id }}"
-                                                                               {{ in_array($option->id, $selectedOptionIds) ? 'checked' : '' }}>
-                                                                        <span class="vd-feat-checkbox-icon">
-                                                                            <i class="bi {{ in_array($option->id, $selectedOptionIds) ? 'bi-check-square-fill' : 'bi-square' }}"></i>
-                                                                        </span>
-                                                                        <span class="vd-feat-label">{{ $option->label }}</span>
-                                                                    </label>
-                                                                </div>
+                                                                @include('dealer.components.factory-option-item', [
+                                                                    'option' => $option,
+                                                                    'indented' => true,
+                                                                ])
                                                             @endforeach
                                                         @else
                                                             @foreach($options as $option)
-                                                                <div class="vd-feat-item">
-                                                                    <label class="vd-feat-check-label">
-                                                                        <input type="checkbox" class="vd-factory-option-cb"
-                                                                               data-option-id="{{ $option->id }}"
-                                                                               {{ in_array($option->id, $selectedOptionIds) ? 'checked' : '' }}>
-                                                                        <span class="vd-feat-checkbox-icon">
-                                                                            <i class="bi {{ in_array($option->id, $selectedOptionIds) ? 'bi-check-square-fill' : 'bi-square' }}"></i>
-                                                                        </span>
-                                                                        <span class="vd-feat-label">{{ $option->label }}</span>
-                                                                    </label>
-                                                                </div>
+                                                                @include('dealer.components.factory-option-item', [
+                                                                    'option' => $option,
+                                                                    'indented' => false,
+                                                                ])
                                                             @endforeach
                                                         @endif
                                                     @endforeach

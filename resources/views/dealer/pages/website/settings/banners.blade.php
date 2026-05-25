@@ -121,13 +121,13 @@
                                         <input type="color"
                                                id="bgColorPicker"
                                                name="banner_bg_color"
-                                               value="{{ old('banner_bg_color', $dealer->banner_bg_color ?? '#c0392b') }}">
+                                               value="{{ old('banner_bg_color', $dealer->banner_bg_color ?? '#ce4f4b') }}">
                                     </div>
                                     <input type="text"
                                            class="bn-control"
                                            id="bgColorHex"
                                            name="banner_bg_color_hex"
-                                           placeholder="#c0392b"
+                                           placeholder="#ce4f4b"
                                            value="{{ old('banner_bg_color', $dealer->banner_bg_color ?? '') }}"
                                            maxlength="7">
                                 </div>

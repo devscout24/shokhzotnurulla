@@ -1,5 +1,12 @@
 @php
-    $loc = $locationMenuData[0] ?? null;
+    $activeLocationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($_resolvedDealerId ?? null);
+    $loc = null;
+    if ($activeLocationId) {
+        $loc = collect($locationMenuData)->firstWhere('id', $activeLocationId);
+    }
+    if (!$loc) {
+        $loc = $locationMenuData[0] ?? null;
+    }
 
     $salesHours = $loc['hours_by_department']['sales'] ?? [];
     $phones     = $loc['phones'] ?? [];
@@ -119,6 +126,28 @@
                         <span>{{ $todayDisplay }}</span>
                     </div>
 
+                    {{-- Location Pill Switcher (desktop preheader) --}}
+                    @if(count($locationMenuData ?? []) > 1)
+                        <div class="py-1 px-3 float-end border-end d-flex align-items-center gap-2">
+                            @foreach($locationMenuData as $locationItem)
+                                @php $isActiveLoc = $activeLocationId === (int) $locationItem['id']; @endphp
+                                <form action="{{ route('frontend.switch-location') }}" method="POST" class="d-inline m-0">
+                                    @csrf
+                                    <input type="hidden" name="location_id" value="{{ $locationItem['id'] }}">
+                                    <button type="submit" class="location-pill {{ $isActiveLoc ? 'location-pill--active' : '' }}">
+                                        {{ $locationItem['name'] }}{{ !empty($locationItem['city']) ? ' · '.$locationItem['city'] : '' }}
+                                    </button>
+                                </form>
+                            @endforeach
+                        </div>
+                    @elseif(!empty($locationMenuData))
+                        <div class="py-1 px-3 float-end border-end d-flex align-items-center">
+                            <span class="location-pill location-pill--active">
+                                {{ $locationMenuData[0]['name'] }}{{ !empty($locationMenuData[0]['city']) ? ' · '.$locationMenuData[0]['city'] : '' }}
+                            </span>
+                        </div>
+                    @endif
+
                     {{-- <div class="float-end py-2 border-end text-end">
                         <div translate="no" class="notranslate dropdown">
                             <button type="button" id="lang-switcher" aria-expanded="false"
@@ -196,8 +225,9 @@
 </header>
 
 <!-- Header mobile -->
-<div class="py-1 d-xl-none position-fixed d-flex align-items-center w-100" id="mobile-nav">
-    <div class="d-flex w-100 align-items-center justify-content-between" id="mobile-header">
+<div class="d-xl-none position-fixed w-100" id="mobile-nav" style="z-index:25;top:0;left:0;">
+    {{-- Main mobile nav row --}}
+    <div class="py-1 d-flex w-100 align-items-center justify-content-between" id="mobile-header" style="background:#212121;">
         <div class="text-left w-100 ps-2" id="mobile-logo">
             <a href="{{ route('frontend.home') }}">
                 <img alt="Angel Motors Inc" fetchpriority="high" loading="eager" width="145" height="50"
@@ -219,4 +249,26 @@
             </div>
         </div>
     </div>
+    {{-- Mobile location strip --}}
+    @if(count($locationMenuData ?? []) > 0)
+        <div class="mobile-location-strip px-3 py-1 d-flex align-items-center gap-2">
+            <i class="fa-solid fa-location-dot me-1" style="font-size:0.7rem;"></i>
+            @if(count($locationMenuData) > 1)
+                @foreach($locationMenuData as $locationItem)
+                    @php $isActiveLoc = $activeLocationId === (int) $locationItem['id']; @endphp
+                    <form action="{{ route('frontend.switch-location') }}" method="POST" class="d-inline m-0">
+                        @csrf
+                        <input type="hidden" name="location_id" value="{{ $locationItem['id'] }}">
+                        <button type="submit" class="location-pill location-pill--sm {{ $isActiveLoc ? 'location-pill--active' : '' }}">
+                            {{ $locationItem['name'] }}{{ !empty($locationItem['city']) ? ' · '.$locationItem['city'] : '' }}
+                        </button>
+                    </form>
+                @endforeach
+            @else
+                <span class="location-pill location-pill--sm location-pill--active">
+                    {{ $locationMenuData[0]['name'] }}{{ !empty($locationMenuData[0]['city']) ? ' · '.$locationMenuData[0]['city'] : '' }}
+                </span>
+            @endif
+        </div>
+    @endif
 </div>

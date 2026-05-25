@@ -111,7 +111,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff !important;
             border: none;
             padding: 9px 20px;
@@ -125,7 +125,7 @@
 
         .btn-save-red {
             padding: 10px 30px !important;
-            background: #c0392b !important;
+            background: #ce4f4b !important;
             color: #fff !important;
             border: none !important;
             border-radius: 4px !important;
@@ -231,7 +231,7 @@
         }
 
         .faq-row-btn.trash-btn {
-            color: #c0392b !important;
+            color: #ce4f4b !important;
         }
 
         .faq-row-btn.trash-btn:hover {
@@ -285,9 +285,9 @@
         }
 
         .faq-page-btn.active {
-            background: #c0392b;
+            background: #ce4f4b;
             color: #fff;
-            border-color: #c0392b;
+            border-color: #ce4f4b;
         }
 
         .faq-page-btn:hover:not(.active) {
@@ -315,7 +315,7 @@
         }
 
         .field-label span {
-            color: #c0392b;
+            color: #ce4f4b;
             margin-left: 2px;
         }
 
@@ -341,7 +341,7 @@
         }
 
         .field-input:focus {
-            border-color: #c0392b;
+            border-color: #ce4f4b;
             box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.05);
             outline: none;
         }
@@ -483,7 +483,7 @@
         }
 
         .bulk-header-label span {
-            color: #c0392b;
+            color: #ce4f4b;
             margin-left: 2px;
         }
 
@@ -553,7 +553,7 @@
         }
 
         .bulk-action-del:hover {
-            color: #c0392b;
+            color: #ce4f4b;
         }
 
         .bulk-footer {

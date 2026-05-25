@@ -114,10 +114,50 @@
             colsLabel.textContent = checked + ' Columns Displayed';
         }
 
+        // ── Load / Save column persistence from localStorage ──
+        var savedCols = null;
+        try {
+            savedCols = JSON.parse(localStorage.getItem('inv_visible_cols'));
+        } catch (e) {}
+
+        if (!savedCols) {
+            savedCols = {};
+            document.querySelectorAll('.col-toggle').forEach(function (cb) {
+                var col = cb.dataset.col;
+                savedCols[col] = cb.checked;
+            });
+            try {
+                localStorage.setItem('inv_visible_cols', JSON.stringify(savedCols));
+            } catch (e) {}
+        }
+
+        // Apply saved columns on load
+        document.querySelectorAll('.col-toggle').forEach(function (cb) {
+            var col = cb.dataset.col;
+            if (savedCols.hasOwnProperty(col)) {
+                cb.checked = savedCols[col];
+            }
+            var show = cb.checked;
+            var th = document.querySelector('th.col-th[data-col="' + col + '"]');
+            if (th) th.style.display = show ? '' : 'none';
+            document.querySelectorAll('td.col-td[data-col="' + col + '"]').forEach(function (td) {
+                td.style.display = show ? '' : 'none';
+            });
+        });
+        updateColumnCount();
+
         document.querySelectorAll('.col-toggle').forEach(function (cb) {
             cb.addEventListener('change', function () {
                 var col  = cb.dataset.col;
                 var show = cb.checked;
+                
+                // Update localStorage
+                try {
+                    var cols = JSON.parse(localStorage.getItem('inv_visible_cols')) || {};
+                    cols[col] = show;
+                    localStorage.setItem('inv_visible_cols', JSON.stringify(cols));
+                } catch (e) {}
+
                 var th   = document.querySelector('th.col-th[data-col="' + col + '"]');
                 if (th) th.style.display = show ? '' : 'none';
                 document.querySelectorAll('td.col-td[data-col="' + col + '"]').forEach(function (td) {

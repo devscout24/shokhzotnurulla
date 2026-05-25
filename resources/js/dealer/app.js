@@ -168,6 +168,7 @@ function initSimpleDropdown(toggleId, menuId, syncAriaOnToggle) {
 }
 
 // Top and mobile dropdowns
+initSimpleDropdown('locationToggle', 'locationMenu', true);
 initSimpleDropdown('settingsToggle', 'settingsMenu', true);
 initSimpleDropdown('mobileAdminToggle', 'mobileAdminMenu', false);
 initSimpleDropdown('mobileSettingsToggle', 'mobileSettingsMenu', false);

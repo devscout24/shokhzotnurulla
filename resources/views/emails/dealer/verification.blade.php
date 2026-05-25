@@ -9,7 +9,7 @@
     
     <p>
         <a href="{{ route('dealer.setup', ['token' => $token, 'email' => $email]) }}" 
-           style="display: inline-block; padding: 10px 20px; background-color: #c0392b; color: white; text-decoration: none; border-radius: 5px;">
+           style="display: inline-block; padding: 10px 20px; background-color: #ce4f4b; color: white; text-decoration: none; border-radius: 5px;">
             Setup Account
         </a>
     </p>

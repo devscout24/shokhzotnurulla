@@ -10,6 +10,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $dealerId = $request->user()->current_dealer_id;
+        $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
         
         // Date range handling
         $from = $request->get('from', now()->subDays(30)->format('Y-m-d'));
@@ -23,7 +24,7 @@ class DashboardController extends Controller
         $prevEndDate = (clone $endDate)->subDays($daysCount);
 
         // 1. Stats Data
-        $stats = $this->getDashboardStats($dealerId, $startDate, $endDate, $prevStartDate, $prevEndDate);
+        $stats = $this->getDashboardStats($dealerId, $locationId, $startDate, $endDate, $prevStartDate, $prevEndDate);
 
         // Demo Data Fallback (if real data is zero)
         if ($stats['totalLeads'] === 0 && $stats['totalVisits'] === 0) {
@@ -43,7 +44,7 @@ class DashboardController extends Controller
         }
 
         // 2. Website Activity Chart Data
-        $activityData = $this->getActivityChartData($dealerId, $startDate, $endDate, $prevStartDate, $prevEndDate);
+        $activityData = $this->getActivityChartData($dealerId, $locationId, $startDate, $endDate, $prevStartDate, $prevEndDate);
         
         // Demo Chart Data Fallback
         if (array_sum($activityData['visits']) === 0) {
@@ -56,7 +57,7 @@ class DashboardController extends Controller
         }
 
         // 3. Popular Searches Data
-        $popularSearches = $this->getPopularSearches($dealerId, $startDate, $endDate);
+        $popularSearches = $this->getPopularSearches($dealerId, $locationId, $startDate, $endDate);
         
         // Demo Popular Searches Fallback
         if (empty($popularSearches['body'])) {
@@ -76,13 +77,15 @@ class DashboardController extends Controller
         ]));
     }
 
-    private function getDashboardStats($dealerId, $startDate, $endDate, $prevStartDate, $prevEndDate)
+    private function getDashboardStats($dealerId, $locationId, $startDate, $endDate, $prevStartDate, $prevEndDate)
     {
         // Leads
         $totalLeads = \App\Models\Website\FormEntry::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->count();
         $prevLeads = \App\Models\Website\FormEntry::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereBetween('created_at', [$prevStartDate, $prevEndDate])
             ->count();
         $totalLeadsChange = $prevLeads > 0 ? round((($totalLeads - $prevLeads) / $prevLeads) * 100) : 100;
@@ -93,10 +96,12 @@ class DashboardController extends Controller
 
         // Click to Calls
         $clickToCalls = \App\Models\Inventory\LeadEvent::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->where('type', 'click_to_call')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->count();
         $prevClickToCalls = \App\Models\Inventory\LeadEvent::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->where('type', 'click_to_call')
             ->whereBetween('created_at', [$prevStartDate, $prevEndDate])
             ->count();
@@ -104,16 +109,19 @@ class DashboardController extends Controller
 
         // Partial Leads
         $partialLeads = \App\Models\Inventory\LeadEvent::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->where('type', 'partial_lead')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->count();
 
         // Unique Visitors
         $uniqueVisitors = \App\Models\WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->distinct('ip_address')
             ->count('ip_address');
         $prevUniqueVisitors = \App\Models\WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereBetween('created_at', [$prevStartDate, $prevEndDate])
             ->distinct('ip_address')
             ->count('ip_address');
@@ -121,9 +129,11 @@ class DashboardController extends Controller
 
         // Total Visits
         $totalVisits = \App\Models\WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->count();
         $prevTotalVisits = \App\Models\WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereBetween('created_at', [$prevStartDate, $prevEndDate])
             ->count();
         $totalVisitsChange = $prevTotalVisits > 0 ? round((($totalVisits - $prevTotalVisits) / $prevTotalVisits) * 100) : 100;
@@ -146,7 +156,7 @@ class DashboardController extends Controller
         );
     }
 
-    private function getActivityChartData($dealerId, $startDate, $endDate, $prevStartDate, $prevEndDate)
+    private function getActivityChartData($dealerId, $locationId, $startDate, $endDate, $prevStartDate, $prevEndDate)
     {
         $days = [];
         $currentDate = clone $startDate;
@@ -156,12 +166,14 @@ class DashboardController extends Controller
         }
 
         $visits = \App\Models\WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->groupBy('date')
             ->pluck('count', 'date');
 
         $prevVisits = \App\Models\WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereBetween('created_at', [$prevStartDate, $prevEndDate])
             ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->groupBy('date')
@@ -177,12 +189,14 @@ class DashboardController extends Controller
         }
 
         $leads = \App\Models\Website\FormEntry::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->groupBy('date')
             ->pluck('count', 'date');
 
         $inventory = \App\Models\Inventory\Vehicle::forDealer($dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->where('status', 'active')
             ->count();
         
@@ -197,9 +211,10 @@ class DashboardController extends Controller
         return $chartData;
     }
 
-    private function getPopularSearches($dealerId, $startDate, $endDate)
+    private function getPopularSearches($dealerId, $locationId, $startDate, $endDate)
     {
         $logs = \App\Models\WebsiteVisitorLog::where('dealer_id', $dealerId)
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->where('url', 'like', '%?%')
             ->get(['url']);

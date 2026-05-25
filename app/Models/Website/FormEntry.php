@@ -10,8 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FormEntry extends Model
 {
+    use \App\Traits\BelongsToLocation;
+    use \App\Models\Traits\HasLocationScope;
+
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'form_type',
         'borrower_type',
         'status',
@@ -175,5 +179,19 @@ class FormEntry extends Model
     public function markAsComplete(): void
     {
         $this->update(['status' => 'complete']);
+    }
+
+    /**
+     * Retrieve the model for a bound value.
+     *
+     * @param  mixed  $value
+     * @param  string|null  $field
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->withoutGlobalScope(\App\Models\Scopes\LocationScope::class)
+            ->where($field ?? $this->getRouteKeyName(), $value)
+            ->firstOrFail();
     }
 }

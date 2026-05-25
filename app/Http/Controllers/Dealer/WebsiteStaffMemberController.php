@@ -15,7 +15,7 @@ class WebsiteStaffMemberController extends Controller
     public function index(): View
     {
         $categories = StaffMemberCategory::orderBy('sort_order')->withCount('staffMembers')->get();
-        $members = StaffMember::with('category')->orderBy('sort_order', 'desc')->get();
+        $members = StaffMember::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
 
         return view('dealer.pages.website.staff-members.index', compact('members', 'categories'));
     }
@@ -33,8 +33,9 @@ class WebsiteStaffMemberController extends Controller
             'status'                   => 'required|string',
         ]);
 
+        $validated['location_id'] = StaffMember::getActiveLocationId();
         $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = StaffMember::max('sort_order') + 1;
+        $validated['sort_order'] = StaffMember::forActiveLocation()->max('sort_order') + 1;
 
         $member = StaffMember::create($validated);
         $member->load('category');
@@ -81,6 +82,7 @@ class WebsiteStaffMemberController extends Controller
             }
 
             $payload = [
+                'location_id'              => StaffMember::getActiveLocationId(),
                 'full_name'                => $item['full_name'] ?? '',
                 'job_title'                => $item['job_title'] ?? '',
                 'staff_member_category_id' => $item['staff_member_category_id'] ?? null,
@@ -100,7 +102,7 @@ class WebsiteStaffMemberController extends Controller
             }
         }
 
-        $all = StaffMember::with('category')->orderBy('sort_order')->get();
+        $all = StaffMember::forActiveLocation()->with('category')->orderBy('sort_order')->get();
         return response()->json($all);
     }
 
