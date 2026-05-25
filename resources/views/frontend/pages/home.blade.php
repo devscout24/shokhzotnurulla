@@ -474,6 +474,7 @@
 @endsection
 
 @push('page-modals')
+    @include('frontend.offcanvas.get-estimate')
     @include('frontend.offcanvas.get-trade-in')
     @include('frontend.offcanvas.unlock-eprice')
 @endpush

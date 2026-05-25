@@ -254,15 +254,14 @@
                                 </div>
                                 <div class="text-end d-block d-xl-none col-5"><br></div>
                                 <div class="col-12">
-                                    <span class="rounded bg-light p-2 d-block text-end border mt-1">
+                                    <span class="rounded bg-light p-2 d-block text-end border mt-1"
+                                          data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                                          aria-controls="getEstimate">
                                         <span class="badge badge-secondary text-uppercase me-2 float-start">
                                             Estimated Payment
                                         </span>
                                         ${{ number_format($pricing['monthly']) }} / mo.
-                                        <span class="ms-2 text-primary"
-                                              data-bs-toggle="offcanvas"
-                                              data-bs-target="#offcanvasRight"
-                                              aria-controls="offcanvasRight">
+                                                                                <span class="ms-2 text-primary">
                                             <i class="fa-regular fa-pen-to-square fa-lg"></i>
                                         </span>
                                     </span>
@@ -816,7 +815,9 @@
                                     </div>
                                     <div class="text-end d-block d-xl-none col-5"><br></div>
                                     <div class="col-12">
-                                        <div class="bg-lighter border rounded py-2 px-3 mt-2 align-items-center text-center cursor-pointer">
+                                        <div class="bg-lighter border rounded py-2 px-3 mt-2 align-items-center text-center cursor-pointer"
+                                            data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                                            aria-controls="getEstimate">
                                             <span class="badge badge-secondary text-uppercase mb-2">Estimated Payment</span>
                                             <div class="text-large">
                                                 ${{ number_format($pricing['monthly']) }} / month
@@ -1062,6 +1063,7 @@
 @endsection
 
 @push('page-modals')
+    @include('frontend.offcanvas.get-estimate')
     @include('frontend.offcanvas.personalize-payment')
     @include('frontend.offcanvas.unlock-manager-special')
     @include('frontend.offcanvas.schedule-test')

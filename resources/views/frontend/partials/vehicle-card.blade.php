@@ -173,7 +173,9 @@
                                 {{-- Monthly payment --}}
                                 @if(!$isFormfill)
                                     <div class="text-end text-nowrap ms-auto my-1">
-                                        <span class="cursor-pointer" role="button">
+                                        <span class="cursor-pointer" role="button"
+                                            data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                                            aria-controls="getEstimate">
                                             <small class="opacity-75">Est. Payment</small><br>
                                             <span class="fw-bold">${{ number_format($monthly) }}/mo</span>
                                             <span class="d-inline-block faIcon ms-1 text-primary">
@@ -191,7 +193,9 @@
             </div>
 
             <div class="px-2 pb-2 mt-n2">
-                <button class="btn btn-estimate-payment w-100 py-2 font-weight-bold">
+                <button class="btn btn-estimate-payment w-100 py-2 font-weight-bold"
+                    data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                    aria-controls="getEstimate">
                     Estimate payment
                     <div style="font-size: 10px; font-weight: normal; opacity: 0.9;">No impact to your credit score</div>
                 </button>

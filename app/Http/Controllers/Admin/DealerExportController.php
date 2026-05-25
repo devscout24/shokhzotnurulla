@@ -83,6 +83,8 @@ class DealerExportController extends Controller
             'Interior Material', 'Wheelbase', 'Door Count', 'Engine Displacement', 'Cylinders',
             'Engine', 'Transmission Speed', 'Option Description', 'Option Code', 'Photo Timestamp',
             'Dealer Comments on Vehicle', 'Last Modified Date', 'ExtraPrice1', 'ExtraPrice2', 'ExtraPrice3',
+            'Factory Certified', 'Dealer Certified', 'Model Code', 'Chrome Style ID',
+            'Exterior Color Code', 'Interior Color Code', 'City MPG', 'Hwy MPG',
         ]);
 
         $dealer->load('locations');
@@ -179,6 +181,14 @@ class DealerExportController extends Controller
                             $vehicle->original_price ?? '', // ExtraPrice1 (originalprice)
                             $vehicle->prices?->addon_price ?? '', // ExtraPrice2 (addonprice)
                             $vehicle->prices?->internet_price ?? '', // ExtraPrice3 (Internet Price)
+                            $vehicle->specs?->factory_certified ?? '', // Factory Certified
+                            $vehicle->specs?->dealer_certified ?? '', // Dealer Certified
+                            $vehicle->model_number ?? '', // Model Code
+                            $vehicle->specs?->chrome_style_id ?? '', // Chrome Style ID
+                            $vehicle->specs?->exterior_color_code ?? '', // Exterior Color Code
+                            $vehicle->specs?->interior_color_code ?? '', // Interior Color Code
+                            $vehicle->specs?->mpg_city ?? '', // City MPG
+                            $vehicle->specs?->mpg_highway ?? '', // Hwy MPG
                         ];
 
                         $row = array_merge($row, $remainingRow);
