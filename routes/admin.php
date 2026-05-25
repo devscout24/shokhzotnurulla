@@ -5,8 +5,16 @@ use App\Http\Controllers\Admin\DashboardController;
 
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', 'verified', 'all.active', 'isAdmin'])
+    ->middleware(['auth', 'verified', 'all.active', 'isAdmin', \App\Http\Middleware\EnsureTwoFactorAuthenticated::class])
     ->group(function () {
+
+        // ─── 2FA ──────────────────────────────────────────────────────────────────
+        Route::prefix('2fa')->name('2fa.')->group(function () {
+            Route::get('/verify', [\App\Http\Controllers\Admin\TwoFactorController::class, 'showVerifyForm'])->name('verify');
+            Route::post('/verify', [\App\Http\Controllers\Admin\TwoFactorController::class, 'verifyLogin'])->name('verify.post');
+            Route::post('/enable', [\App\Http\Controllers\Admin\TwoFactorController::class, 'enable'])->name('enable');
+            Route::post('/disable', [\App\Http\Controllers\Admin\TwoFactorController::class, 'disable'])->name('disable');
+        });
 
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
@@ -49,5 +57,15 @@ Route::prefix('admin')
             ->name('integrations.reject');
         Route::patch('integrations/{integration}/revoke', [\App\Http\Controllers\Admin\IntegrationController::class, 'revoke'])
             ->name('integrations.revoke');
+
+        // Admin Restricted Sites
+        Route::get('restricted-sites', [\App\Http\Controllers\Admin\AdminRestrictedSiteController::class, 'index'])
+            ->name('restricted-sites.index');
+        Route::post('restricted-sites/setting', [\App\Http\Controllers\Admin\AdminRestrictedSiteController::class, 'updateSetting'])
+            ->name('restricted-sites.setting');
+        Route::post('restricted-sites', [\App\Http\Controllers\Admin\AdminRestrictedSiteController::class, 'store'])
+            ->name('restricted-sites.store');
+        Route::delete('restricted-sites/{id}', [\App\Http\Controllers\Admin\AdminRestrictedSiteController::class, 'destroy'])
+            ->name('restricted-sites.destroy');
 
     });
