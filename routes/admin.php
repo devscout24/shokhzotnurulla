@@ -5,8 +5,16 @@ use App\Http\Controllers\Admin\DashboardController;
 
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', 'verified', 'all.active', 'isAdmin'])
+    ->middleware(['auth', 'verified', 'all.active', 'isAdmin', \App\Http\Middleware\EnsureTwoFactorAuthenticated::class])
     ->group(function () {
+
+        // ─── 2FA ──────────────────────────────────────────────────────────────────
+        Route::prefix('2fa')->name('2fa.')->group(function () {
+            Route::get('/verify', [\App\Http\Controllers\Admin\TwoFactorController::class, 'showVerifyForm'])->name('verify');
+            Route::post('/verify', [\App\Http\Controllers\Admin\TwoFactorController::class, 'verifyLogin'])->name('verify.post');
+            Route::post('/enable', [\App\Http\Controllers\Admin\TwoFactorController::class, 'enable'])->name('enable');
+            Route::post('/disable', [\App\Http\Controllers\Admin\TwoFactorController::class, 'disable'])->name('disable');
+        });
 
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');

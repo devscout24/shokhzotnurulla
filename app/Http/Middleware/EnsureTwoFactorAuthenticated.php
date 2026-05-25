@@ -19,17 +19,31 @@ class EnsureTwoFactorAuthenticated
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check() && Auth::user()->is_2fa_required && !Session::get('2fa_verified')) {
-            // Exclude the 2FA verify routes to prevent infinite loop
-            if (!$request->routeIs('dealer.2fa.*')) {
-                // If the user has no secret set but is required to have 2FA (e.g., forced by admin),
-                // redirect to the authentication settings page.
-                if (empty(Auth::user()->google2fa_secret)) {
-                    if (!$request->routeIs('dealer.settings.authentication')) {
-                        return redirect()->route('dealer.settings.authentication')
-                            ->with('warning', 'You must set up Two-Factor Authentication before continuing.');
+            $user = Auth::user();
+
+            if ($user->isSystemUser()) {
+                // Exclude the Admin 2FA verify routes to prevent infinite loop
+                if (!$request->routeIs('admin.2fa.*')) {
+                    if (empty($user->google2fa_secret)) {
+                        if (!$request->routeIs('admin.profile.edit')) {
+                            return redirect()->route('admin.profile.edit')
+                                ->with('warning', 'You must set up Two-Factor Authentication before continuing.');
+                        }
+                    } else {
+                        return redirect()->route('admin.2fa.verify');
                     }
-                } else {
-                    return redirect()->route('dealer.2fa.verify');
+                }
+            } else {
+                // Exclude the Dealer 2FA verify routes to prevent infinite loop
+                if (!$request->routeIs('dealer.2fa.*')) {
+                    if (empty($user->google2fa_secret)) {
+                        if (!$request->routeIs('dealer.settings.authentication')) {
+                            return redirect()->route('dealer.settings.authentication')
+                                ->with('warning', 'You must set up Two-Factor Authentication before continuing.');
+                        }
+                    } else {
+                        return redirect()->route('dealer.2fa.verify');
+                    }
                 }
             }
         }

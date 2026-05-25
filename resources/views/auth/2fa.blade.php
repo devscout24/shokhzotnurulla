@@ -38,7 +38,7 @@
                             <h6 class="mt-3">{{ __('Two-Factor Authentication') }}</h6>
                         </div>
 
-                        <form method="POST" action="{{ route('dealer.2fa.verify.post') }}" id="loginForm">
+                        <form method="POST" action="{{ $verifyRoute ?? route('dealer.2fa.verify.post') }}" id="loginForm">
                             @csrf
                             
                             <div class="mb-3">

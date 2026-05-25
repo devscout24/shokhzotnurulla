@@ -36,6 +36,9 @@
                     <a href="{{ route('admin.profile.edit') }}" class="settings-item">
                         <i class="bi bi-person me-2"></i>{{ __('My Profile') }}
                     </a>
+                    <a href="{{ route('admin.profile.edit') }}#2fa-section" class="settings-item">
+                        <i class="bi bi-shield-lock me-2"></i>{{ __('2FA Settings') }}
+                    </a>
                     <div class="settings-divider" style="height: 1px; background: #eee; margin: 4px 0;"></div>
                     <a href="javascript:void(0)" class="settings-item logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="bi bi-box-arrow-right me-2"></i>{{ __('Logout') }}
