@@ -101,12 +101,15 @@ class WebsiteSettingController extends Controller
     {
         $dealer = $request->user()->currentDealer;
         $validated = $request->validated();
-        $dealer->social_links = $validated;
-        $dealer->save();
+        
+        $dealer->update(['social_links' => $validated]);
+        
         \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
+        
         $this->auditLogger->info($request, 'Social links updated');
         return response()->json(['success' => true, 'message' => 'Social links saved.']);
     }
+
 
     public function locations(Request $request): View
     {

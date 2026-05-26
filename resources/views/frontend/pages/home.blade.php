@@ -272,7 +272,6 @@
                             <span class="d-inline-block fa-fw h1 mt-0 mb-3">
                                 <i class="fa-regular fa-comment blue-large-text"></i>
                             </span>
-
                         </div>
                         <div class="cElement cText h4 font-weight-bold mb-n2" bis_skin_checked="1">
                             <p class="text-center"><strong>200+</strong></p>
@@ -292,13 +291,10 @@
                         <div class="cElement cText h4 font-weight-bold mb-n2" bis_skin_checked="1">
                             <p class="text-center">
                                 <strong>Hand-selected quality
-
-
                                 </strong>
                             </p>
                         </div>
                         <p class="text-center">Every vehicle rigorously inspected for reliability and value
-
                         </p>
                     </div>
                 </div>
@@ -421,12 +417,12 @@
 
                 {{-- Carousel wrapper --}}
                 <div class="mt-3 d-flex align-items-center new-arrivals-carousel-wrapper">
-                    {{-- Prev arrow --}}
+                   
                     <div class="new-arrivals-arrow new-arrivals-prev">
                         <i class="fa-solid fa-angle-left"></i>
                     </div>
 
-                    {{-- Scrollable track --}}
+                  
                     <div class="new-arrivals-track-outer">
                         <div class="new-arrivals-track">
                             @forelse($newArrivals as $vehicle)
@@ -439,7 +435,7 @@
                         </div>
                     </div>
 
-                    {{-- Next arrow --}}
+                   
                     <div class="new-arrivals-arrow new-arrivals-next">
                         <i class="fa-solid fa-angle-right"></i>
                     </div>

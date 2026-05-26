@@ -41,20 +41,21 @@
 <footer class="bg-footer">
     <div class="bg-secondary-light text-center text-sm-start text-white py-3">
         <div class="container">
-            <div class="row">
-                <div class="row">
-                    <div class="align-middle text-large mb-3 mb-sm-0 notranslate col-sm-6">
-                        {{ $name }}
-                    </div>
-                    <div class="text-center text-sm-end text-muted text-large col-sm-6">
+            <div class="row align-items-center">
+                <div class="text-large mb-3 mb-sm-0 notranslate col-sm-6">
+                    {{ $name }}
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="d-flex justify-content-center justify-content-sm-end gap-3 align-items-center">
                         @foreach ($socialPlatforms as $platform => $meta)
                             @if (!empty($socials[$platform]))
                                 <a href="{{ $socials[$platform] }}" class="text-white" target="_blank"
                                    title="{{ $name }} on {{ $meta['label'] }}">
                                     <img alt="{{ $name }} on {{ $meta['label'] }}"
-                                         loading="lazy" width="30" height="30"
+                                         loading="lazy" width="24" height="24"
                                          decoding="async"
-                                         class="ms-3 fill-white"
+                                         class="fill-white"
                                          src="{{ asset('assets/frontend/img/' . $meta['icon']) }}">
                                 </a>
                             @endif
