@@ -233,12 +233,12 @@
 
                 {{-- Carousel wrapper --}}
                 <div class="mt-3 d-flex align-items-center new-arrivals-carousel-wrapper">
-                    {{-- Prev arrow --}}
+                   
                     <div class="new-arrivals-arrow new-arrivals-prev">
                         <i class="fa-solid fa-angle-left"></i>
                     </div>
 
-                    {{-- Scrollable track --}}
+                  
                     <div class="new-arrivals-track-outer">
                         <div class="new-arrivals-track">
                             @forelse($newArrivals as $vehicle)
@@ -251,7 +251,7 @@
                         </div>
                     </div>
 
-                    {{-- Next arrow --}}
+                   
                     <div class="new-arrivals-arrow new-arrivals-next">
                         <i class="fa-solid fa-angle-right"></i>
                     </div>
