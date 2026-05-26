@@ -18,6 +18,7 @@ class UpdateGeneralSettingsRequest extends FormRequest
             'corporate_address' => 'nullable|string|max:500',
             'support_email' => 'nullable|email|max:255',
             'abandoned_form_minutes' => 'required|integer|min:1',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ];
     }
 }

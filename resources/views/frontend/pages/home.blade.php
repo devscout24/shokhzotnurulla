@@ -22,14 +22,19 @@
             <div class="hero-video">
                 @if($videoUrl ?? null)
                     <video src="{{ asset($videoUrl) }}" muted playsinline autoplay loop></video>
+                
                 @endif
             </div>
 
             <div class="hero-caption text-center text-white">
                 <div class="py-4">
-                    <h1 class="font-weight-bold">Angel Motors Inc used cars in Smyrna, TN</h1>
-                    <h2 class="font-weight-bold">Quality pre-owned vehicles, transparent pricing, and trusted
-                        service</h2>
+                    @if($bannerTitle ?? null)
+                        <h1 class="font-weight-bold">{{ $bannerTitle }}</h1>
+                    @endif
+                    @if($bannerSubtitle ?? null)
+                        <h2 class="font-weight-bold">{{ $bannerSubtitle }}</h2>
+                    @endif
+
                     <div class="bg-light p-3 rounded border">
                         <div class="position-relative">
                             <span class="d-inline-block position-absolute search-icon iconPostion">
@@ -43,6 +48,7 @@
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 

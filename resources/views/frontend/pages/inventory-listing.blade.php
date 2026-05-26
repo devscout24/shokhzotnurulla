@@ -131,8 +131,8 @@
                             {{ $type ? config("vehicle_types.{$type}.heading_label") : 'vehicles' }} for sale in Smyrna, TN
                         </h1>
                         <div class="dropdown">
-                            <button type="button" id="sortby" aria-expanded="false" data-cy="sortby"
-                                class="dropdown-toggle btn btn-sm d-flex align-items-center border rounded-pill px-3">
+                            <button type="button" id="sortby" aria-expanded="false" data-cy="sortby" data-bs-toggle="dropdown"
+                                class="dropdown-toggle btn btn-sm d-flex align-items-center border rounded-pill px-3 text-dark">
                                 <span class="me-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         viewBox="0 0 16 16" fill="#166B87">

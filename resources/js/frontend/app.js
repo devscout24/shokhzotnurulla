@@ -205,3 +205,4 @@ document.addEventListener('DOMContentLoaded', function () {
     window.InputFormat = { init: initInputFormats, applyPhone: applyPhone, applySSN: applySSN };
 
 });
+

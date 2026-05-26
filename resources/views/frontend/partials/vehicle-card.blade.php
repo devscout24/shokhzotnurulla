@@ -106,8 +106,13 @@
                             </a>
                         </div>
                         <div class="flex-shrink-0">
-                            <span data-cy="btn-favorite" class="d-inline-block h4 cursor-pointer mb-0 favorite-icon">
-                                <i class="fa-solid fa-heart greyIcon"></i>
+                            <span data-cy="btn-favorite" class="d-inline-block h4 cursor-pointer mb-0 favorite-icon"
+                                  data-vehicle-id="{{ $vehicle->id }}"
+                                  data-vehicle-name="{{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}"
+                                  data-vehicle-price="{{ $vehicle->price > 0 ? '$' . number_format($vehicle->price) : 'Call' }}"
+                                  data-vehicle-image="{{ $displayPhotos->first()?->url ?: asset('assets/frontend/img/no-photo.webp') }}"
+                                  data-vehicle-url="{{ route('frontend.inventory.show', $vehicle->slug) }}">
+                                <i class="fa-regular fa-heart greyIcon"></i>
                             </span>
                         </div>
                     </div>

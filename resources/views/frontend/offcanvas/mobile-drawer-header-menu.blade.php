@@ -67,58 +67,26 @@
             </div>
         </div>
 
-        {{-- <div class="pb-3 border-bottom row">
-            <div class="col">
-                <div class="w-100 mt-3  dropdown">
-                    <button type="button" id="recents" aria-expanded="false"
-                        class="text-decoration-none bg-white ps-0 w-100 border border-dark dropdown-toggle btn btn-link">
-
-                        <span class="me-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#166B87"
-                                viewBox="0 0 16 16">
-                                <path
-                                    d="M8 3.5a.5.5 0 0 1 .5.5v4.25l3 1.75a.5.5 0 1 1-.5.866l-3.25-1.9A.5.5 0 0 1 7.5 8V4a.5.5 0 0 1 .5-.5z" />
-                                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm0-1A7 7 0 1 1 8 1a7 7 0 0 1 0 14z" />
-                            </svg>
-                        </span>
-
-                        Viewed
-                    </button>
-
-                    <div class="py-0 dropdown-menu mt-4 show absolute-offset2">
-                        <a href="#" class="border-bottom w-100 text-truncate dropdown-item">
-                            <img alt="2015 Mazda CX-5 Touring" loading="lazy" width="64" height="48"
-                                decoding="async" data-nimg="1" class="compare-img img-fluid me-3"
-                               src="{{ asset('assets/frontend/img/532d1a48-02bb-46eb-9480-f03976378b17-2 (1).webp') }}">
-                            2015 Mazda CX-5 Touring
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="w-100 mt-3  dropdown">
-                    <button type="button" id="favorites" aria-expanded="false"
+        <div class="pb-3 border-bottom row">
+            <div class="col-12 px-3">
+                <div class="w-100 mt-3 dropdown">
+                    <button type="button" id="favorites" aria-expanded="false" data-bs-toggle="dropdown"
                         class="text-decoration-none bg-white ps-0 d-block w-100 border border-dark dropdown-toggle btn btn-link">
-
-                        <span class="me-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#166B87"
-                                viewBox="0 0 16 16">
-                                <path
-                                    d="M8 2.748-.717-.737C5.6.281 2.514 1.878 2.514 4.223c0 1.657 1.167 3.04 3.012 4.685L8 11.314l2.474-2.406c1.845-1.646 3.012-3.028 3.012-4.685 0-2.345-3.086-3.942-4.769-1.212L8 2.748z" />
-                            </svg>
+                        <span class="me-2 text-danger">
+                            <i class="fa-solid fa-heart"></i>
                         </span>
-
                         Favorites
+                        <span class="badge bg-danger rounded-pill ms-2 d-none" id="fav-count-mobile">0</span>
                     </button>
-                    <div class="py-0 mt-3 absolute-offset dropdown-menu ">
-                        <a href="#" class="border-bottom dropdown-item">
-                            <em class="text-muted">No items viewed yet.</em>
-                        </a>
+                    <div class="py-0 mt-3 absolute-offset dropdown-menu w-100 shadow-sm border-0">
+                        <div class="p-3 text-center">
+                            <i class="fa-solid fa-heart-crack d-block mb-2 h4 opacity-50"></i>
+                            <span class="text-muted small">No items saved yet.</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
 
         <nav>
             <div class="font-weight-bold py-3 parent-nav">

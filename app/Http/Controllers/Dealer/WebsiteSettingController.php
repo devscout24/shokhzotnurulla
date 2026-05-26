@@ -55,10 +55,36 @@ class WebsiteSettingController extends Controller
     {
         $dealer = $request->user()->currentDealer;
         $validated = $request->validated();
+
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            
+            // Ensure directory exists
+            if (!file_exists(public_path('assets/frontend/img/logos'))) {
+                mkdir(public_path('assets/frontend/img/logos'), 0755, true);
+            }
+
+            // Delete old logo if exists
+            if ($dealer->logo && file_exists(public_path('assets/frontend/img/logos/' . $dealer->logo))) {
+                @unlink(public_path('assets/frontend/img/logos/' . $dealer->logo));
+            }
+
+            $file->move(public_path('assets/frontend/img/logos'), $filename);
+            $validated['logo'] = $filename;
+            $path = $filename;
+        }
+
         $dealer->update($validated);
         \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
         $this->auditLogger->info($request, 'General settings updated');
-        return response()->json(['success' => true, 'message' => 'General settings saved.']);
+        
+        $responseData = ['success' => true, 'message' => 'General settings saved.'];
+        if (isset($path)) {
+            $responseData['logo_url'] = asset('assets/frontend/img/logos/' . $path);
+        }
+        
+        return response()->json($responseData);
     }
 
     public function updateDisclaimers(UpdateDisclaimersRequest $request): JsonResponse
@@ -160,31 +186,26 @@ class WebsiteSettingController extends Controller
         return view('dealer.pages.website.settings.video', compact('dealer'));
     }
 
-    public function updateVideo(UpdateVideoRequest $request): RedirectResponse
+    public function updateVideo(UpdateVideoRequest $request, UploadMediaAction $uploadMedia): RedirectResponse
     {
+        
         $dealer = $request->user()->currentDealer;
 
         if ($request->hasFile('video_file')) {
-            $file = $request->file('video_file');
-            $fileName = 'video_' . time() . '.' . $file->getClientOriginalExtension();
-            $destinationPath = public_path('assets/frontend/video');
-            
-            // Move file manually to public/assets/frontend/video
-            $file->move($destinationPath, $fileName);
+            $uploaded = $uploadMedia->execute($dealer->id, [$request->file('video_file')]);
+            $media = $uploaded[0];
             
             $dealer->update([
-                'video_url' => 'assets/frontend/video/' . $fileName,
                 'video_source' => 'overfuel',
             ]);
 
             \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
-            $this->auditLogger->info($request, 'Website background video updated manually');
+            $this->auditLogger->info($request, 'Website background video updated');
         }
 
         return redirect()->back()->with('success', 'Video updated successfully.');
     }
 
-  
 
     public function reorderLocations(Request $request, ReorderLocationsAction $reorderLocations): JsonResponse
     {
@@ -206,6 +227,11 @@ class WebsiteSettingController extends Controller
     {
         $dealer = $request->user()->currentDealer;
         $data = $request->validated();
+
+        //banner_title and banner_subtitle
+        $data['banner_title'] = $data['banner_title'] ?? null;
+        $data['banner_subtitle'] = $data['banner_subtitle'] ?? null;
+        $data['logo'] = $data['logo'] ?? null;
 
         // Handle desktop image upload (if a new file was uploaded)
         if ($request->hasFile('banner_desktop_image')) {

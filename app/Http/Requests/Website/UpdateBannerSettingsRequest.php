@@ -14,6 +14,8 @@ class UpdateBannerSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'banner_title'              => 'nullable|string|max:255',
+            'banner_subtitle'           => 'nullable|string|max:255',
             'banner_text'               => 'nullable|string|max:255',
             'banner_hover_title'        => 'nullable|string|max:255',
             'banner_text_color'         => 'nullable|string|max:7|regex:/^#[0-9a-fA-F]{6}$/',

@@ -60,9 +60,33 @@
                 <div class="flex-grow-1 p-4 overflow-auto">
                     <div class="bg-white border rounded" style="max-width: 1200px;">
 
+                      
+
                         {{-- Card Title --}}
                         <div class="px-3 py-3 border-bottom fw-semibold" style="font-size: 14px; color: #333;">
                             General
+                        </div>
+
+                        {{-- logo --}}
+                        <div class="ws-setting-row">
+                            <div class="ws-label-col">
+                                <div class="fw-semibold text-dark mb-1" style="font-size:13px;">Logo</div>
+                            </div>
+
+                            <div class="ws-input-col">
+                                <div class="ws-logo-card">
+                                    <div class="ws-logo-card-placeholder" onclick="document.getElementById('logoInput').click()" style="cursor: pointer; border: 2px dashed #ccc; width: 200px; height: 100px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f8f9fa;">
+                                        @if($dealer->logo)
+                                            <img src="{{ asset('assets/frontend/img/logos/' . $dealer->logo) }}" id="logoPreview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                        @else
+                                            <div id="logoText" class="text-muted">Click to upload logo</div>
+                                            <img src="" id="logoPreview" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;">
+                                        @endif
+                                        <input type="file" name="logo" id="logoInput" accept="image/*" style="display: none;">
+                                    </div>
+                                    <div class="mt-1 text-muted" style="font-size: 11px;">Recommended size: 325x65px (WebP/PNG)</div>
+                                </div>
+                            </div>
                         </div>
 
                         {{-- Legal Name --}}
@@ -442,34 +466,57 @@
 
     // Save General Settings
     document.getElementById('btnSaveGeneral').addEventListener('click', function () {
-        const data = {
-            legal_name: document.querySelector('[name="legal_name"]').value,
-            corporate_address: document.querySelector('[name="corporate_address"]').value,
-            support_email: document.querySelector('[name="support_email"]').value,
-            abandoned_form_minutes: document.querySelector('[name="abandoned_form_minutes"]').value,
-        };
+        const formData = new FormData();
+        formData.append('_method', 'PATCH');
+        formData.append('legal_name', document.querySelector('[name="legal_name"]').value);
+        formData.append('corporate_address', document.querySelector('[name="corporate_address"]').value);
+        formData.append('support_email', document.querySelector('[name="support_email"]').value);
+        formData.append('abandoned_form_minutes', document.querySelector('[name="abandoned_form_minutes"]').value);
+        
+        const logoFile = document.getElementById('logoInput').files[0];
+        if (logoFile) {
+            formData.append('logo', logoFile);
+        }
 
         fetch('{{ route("dealer.website.settings.general.update") }}', {
-            method: 'PATCH',
+            method: 'POST', // Use POST with _method=PATCH for FormData with files
             headers: {
-                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken,
                 'Accept': 'application/json'
             },
-            body: JSON.stringify(data)
+            body: formData
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 showToast('success', data.message);
+                if (data.logo_url) {
+                    document.getElementById('logoPreview').src = data.logo_url;
+                }
             } else {
-                showToast('error', 'An error occurred while saving.');
+                showToast('error', data.message || 'An error occurred while saving.');
             }
         })
         .catch(error => {
             console.error(error);
             showToast('error', 'An error occurred. Please try again.');
         });
+    });
+
+    // Logo preview logic
+    document.getElementById('logoInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const preview = document.getElementById('logoPreview');
+                const text = document.getElementById('logoText');
+                preview.src = event.target.result;
+                preview.style.display = 'block';
+                if (text) text.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
     });
 
     // Save Disclaimers

@@ -430,9 +430,14 @@
                                     </span>
                                     Questions?
                                 </div>
-                                <div class="py-3 cursor-pointer col-4" data-cy="btn-favorite">
-                                    <span class="text-muted d-block">
-                                        <i class="fa-solid fa-heart fa-lg"></i>
+                                <div class="py-3 cursor-pointer col-4" data-cy="btn-favorite"
+                                     data-vehicle-id="{{ $vehicle->id }}"
+                                     data-vehicle-name="{{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}"
+                                     data-vehicle-price="{{ $vehicle->price > 0 ? '$' . number_format($vehicle->price) : 'Call' }}"
+                                     data-vehicle-image="{{ $mainPhoto->url ?: asset('assets/frontend/img/no-photo.webp') }}"
+                                     data-vehicle-url="{{ route('frontend.inventory.show', $vehicle->slug) }}">
+                                    <span class="text-muted d-block p-1">
+                                        <i class="fa-regular fa-heart fa-lg"></i>
                                     </span>
                                     Save
                                 </div>
@@ -983,9 +988,14 @@
                                     </span>
                                     Questions?
                                 </div>
-                                <div data-cy="btn-favorite" class="py-3 cursor-pointer col-4">
-                                    <span class="d-inline-block text-muted h4 w-100 d-block text-center">
-                                        <i class="fa-solid fa-heart fa-lg"></i>
+                                <div data-cy="btn-favorite" class="py-3 cursor-pointer col-4"
+                                     data-vehicle-id="{{ $vehicle->id }}"
+                                     data-vehicle-name="{{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}"
+                                     data-vehicle-price="{{ $vehicle->price > 0 ? '$' . number_format($vehicle->price) : 'Call' }}"
+                                     data-vehicle-image="{{ $mainPhoto->url ?: asset('assets/frontend/img/no-photo.webp') }}"
+                                     data-vehicle-url="{{ route('frontend.inventory.show', $vehicle->slug) }}">
+                                    <span class="d-inline-block text-muted h4 w-100 d-block text-center mb-1">
+                                        <i class="fa-regular fa-heart fa-lg"></i>
                                     </span>
                                     Save
                                 </div>
