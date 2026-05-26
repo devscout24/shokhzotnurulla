@@ -538,6 +538,27 @@
                 border-bottom: 1px solid #f3f4f6;
             }
         }
+
+        .inv-date-range {
+            position: relative;
+        }
+
+        .inv-date-range > .daterangepicker {
+            position: absolute !important;
+            top: calc(100% + 6px) !important;
+            right: 0 !important;
+            left: auto !important;
+            z-index: 3000;
+        }
+
+        @media (max-width: 767.98px) {
+            .inv-date-range > .daterangepicker {
+                width: 100vw !important;
+                right: 0 !important;
+                left: auto !important;
+                max-width: calc(100vw - 24px);
+            }
+        }
     </style>
 @endpush
 
@@ -909,30 +930,26 @@
                     window.location.href = url.toString();
                 }
 
-                function positionDateRangePicker(picker) {
-                    const offset = $dateRange.offset();
-                    if (!offset || !picker || !picker.container) {
+                function showDateRangePicker() {
+                    const picker = $dateInput.data('daterangepicker');
+                    if (!picker) {
                         return;
                     }
 
-                    const pickerWidth = picker.container.outerWidth();
-                    const viewportWidth = $(window).width();
-                    const left = Math.max(
-                        8,
-                        Math.min(offset.left + $dateRange.outerWidth() - pickerWidth, viewportWidth - pickerWidth - 8)
-                    );
-
+                    picker.show();
                     picker.container.css({
                         display: 'flex',
-                        top: offset.top + $dateRange.outerHeight() + 6,
-                        left: left,
-                        right: 'auto'
+                        top: '',
+                        left: '',
+                        right: ''
                     });
                 }
 
                 $dateInput.daterangepicker({
                         startDate: startDate,
                         endDate: endDate,
+                        parentEl: '.inv-date-range',
+                        drops: 'down',
                         opens: 'left',
                         autoApply: true,
                         autoUpdateInput: false,
@@ -970,15 +987,22 @@
                 });
 
                 $dateInput.on('show.daterangepicker', function(ev, picker) {
-                    positionDateRangePicker(picker);
+                    picker.container.css({
+                        display: 'flex',
+                        top: '',
+                        left: '',
+                        right: ''
+                    });
                 });
 
                 $dateRange.add($dateIcon).on('click', function(e) {
+                    if ($(e.target).closest('.daterangepicker').length) {
+                        return;
+                    }
+
                     e.preventDefault();
                     e.stopPropagation();
-                    const picker = $dateInput.data('daterangepicker');
-                    picker.show();
-                    positionDateRangePicker(picker);
+                    showDateRangePicker();
                 });
             }
 
