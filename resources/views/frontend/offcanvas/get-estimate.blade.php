@@ -140,9 +140,9 @@
                                     <label class="form-label">Down payment</label>
                                     <div role="group" class="d-flex btn-group">
                                         <button type="button" data-cy="paymentcalc-downPref"
-                                            class="w-50 py-2 btn btn-default">Cash</button>
+                                            class="w-50 py-2 btn btn-default" data-gep-down-mode="cash">Cash</button>
                                         <button type="button" data-cy="paymentcalc-downPref"
-                                            class="w-50 py-2 btn btn-secondary active">Percentage</button>
+                                            class="w-50 py-2 btn btn-secondary active" data-gep-down-mode="percentage">Percentage</button>
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@
                                         <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-1">
                                             <b class="mx-auto">-</b>
                                         </button>
-                                        <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">%</b></span>
+                                        <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto" data-gep-down-symbol>%</b></span>
                                         <input class="form-control border-radius-0" data-cy="paymentcalc-down" step="1"
                                             min="0.0" max="99.9" placeholder="10" required type="text" value="0"
                                             name="down_pct" inputmode="numeric">
@@ -302,12 +302,17 @@
                     return Number(offcanvas.querySelector('select[name="state"]')?.value || offcanvas.dataset.term || 60);
                 }
 
+                function currentDownMode() {
+                    return offcanvas.querySelector('[data-gep-down-mode].active')?.dataset.gepDownMode || 'percentage';
+                }
+
                 function calculateMonthly() {
                     var price = getValue('[name="amount"]');
-                    var downPct = numberFrom(offcanvas.querySelector('[name="down_pct"]')?.value);
+                    var downValue = numberFrom(offcanvas.querySelector('[name="down_pct"]')?.value);
+                    var downAmount = currentDownMode() === 'cash' ? downValue : price * downValue / 100;
                     var tradeValue = getValue('[name="tradeinamount"]');
                     var tradeBalance = getValue('[name="tradeinremainingbalance"]');
-                    var principal = Math.max(0, price - (price * downPct / 100) - tradeValue + tradeBalance);
+                    var principal = Math.max(0, price - downAmount - tradeValue + tradeBalance);
                     var rate = currentRate();
                     var term = currentTerm();
                     var monthlyRate = (rate / 100) / 12;
@@ -326,8 +331,12 @@
                     var target = offcanvas.querySelector(header.dataset.gepTarget || '');
                     if (!target) return;
 
-                    var isOpen = target.classList.toggle('show');
+                    var isOpen = target.classList.contains('show') && target.style.display !== 'none';
+                    isOpen = !isOpen;
                     var icon = header.querySelector('[data-gep-collapse-icon]');
+
+                    target.classList.toggle('show', isOpen);
+                    target.style.display = isOpen ? 'block' : 'none';
                     header.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 
                     if (icon) {
@@ -376,12 +385,43 @@
                         if (!input) return;
 
                         var delta = numberFrom(button.dataset.gepStep);
+                        if (input.name === 'down_pct' && currentDownMode() === 'cash') {
+                            delta = delta * 100;
+                        }
                         setInputValue(input, getValue('[name="' + input.name + '"]') + delta);
                         calculateMonthly();
                     });
                 });
 
+                offcanvas.querySelectorAll('[data-gep-down-mode]').forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        var mode = button.dataset.gepDownMode || 'percentage';
+                        var input = offcanvas.querySelector('[name="down_pct"]');
+                        var symbol = offcanvas.querySelector('[data-gep-down-symbol]');
+
+                        offcanvas.querySelectorAll('[data-gep-down-mode]').forEach(function (btn) {
+                            btn.classList.toggle('active', btn === button);
+                            btn.classList.toggle('btn-secondary', btn === button);
+                            btn.classList.toggle('btn-default', btn !== button);
+                        });
+
+                        if (symbol) symbol.textContent = mode === 'cash' ? '$' : '%';
+                        if (input) {
+                            input.max = mode === 'cash' ? '1000000' : '99.9';
+                            input.placeholder = mode === 'cash' ? '1,000' : '10';
+                            setInputValue(input, 0);
+                        }
+
+                        calculateMonthly();
+                    });
+                });
+
                 offcanvas.querySelectorAll('[data-gep-collapse-toggle]').forEach(function (header) {
+                    var target = offcanvas.querySelector(header.dataset.gepTarget || '');
+                    if (target) {
+                        target.style.display = target.classList.contains('show') ? 'block' : 'none';
+                    }
+
                     header.addEventListener('click', function (event) {
                         event.preventDefault();
                         event.stopPropagation();
