@@ -9,6 +9,7 @@ use App\Models\Dealership\Dealer;
 use App\Models\Inventory\DealerInventoryFee;
 use App\Models\Inventory\Vehicle;
 use App\Models\Inventory\VehiclePrintable;
+use App\Models\Website\Page;
 use App\Services\Inventory\InventoryListingService;
 use App\Services\Inventory\PricingCalculatorService;
 use App\Services\Inventory\VehicleDetailService;
@@ -71,9 +72,19 @@ class FrontendController extends Controller
 
         $this->attachPricing($newArrivals, $dealerId);
 
+        $homeAboutCardCtaFallback = view('frontend.partials.home-about-card-cta')->render();
+        $homeAboutCardCtaContent = Page::firstOrCreateGlobalSectionContent(
+            $dealerId,
+            Page::HOME_ABOUT_CARD_CTA_SLUG,
+            'Homepage About / Cards / CTA',
+            $homeAboutCardCtaFallback
+        );
+
         return view('frontend.pages.home', [
-            'newArrivals' => $newArrivals,
-            'seo'         => [
+            'newArrivals'                 => $newArrivals,
+            'homeAboutCardCtaContent'     => $homeAboutCardCtaContent,
+            'homeAboutCardCtaFallback'    => $homeAboutCardCtaFallback,
+            'seo'                         => [
                 'title'       => 'Angel Motors Inc | Used Cars for Sale in Smyrna, TN',
                 'description' => 'Angel Motors Inc in Smyrna, TN offers quality pre-owned vehicles at competitive prices.',
                 'keywords'    => 'angel motors inc, used cars smyrna tn',
