@@ -855,57 +855,87 @@
                 window.location.href = url.toString();
             });
 
-            // Date Range Picker - Lazy Initialization
+            // Date Range Picker
+            const $dateRange = $('.inv-date-range');
             const $dateIcon = $('.inv-date-range .bi-calendar3');
             const $dateInput = $('#inventoryDateRange');
 
-            if ($dateIcon.length) {
-                $dateIcon.on('click', function(e) {
-                    const $icon = $(this);
-                    
-                    // If already initialized, just toggle it (handled by the library)
-                    if ($icon.data('daterangepicker')) {
+            if ($dateInput.length) {
+                let momentAvailable = typeof moment !== 'undefined' && typeof moment.localeData === 'function';
+                if (typeof moment !== 'undefined' && moment.default && typeof moment.default.localeData === 'function') {
+                    window.moment = moment.default;
+                    momentAvailable = true;
+                }
+
+                const drpAvailable = typeof $.fn.daterangepicker === 'function';
+
+                if (!momentAvailable || !drpAvailable) {
+                    console.warn('Moment.js or DateRangePicker not loaded. Please ensure app.js is loaded correctly.');
+                    return;
+                }
+
+                const initialDate = $dateInput.val();
+                let startDate = moment().subtract(29, 'days');
+                let endDate = moment();
+
+                if (initialDate && initialDate.includes(' - ')) {
+                    const parts = initialDate.split(' - ');
+                    const s = moment(parts[0], 'MM/DD/YYYY');
+                    const e = moment(parts[1], 'MM/DD/YYYY');
+                    if (s.isValid() && e.isValid()) {
+                        startDate = s;
+                        endDate = e;
+                    }
+                }
+
+                let navigating = false;
+
+                function loadDateRange(start, end) {
+                    if (navigating || !start || !end || !start.isValid() || !end.isValid()) {
                         return;
                     }
 
-                    // Prevent default and stop propagation during initialization
-                    e.preventDefault();
-                    e.stopPropagation();
+                    const dateStr = start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY');
 
-                    // Safety Checks
-                    let momentAvailable = typeof moment !== 'undefined' && typeof moment.localeData === 'function';
-                    if (typeof moment !== 'undefined' && moment.default && typeof moment.default.localeData === 'function') {
-                        window.moment = moment.default;
-                        momentAvailable = true;
-                    }
-
-                    const drpAvailable = typeof $.fn.daterangepicker === 'function';
-
-                    if (!momentAvailable || !drpAvailable) {
-                        console.warn('Moment.js or DateRangePicker not loaded. Please ensure app.js is loaded correctly.');
+                    if ($dateInput.val() === dateStr && new URL(window.location.href).searchParams.get('date_range') === dateStr) {
                         return;
                     }
 
-                    const initialDate = $dateInput.val();
-                    let startDate = moment().subtract(29, 'days');
-                    let endDate = moment();
+                    navigating = true;
+                    $dateInput.val(dateStr);
 
-                    if (initialDate && initialDate.includes(' - ')) {
-                        const parts = initialDate.split(' - ');
-                        const s = moment(parts[0], 'MM/DD/YYYY');
-                        const e = moment(parts[1], 'MM/DD/YYYY');
-                        if (s.isValid() && e.isValid()) {
-                            startDate = s;
-                            endDate = e;
-                        }
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('date_range', dateStr);
+                    window.location.href = url.toString();
+                }
+
+                function positionDateRangePicker(picker) {
+                    const offset = $dateRange.offset();
+                    if (!offset || !picker || !picker.container) {
+                        return;
                     }
 
-                    // Initialize
-                    $icon.daterangepicker({
+                    const pickerWidth = picker.container.outerWidth();
+                    const viewportWidth = $(window).width();
+                    const left = Math.max(
+                        8,
+                        Math.min(offset.left + $dateRange.outerWidth() - pickerWidth, viewportWidth - pickerWidth - 8)
+                    );
+
+                    picker.container.css({
+                        display: 'flex',
+                        top: offset.top + $dateRange.outerHeight() + 6,
+                        left: left,
+                        right: 'auto'
+                    });
+                }
+
+                $dateInput.daterangepicker({
                         startDate: startDate,
                         endDate: endDate,
                         opens: 'left',
                         autoApply: true,
+                        autoUpdateInput: false,
                         alwaysShowCalendars: true,
                         ranges: {
                             'Last week': [moment().subtract(6, 'days'), moment()],
@@ -932,20 +962,23 @@
                             firstDay: 1
                         }
                     }, function(start, end, label) {
-                        const dateStr = start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY');
-                        $dateInput.val(dateStr);
-                        const url = new URL(window.location.href);
-                        url.searchParams.set('date_range', dateStr);
-                        window.location.href = url.toString();
+                        loadDateRange(start, end);
                     });
 
-                    // Handle layout override
-                    $icon.on('show.daterangepicker', function(ev, picker) {
-                        picker.container.css('display', 'flex');
-                    });
+                $dateInput.on('apply.daterangepicker', function(ev, picker) {
+                    loadDateRange(picker.startDate, picker.endDate);
+                });
 
-                    // Manually trigger the first show
-                    $icon.data('daterangepicker').show();
+                $dateInput.on('show.daterangepicker', function(ev, picker) {
+                    positionDateRangePicker(picker);
+                });
+
+                $dateRange.add($dateIcon).on('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const picker = $dateInput.data('daterangepicker');
+                    picker.show();
+                    positionDateRangePicker(picker);
                 });
             }
 

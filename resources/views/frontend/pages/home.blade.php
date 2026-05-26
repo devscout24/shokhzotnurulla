@@ -337,8 +337,8 @@
         <div class="sc-24764b04-0 kdvVWh"></div>
         <div class="cElement cColumnLayout  row">
             <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-1">
-                <div
-                    class="sc-1a7ba87f-0 bwwxTl cElement cContainer  cursor-pointer  w-100 cursor-pointer text-white rounded border overflow-hidden">
+                <a href="{{ url('/get-approved') }}"
+                    class="sc-1a7ba87f-0 bwwxTl cElement cContainer  cursor-pointer  w-100 cursor-pointer text-white rounded border overflow-hidden d-block text-decoration-none">
                     <div class=" cElement cColorOverlay bg-black"></div>
                     <div class="sc-1a7ba87f-0 hAgfhi cElement cContainer  container ">
                         <div class="sc-24764b04-0 evgXRR"></div>
@@ -352,13 +352,13 @@
                         <div class="sc-24764b04-0 kdvwXJ"></div>
 
                     </div>
-                </div>
+                </a>
                 <div class="sc-24764b04-0 kdvjHt"></div>
             </div>
 
             <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-1">
-                <div
-                    class="sc-1a7ba87f-0 cbWkvM cElement cContainer  cursor-pointer  w-100 cursor-pointer text-white rounded border overflow-hidden">
+                <a href="{{ url('/schedule-service') }}"
+                    class="sc-1a7ba87f-0 cbWkvM cElement cContainer  cursor-pointer  w-100 cursor-pointer text-white rounded border overflow-hidden d-block text-decoration-none">
                     <div class=" cElement cColorOverlay bg-black"></div>
                     <div class="sc-1a7ba87f-0 hAgfhi cElement cContainer  container ">
                         <div class="sc-24764b04-0 evgXRR"></div>
@@ -375,7 +375,7 @@
                         <div class="sc-24764b04-0 kdvwXJ"></div>
 
                     </div>
-                </div>
+                </a>
                 <div class="sc-24764b04-0 kdvjHt"></div>
             </div>
         </div>
