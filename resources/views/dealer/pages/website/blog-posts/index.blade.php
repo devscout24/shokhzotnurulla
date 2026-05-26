@@ -100,6 +100,70 @@
             letter-spacing: 0.5px;
         }
 
+        @media (max-width: 575.98px) {
+            .main-content {
+                padding: 15px;
+            }
+
+            .page-header-flex {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input-group {
+                width: 100%;
+            }
+
+            .table thead {
+                display: none;
+            }
+
+            .table tbody td {
+                display: block;
+                width: 100%;
+                text-align: left;
+                padding: 10px 15px;
+                border: none;
+            }
+
+            .table tbody td:before {
+                content: attr(data-label);
+                display: block;
+                font-size: 11px;
+                font-weight: 800;
+                text-transform: uppercase;
+                color: #8792a2;
+                margin-bottom: 4px;
+            }
+
+            .table tbody tr {
+                display: block;
+                border-bottom: 1px solid #e0e6ed;
+                padding: 10px 0;
+            }
+
+            .chk-col {
+                display: none !important;
+            }
+
+            .inline-actions {
+                flex-wrap: wrap;
+            }
+
+            .btn-action {
+                flex: 1 1 calc(50% - 8px);
+                justify-content: center;
+                padding: 8px 12px;
+            }
+        }
+
         .table tbody td {
             padding: 15px 15px;
             vertical-align: middle;
@@ -327,7 +391,7 @@
                     <i class="fas fa-search search-icon"></i>
                     <input type="text" class="search-input" placeholder="Search blog posts">
                 </div>
-                <a href="{{ $routes['create'] }}" class="btn-add-page">
+                <a href="{{ $routes['create'] }}" class="btn-add-page d-none d-sm-flex">
                     <i class="fas fa-plus"></i> Add Blog Post
                 </a>
             </div>
@@ -360,7 +424,7 @@
                             @foreach ($posts as $post)
                                 <tr>
                                     <td class="chk-col"><input type="checkbox" class="chk-custom"></td>
-                                    <td>
+                                    <td data-label="Title">
                                         <div class="d-flex flex-column">
                                             <div class="d-flex align-items-center">
                                                 <a href="{{ str_replace('__ID__', $post->id, $routes['edit']) }}"
@@ -374,7 +438,7 @@
                                             </div>
                                             <div class="inline-actions">
                                                 <a href="{{ str_replace('__ID__', $post->id, $routes['edit']) }}"
-                                                    class="btn-action">
+                                                    class="btn-action d-none d-sm-inline-flex">
                                                     <i class="fa-regular fa-pen-to-square"></i> Edit
                                                 </a>
                                                 <a href="{{ route('frontend.blog.show', $post->slug) }}" target="_blank" class="btn-action">
@@ -390,7 +454,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td data-label="URL">
                                         <div class="url-text d-flex align-items-center">
                                             <span class="text-muted">/blog/{{ $post->slug }}</span>
                                             <a href="{{ route('frontend.blog.show', $post->slug) }}" target="_blank" rel="noopener noreferrer"
@@ -399,25 +463,25 @@
                                             </a>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td data-label="Author">
                                         <span class="date-text">{{ $post->dealer->name ?? 'Admin' }}</span>
                                     </td>
-                                    <td>
+                                    <td data-label="Status">
                                         @php $isPublished = $post->is_active && $post->published_at && $post->published_at <= now(); @endphp
                                         <div class="status-dot">
                                             <div class="dot {{ $isPublished ? 'dot-published' : 'dot-draft' }}"></div>
                                             {{ $isPublished ? 'Published' : 'Draft' }}
                                         </div>
                                     </td>
-                                    <td class="text-center">
+                                    <td data-label="Meta Desc." class="text-center">
                                         @if($post->meta_description)
                                             <i class="fas fa-check-circle meta-check"></i>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
-                                    <td><span class="date-text">{{ $post->created_at->format('M d, Y') }}</span></td>
-                                    <td><span class="date-text">{{ $post->updated_at->format('M d, Y') }}</span></td>
+                                    <td data-label="Created"><span class="date-text">{{ $post->created_at->format('M d, Y') }}</span></td>
+                                    <td data-label="Last Update"><span class="date-text">{{ $post->updated_at->format('M d, Y') }}</span></td>
                                 </tr>
                             @endforeach
                         </tbody>
