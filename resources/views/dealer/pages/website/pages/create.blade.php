@@ -390,7 +390,15 @@
             pointer-events: auto !important;
             user-select: text !important;
         }
-    </style>
+
+        .btn-outline-dark:hover {
+            background-color: #e4e9ec !important;
+            color: #000 !important;
+        }
+        .btn-danger:hover {
+            background-color: #ce4f4b !important;
+            border-color: #ce4f4b !important;
+        }    </style>
 @endpush
 @section('page-content')
     <div class="overlay" id="side-overlay"></div>
@@ -399,22 +407,22 @@
             onsubmit="return prepareFormSubmit()">
             @csrf
             <div class="of-header shadow-sm">
-                <h4 class="fw-bold m-0 fs-5 text-dark">Add Page</h4>
+                <h4 class="m-0 fs-5 text-dark">Add Page</h4>
                 <div class="ms-auto d-flex align-items-center gap-3">
-                    <button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold border-2"
+                    <button type="button" class="btn btn-outline-dark btn-sm px-4"
                         style="border-radius:6px"><i class="fa-solid fa-eye me-2"></i>Preview</button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold border-2"
+                    <button type="button" class="btn btn-outline-dark btn-sm px-4"
                         style="border-radius:6px" onclick="toggleSidePanel('page-settings')"><i
                             class="fa-solid fa-gear me-2"></i>Page Settings</button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold border-2"
+                    <button type="button" class="btn btn-outline-dark btn-sm px-4"
                         style="border-radius:6px" onclick="toggleSidePanel('page-revisions')"><i
-                            class="fa-solid fa-clock-rotate-left me-2"></i>Page Revisions</button>
-                    <button type="submit" class="btn btn-danger btn-sm px-5 fw-bold shadow-sm"
-                        style="background:#ce4f4b; border-radius:6px"><i class="fa-solid fa-check me-2"></i>Save</button>
+                            class="fa-solid fa-clock-rotate-left me-2"></i>Revision History</button>
+                    <button type="submit" class="btn btn-danger btn-sm px-4"
+                        style="border-radius:6px;background-color:#ce4f4b;border-color:#ce4f4b"><i class="fa-solid fa-check me-2"></i>Save</button>
                 </div>
             </div>
             <div class="input-group border-bottom bg-white" style="height:55px">
-                <span class="bg-lighter input-group-text border-0 px-4 fw-bold small text-muted"
+                <span class="bg-lighter input-group-text border-0 px-4 small text-muted"
                     style="min-width:140px">PAGE TITLE</span>
                 <input type="text" value="" class="form-control border-0 px-4 fs-6" name="title" id="page-title" required
                     autocomplete="off" placeholder="Enter page title...">

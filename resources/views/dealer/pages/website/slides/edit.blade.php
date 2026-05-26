@@ -366,22 +366,22 @@
             @csrf
             @method('PATCH')
             <div class="of-header shadow-sm">
-                <h4 class="fw-bold m-0 fs-5 text-dark">Edit Slide</h4>
+                <h4 class="m-0 fs-5 text-dark">Edit Slide</h4>
                 <div class="ms-auto d-flex align-items-center gap-3">
-                    <button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold border-2"
+                    <button type="button" class="btn btn-outline-dark btn-sm px-4"
                         style="border-radius:6px"><i class="fa-solid fa-eye me-2"></i>Preview</button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold border-2"
+                    <button type="button" class="btn btn-outline-dark btn-sm px-4"
                         style="border-radius:6px" onclick="toggleSidePanel('page-settings')"><i
                             class="fa-solid fa-gear me-2"></i>Slide Settings</button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm px-4 fw-bold border-2"
+                    <button type="button" class="btn btn-outline-dark btn-sm px-4"
                         style="border-radius:6px" onclick="toggleSidePanel('page-revisions')"><i
                             class="fa-solid fa-clock-rotate-left me-2"></i>Slide Revisions</button>
-                    <button type="submit" class="btn btn-danger btn-sm px-5 fw-bold shadow-sm"
-                        style="background:#ce4f4b; border-radius:6px"><i class="fa-solid fa-check me-2"></i>Update</button>
+                    <button type="submit" class="btn btn-danger btn-sm px-4"
+                        style="border-radius:6px;background-color:#ce4f4b;border-color:#ce4f4b"><i class="fa-solid fa-check me-2"></i>Update</button>
                 </div>
             </div>
             <div class="input-group border-bottom bg-white" style="height:55px">
-                <span class="bg-lighter input-group-text border-0 px-4 fw-bold small text-muted"
+                <span class="bg-lighter input-group-text border-0 px-4 small text-muted"
                     style="min-width:140px">SLIDE TITLE</span>
                 <input type="text" value="{{ $slide->title }}" class="form-control border-0 px-4 fs-6" name="title"
                     id="page-title" required autocomplete="off" placeholder="Enter slide title...">
