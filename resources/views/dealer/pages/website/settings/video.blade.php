@@ -54,6 +54,11 @@
                 {{-- ── RIGHT CONTENT ── --}}
                 <div class="flex-grow-1 p-4 overflow-auto">
                     <div class="bg-white border rounded" style="max-width: 1200px;">
+                        @php
+                            $currentVideoUrl = $dealer->video_url
+                                ? (preg_match('/^https?:\\/\\//', $dealer->video_url) ? $dealer->video_url : url('/' . ltrim($dealer->video_url, '/')))
+                                : null;
+                        @endphp
                         <form id="videoSettingsForm" action="{{ route('dealer.website.settings.video.update') }}" enctype="multipart/form-data" method="POST">
                             @csrf
 
@@ -69,12 +74,15 @@
                                         <p class="text-muted small">Select an MP4 video from your computer.</p>
                                     </div>
                                     <div class="col-md-8">
-                                        <div class="p-3 border rounded bg-light cursor-pointer" onclick="document.getElementById('videoFileInput').click()">
-                                            <input type="file" name="video_file" class="form-control form-control-sm" accept="video/mp4" id="videoFileInput">
+                                        <div class="p-3 border rounded bg-light">
+                                            <input type="file" name="video_file" class="d-none" accept="video/mp4" id="videoFileInput">
                                             <input type="hidden" name="video_source" value="overfuel">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" id="btnChooseVideo">Choose File</button>
                                             <div class="mt-2" id="currentVideoInfo">
-                                                @if($dealer->video_url)
-                                                    <small class="text-muted">Current file: <a href="{{ asset($dealer->video_url) }}" target="_blank" class="text-decoration-none"><i class="bi bi-play-circle"></i> View Saved Video</a></small>
+                                                @if($currentVideoUrl)
+                                                    <small class="text-muted">Current file: <a href="{{ $currentVideoUrl }}" target="_blank" class="text-decoration-none"><i class="bi bi-play-circle"></i> View Saved Video</a></small>
+                                                @else
+                                                    <small class="text-muted">No video uploaded yet.</small>
                                                 @endif
                                             </div>
                                         </div>
@@ -88,7 +96,6 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
                         </form>
                     </div>
                 </div>
@@ -99,35 +106,46 @@
 
 @push('page-scripts')
 <script>
-$(function() {
-    const $fileInput = $('#videoFileInput');
-    const $videoFilePreview = $('#videoFilePreview');
-    const $previewContainer = $('#videoPreviewContainer');
+document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('videoFileInput');
+    const videoFilePreview = document.getElementById('videoFilePreview');
+    const previewContainer = document.getElementById('videoPreviewContainer');
+    const chooseBtn = document.getElementById('btnChooseVideo');
 
-    let activeVideoFileUrl = {!! json_encode($dealer->video_url ? asset($dealer->video_url) : null) !!};
+    let activeVideoFileUrl = {!! json_encode($currentVideoUrl) !!};
 
     function updatePreview() {
-        $videoFilePreview.addClass('d-none').attr('src', '');
-        $previewContainer.addClass('d-none');
+        if (videoFilePreview) {
+            videoFilePreview.classList.add('d-none');
+            videoFilePreview.setAttribute('src', '');
+        }
+        if (previewContainer) previewContainer.classList.add('d-none');
 
-        if (activeVideoFileUrl) {
-            $videoFilePreview.attr('src', activeVideoFileUrl).removeClass('d-none');
-            $previewContainer.removeClass('d-none');
+        if (activeVideoFileUrl && videoFilePreview && previewContainer) {
+            videoFilePreview.setAttribute('src', activeVideoFileUrl);
+            videoFilePreview.classList.remove('d-none');
+            previewContainer.classList.remove('d-none');
         }
     }
 
-    $fileInput.on('change', function() {
-        if (this.files && this.files[0]) {
-            const file = this.files[0];
-            if (file.type !== 'video/mp4') {
-                toastr.error('Please select an MP4 video file.');
-                this.value = '';
-                return;
+    if (fileInput) {
+        fileInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                if (file.type !== 'video/mp4') {
+                    if (window.toastr) toastr.error('Please select an MP4 video file.');
+                    this.value = '';
+                    return;
+                }
+                activeVideoFileUrl = URL.createObjectURL(file);
+                updatePreview();
             }
-            activeVideoFileUrl = URL.createObjectURL(file);
-            updatePreview();
-        }
-    });
+        });
+    }
+
+    if (chooseBtn && fileInput) {
+        chooseBtn.addEventListener('click', () => fileInput.click());
+    }
 
     updatePreview();
 });
