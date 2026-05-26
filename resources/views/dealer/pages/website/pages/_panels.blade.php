@@ -259,6 +259,7 @@ $visibilityHtml = '
 <div class="hs-row"><label>Icon Class (e.g. fa-star)</label><input class="hs-input" id="ics-icon" placeholder="fa-star"/></div>
 <div class="hs-row"><label>Icon Size (px)</label><input class="hs-input" id="ics-size" type="number" value="24"/></div>
 <div class="hs-row"><label>Icon Color</label><input class="hs-input" id="ics-color" type="color" value="#111827" style="height:40px;padding:2px"/></div>
+<div class="hs-row"><label>Align</label><div class="hs-align-group"><button type="button" class="ics-align-btn" data-align="left"><i class="fa-solid fa-align-left"></i></button><button type="button" class="ics-align-btn" data-align="center"><i class="fa-solid fa-align-center"></i></button><button type="button" class="ics-align-btn" data-align="right"><i class="fa-solid fa-align-right"></i></button></div></div>
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
 <div class="hs-actions"><button type="button" class="hs-btn-remove" id="ics-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="ics-cancel-btn">Cancel</button></div>
