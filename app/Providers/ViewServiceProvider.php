@@ -118,6 +118,10 @@ class ViewServiceProvider extends ServiceProvider
                 // 'frontend.partials.dealership-info',
                 // 'frontend.pages.contact-us',
                 'frontend.*',
+                'frontend.*.*',
+                'frontend.partials.*',
+                'frontend.pages.*',
+                'frontend.pages.*.*',
             ],
             DealerFrontendComposer::class
         );

@@ -14,6 +14,7 @@ use App\Models\Website\FormEntry;
 use App\Models\Website\Media;
 use App\Models\Website\Menu;
 use App\Models\Website\Location;
+use App\Models\Website\HomeAboutCtaSection;
 use App\Models\Website\Domain;
 use App\Models\Website\Redirect;
 use App\Models\Website\DigitalRetailSetting;
@@ -44,6 +45,7 @@ class Dealer extends Model
         'domain',
         'staging_domain',
         'is_active',
+        'logo',
         'legal_name',
         'corporate_address',
         'support_email',
@@ -56,10 +58,14 @@ class Dealer extends Model
         'optional_disclaimer',
         'banner_text',
         'banner_hover_title',
+        'banner_title',
+        'banner_subtitle',
         'banner_text_color',
         'banner_bg_color',
         'banner_desktop_media_id',
         'banner_mobile_media_id',
+        'video_url',
+        'video_source',
         'status',
     ];
 
@@ -162,6 +168,11 @@ class Dealer extends Model
     public function digitalRetailSettings(): HasOne
     {
         return $this->hasOne(DigitalRetailSetting::class);
+    }
+
+    public function homeAboutCtaSection(): HasOne
+    {
+        return $this->hasOne(HomeAboutCtaSection::class);
     }
 
     public function integrations(): HasMany

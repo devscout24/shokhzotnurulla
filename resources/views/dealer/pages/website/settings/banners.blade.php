@@ -31,6 +31,10 @@
                         <span class="ws-icon"><i class="bi bi-card-image"></i></span>
                         <span>Banners /<br>Announcements</span>
                     </a>
+                    <a href="{{ route('dealer.website.settings.home-about-cta') }}" class="menu-item">
+                        <span class="ws-icon"><i class="bi bi-layout-text-window-reverse"></i></span>
+                        <span>Home About/CTA</span>
+                    </a>
                     <a href="{{ route('dealer.website.settings.finance') }}" class="menu-item">
                         <span class="ws-icon"><i class="bi bi-percent"></i></span>
                         <span>Interest Rates</span>
@@ -38,8 +42,10 @@
                     <a href="{{ route('dealer.website.settings.retail') }}" class="menu-item">
                         <span class="ws-icon"><i class="bi bi-grid"></i></span>
                         <span>Digital Retail</span>
-                    </a>
-                    {{-- <a href="{{ route('dealer.website.settings.domains') }}" class="menu-item">
+                    </a>                    <a href="{{ route('dealer.website.settings.video') }}" class="menu-item">
+                        <span class="ws-icon"><i class="bi bi-camera-video"></i></span>
+                        <span>Background Video</span>
+                    </a>                    {{-- <a href="{{ route('dealer.website.settings.domains') }}" class="menu-item">
                         <span class="ws-icon"><i class="bi bi-globe"></i></span>
                         <span>Domains</span>
                     </a> --}}
@@ -63,6 +69,34 @@
 
                     <div class="bn-card">
                         <div class="bn-card-title">Persistent Banner Settings</div>
+
+                      
+
+
+                        {{-- banner title --}}
+                        <div class="bn-row">
+                            <div class="bn-label-col">Banner title</div>
+                            <div class="bn-input-col">
+                                <input type="text"
+                                       name="banner_title"
+                                       class="bn-control"
+                                       placeholder="Main headline on the banner"
+                                       value="{{ old('banner_title', $dealer->banner_title) }}">
+                            </div>
+                        </div>
+
+                        {{-- banner subtitle --}}
+                        <div class="bn-row">
+                            <div class="bn-label-col">Banner subtitle</div>
+                            <div class="bn-input-col">
+                                <input type="text"
+                                       name="banner_subtitle"
+                                       class="bn-control"
+                                       placeholder="Secondary text on the banner"
+                                       value="{{ old('banner_subtitle', $dealer->banner_subtitle) }}">
+                            </div>
+                        </div>
+
 
                         {{-- Text / announcement --}}
                         <div class="bn-row">
@@ -542,6 +576,8 @@
         // Save banner settings
         document.getElementById('btnSaveBanner').addEventListener('click', function () {
             const formData = new FormData();
+            formData.append('banner_title', document.querySelector('[name="banner_title"]').value);
+            formData.append('banner_subtitle', document.querySelector('[name="banner_subtitle"]').value);
             formData.append('banner_text', document.querySelector('[name="banner_text"]').value);
             formData.append('banner_hover_title', document.querySelector('[name="banner_hover_title"]').value);
             formData.append('banner_text_color', document.getElementById('textColorPicker').value);

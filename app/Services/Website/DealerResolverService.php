@@ -13,6 +13,7 @@ class DealerResolverService
 
     public function resolve(): int
     {
+
         if (self::$resolved !== null) {
             return self::$resolved;
         }
@@ -38,6 +39,7 @@ class DealerResolverService
 
                 // Fallback: If an admin/dealer user is logged in, prioritize their current dealer context
                 // This is crucial for previewing pages from the admin dashboard on different domains.
+                
                 if (auth()->check() && auth()->user()->current_dealer_id) {
                     return auth()->user()->current_dealer_id;
                 }

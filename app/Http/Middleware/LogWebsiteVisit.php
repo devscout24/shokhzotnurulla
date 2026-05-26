@@ -28,6 +28,12 @@ class LogWebsiteVisit
         $dealerId = $this->dealerResolver->resolve();
 
         if ($dealerId) {
+            $dealer = Cache::remember("dealer_model:{$dealerId}", 3600, fn() => \App\Models\Dealership\Dealer::find($dealerId));
+            if ($dealer) {
+                app()->instance('currentDealer', $dealer);
+                view()->share('currentDealer', $dealer);
+            }
+
             $agent = new Agent();
             $ip = $request->ip();
 
@@ -46,6 +52,7 @@ class LogWebsiteVisit
 
             WebsiteVisitorLog::create([
                 'dealer_id'    => $dealerId,
+                // 'location_id'  => $locationId ?: 1,
                 'location_id'  => $locationId ?: null,
                 'ip_address'   => $ip,
                 'device_brand' => $agent->device(),

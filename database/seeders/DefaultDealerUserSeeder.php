@@ -2,15 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\TimeHelper;
+use App\Models\Dealership\Dealer;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
-use App\Models\Dealership\Dealer;
 use Illuminate\Support\Facades\Hash;
 
 class DefaultDealerUserSeeder extends Seeder
 {
     use WithoutModelEvents;
+
     /**
      * Run the database seeds.
      */
@@ -23,7 +25,8 @@ class DefaultDealerUserSeeder extends Seeder
                 'name' => 'Dealer 1',
                 'email' => 'admin@admin.com',
                 'phone' => '+923280287525',
-                'is_active' => true
+                'is_active' => true,
+                'internal_id' => TimeHelper::generateNumericId(),
             ]
         );
 
@@ -56,12 +59,18 @@ class DefaultDealerUserSeeder extends Seeder
             'order' => 2,
         ]);
 
+        $dealer->domains()->create([
+            'domain' => 'dealer-1.test',
+            'is_primary' => true,
+            'is_verified' => true,
+        ]);
+
         // --- 3 Dealer Staff Users ---
         for ($i = 1; $i <= 3; $i++) {
             $staff = User::firstOrCreate(
                 ['email' => "dealer1staff{$i}@gmail.com"],
                 [
-                    'first_name' => "Dealer",
+                    'first_name' => 'Dealer',
                     'last_name' => "Staff {$i}",
                     'email_verified_at' => now(),
                     'password' => Hash::make('12345678'), // change in prod

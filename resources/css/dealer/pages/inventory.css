@@ -293,6 +293,10 @@
 }
 .inv-veh-link:hover { text-decoration: underline; }
 
+/* Desktop: show full title, hide truncated */
+.inv-veh-desktop { display: inline; }
+.inv-veh-mobile  { display: none; }
+
 .inv-badge-sold {
     display: inline-block; background: #27ae60; color: #fff;
     font-size: 11px; font-weight: 700; padding: 3px 8px;
@@ -1317,21 +1321,64 @@
 }
 
 /* ══════════════════════════════════════════════════
+   MOBILE FILTER BAR (hidden on desktop)
+══════════════════════════════════════════════════ */
+.inv-mobile-filter-bar {
+    display: none;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fff;
+}
+
+.inv-mobile-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 7px 14px;
+    font-size: 13px;
+    color: #444;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.inv-mobile-filter-btn:hover { background: #eee; }
+
+/* Overlay behind sidebar on mobile */
+.inv-sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 899;
+}
+.inv-sidebar-overlay.active { display: block; }
+
+/* ══════════════════════════════════════════════════
    RESPONSIVE — ADMIN INVENTORY & VDP
    Breakpoints: 992px (tablet), 768px (mobile)
 ══════════════════════════════════════════════════ */
 
 @media (max-width: 992px) {
-    /* Inventory: sidebar toggles via offcanvas */
+    /* Show mobile filter bar */
+    .inv-mobile-filter-bar {
+        display: block;
+    }
+
+    /* Inventory: sidebar slides in as offcanvas */
     .inv-sidebar {
         display: none;
         position: fixed;
-        top: 110px;
+        top: 0;
         left: 0;
-        height: calc(100vh - 110px);
-        width: 260px;
+        height: 100vh;
+        width: 280px;
         z-index: 900;
-        box-shadow: 4px 0 16px rgba(0,0,0,0.15);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+        overflow-y: auto;
+        padding-top: 16px;
+        background: #fff;
     }
     .inv-sidebar.open {
         display: flex;
@@ -1340,6 +1387,7 @@
     /* Inventory: content takes full width */
     .inv-main {
         flex-direction: column;
+        margin-top: 0;
     }
 
     .inv-content {
@@ -1373,6 +1421,7 @@
     .inv-topbar {
         flex-wrap: wrap;
         gap: 6px;
+        padding: 8px 12px;
     }
 
     .inv-topbar-right {
@@ -1382,36 +1431,114 @@
 }
 
 @media (max-width: 767px) {
-    /* Main content area: remove large padding */
+    /* Main content area */
     .main-content {
-        padding: 12px !important;
+        padding: 0 !important;
     }
 
-    /* Inventory grid: 1 column on mobile */
-    .inv-grid {
-        grid-template-columns: 1fr;
+    /* ── Inventory topbar: stack status tabs + controls ── */
+    .inv-topbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 10px 12px;
     }
 
-    /* Inventory table: scroll horizontally */
+    .inv-topbar > .inv-btn-tab {
+        text-align: center;
+        justify-content: center;
+    }
+
+    /* Status tabs: row of 3 */
+    .inv-topbar-tabs {
+        display: flex;
+        gap: 6px;
+    }
+
+    .inv-topbar-sep {
+        display: none;
+    }
+
+    /* Controls row: display + limit + right actions in one row */
+    .inv-topbar-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .inv-topbar-right {
+        margin-left: auto;
+        width: auto;
+    }
+
+    /* ── Inventory table: horizontal scroll on mobile ── */
     .inv-table-wrap {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 
-    /* VDP topbar: stacked */
+    /* Mobile: show truncated title, hide full title */
+    .inv-veh-desktop { display: none; }
+    .inv-veh-mobile  { display: inline; }
+
+    /* Hide lower-priority columns on smallest screens */
+    .col-th[data-col="override"],
+    .col-td[data-col="override"],
+    .col-th[data-col="vin"],
+    .col-td[data-col="vin"] {
+        display: none !important;
+    }
+
+    /* Tighter table cells on mobile */
+    .inv-table thead th,
+    .inv-table tbody td {
+        padding: 8px 8px;
+        font-size: 12px;
+    }
+
+    .inv-thumb { width: 56px; height: 40px; }
+    .inv-thumb-cell { width: 68px; }
+
+    /* ── Inventory grid: 1 column on mobile ── */
+    .inv-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* ── VDP topbar: stacked ── */
+    .vdp-topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 12px;
+        gap: 8px;
+    }
+
+    .vdp-topbar-left {
+        width: 100%;
+    }
+
     .vdp-topbar-right {
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
+        width: 100%;
     }
 
     .vdp-btn-outline,
     .vdp-btn-danger {
         font-size: 12px;
         padding: 6px 10px;
+        flex: 1;
+        justify-content: center;
     }
 
-    /* Modal: full screen on mobile */
+    .vdp-title {
+        font-size: 13px;
+        max-width: 100%;
+        white-space: normal;
+    }
+
+    /* ── Modal: full screen on mobile ── */
     .inv-modal {
         max-width: 100%;
         border-radius: 0;
@@ -1438,5 +1565,11 @@
         width: 30px;
         height: 30px;
         font-size: 12px;
+    }
+
+    /* Pagination count: smaller */
+    .inv-page-count {
+        font-size: 12px;
+        padding: 8px 0 0;
     }
 }

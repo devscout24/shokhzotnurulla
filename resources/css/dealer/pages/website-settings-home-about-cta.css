@@ -1,0 +1,97 @@
+/* ── Layout ── */
+.ws-layout {
+    display: flex;
+    min-height: calc(100vh - 60px);
+    background: #f2f2f2;
+    font-size: 13px;
+}
+
+/* ── Card ── */
+.ha-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    max-width: 1200px;
+    overflow: hidden;
+}
+
+.ha-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+    background: #fff;
+}
+
+.ha-section {
+    padding: 18px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.ha-section:last-child {
+    border-bottom: none;
+}
+
+.ha-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.ha-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 16px;
+}
+
+.ha-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px 16px;
+}
+
+.ha-input {
+    width: 100%;
+}
+
+.ha-textarea {
+    width: 100%;
+    min-height: 90px;
+}
+
+.ha-help {
+    font-size: 11px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.ha-actions {
+    padding: 16px 20px 18px;
+}
+
+.ha-btn-save {
+    background: #c0392b;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    padding: 8px 22px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ha-btn-save:hover {
+    background: #a93226;
+}
+
+@media (max-width: 900px) {
+    .ha-grid,
+    .ha-grid-3 {
+        grid-template-columns: 1fr;
+    }
+}

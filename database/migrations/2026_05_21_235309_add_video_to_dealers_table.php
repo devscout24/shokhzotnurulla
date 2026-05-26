@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('locations', function (Blueprint $table) {
-            $table->string('state', 50)->change();
-            $table->string('country', 50)->change();
+        Schema::table('dealers', function (Blueprint $table) {
+            $table->string('video_url', 500)->nullable()->after('banner_mobile_media_id');
+            $table->string('video_source', 30)->nullable()->after('video_url');
         });
     }
 
@@ -22,9 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('locations', function (Blueprint $table) {
-            $table->string('state', 2)->change();
-            $table->string('country', 2)->change();
+        Schema::table('dealers', function (Blueprint $table) {
+            $table->dropColumn(['video_url', 'video_source']);
         });
     }
 };

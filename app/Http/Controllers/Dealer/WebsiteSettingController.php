@@ -21,6 +21,7 @@ use App\Actions\Website\ImportRedirectsAction;
 use App\Actions\Website\CreateDealerIpAction;
 use App\Actions\Website\UpdateDealerIpAction;
 use App\Actions\Website\DeleteDealerIpAction;
+use App\Models\Website\HomeAboutCtaSection;
 use App\Http\Requests\Website\UpdateGeneralSettingsRequest;
 use App\Http\Requests\Website\UpdateDisclaimersRequest;
 use App\Http\Requests\Website\UpdateSocialLinksRequest;
@@ -28,10 +29,12 @@ use App\Http\Requests\Website\StoreLocationRequest;
 use App\Http\Requests\Website\UpdateLocationRequest;
 use App\Http\Requests\Website\UpdateBannerSettingsRequest;
 use App\Http\Requests\Website\UpdateDigitalRetailRequest;
+use App\Http\Requests\Website\UpdateVideoRequest;
 use App\Http\Requests\Website\StoreRedirectRequest;
 use App\Http\Requests\Website\UpdateRedirectRequest;
 use App\Http\Requests\Website\StoreDealerIpRequest;
 use App\Http\Requests\Website\UpdateDealerIpRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
 use App\Support\AuditLogger;
 use Illuminate\Http\Request;
@@ -53,9 +56,36 @@ class WebsiteSettingController extends Controller
     {
         $dealer = $request->user()->currentDealer;
         $validated = $request->validated();
+
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            
+            // Ensure directory exists
+            if (!file_exists(public_path('assets/frontend/img/logos'))) {
+                mkdir(public_path('assets/frontend/img/logos'), 0755, true);
+            }
+
+            // Delete old logo if exists
+            if ($dealer->logo && file_exists(public_path('assets/frontend/img/logos/' . $dealer->logo))) {
+                @unlink(public_path('assets/frontend/img/logos/' . $dealer->logo));
+            }
+
+            $file->move(public_path('assets/frontend/img/logos'), $filename);
+            $validated['logo'] = $filename;
+            $path = $filename;
+        }
+
         $dealer->update($validated);
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
         $this->auditLogger->info($request, 'General settings updated');
-        return response()->json(['success' => true, 'message' => 'General settings saved.']);
+        
+        $responseData = ['success' => true, 'message' => 'General settings saved.'];
+        if (isset($path)) {
+            $responseData['logo_url'] = asset('assets/frontend/img/logos/' . $path);
+        }
+        
+        return response()->json($responseData);
     }
 
     public function updateDisclaimers(UpdateDisclaimersRequest $request): JsonResponse
@@ -63,6 +93,7 @@ class WebsiteSettingController extends Controller
         $dealer = $request->user()->currentDealer;
         $validated = $request->validated();
         $dealer->update($validated);
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
         $this->auditLogger->info($request, 'Disclaimer settings updated');
         return response()->json(['success' => true, 'message' => 'Disclaimers saved.']);
     }
@@ -71,11 +102,15 @@ class WebsiteSettingController extends Controller
     {
         $dealer = $request->user()->currentDealer;
         $validated = $request->validated();
-        $dealer->social_links = $validated;
-        $dealer->save();
+        
+        $dealer->update(['social_links' => $validated]);
+        
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
+        
         $this->auditLogger->info($request, 'Social links updated');
         return response()->json(['success' => true, 'message' => 'Social links saved.']);
     }
+
 
     public function locations(Request $request): View
     {
@@ -143,19 +178,38 @@ class WebsiteSettingController extends Controller
         abort_if($location->dealer_id !== $dealer->id, 403);
 
         $location = $updateLocation($location, $request->validated());
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
         $this->auditLogger->info($request, 'Location updated', ['location_id' => $location->id]);
         return response()->json(['success' => true, 'message' => 'Location updated successfully.', 'location' => $location]);
     }
 
-    public function destroyLocation(Request $request, Location $location, DeleteLocationAction $deleteLocation): JsonResponse
+    public function video(Request $request): View
     {
-        $dealer = request()->user()->currentDealer;
-        abort_if($location->dealer_id !== $dealer->id, 403);
-
-        $deleteLocation($location);
-        $this->auditLogger->info($request, 'Location deleted', ['location_id' => $location->id]);
-        return response()->json(['success' => true, 'message' => 'Location deleted successfully.']);
+      
+        $dealer = $request->user()->currentDealer;
+        return view('dealer.pages.website.settings.video', compact('dealer'));
     }
+
+    public function updateVideo(UpdateVideoRequest $request, UploadMediaAction $uploadMedia): RedirectResponse
+    {
+        
+        $dealer = $request->user()->currentDealer;
+
+        if ($request->hasFile('video_file')) {
+            $uploaded = $uploadMedia->execute($dealer->id, [$request->file('video_file')]);
+            $media = $uploaded[0];
+            
+            $dealer->update([
+                'video_source' => 'overfuel',
+            ]);
+
+            \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
+            $this->auditLogger->info($request, 'Website background video updated');
+        }
+
+        return redirect()->back()->with('success', 'Video updated successfully.');
+    }
+
 
     public function reorderLocations(Request $request, ReorderLocationsAction $reorderLocations): JsonResponse
     {
@@ -166,17 +220,155 @@ class WebsiteSettingController extends Controller
         return response()->json(['success' => true, 'message' => 'Locations reordered.']);
     }
 
-    public function banners(): View
+    public function banners(Request $request): View
     {
-        $dealer = auth()->user()->currentDealer;
+        $dealer = $request->user()->currentDealer;
         $dealer->load(['bannerDesktopMedia', 'bannerMobileMedia']);
         return view('dealer.pages.website.settings.banners', compact('dealer'));
+    }
+
+    public function homeAboutCta(Request $request): View
+    {
+        $dealer = $request->user()->currentDealer;
+        $section = HomeAboutCtaSection::where('dealer_id', $dealer->id)->first();
+        $content = array_replace_recursive(
+            HomeAboutCtaSection::defaultContent(),
+            $section?->content ?? []
+        );
+
+        return view('dealer.pages.website.settings.home-about-cta', compact('content'));
+    }
+
+    public function updateHomeAboutCta(Request $request): JsonResponse
+    {
+        $dealer = $request->user()->currentDealer;
+
+        $validated = $request->validate([
+            'about_eyebrow' => 'nullable|string|max:120',
+            'about_heading' => 'nullable|string|max:255',
+            'about_paragraph_1' => 'nullable|string',
+            'about_paragraph_2' => 'nullable|string',
+            'about_image_alt' => 'nullable|string|max:255',
+            'about_image_file' => 'nullable|image|max:4096',
+
+            'stats_1_icon' => 'nullable|string|max:120',
+            'stats_1_title' => 'nullable|string|max:255',
+            'stats_1_text' => 'nullable|string',
+            'stats_2_icon' => 'nullable|string|max:120',
+            'stats_2_title' => 'nullable|string|max:255',
+            'stats_2_text' => 'nullable|string',
+            'stats_3_icon' => 'nullable|string|max:120',
+            'stats_3_title' => 'nullable|string|max:255',
+            'stats_3_text' => 'nullable|string',
+            'stats_4_icon' => 'nullable|string|max:120',
+            'stats_4_title' => 'nullable|string|max:255',
+            'stats_4_text' => 'nullable|string',
+
+            'card_icon' => 'nullable|string|max:120',
+            'card_title' => 'nullable|string|max:255',
+            'card_text' => 'nullable|string',
+            'card_image_alt' => 'nullable|string|max:255',
+            'card_image_file' => 'nullable|image|max:4096',
+
+            'cta_1_title' => 'nullable|string|max:255',
+            'cta_1_text' => 'nullable|string',
+            'cta_1_link' => 'nullable|string|max:255',
+            'cta_2_title' => 'nullable|string|max:255',
+            'cta_2_text' => 'nullable|string',
+            'cta_2_link' => 'nullable|string|max:255',
+        ]);
+
+        $section = HomeAboutCtaSection::where('dealer_id', $dealer->id)->first();
+        $existing = $section?->content ?? HomeAboutCtaSection::defaultContent();
+
+        $aboutImagePath = data_get($existing, 'about.image_url', '');
+        if ($request->hasFile('about_image_file')) {
+            $file = $request->file('about_image_file');
+            $filename = time() . '_about.' . $file->getClientOriginalExtension();
+            $dir = public_path('assets/frontend/img/home-about-cta');
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            $file->move($dir, $filename);
+            $aboutImagePath = 'assets/frontend/img/home-about-cta/' . $filename;
+        }
+
+        $cardImagePath = data_get($existing, 'card.image_url', '');
+        if ($request->hasFile('card_image_file')) {
+            $file = $request->file('card_image_file');
+            $filename = time() . '_card.' . $file->getClientOriginalExtension();
+            $dir = public_path('assets/frontend/img/home-about-cta');
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            $file->move($dir, $filename);
+            $cardImagePath = 'assets/frontend/img/home-about-cta/' . $filename;
+        }
+
+        $stats = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $stats[] = [
+                'icon' => $validated["stats_{$i}_icon"] ?? '',
+                'title' => $validated["stats_{$i}_title"] ?? '',
+                'text' => $validated["stats_{$i}_text"] ?? '',
+            ];
+        }
+
+        $ctas = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $ctas[] = [
+                'title' => $validated["cta_{$i}_title"] ?? '',
+                'text' => $validated["cta_{$i}_text"] ?? '',
+                'link_url' => $validated["cta_{$i}_link"] ?? '',
+            ];
+        }
+
+        $content = [
+            'about' => [
+                'eyebrow' => $validated['about_eyebrow'] ?? '',
+                'heading' => $validated['about_heading'] ?? '',
+                'paragraphs' => [
+                    $validated['about_paragraph_1'] ?? '',
+                    $validated['about_paragraph_2'] ?? '',
+                ],
+                'image_url' => $aboutImagePath,
+                'image_alt' => $validated['about_image_alt'] ?? '',
+            ],
+            'stats' => $stats,
+            'card' => [
+                'icon' => $validated['card_icon'] ?? '',
+                'title' => $validated['card_title'] ?? '',
+                'text' => $validated['card_text'] ?? '',
+                'image_url' => $cardImagePath,
+                'image_alt' => $validated['card_image_alt'] ?? '',
+            ],
+            'ctas' => $ctas,
+        ];
+
+        if ($section) {
+            $section->update(['content' => $content]);
+        } else {
+            HomeAboutCtaSection::create([
+                'dealer_id' => $dealer->id,
+                'content' => $content,
+            ]);
+        }
+
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
+        $this->auditLogger->info($request, 'Home about/CTA settings updated');
+
+        return response()->json(['success' => true, 'message' => 'Home About/CTA settings saved.']);
     }
 
     public function updateBanners(UpdateBannerSettingsRequest $request, UploadMediaAction $uploadMedia, DeleteMediaAction $deleteMedia): JsonResponse
     {
         $dealer = $request->user()->currentDealer;
         $data = $request->validated();
+
+        //banner_title and banner_subtitle
+        $data['banner_title'] = $data['banner_title'] ?? null;
+        $data['banner_subtitle'] = $data['banner_subtitle'] ?? null;
+        $data['logo'] = $data['logo'] ?? null;
 
         // Handle desktop image upload (if a new file was uploaded)
         if ($request->hasFile('banner_desktop_image')) {
@@ -203,20 +395,21 @@ class WebsiteSettingController extends Controller
         unset($data['banner_desktop_image'], $data['banner_mobile_image']);
 
         $dealer->update($data);
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
 
         $this->auditLogger->info($request, 'Banner settings updated');
 
         return response()->json(['success' => true, 'message' => 'Banner settings saved.']);
     }
 
-    public function finance(): View
+    public function finance(Request $request): View
     {
         return view('dealer.pages.website.settings.finance');
     }
 
-    public function retail(): View
+    public function retail(Request $request): View
     {
-        $dealer = auth()->user()->currentDealer;
+        $dealer = $request->user()->currentDealer;
         $settings = $dealer->digitalRetailSettings ?? new DigitalRetailSetting();
         return view('dealer.pages.website.settings.retail', compact('settings'));
     }
@@ -247,9 +440,9 @@ class WebsiteSettingController extends Controller
         return response()->json(['success' => true, 'message' => 'Digital Retail settings saved.']);
     }
 
-    public function redirects(): View
+    public function redirects(Request $request): View
     {
-        $dealer = auth()->user()->currentDealer;
+        $dealer = $request->user()->currentDealer;
         $redirects = $dealer->redirects()->latest()->get();
         return view('dealer.pages.website.settings.redirects', compact('redirects'));
     }
@@ -356,9 +549,9 @@ class WebsiteSettingController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    public function ips(): View
+    public function ips(Request $request): View
     {
-        $dealer = auth()->user()->currentDealer;
+        $dealer = $request->user()->currentDealer;
         $dealerIps = $dealer->dealerIps()->latest()->get();
         return view('dealer.pages.website.settings.ips', compact('dealerIps'));
     }

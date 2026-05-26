@@ -659,6 +659,29 @@ svg.text-primary,
     transform: translate3d(0px, 26.6667px, 0px);
 }
 
+/* Favorites Dropdown */
+.favorite-item:hover {
+    background-color: #f8f9fa;
+}
+
+.favorites-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.favorites-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.favorites-scroll::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.favorites-scroll::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+
 .absolute-offset2 {
     position: absolute;
     inset: 0px auto auto 0px;

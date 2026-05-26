@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('roles', function (Blueprint $table) {
-            $table->timestamp('expires_at')->nullable()->after('is_active');
+        Schema::table('dealers', function (Blueprint $table) {
+            $table->string('logo')->nullable()->after('staging_domain');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('roles', function (Blueprint $table) {
-            $table->dropColumn('expires_at');
+        Schema::table('dealers', function (Blueprint $table) {
+            $table->dropColumn('logo');
         });
     }
 };

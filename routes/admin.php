@@ -19,12 +19,18 @@ Route::prefix('admin')
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
+        // Dealers Export
+        Route::get('dealers/export/csv', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportCsv'])
+            ->name('dealers.export.csv');
+
         // Dealers CRUD
         Route::resource('dealers', \App\Http\Controllers\Admin\DealerController::class);
         Route::patch('dealers/{dealer}/toggle-status', [\App\Http\Controllers\Admin\DealerController::class, 'toggleStatus'])
             ->name('dealers.toggle-status');
         Route::post('dealers/{dealer}/notify', [\App\Http\Controllers\Admin\DealerController::class, 'notify'])
             ->name('dealers.notify');
+        Route::get('dealers/{dealer}/export-vehicles', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportDealerVehiclesCsv'])
+            ->name('dealers.export.vehicles');
 
         // Profile
         Route::get('/profile', [\App\Http\Controllers\Admin\ProfileController::class, 'edit'])

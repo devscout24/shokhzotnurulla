@@ -49,8 +49,9 @@
                  TOP HEADER
             ═══════════════════ --}}
             <div class="vd-header">
-                <div class="vd-header-title">
-                    {{ $vehicleTitle }}
+                <div class="vd-header-title" title="{{ $vehicleTitle }}">
+                     <span class="inv-veh-desktop">{{ strtoupper($vehicle->display_title) }}</span>
+                                                <span class="inv-veh-mobile">{{ \Illuminate\Support\Str::limit($vehicle->display_title, 20) }}<br><small>({{ $vehicle->stock_number }})</small></span>
                     <span>({{ $vehicle->stock_number }})</span>
                 </div>
                 <div class="vd-header-actions">
@@ -665,17 +666,15 @@
                                     <div class="vd-det-field">
                                         <label class="vd-field-label">Factory Certified</label>
                                         <select name="factory_certified" class="vd-select">
-                                            <option value="">—</option>
-                                            <option value="1" {{ ($vehicle->specs->factory_certified ?? null) == 1 ? 'selected' : '' }}>Yes</option>
-                                            <option value="0" {{ ($vehicle->specs->factory_certified ?? null) === 0 || ($vehicle->specs->factory_certified ?? null) === '0' ? 'selected' : '' }}>No</option>
+                                            <option value="1" {{ ($vehicle->specs->factory_certified ?? 1) === 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ ($vehicle->specs->factory_certified ?? 0) === 0 || ($vehicle->specs->factory_certified ?? 0) === '0' ? 'selected' : '' }}>No</option>
                                         </select>
                                     </div>
                                     <div class="vd-det-field">
                                         <label class="vd-field-label">Dealer Certified</label>
                                         <select name="dealer_certified" class="vd-select">
-                                            <option value="">—</option>
-                                            <option value="1" {{ ($vehicle->specs->dealer_certified ?? null) == 1 ? 'selected' : '' }}>Yes</option>
-                                            <option value="0" {{ ($vehicle->specs->dealer_certified ?? null) === 0 || ($vehicle->specs->dealer_certified ?? null) === '0' ? 'selected' : '' }}>No</option>
+                                            <option value="1" {{ ($vehicle->specs->dealer_certified ?? 1) === 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ ($vehicle->specs->dealer_certified ?? 0) === 0 || ($vehicle->specs->dealer_certified ?? 0) === '0' ? 'selected' : '' }}>No</option>
                                         </select>
                                     </div>
                                     <div class="vd-det-field">

@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('dealer_id')
-                  ->constrained()
-                  ->cascadeOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('dealer_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+
+            $table->foreignId('location_id')->nullable()->constrained('locations')->nullOnDelete();
 
             $table->char('ulid', 26);
 
@@ -26,66 +25,33 @@ return new class extends Migration
             $table->string('model_number', 50)->nullable();
             $table->unsignedSmallInteger('year');
 
-            $table->foreignId('make_id')
-                  ->constrained()
-                  ->restrictOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('make_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
 
-            $table->foreignId('make_model_id')
-                  ->constrained()
-                  ->restrictOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('make_model_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
 
-            $table->string('trim', 100)->nullable();
+            $table->string('trim')->nullable();
 
-            $table->foreignId('body_type_id')
-                  ->constrained()
-                  ->restrictOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('body_type_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
 
-            $table->foreignId('body_style_id')
-                  ->nullable()
-                  ->constrained()
-                  ->nullOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('body_style_id')->nullable()->constrained()->nullOnDelete()->cascadeOnUpdate();
 
             $table->string('vehicle_condition', 20);
             $table->boolean('is_certified')->default(false);
             $table->boolean('is_commercial')->default(false);
             $table->string('location_status', 20)->default('lot');
 
-            $table->foreignId('fuel_type_id')
-                  ->nullable()
-                  ->constrained()
-                  ->nullOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('fuel_type_id')->nullable()->constrained()->nullOnDelete()->cascadeOnUpdate();
 
-            $table->foreignId('transmission_type_id')
-                  ->nullable()
-                  ->constrained()
-                  ->nullOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('transmission_type_id')->nullable()->constrained()->nullOnDelete()->cascadeOnUpdate();
 
-            $table->foreignId('drivetrain_type_id')
-                  ->nullable()
-                  ->constrained()
-                  ->nullOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('drivetrain_type_id')->nullable()->constrained()->nullOnDelete()->cascadeOnUpdate();
 
             $table->string('engine', 150)->nullable();
             $table->unsignedInteger('mileage')->nullable();
 
-            $table->foreignId('exterior_color_id')
-                  ->nullable()
-                  ->constrained('colors')
-                  ->nullOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('exterior_color_id')->nullable()->constrained('colors')->nullOnDelete()->cascadeOnUpdate();
 
-            $table->foreignId('interior_color_id')
-                  ->nullable()
-                  ->constrained('colors')
-                  ->nullOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('interior_color_id')->nullable()->constrained('colors')->nullOnDelete()->cascadeOnUpdate();
 
             $table->tinyInteger('doors')->unsigned()->nullable();
             $table->tinyInteger('seating_capacity')->unsigned()->nullable();

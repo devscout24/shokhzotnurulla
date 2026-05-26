@@ -14,3 +14,8 @@ All major issues have been resolved:
 - Block reordering works with improved drag handle logic
 - All layout blocks have demo text that can be edited
 - All block types are functional
+
+## similarites found
+
+- body type == body stlye
+- 

@@ -78,9 +78,19 @@
 <main class="main-content" id="mainContent">
     <div class="page-header header-flex">
         <h2 class="view-title">Dealer Management</h2>
-        <a href="{{ route('admin.dealers.create') }}" class="btn-action btn-primary-scout">
-            <i class="bi bi-plus-lg"></i> Add New Dealer
-        </a>
+        <div style="display: flex; gap: 10px;">
+            <div class="dropdown">
+                <button class="btn-action dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="background: #fff; border: 1px solid #ddd; cursor: pointer;">
+                    <i class="bi bi-download"></i> Export
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                    <li><a class="dropdown-item" href="{{ route('admin.dealers.export.csv') }}"><i class="bi bi-filetype-csv"></i> Export as CSV</a></li>
+                </ul>
+            </div>
+            <a href="{{ route('admin.dealers.create') }}" class="btn-action btn-primary-scout">
+                <i class="bi bi-plus-lg"></i> Add New Dealer
+            </a>
+        </div>
     </div>
 
     <hr>
@@ -104,6 +114,7 @@
                     <th>Domain</th>
                     <th>Email</th>
                     <th>Status</th>
+                    <th>Export Data</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -122,6 +133,16 @@
                             <span class="status-badge status-{{ $dealer->status->value }}">
                                 {{ $dealer->status->label() }}
                             </span>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn-action" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: #fff; border: 1px solid #ddd; cursor: pointer;">
+                                    <i class="bi bi-download"></i> Data <i class="bi bi-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles', $dealer) }}"><i class="bi bi-car-front"></i> Vehicles (CSV)</a></li>
+                                </ul>
+                            </div>
                         </td>
                         <td>
                             <div style="display: flex; gap: 8px;">
@@ -165,7 +186,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
                             No dealers found. <a href="{{ route('admin.dealers.create') }}">Create one now</a>.
                         </td>
                     </tr>

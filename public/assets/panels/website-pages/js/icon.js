@@ -14,6 +14,12 @@ function openIconSettings(el) {
   document.getElementById('ics-icon').value = Array.from(el.classList).find(c => c.startsWith('fa-')) || 'fa-star';
   document.getElementById('ics-size').value = parseInt(el.style.fontSize) || 24;
   document.getElementById('ics-color').value = rgbToHex(el.style.color) || '#111827';
+
+  const wrapper = el.closest('.dropped-block-inner');
+  const align = wrapper ? (wrapper.style.textAlign || getComputedStyle(wrapper).textAlign) : 'center';
+  document.querySelectorAll('.ics-align-btn').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.align === align)
+  );
 }
 
 // Back / Cancel
@@ -44,6 +50,19 @@ document.getElementById('ics-color')?.addEventListener('input', e => {
   }
 });
 
+// Align
+document.querySelectorAll('.ics-align-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ics-align-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (activeEl) {
+      const wrapper = activeEl.closest('.dropped-block-inner');
+      if (wrapper) wrapper.style.textAlign = btn.dataset.align;
+    }
+    if (typeof saveHistory === 'function') saveHistory();
+  });
+});
+
 // Remove
 document.getElementById('ics-remove-btn')?.addEventListener('click', () => {
   if (activeEl) { activeEl.closest('.dropped-block').remove(); checkEmptyBlocks(); if (typeof saveHistory === 'function') saveHistory(); }
@@ -61,7 +80,7 @@ function dropIconBlock(returnBlock = false) {
       <button type="button" class="reorder-btn move-up-btn"><i class="fa-solid fa-chevron-up"></i></button>
       <button type="button" class="reorder-btn move-down-btn"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
-    <div class="dropped-block-inner" style="justify-content:center;padding:20px;">
+    <div class="dropped-block-inner" style="padding:20px;text-align:center;">
       <i class="editor-icon fa-solid fa-star" style="font-size:24px;color:#111827;cursor:pointer;"></i>
     </div>`;
 

@@ -19,6 +19,14 @@
             overflow: hidden
         }
 
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.35);
+            z-index: 1040;
+            display: none;
+        }
+
         .of-master-frame {
             display: flex;
             flex-direction: column;
@@ -85,6 +93,17 @@
             display: block;
             margin-bottom: 10px;
             color: #ce4f4b
+        }
+
+        .block-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .block-item i {
+            line-height: 1;
         }
 
         .block-item span {
@@ -706,6 +725,9 @@
                     el.classList.remove('open');
                 }
             });
+
+            const anyOpen = panels.some(p => document.getElementById('side-panel-' + p).classList.contains('open'));
+            overlay.style.display = anyOpen ? 'block' : 'none';
         }
 
         document.getElementById('side-overlay').addEventListener('click', function () {

@@ -17,10 +17,21 @@ return new class extends Migration
             $table->string('provider')->index(); // e.g., carfax, stripe, 700credit
             $table->text('settings'); // Will store JSON encrypted at rest
             $table->boolean('is_active')->default(false);
+            $table->string('status')->default('draft');
+
+            $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('approved_at')->nullable();
+            $table->text('rejection_reason')->nullable();
+
+            // Audit: who last submitted
+            $table->foreignId('submitted_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('submitted_at')->nullable();
+
             $table->timestamp('last_connected_at')->nullable();
             $table->timestamps();
             
             $table->unique(['dealer_id', 'provider']);
+            $table->index('status');
         });
     }
 

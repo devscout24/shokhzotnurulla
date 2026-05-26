@@ -14,15 +14,11 @@ return new class extends Migration
         Schema::create('lead_events', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('vehicle_id')
-                  ->constrained()
-                  ->cascadeOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
 
-            $table->foreignId('dealer_id')
-                  ->constrained()
-                  ->cascadeOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('dealer_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+
+            $table->foreignId('location_id')->nullable()->constrained()->onDelete('set null');
 
             $table->string('type', 50);
             $table->string('source', 100)->nullable();

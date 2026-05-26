@@ -96,10 +96,10 @@ function openPluginSettings(el) {
 }
 
 function openOverlaySettings(el) {
+    openPanel('overlay-settings-panel');
     activeEl = el;
     const block = el.closest('.dropped-block');
     block.classList.add('selected');
-    openPanel('overlay-settings-panel');
     if (typeof syncVisibilityToggles === 'function') syncVisibilityToggles(block);
 }
 

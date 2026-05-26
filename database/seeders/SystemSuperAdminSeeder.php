@@ -2,15 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\TimeHelper;
+use App\Models\Dealership\Dealer;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Dealership\Dealer;
 
 class SystemSuperAdminSeeder extends Seeder
 {
     use WithoutModelEvents;
+
     /**
      * Run the database seeds.
      */
@@ -24,7 +26,8 @@ class SystemSuperAdminSeeder extends Seeder
                 'name' => 'System Dealer',
                 'email' => 'superadmin@gmail.com',
                 'phone' => '+923280287524',
-                'is_active' => true
+                'is_active' => true,
+                'internal_id' => TimeHelper::generateNumericId(),
             ]
         );
 
@@ -47,12 +50,18 @@ class SystemSuperAdminSeeder extends Seeder
             $systemDealer->id => ['is_owner' => true],
         ]);
 
+        $systemDealer->domains()->create([
+            'domain' => 'shokh.test',
+            'is_primary' => true,
+            'is_verified' => true,
+        ]);
+
         // 3 System Staff Users
         for ($i = 1; $i <= 3; $i++) {
             $staff = User::firstOrCreate(
                 ['email' => "systemstaff{$i}@gmail.com"],
                 [
-                    'first_name' => "System",
+                    'first_name' => 'System',
                     'last_name' => "Staff {$i}",
                     'email_verified_at' => now(),
                     'password' => Hash::make('12345678'), // change in prod

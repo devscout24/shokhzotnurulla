@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('dealers', function (Blueprint $table) {
-            $table->string('status')->default('active')->after('is_active');
+            $table->string('banner_title')->nullable()->after('is_active');
+            $table->string('banner_subtitle')->nullable()->after('banner_title');
         });
     }
 
@@ -22,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('dealers', function (Blueprint $table) {
-            $table->dropColumn('status');
+            $table->dropColumn(['banner_title', 'banner_subtitle']);
         });
     }
 };

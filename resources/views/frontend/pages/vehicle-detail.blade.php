@@ -70,6 +70,17 @@
     if ($spec?->dimension_width && $spec?->dimension_length && $spec?->dimension_height) {
         $dimensions = "{$spec->dimension_width}\" w x {$spec->dimension_length}\" l x {$spec->dimension_height}\" h";
     }
+
+    $estimateRate = ($pricing['applied_special'] ?? null)
+        && $pricing['applied_special']?->discount_type === 'special'
+        && $pricing['applied_special']?->finance_rate
+            ? (float) $pricing['applied_special']->finance_rate
+            : 6.79;
+    $estimateTerm = ($pricing['applied_special'] ?? null)
+        && $pricing['applied_special']?->discount_type === 'special'
+        && $pricing['applied_special']?->finance_term
+            ? (int) $pricing['applied_special']->finance_term
+            : 60;
 @endphp
 
 @section('page-content')
@@ -184,7 +195,7 @@
                             <div class="text-start">
 
                                 <h1 data-cy="vehicle-title"
-                                    class="h3 mt-0 mb-2 font-weight-bold notranslate">
+                                    class="vdp-vehicle-title mt-0 mb-2 font-weight-bold notranslate">
                                     {{ $vehicleTitle }}
                                 </h1>
 
@@ -254,15 +265,19 @@
                                 </div>
                                 <div class="text-end d-block d-xl-none col-5"><br></div>
                                 <div class="col-12">
-                                    <span class="rounded bg-light p-2 d-block text-end border mt-1">
+                                    <span class="rounded bg-light p-2 d-block text-end border mt-1"
+                                          data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                                          data-vehicle-title="{{ $mainVehicleTitle }}"
+                                          data-vehicle-price="{{ $pricing['final_price'] }}"
+                                          data-vehicle-monthly="{{ $pricing['monthly'] }}"
+                                          data-vehicle-rate="{{ $estimateRate }}"
+                                          data-vehicle-term="{{ $estimateTerm }}"
+                                          aria-controls="getEstimate">
                                         <span class="badge badge-secondary text-uppercase me-2 float-start">
                                             Estimated Payment
                                         </span>
                                         ${{ number_format($pricing['monthly']) }} / mo.
-                                        <span class="ms-2 text-primary"
-                                              data-bs-toggle="offcanvas"
-                                              data-bs-target="#offcanvasRight"
-                                              aria-controls="offcanvasRight">
+                                                                                <span class="ms-2 text-primary">
                                             <i class="fa-regular fa-pen-to-square fa-lg"></i>
                                         </span>
                                     </span>
@@ -430,9 +445,14 @@
                                     </span>
                                     Questions?
                                 </div>
-                                <div class="py-3 cursor-pointer col-4" data-cy="btn-favorite">
-                                    <span class="text-muted d-block">
-                                        <i class="fa-solid fa-heart fa-lg"></i>
+                                <div class="py-3 cursor-pointer col-4" data-cy="btn-favorite"
+                                     data-vehicle-id="{{ $vehicle->id }}"
+                                     data-vehicle-name="{{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}"
+                                     data-vehicle-price="{{ $vehicle->price > 0 ? '$' . number_format($vehicle->price) : 'Call' }}"
+                                     data-vehicle-image="{{ $mainPhoto->url ?: asset('assets/frontend/img/no-photo.webp') }}"
+                                     data-vehicle-url="{{ route('frontend.inventory.show', $vehicle->slug) }}">
+                                    <span class="text-muted d-block p-1">
+                                        <i class="fa-regular fa-heart fa-lg"></i>
                                     </span>
                                     Save
                                 </div>
@@ -444,9 +464,9 @@
                     <div class="px-4 py-3 bg-lighter font-weight-bold card-footer">
                         <div class="d-flex align-items-center row">
                             <div class="text-center text-md-start col-md-8 col-12">
-                                <h2 class="h5 my-0 font-weight-bold">
+                                <p class="h5 my-0 font-weight-bold">
                                     {{ $vehicleTitle }} Details
-                                </h2>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -699,7 +719,7 @@
                     @foreach($groupedOptions as $categoryName => $options)
                         <div class="px-4 py-3 card-footer">
                             <div class="collapse-header cursor-pointer d-flex align-items-center justify-content-between">
-                                <h3 class="h5 my-0 fw-bold mb-0">{{ $categoryName }}</h3>
+                                <h5 class="h5 my-0 fw-bold mb-0">{{ $categoryName }}</h5>
                                 <span class="text-primary d-inline-block collapse-icon">
                                     <svg width="16" height="16" viewBox="0 0 448 512" fill="currentColor">
                                         <path d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z"/>
@@ -725,9 +745,9 @@
                     @if(count($faqs) > 0)
                         <div class="px-4 py-3 card-footer">
                             <div class="collapse-header cursor-pointer d-flex align-items-center justify-content-between">
-                                <h3 class="h5 my-0 fw-bold mb-0">
+                                <h5 class="h5 my-0 fw-bold mb-0">
                                     Frequently asked questions about {{ $vehicleTitle }}
-                                </h3>
+                                </h5>
                                 <span class="text-primary d-inline-block collapse-icon">
                                     <svg width="16" height="16" viewBox="0 0 448 512" fill="currentColor">
                                         <path d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z"/>
@@ -741,7 +761,7 @@
                                 @foreach($faqs as $faq)
                                     <div class="accordion-item bg-white border border-bottom px-3 py-2">
                                         <div class="d-flex align-items-center justify-content-between cursor-pointer accordion-header">
-                                            <h3 class="h5 my-0 fw-bold mb-0">{{ $faq['question'] }}</h3>
+                                            <h5 class="h5 my-0 fw-bold mb-0">{{ $faq['question'] }}</h5>
                                             <span class="text-primary d-inline-block collapse-icon">
                                                 <svg width="16" height="16" viewBox="0 0 448 512" fill="currentColor">
                                                     <path d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z"/>
@@ -816,7 +836,14 @@
                                     </div>
                                     <div class="text-end d-block d-xl-none col-5"><br></div>
                                     <div class="col-12">
-                                        <div class="bg-lighter border rounded py-2 px-3 mt-2 align-items-center text-center cursor-pointer">
+                                        <div class="bg-lighter border rounded py-2 px-3 mt-2 align-items-center text-center cursor-pointer"
+                                            data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                                            data-vehicle-title="{{ $mainVehicleTitle }}"
+                                            data-vehicle-price="{{ $pricing['final_price'] }}"
+                                            data-vehicle-monthly="{{ $pricing['monthly'] }}"
+                                            data-vehicle-rate="{{ $estimateRate }}"
+                                            data-vehicle-term="{{ $estimateTerm }}"
+                                            aria-controls="getEstimate">
                                             <span class="badge badge-secondary text-uppercase mb-2">Estimated Payment</span>
                                             <div class="text-large">
                                                 ${{ number_format($pricing['monthly']) }} / month
@@ -983,9 +1010,14 @@
                                     </span>
                                     Questions?
                                 </div>
-                                <div data-cy="btn-favorite" class="py-3 cursor-pointer col-4">
-                                    <span class="d-inline-block text-muted h4 w-100 d-block text-center">
-                                        <i class="fa-solid fa-heart fa-lg"></i>
+                                <div data-cy="btn-favorite" class="py-3 cursor-pointer col-4"
+                                     data-vehicle-id="{{ $vehicle->id }}"
+                                     data-vehicle-name="{{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}"
+                                     data-vehicle-price="{{ $vehicle->price > 0 ? '$' . number_format($vehicle->price) : 'Call' }}"
+                                     data-vehicle-image="{{ $mainPhoto->url ?: asset('assets/frontend/img/no-photo.webp') }}"
+                                     data-vehicle-url="{{ route('frontend.inventory.show', $vehicle->slug) }}">
+                                    <span class="d-inline-block text-muted h4 w-100 d-block text-center mb-1">
+                                        <i class="fa-regular fa-heart fa-lg"></i>
                                     </span>
                                     Save
                                 </div>
@@ -1062,6 +1094,7 @@
 @endsection
 
 @push('page-modals')
+    @include('frontend.offcanvas.get-estimate')
     @include('frontend.offcanvas.personalize-payment')
     @include('frontend.offcanvas.unlock-manager-special')
     @include('frontend.offcanvas.schedule-test')

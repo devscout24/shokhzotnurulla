@@ -350,6 +350,7 @@ class InventoryController extends Controller
     public function updateDetails(UpdateDetailsRequest $request, Vehicle $vehicle): JsonResponse|RedirectResponse
     {
         $this->authorizeVehicle($request, $vehicle);
+        // dd($request->validated()); // Run validation first to catch any errors before updating
         ($this->updateDetails)($vehicle, $request->validated());
 
         AuditLogger::info($request, 'Vehicle details updated', ['vehicle_id' => $vehicle->id]);
@@ -717,7 +718,7 @@ class InventoryController extends Controller
             ->with([
                 'make', 'makeModel', 'bodyType', 'fuelType', 'drivetrainType',
                 'exteriorColor', 'interiorColor', 'prices', 'location', 'dealer',
-                'dailyStats'
+                'dailyStats',
             ])
             ->withCount('photos');
 
@@ -735,7 +736,7 @@ class InventoryController extends Controller
             'status', 'statusoverride', 'inventorydays', 'views', 'location',
             'photocount', 'price', 'cost', 'msrp', 'originalprice',
             'specialprice', 'addonprice', 'url', 'dealer_name', 'dealer_street',
-            'dealer_city', 'dealer_state', 'dealer_postalcode'
+            'dealer_city', 'dealer_state', 'dealer_postalcode',
         ];
 
         return response()->stream(function () use ($query, $columns) {

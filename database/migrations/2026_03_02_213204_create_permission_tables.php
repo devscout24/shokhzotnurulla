@@ -43,6 +43,10 @@ return new class extends Migration
             }
             $table->string('name');
             $table->string('guard_name');
+            
+            $table->boolean('is_active')->default(true)->index();
+            $table->timestamp('expires_at')->nullable();
+
             $table->timestamps();
             if ($teams || config('permission.testing')) {
                 $table->unique([$columnNames['team_foreign_key'], 'name', 'guard_name']);

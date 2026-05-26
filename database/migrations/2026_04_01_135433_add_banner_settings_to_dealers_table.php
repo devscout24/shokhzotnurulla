@@ -11,17 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('dealers', function (Blueprint $table) {
-            $table->string('banner_text')->nullable()->after('optional_disclaimer');
-            $table->string('banner_hover_title')->nullable()->after('banner_text');
-            $table->string('banner_text_color')->nullable()->default('#ffffff')->after('banner_hover_title');
-            $table->string('banner_bg_color')->nullable()->default('#c0392b')->after('banner_text_color');
-            $table->unsignedBigInteger('banner_desktop_media_id')->nullable()->after('banner_bg_color');
-            $table->unsignedBigInteger('banner_mobile_media_id')->nullable()->after('banner_desktop_media_id');
+        Schema::table('dealers', function (Blueprint $table) {            
 
-            // optional: foreign key constraints
-            $table->foreign('banner_desktop_media_id')->references('id')->on('media')->onDelete('set null');
-            $table->foreign('banner_mobile_media_id')->references('id')->on('media')->onDelete('set null');
+            $table->foreignId('banner_desktop_media_id')->nullable()->constrained('media')->nullOnDelete();
+            $table->foreignId('banner_mobile_media_id')->nullable()->constrained('media')->nullOnDelete();
+            
         });
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\View\Composers;
 use App\Helpers\TimeHelper;
 use App\Models\Dealership\Dealer;
 use App\Models\Website\Location;
+use App\Models\Website\HomeAboutCtaSection;
 use App\Services\Website\DealerResolverService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -63,6 +64,7 @@ class DealerFrontendComposer
         $dealer = Dealer::select([
                 'id',
                 'name',
+                'logo',
                 'legal_name',
                 'corporate_address',
                 'support_email',
@@ -75,12 +77,16 @@ class DealerFrontendComposer
                 'pricing_disclaimer',
                 'optional_disclaimer',
                 // Banner
+                'banner_title',
+                'banner_subtitle',
                 'banner_text',
                 'banner_hover_title',
                 'banner_text_color',
                 'banner_bg_color',
                 'banner_desktop_media_id',
                 'banner_mobile_media_id',
+                'video_url',
+                'video_source',
             ])
             ->with([
                 'bannerDesktopMedia:id,url',
@@ -99,6 +105,12 @@ class DealerFrontendComposer
             ->get();
 
         $primary = $allLocations->first();
+
+        $homeAboutCta = HomeAboutCtaSection::where('dealer_id', $dealerId)->first();
+        $homeAboutCtaContent = array_replace_recursive(
+            HomeAboutCtaSection::defaultContent(),
+            $homeAboutCta?->content ?? []
+        );
 
         return [
             // ── Header / footer data ──────────────────────────────────────
@@ -123,6 +135,8 @@ class DealerFrontendComposer
             'optionalDisclaimer'   => $dealer->optional_disclaimer,
 
             // ── Banner ────────────────────────────────────────────────────
+            'bannerTitle'          => $dealer->banner_title,
+            'bannerSubtitle'       => $dealer->banner_subtitle,
             'bannerText'           => $dealer->banner_text,
             'bannerHoverTitle'     => $dealer->banner_hover_title,
             'bannerTextColor'      => $dealer->banner_text_color,
@@ -130,8 +144,17 @@ class DealerFrontendComposer
             'bannerDesktopMedia'   => $dealer->bannerDesktopMedia,
             'bannerMobileMedia'    => $dealer->bannerMobileMedia,
 
+            'dealer'               => $dealer,
+
+            // ── Video ─────────────────────────────────────────────────────
+            'videoUrl'             => $dealer->video_url,
+            'videoSource'          => $dealer->video_source,
+
             // ── Location offcanvas data ───────────────────────────────────
             'locationMenuData'     => $this->buildLocationMenuData($allLocations),
+
+            // ── Home About/CTA ────────────────────────────────────────────
+            'homeAboutCta'          => $homeAboutCtaContent,
         ];
     }
 
@@ -304,6 +327,9 @@ class DealerFrontendComposer
             'bannerBgColor'        => null,
             'bannerDesktopMedia'   => null,
             'bannerMobileMedia'    => null,
+
+            // Home About/CTA
+            'homeAboutCta'          => HomeAboutCtaSection::defaultContent(),
         ];
     }
 }

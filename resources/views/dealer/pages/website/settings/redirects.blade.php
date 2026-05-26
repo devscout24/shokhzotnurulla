@@ -53,6 +53,10 @@
                         <span class="ws-icon"><i class="bi bi-card-image"></i></span>
                         <span>Banners /<br>Announcements</span>
                     </a>
+                    <a href="/dealer/website/settings/home-about-cta" class="menu-item">
+                        <span class="ws-icon"><i class="bi bi-layout-text-window-reverse"></i></span>
+                        <span>Home About/CTA</span>
+                    </a>
                     <a href="/dealer/website/settings/finance" class="menu-item">
                         <span class="ws-icon"><i class="bi bi-percent"></i></span>
                         <span>Interest Rates</span>
@@ -60,8 +64,10 @@
                     <a href="/dealer/website/settings/retail" class="menu-item">
                         <span class="ws-icon"><i class="bi bi-grid"></i></span>
                         <span>Digital Retail</span>
-                    </a>
-                    {{-- <a href="/dealer/website/settings/domains" class="menu-item">
+                    </a>                    <a href="/dealer/website/settings/video" class="menu-item">
+                        <span class="ws-icon"><i class="bi bi-camera-video"></i></span>
+                        <span>Background Video</span>
+                    </a>                    {{-- <a href="/dealer/website/settings/domains" class="menu-item">
                         <span class="ws-icon"><i class="bi bi-globe"></i></span>
                         <span>Domains</span>
                     </a> --}}

@@ -301,6 +301,10 @@ Route::prefix('dealer')->name('dealer.')
                 Route::get('/banners', [WebsiteSettingController::class, 'banners'])->name('banners');
                 Route::patch('/banners', [WebsiteSettingController::class, 'updateBanners'])->name('banners.update');
 
+                // Home About/CTA
+                Route::get('/home-about-cta', [WebsiteSettingController::class, 'homeAboutCta'])->name('home-about-cta');
+                Route::patch('/home-about-cta', [WebsiteSettingController::class, 'updateHomeAboutCta'])->name('home-about-cta.update');
+
                 // Inerest Rates (Finance)
                 Route::get('/finance', [WebsiteSettingController::class, 'finance'])->name('finance');
 
@@ -323,6 +327,11 @@ Route::prefix('dealer')->name('dealer.')
                     Route::patch('/{dealerIp}', [WebsiteSettingController::class, 'updateDealerIp'])->name('update');
                     Route::delete('/{dealerIp}', [WebsiteSettingController::class, 'destroyDealerIp'])->name('destroy');
                 });
+
+                // video
+                Route::get('/video', [WebsiteSettingController::class, 'video'])->name('video');
+                Route::post('/video', [WebsiteSettingController::class, 'updateVideo'])->name('video.update');
+                
 
                 // Domains
                 // Route::get('/domains',    [WebsiteSettingController::class, 'domains'])->name('domains');
