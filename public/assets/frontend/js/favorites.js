@@ -1,14 +1,19 @@
-(function () {
-    'use strict';
+/**
+ * Favorites Manager
+ * Persists favorite vehicles in localStorage and updates the header dropdown.
+ */
 
-    const STORAGE_KEY = 'dealer_favorites';
+(function () {
+    "use strict";
+
+    const STORAGE_KEY = "dealer_favorites";
 
     function getFavorites() {
         try {
             const stored = localStorage.getItem(STORAGE_KEY);
             return stored ? JSON.parse(stored) : [];
         } catch (e) {
-            console.error('Error reading favorites from localStorage', e);
+            console.error("Error reading favorites from localStorage", e);
             return [];
         }
     }
@@ -19,18 +24,17 @@
         updateButtonStates();
         updateBadge(favorites.length);
         
-        // Dispatch custom event for any other listeners
-        window.dispatchEvent(new CustomEvent('favorites:updated', { detail: { count: favorites.length } }));
+        window.dispatchEvent(new CustomEvent("favorites:updated", { detail: { count: favorites.length } }));
     }
 
     function updateBadge(count) {
-        const badges = document.querySelectorAll('#fav-count, #fav-count-mobile');
+        const badges = document.querySelectorAll("#fav-count, #fav-count-mobile");
         badges.forEach(badge => {
             badge.textContent = count;
             if (count > 0) {
-                badge.classList.remove('d-none');
+                badge.classList.remove("d-none");
             } else {
-                badge.classList.add('d-none');
+                badge.classList.add("d-none");
             }
         });
     }
@@ -54,13 +58,12 @@
     }
 
     function updateDropdown() {
-        // Find all potential dropdown menus for favorites
-        const dropdownLists = document.querySelectorAll('#favoritesDropdown ~ .dropdown-menu, #favorites ~ .dropdown-menu, [aria-labelledby="favoritesDropdown"], [aria-labelledby="favorites"]');
+        const dropdownLists = document.querySelectorAll("#favoritesDropdown ~ .dropdown-menu, #favorites ~ .dropdown-menu, [aria-labelledby=\"favoritesDropdown\"], [aria-labelledby=\"favorites\"]");
         const favorites = getFavorites();
 
         if (dropdownLists.length === 0) return;
 
-        let content = '';
+        let content = "";
         if (favorites.length === 0) {
             content = `
                 <div class="p-4 text-center">
@@ -71,9 +74,9 @@
                     <a href="/inventory" class="btn btn-primary btn-sm w-100">Browse Inventory</a>
                 </div>`;
         } else {
-            content += '<div class="favorites-scroll" style="max-height: 400px; overflow-y: auto;">';
+            content += "<div class=\"favorites-scroll\" style=\"max-height: 400px; overflow-y: auto;\">";
             favorites.forEach(v => {
-                const img = v.image || '/assets/frontend/img/no-photo.webp';
+                const img = v.image || "/assets/frontend/img/no-photo.webp";
                 content += `
                     <div class="d-flex align-items-center p-2 border-bottom position-relative favorite-item" style="transition: background 0.2s;">
                         <img src="${img}" alt="${v.name}" class="rounded me-2" style="width: 70px; height: 50px; object-fit: cover; background: #f8f9fa;">
@@ -86,7 +89,7 @@
                         </button>
                     </div>`;
             });
-            content += '</div>';
+            content += "</div>";
             content += `<div class="p-2 border-top bg-light">
                         <a href="/inventory" class="btn btn-primary btn-sm w-100">View All Inventory</a>
                      </div>`;
@@ -94,18 +97,16 @@
 
         dropdownLists.forEach(list => {
             list.innerHTML = content;
-
-            // Re-bind remove buttons
-            list.querySelectorAll('.remove-favorite').forEach(btn => {
-                btn.addEventListener('click', (e) => {
+            list.querySelectorAll(".remove-favorite").forEach(btn => {
+                btn.onclick = function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     const id = btn.dataset.id;
                     let favs = getFavorites();
                     favs = favs.filter(f => String(f.id) !== String(id));
                     saveFavorites(favs);
-                    if (window.toastr) toastr.info('Removed from favorites');
-                });
+                    if (window.toastr) toastr.info("Removed from favorites");
+                };
             });
         });
     }
@@ -113,103 +114,29 @@
     function updateButtonStates() {
         const favorites = getFavorites();
         const ids = favorites.map(f => String(f.id));
-
-        document.querySelectorAll('[data-cy="btn-favorite"]').forEach(btn => {
+        document.querySelectorAll("[data-cy=\"btn-favorite\"]").forEach(btn => {
             const id = String(btn.dataset.vehicleId);
-            const icon = btn.querySelector('.fa-heart');
+            const icon = btn.querySelector(".fa-heart");
             if (!icon) return;
-            
             if (ids.includes(id)) {
-                btn.classList.add('active');
-                icon.classList.remove('greyIcon', 'fa-regular');
-                icon.classList.add('text-danger', 'fa-solid');
-                
-                // If it's the detail page, handling potential muted classes
-                const parentMuted = icon.closest('.text-muted');
-                if (parentMuted && parentMuted.contains(icon)) {
-                    parentMuted.style.color = '#dc3545'; // Force danger color
-                }
+                btn.classList.add("active");
+                icon.classList.remove("greyIcon", "fa-regular");
+                icon.classList.add("text-danger", "fa-solid");
             } else {
-                btn.classList.remove('active');
-                icon.classList.add('greyIcon');
-                icon.classList.remove('text-danger', 'fa-solid');
-                icon.classList.add('fa-regular');
-                
-                const parentMuted = icon.closest('.text-muted');
-                if (parentMuted && parentMuted.contains(icon)) {
-                    parentMuted.style.color = ''; // Reset
-                }
+                btn.classList.remove("active");
+                icon.classList.add("greyIcon");
+                icon.classList.remove("text-danger", "fa-solid");
+                icon.classList.add("fa-regular");
             }
         });
     }
 
     function init() {
-        console.log('Favorites initialized');
-
-        // Toggle Dropdowns Manually (Backup for Bootstrap)
-        document.addEventListener('click', function(e) {
-            const toggle = e.target.closest('#favoritesDropdown, #favorites, #hoursDropdown');
-            
-            if (toggle) {
-                console.log('Toggle clicked:', toggle.id);
-                const menu = toggle.nextElementSibling;
-                
-                if (menu && menu.classList.contains('dropdown-menu')) {
-                    const isShown = menu.classList.contains('show');
-                    
-                    // Close all other open menus first
-                    document.querySelectorAll('.dropdown-menu.show').forEach(m => {
-                        if (m !== menu) {
-                            m.classList.remove('show');
-                            const prev = m.previousElementSibling;
-                            if (prev && prev.classList.contains('dropdown-toggle')) {
-                                prev.classList.remove('show');
-                                prev.setAttribute('aria-expanded', 'false');
-                            }
-                        }
-                    });
-                    
-                    if (!isShown) {
-                        menu.classList.add('show');
-                        toggle.classList.add('show');
-                        toggle.setAttribute('aria-expanded', 'true');
-                        // If it's the favorites dropdown, refresh data on open
-                        if (toggle.id && toggle.id.includes('favorites')) {
-                            updateDropdown();
-                        }
-                    } else {
-                        menu.classList.remove('show');
-                        toggle.classList.remove('show');
-                        toggle.setAttribute('aria-expanded', 'false');
-                    }
-                    
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return;
-                }
-            }
-
-            // Close dropdowns when clicking outside
-            if (!e.target.closest('.dropdown-menu')) {
-                const openMenus = document.querySelectorAll('.dropdown-menu.show');
-                if (openMenus.length > 0) {
-                    openMenus.forEach(m => {
-                        m.classList.remove('show');
-                        const t = m.previousElementSibling;
-                        if (t && t.classList.contains('dropdown-toggle')) {
-                            t.classList.remove('show');
-                            t.setAttribute('aria-expanded', 'false');
-                        }
-                    });
-                }
-            }
-
-            // Delegate click event for favorite buttons (heart icons)
-            const favBtn = e.target.closest('[data-cy="btn-favorite"]');
+        document.addEventListener("click", (e) => {
+            const favBtn = e.target.closest("[data-cy=\"btn-favorite\"]");
             if (favBtn) {
                 e.preventDefault();
                 e.stopPropagation();
-
                 const vehicle = {
                     id: String(favBtn.dataset.vehicleId),
                     name: favBtn.dataset.vehicleName,
@@ -217,55 +144,34 @@
                     image: favBtn.dataset.vehicleImage,
                     url: favBtn.dataset.vehicleUrl
                 };
-
-                if (vehicle.id && vehicle.id !== 'undefined') {
+                if (vehicle.id && vehicle.id !== "undefined") {
                     const added = toggleFavorite(vehicle);
-                    
-                    // Animation
-                    const icon = favBtn.querySelector('.fa-heart');
+                    const icon = favBtn.querySelector(".fa-heart");
                     if (icon) {
-                        icon.style.transform = 'scale(1.4)';
-                        setTimeout(() => icon.style.transform = 'scale(1)', 200);
+                        icon.style.transform = "scale(1.4)";
+                        setTimeout(() => icon.style.transform = "scale(1)", 200);
                     }
-
-                    // Notification
                     if (window.toastr) {
-                        if (added) toastr.success('Saved to favorites');
-                        else toastr.info('Removed from favorites');
+                        if (added) toastr.success("Saved to favorites");
+                        else toastr.info("Removed from favorites");
                     }
                 }
             }
         });
-
-        // Initialize UI
         updateDropdown();
         updateButtonStates();
         updateBadge(getFavorites().length);
-
-        // Robust MutationObserver to handle dynamically loaded content
-        const observer = new MutationObserver((mutations) => {
-            let shouldUpdate = false;
-            for (const mutation of mutations) {
-                if (mutation.addedNodes.length > 0) {
-                    shouldUpdate = true;
-                    break;
-                }
-            }
-            if (shouldUpdate) updateButtonStates();
+        const observer = new MutationObserver(() => {
+            updateButtonStates();
         });
-        
         observer.observe(document.body, { childList: true, subtree: true });
     }
 
     window.refreshFavoritesDropdown = updateDropdown;
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
     } else {
         init();
     }
-})();
-
-    }
-
 })();
