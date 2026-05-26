@@ -551,6 +551,10 @@
             z-index: 3000;
         }
 
+        .inv-date-range > .daterangepicker[hidden] {
+            display: none !important;
+        }
+
         @media (max-width: 767.98px) {
             .inv-date-range > .daterangepicker {
                 width: 100vw !important;
@@ -936,6 +940,7 @@
                         return;
                     }
 
+                    picker.container.removeAttr('hidden');
                     picker.show();
                     picker.container.css({
                         display: 'flex',
@@ -987,6 +992,7 @@
                 });
 
                 $dateInput.on('show.daterangepicker', function(ev, picker) {
+                    picker.container.removeAttr('hidden');
                     picker.container.css({
                         display: 'flex',
                         top: '',
@@ -994,6 +1000,18 @@
                         right: ''
                     });
                 });
+
+                $dateInput.on('hide.daterangepicker', function(ev, picker) {
+                    picker.container.attr('hidden', 'hidden');
+                    picker.container.css('display', 'none');
+                });
+
+                const initialPicker = $dateInput.data('daterangepicker');
+                if (initialPicker) {
+                    initialPicker.hide();
+                    initialPicker.container.attr('hidden', 'hidden');
+                    initialPicker.container.css('display', 'none');
+                }
 
                 $dateRange.add($dateIcon).on('click', function(e) {
                     if ($(e.target).closest('.daterangepicker').length) {
