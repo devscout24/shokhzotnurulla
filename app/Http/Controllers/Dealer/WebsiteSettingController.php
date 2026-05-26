@@ -245,8 +245,8 @@ class WebsiteSettingController extends Controller
             'about_heading' => 'nullable|string|max:255',
             'about_paragraph_1' => 'nullable|string',
             'about_paragraph_2' => 'nullable|string',
-            'about_image_url' => 'nullable|string|max:255',
             'about_image_alt' => 'nullable|string|max:255',
+            'about_image_file' => 'nullable|image|max:4096',
 
             'stats_1_icon' => 'nullable|string|max:120',
             'stats_1_title' => 'nullable|string|max:255',
@@ -264,8 +264,8 @@ class WebsiteSettingController extends Controller
             'card_icon' => 'nullable|string|max:120',
             'card_title' => 'nullable|string|max:255',
             'card_text' => 'nullable|string',
-            'card_image_url' => 'nullable|string|max:255',
             'card_image_alt' => 'nullable|string|max:255',
+            'card_image_file' => 'nullable|image|max:4096',
 
             'cta_1_title' => 'nullable|string|max:255',
             'cta_1_text' => 'nullable|string',
@@ -274,6 +274,33 @@ class WebsiteSettingController extends Controller
             'cta_2_text' => 'nullable|string',
             'cta_2_link' => 'nullable|string|max:255',
         ]);
+
+        $section = HomeAboutCtaSection::where('dealer_id', $dealer->id)->first();
+        $existing = $section?->content ?? HomeAboutCtaSection::defaultContent();
+
+        $aboutImagePath = data_get($existing, 'about.image_url', '');
+        if ($request->hasFile('about_image_file')) {
+            $file = $request->file('about_image_file');
+            $filename = time() . '_about.' . $file->getClientOriginalExtension();
+            $dir = public_path('assets/frontend/img/home-about-cta');
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            $file->move($dir, $filename);
+            $aboutImagePath = 'assets/frontend/img/home-about-cta/' . $filename;
+        }
+
+        $cardImagePath = data_get($existing, 'card.image_url', '');
+        if ($request->hasFile('card_image_file')) {
+            $file = $request->file('card_image_file');
+            $filename = time() . '_card.' . $file->getClientOriginalExtension();
+            $dir = public_path('assets/frontend/img/home-about-cta');
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            $file->move($dir, $filename);
+            $cardImagePath = 'assets/frontend/img/home-about-cta/' . $filename;
+        }
 
         $stats = [];
         for ($i = 1; $i <= 4; $i++) {
@@ -301,7 +328,7 @@ class WebsiteSettingController extends Controller
                     $validated['about_paragraph_1'] ?? '',
                     $validated['about_paragraph_2'] ?? '',
                 ],
-                'image_url' => $validated['about_image_url'] ?? '',
+                'image_url' => $aboutImagePath,
                 'image_alt' => $validated['about_image_alt'] ?? '',
             ],
             'stats' => $stats,
@@ -309,16 +336,20 @@ class WebsiteSettingController extends Controller
                 'icon' => $validated['card_icon'] ?? '',
                 'title' => $validated['card_title'] ?? '',
                 'text' => $validated['card_text'] ?? '',
-                'image_url' => $validated['card_image_url'] ?? '',
+                'image_url' => $cardImagePath,
                 'image_alt' => $validated['card_image_alt'] ?? '',
             ],
             'ctas' => $ctas,
         ];
 
-        HomeAboutCtaSection::updateOrCreate(
-            ['dealer_id' => $dealer->id],
-            ['content' => $content],
-        );
+        if ($section) {
+            $section->update(['content' => $content]);
+        } else {
+            HomeAboutCtaSection::create([
+                'dealer_id' => $dealer->id,
+                'content' => $content,
+            ]);
+        }
 
         \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
         $this->auditLogger->info($request, 'Home about/CTA settings updated');

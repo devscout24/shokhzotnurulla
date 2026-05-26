@@ -79,8 +79,9 @@
                                         <input class="form-control form-control-sm ha-input" name="about_heading" value="{{ old('about_heading', data_get($content, 'about.heading')) }}">
                                     </div>
                                     <div>
-                                        <label class="form-label">Image URL</label>
-                                        <input class="form-control form-control-sm ha-input" name="about_image_url" value="{{ old('about_image_url', data_get($content, 'about.image_url')) }}">
+                                        <label class="form-label">Image Upload</label>
+                                        <input class="form-control form-control-sm ha-input" type="file" name="about_image_file" accept="image/*">
+                                        <div class="ha-help">Current: {{ data_get($content, 'about.image_url') }}</div>
                                     </div>
                                     <div>
                                         <label class="form-label">Image Alt</label>
@@ -133,8 +134,9 @@
                                         <input class="form-control form-control-sm ha-input" name="card_title" value="{{ old('card_title', data_get($content, 'card.title')) }}">
                                     </div>
                                     <div>
-                                        <label class="form-label">Image URL</label>
-                                        <input class="form-control form-control-sm ha-input" name="card_image_url" value="{{ old('card_image_url', data_get($content, 'card.image_url')) }}">
+                                        <label class="form-label">Image Upload</label>
+                                        <input class="form-control form-control-sm ha-input" type="file" name="card_image_file" accept="image/*">
+                                        <div class="ha-help">Current: {{ data_get($content, 'card.image_url') }}</div>
                                     </div>
                                     <div>
                                         <label class="form-label">Image Alt</label>
