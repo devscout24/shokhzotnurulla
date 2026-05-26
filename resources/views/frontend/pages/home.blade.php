@@ -192,7 +192,8 @@
         </div>
     </div>
 
-    {!! ($homeAboutCardCtaContent ?? null) ?: ($homeAboutCardCtaFallback ?? view('frontend.partials.home-about-card-cta')->render()) !!}
+    {{-- {!! ($homeAboutCardCtaContent ?? null) ?: ($homeAboutCardCtaFallback ?? view('frontend.partials.home-about-card-cta')->render()) !!} --}}
+    {!! view('frontend.partials.home-about-card-cta')->render() !!}
 
     <div class="min-height-570">
         <section class="border-top" id="home-new-arrivals">
