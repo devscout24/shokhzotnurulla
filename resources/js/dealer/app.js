@@ -129,42 +129,50 @@ if (document.querySelector('#dateRange')) {
 }
 
 function initSimpleDropdown(toggleId, menuId, syncAriaOnToggle) {
-    var toggle = document.getElementById(toggleId);
-    var menu = document.getElementById(menuId);
-    var wrapper = toggle ? toggle.closest('.settings-dropdown, .mobile-row-2') : null;
+    function init() {
+        var toggle = document.getElementById(toggleId);
+        var menu = document.getElementById(menuId);
+        var wrapper = toggle ? toggle.closest('.settings-dropdown, .mobile-row-2') : null;
 
-    if (!toggle || !menu) return;
+        if (!toggle || !menu) return;
 
-    function openMenu() {
-        menu.classList.add('show');
-        menu.setAttribute('aria-hidden', 'false');
-        if (wrapper) wrapper.classList.add('is-open');
-        if (syncAriaOnToggle) toggle.setAttribute('aria-expanded', 'true');
+        function openMenu() {
+            menu.classList.add('show');
+            menu.setAttribute('aria-hidden', 'false');
+            if (wrapper) wrapper.classList.add('is-open');
+            if (syncAriaOnToggle) toggle.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeMenu() {
+            menu.classList.remove('show');
+            menu.setAttribute('aria-hidden', 'true');
+            if (wrapper) wrapper.classList.remove('is-open');
+            if (syncAriaOnToggle) toggle.setAttribute('aria-expanded', 'false');
+        }
+
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (menu.classList.contains('show')) closeMenu();
+            else openMenu();
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!menu.classList.contains('show')) return;
+            var target = e.target;
+            if (!menu.contains(target) && !toggle.contains(target)) closeMenu();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeMenu();
+        });
     }
 
-    function closeMenu() {
-        menu.classList.remove('show');
-        menu.setAttribute('aria-hidden', 'true');
-        if (wrapper) wrapper.classList.remove('is-open');
-        if (syncAriaOnToggle) toggle.setAttribute('aria-expanded', 'false');
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
-
-    toggle.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (menu.classList.contains('show')) closeMenu();
-        else openMenu();
-    });
-
-    document.addEventListener('click', function (e) {
-        if (!menu.classList.contains('show')) return;
-        var target = e.target;
-        if (!menu.contains(target) && !toggle.contains(target)) closeMenu();
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') closeMenu();
-    });
 }
 
 // Top and mobile dropdowns
@@ -173,7 +181,7 @@ initSimpleDropdown('settingsToggle', 'settingsMenu', true);
 initSimpleDropdown('mobileAdminToggle', 'mobileAdminMenu', false);
 initSimpleDropdown('mobileSettingsToggle', 'mobileSettingsMenu', false);
 
-// Hard fallback: ensure top Settings + inventory filter headers always toggle.
+// Hard fallback: ensure top Settings + Location + inventory filter headers always toggle.
 (function () {
     if (document.documentElement.getAttribute('data-dashboard-fallback-bound') === '1') return;
     document.documentElement.setAttribute('data-dashboard-fallback-bound', '1');
@@ -199,6 +207,26 @@ initSimpleDropdown('mobileSettingsToggle', 'mobileSettingsMenu', false);
             return;
         }
 
+        var locationBtn = e.target.closest('#locationToggle');
+        var locationMenu = document.getElementById('locationMenu');
+        if (locationBtn && locationMenu) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+
+            var isOpen = locationMenu.classList.contains('show');
+            if (isOpen) {
+                locationMenu.classList.remove('show');
+                locationMenu.setAttribute('aria-hidden', 'true');
+                locationBtn.setAttribute('aria-expanded', 'false');
+            } else {
+                locationMenu.classList.add('show');
+                locationMenu.setAttribute('aria-hidden', 'false');
+                locationBtn.setAttribute('aria-expanded', 'true');
+            }
+            return;
+        }
+
         var filterHeader = e.target.closest('.inv-filters .filter-block h4');
         if (filterHeader) {
             e.preventDefault();
@@ -216,16 +244,33 @@ initSimpleDropdown('mobileSettingsToggle', 'mobileSettingsMenu', false);
                 if (settingsBtn) settingsBtn.setAttribute('aria-expanded', 'false');
             }
         }
+
+        if (locationMenu && locationMenu.classList.contains('show')) {
+            if (!locationMenu.contains(e.target)) {
+                locationMenu.classList.remove('show');
+                locationMenu.setAttribute('aria-hidden', 'true');
+                if (locationBtn) locationBtn.setAttribute('aria-expanded', 'false');
+            }
+        }
     }, true);
 
     document.addEventListener('keydown', function (e) {
         if (e.key !== 'Escape') return;
         var settingsBtn = document.getElementById('settingsToggle');
         var settingsMenu = document.getElementById('settingsMenu');
-        if (!settingsMenu) return;
-        settingsMenu.classList.remove('show');
-        settingsMenu.setAttribute('aria-hidden', 'true');
-        if (settingsBtn) settingsBtn.setAttribute('aria-expanded', 'false');
+        if (settingsMenu) {
+            settingsMenu.classList.remove('show');
+            settingsMenu.setAttribute('aria-hidden', 'true');
+            if (settingsBtn) settingsBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        var locationBtn = document.getElementById('locationToggle');
+        var locationMenu = document.getElementById('locationMenu');
+        if (locationMenu) {
+            locationMenu.classList.remove('show');
+            locationMenu.setAttribute('aria-hidden', 'true');
+            if (locationBtn) locationBtn.setAttribute('aria-expanded', 'false');
+        }
     });
 })();
 
