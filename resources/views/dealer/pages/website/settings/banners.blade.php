@@ -66,6 +66,34 @@
                     <div class="bn-card">
                         <div class="bn-card-title">Persistent Banner Settings</div>
 
+                      
+
+
+                        {{-- banner title --}}
+                        <div class="bn-row">
+                            <div class="bn-label-col">Banner title</div>
+                            <div class="bn-input-col">
+                                <input type="text"
+                                       name="banner_title"
+                                       class="bn-control"
+                                       placeholder="Main headline on the banner"
+                                       value="{{ old('banner_title', $dealer->banner_title) }}">
+                            </div>
+                        </div>
+
+                        {{-- banner subtitle --}}
+                        <div class="bn-row">
+                            <div class="bn-label-col">Banner subtitle</div>
+                            <div class="bn-input-col">
+                                <input type="text"
+                                       name="banner_subtitle"
+                                       class="bn-control"
+                                       placeholder="Secondary text on the banner"
+                                       value="{{ old('banner_subtitle', $dealer->banner_subtitle) }}">
+                            </div>
+                        </div>
+
+
                         {{-- Text / announcement --}}
                         <div class="bn-row">
                             <div class="bn-label-col">Text / announcement</div>
@@ -544,6 +572,8 @@
         // Save banner settings
         document.getElementById('btnSaveBanner').addEventListener('click', function () {
             const formData = new FormData();
+            formData.append('banner_title', document.querySelector('[name="banner_title"]').value);
+            formData.append('banner_subtitle', document.querySelector('[name="banner_subtitle"]').value);
             formData.append('banner_text', document.querySelector('[name="banner_text"]').value);
             formData.append('banner_hover_title', document.querySelector('[name="banner_hover_title"]').value);
             formData.append('banner_text_color', document.getElementById('textColorPicker').value);

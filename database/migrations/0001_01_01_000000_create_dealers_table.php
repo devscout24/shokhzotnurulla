@@ -49,6 +49,9 @@ return new class extends Migration
             $table->boolean('is_active')->default(true)->index();
             $table->string('status')->default('active');
 
+            $table->string('banner_title')->nullable();
+            $table->string('banner_subtitle')->nullable();
+
             $table->timestamps();
             $table->softDeletes('deleted_at', precision: 0);
         });

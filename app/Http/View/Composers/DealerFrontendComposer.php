@@ -63,6 +63,7 @@ class DealerFrontendComposer
         $dealer = Dealer::select([
                 'id',
                 'name',
+                'logo',
                 'legal_name',
                 'corporate_address',
                 'support_email',
@@ -75,6 +76,8 @@ class DealerFrontendComposer
                 'pricing_disclaimer',
                 'optional_disclaimer',
                 // Banner
+                'banner_title',
+                'banner_subtitle',
                 'banner_text',
                 'banner_hover_title',
                 'banner_text_color',
@@ -125,12 +128,16 @@ class DealerFrontendComposer
             'optionalDisclaimer'   => $dealer->optional_disclaimer,
 
             // ── Banner ────────────────────────────────────────────────────
+            'bannerTitle'          => $dealer->banner_title,
+            'bannerSubtitle'       => $dealer->banner_subtitle,
             'bannerText'           => $dealer->banner_text,
             'bannerHoverTitle'     => $dealer->banner_hover_title,
             'bannerTextColor'      => $dealer->banner_text_color,
             'bannerBgColor'        => $dealer->banner_bg_color,
             'bannerDesktopMedia'   => $dealer->bannerDesktopMedia,
             'bannerMobileMedia'    => $dealer->bannerMobileMedia,
+
+            'dealer'               => $dealer,
 
             // ── Video ─────────────────────────────────────────────────────
             'videoUrl'             => $dealer->video_url,

@@ -5,12 +5,21 @@
         'resources/css/frontend/app.css',
         'resources/js/frontend/app.js',
     ])
+    <script src="{{ asset('assets/frontend/js/favorites.js') }}"></script>
 @endpush
 
 @section('panel-content')
 
     {{-- Header (Desktop & Mobile) --}}
     @include('frontend.partials.header')
+
+    {{-- @if($bannerText ?? null)
+        <div class="persistent-banner py-2 text-center" style="background: {{ $bannerBgColor ?? '#ce4f4b' }}; color: {{ $bannerTextColor ?? '#ffffff' }};" title="{{ $bannerHoverTitle ?? '' }}">
+            <div class="container">
+                <span class="banner-message font-weight-bold">{{ $bannerText }}</span>
+            </div>
+        </div>
+    @endif --}}
 
     {{-- ── Page Content ─────────────────────────────────────────────────── --}}
     @yield('page-content')
