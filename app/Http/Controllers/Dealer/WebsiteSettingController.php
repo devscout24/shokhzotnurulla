@@ -21,6 +21,7 @@ use App\Actions\Website\ImportRedirectsAction;
 use App\Actions\Website\CreateDealerIpAction;
 use App\Actions\Website\UpdateDealerIpAction;
 use App\Actions\Website\DeleteDealerIpAction;
+use App\Models\Website\HomeAboutCtaSection;
 use App\Http\Requests\Website\UpdateGeneralSettingsRequest;
 use App\Http\Requests\Website\UpdateDisclaimersRequest;
 use App\Http\Requests\Website\UpdateSocialLinksRequest;
@@ -221,6 +222,108 @@ class WebsiteSettingController extends Controller
         $dealer = $request->user()->currentDealer;
         $dealer->load(['bannerDesktopMedia', 'bannerMobileMedia']);
         return view('dealer.pages.website.settings.banners', compact('dealer'));
+    }
+
+    public function homeAboutCta(Request $request): View
+    {
+        $dealer = $request->user()->currentDealer;
+        $section = HomeAboutCtaSection::where('dealer_id', $dealer->id)->first();
+        $content = array_replace_recursive(
+            HomeAboutCtaSection::defaultContent(),
+            $section?->content ?? []
+        );
+
+        return view('dealer.pages.website.settings.home-about-cta', compact('content'));
+    }
+
+    public function updateHomeAboutCta(Request $request): JsonResponse
+    {
+        $dealer = $request->user()->currentDealer;
+
+        $validated = $request->validate([
+            'about_eyebrow' => 'nullable|string|max:120',
+            'about_heading' => 'nullable|string|max:255',
+            'about_paragraph_1' => 'nullable|string',
+            'about_paragraph_2' => 'nullable|string',
+            'about_image_url' => 'nullable|string|max:255',
+            'about_image_alt' => 'nullable|string|max:255',
+
+            'stats_1_icon' => 'nullable|string|max:120',
+            'stats_1_title' => 'nullable|string|max:255',
+            'stats_1_text' => 'nullable|string',
+            'stats_2_icon' => 'nullable|string|max:120',
+            'stats_2_title' => 'nullable|string|max:255',
+            'stats_2_text' => 'nullable|string',
+            'stats_3_icon' => 'nullable|string|max:120',
+            'stats_3_title' => 'nullable|string|max:255',
+            'stats_3_text' => 'nullable|string',
+            'stats_4_icon' => 'nullable|string|max:120',
+            'stats_4_title' => 'nullable|string|max:255',
+            'stats_4_text' => 'nullable|string',
+
+            'card_icon' => 'nullable|string|max:120',
+            'card_title' => 'nullable|string|max:255',
+            'card_text' => 'nullable|string',
+            'card_image_url' => 'nullable|string|max:255',
+            'card_image_alt' => 'nullable|string|max:255',
+
+            'cta_1_title' => 'nullable|string|max:255',
+            'cta_1_text' => 'nullable|string',
+            'cta_1_link' => 'nullable|string|max:255',
+            'cta_2_title' => 'nullable|string|max:255',
+            'cta_2_text' => 'nullable|string',
+            'cta_2_link' => 'nullable|string|max:255',
+        ]);
+
+        $stats = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $stats[] = [
+                'icon' => $validated["stats_{$i}_icon"] ?? '',
+                'title' => $validated["stats_{$i}_title"] ?? '',
+                'text' => $validated["stats_{$i}_text"] ?? '',
+            ];
+        }
+
+        $ctas = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $ctas[] = [
+                'title' => $validated["cta_{$i}_title"] ?? '',
+                'text' => $validated["cta_{$i}_text"] ?? '',
+                'link_url' => $validated["cta_{$i}_link"] ?? '',
+            ];
+        }
+
+        $content = [
+            'about' => [
+                'eyebrow' => $validated['about_eyebrow'] ?? '',
+                'heading' => $validated['about_heading'] ?? '',
+                'paragraphs' => [
+                    $validated['about_paragraph_1'] ?? '',
+                    $validated['about_paragraph_2'] ?? '',
+                ],
+                'image_url' => $validated['about_image_url'] ?? '',
+                'image_alt' => $validated['about_image_alt'] ?? '',
+            ],
+            'stats' => $stats,
+            'card' => [
+                'icon' => $validated['card_icon'] ?? '',
+                'title' => $validated['card_title'] ?? '',
+                'text' => $validated['card_text'] ?? '',
+                'image_url' => $validated['card_image_url'] ?? '',
+                'image_alt' => $validated['card_image_alt'] ?? '',
+            ],
+            'ctas' => $ctas,
+        ];
+
+        HomeAboutCtaSection::updateOrCreate(
+            ['dealer_id' => $dealer->id],
+            ['content' => $content],
+        );
+
+        \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
+        $this->auditLogger->info($request, 'Home about/CTA settings updated');
+
+        return response()->json(['success' => true, 'message' => 'Home About/CTA settings saved.']);
     }
 
     public function updateBanners(UpdateBannerSettingsRequest $request, UploadMediaAction $uploadMedia, DeleteMediaAction $deleteMedia): JsonResponse

@@ -5,6 +5,7 @@ namespace App\Http\View\Composers;
 use App\Helpers\TimeHelper;
 use App\Models\Dealership\Dealer;
 use App\Models\Website\Location;
+use App\Models\Website\HomeAboutCtaSection;
 use App\Services\Website\DealerResolverService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -105,6 +106,12 @@ class DealerFrontendComposer
 
         $primary = $allLocations->first();
 
+        $homeAboutCta = HomeAboutCtaSection::where('dealer_id', $dealerId)->first();
+        $homeAboutCtaContent = array_replace_recursive(
+            HomeAboutCtaSection::defaultContent(),
+            $homeAboutCta?->content ?? []
+        );
+
         return [
             // ── Header / footer data ──────────────────────────────────────
             'dealerName'           => $dealer->name,
@@ -145,6 +152,9 @@ class DealerFrontendComposer
 
             // ── Location offcanvas data ───────────────────────────────────
             'locationMenuData'     => $this->buildLocationMenuData($allLocations),
+
+            // ── Home About/CTA ────────────────────────────────────────────
+            'homeAboutCta'          => $homeAboutCtaContent,
         ];
     }
 
@@ -317,6 +327,9 @@ class DealerFrontendComposer
             'bannerBgColor'        => null,
             'bannerDesktopMedia'   => null,
             'bannerMobileMedia'    => null,
+
+            // Home About/CTA
+            'homeAboutCta'          => HomeAboutCtaSection::defaultContent(),
         ];
     }
 }

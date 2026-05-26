@@ -130,6 +130,10 @@
                     <span class="ws-icon"><i class="bi bi-card-image"></i></span>
                     <span>Banners /<br>Announcements</span>
                 </a>
+                    <a href="{{ route('dealer.website.settings.home-about-cta') }}" class="menu-item">
+                        <span class="ws-icon"><i class="bi bi-layout-text-window-reverse"></i></span>
+                        <span>Home About/CTA</span>
+                    </a>
                 <a href="/dealer/website/settings/finance" class="menu-item active">
                     <span class="ws-icon"><i class="bi bi-percent"></i></span>
                     <span>Interest Rates</span>

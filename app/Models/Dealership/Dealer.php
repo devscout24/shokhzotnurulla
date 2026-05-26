@@ -14,6 +14,7 @@ use App\Models\Website\FormEntry;
 use App\Models\Website\Media;
 use App\Models\Website\Menu;
 use App\Models\Website\Location;
+use App\Models\Website\HomeAboutCtaSection;
 use App\Models\Website\Domain;
 use App\Models\Website\Redirect;
 use App\Models\Website\DigitalRetailSetting;
@@ -167,6 +168,11 @@ class Dealer extends Model
     public function digitalRetailSettings(): HasOne
     {
         return $this->hasOne(DigitalRetailSetting::class);
+    }
+
+    public function homeAboutCtaSection(): HasOne
+    {
+        return $this->hasOne(HomeAboutCtaSection::class);
     }
 
     public function integrations(): HasMany

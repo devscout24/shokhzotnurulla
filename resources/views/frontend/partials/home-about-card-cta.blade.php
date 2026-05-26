@@ -1,9 +1,35 @@
+@php
+    $homeAbout = $homeAboutCta ?? [];
+    $about = data_get($homeAbout, 'about', []);
+    $stats = data_get($homeAbout, 'stats', []);
+    $card = data_get($homeAbout, 'card', []);
+    $ctas = data_get($homeAbout, 'ctas', []);
+
+    $aboutImageUrl = data_get($about, 'image_url');
+    $aboutImageSrc = $aboutImageUrl
+        ? (preg_match('/^https?:\\/\\//', $aboutImageUrl) ? $aboutImageUrl : asset(ltrim($aboutImageUrl, '/')))
+        : asset('assets/frontend/img/angel-motors-top-rated-dealer-2.webp');
+
+    $cardImageUrl = data_get($card, 'image_url');
+    $cardImageSrc = $cardImageUrl
+        ? (preg_match('/^https?:\\/\\//', $cardImageUrl) ? $cardImageUrl : asset(ltrim($cardImageUrl, '/')))
+        : asset('assets/frontend/img/car-inspection.webp');
+
+    $cta1 = $ctas[0] ?? [];
+    $cta2 = $ctas[1] ?? [];
+
+    $cta1Link = data_get($cta1, 'link_url') ?: '#';
+    $cta2Link = data_get($cta2, 'link_url') ?: '#';
+    $cta1Href = $cta1Link === '#' ? '#' : (preg_match('/^https?:\\/\\//', $cta1Link) ? $cta1Link : url($cta1Link));
+    $cta2Href = $cta2Link === '#' ? '#' : (preg_match('/^https?:\\/\\//', $cta2Link) ? $cta2Link : url($cta2Link));
+@endphp
+
 <!-- about us section  -->
 <div class="sc-1a7ba87f-0 cElement cContainer  container ">
     <div class="sc-24764b04-0 kdwMZF"> </div>
     <div class="cElement cColumnLayout  d-flex align-items-center row">
         <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-1">
-            <img width="1200" height="772" src="{{ asset('assets/frontend/img/angel-motors-top-rated-dealer-2.webp') }}" alt=""
+            <img width="1200" height="772" src="{{ $aboutImageSrc }}" alt="{{ data_get($about, 'image_alt') }}"
                 loading="lazy" fetchpriority="auto"
                 class="cElement rounded-2xl cImage mb-2 mx-auto d-block  img-fluid">
             <div class="sc-24764b04-0 kdvwXG"></div>
@@ -12,19 +38,13 @@
         <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-2">
             <div class="sc-1a7ba87f-0 cElement cContainer  container ">
                 <div class="cElement cText eyebrow">
-                    <p>ABOUT US</p>
+                    <p>{{ data_get($about, 'eyebrow') }}</p>
                 </div>
-                <h2 class="h2 text-start font-weight-bold" id="B8x2iRjmKT">Find your next quality
-                    pre-owned vehicle in Smyrna, TN</h2>
+                <h2 class="h2 text-start font-weight-bold" id="B8x2iRjmKT">{{ data_get($about, 'heading') }}</h2>
                 <div class="sc-24764b04-0 kdvwXJ"></div>
-                <p>At Angel Motors Inc., we make car buying simple, transparent, and stress-free. Serving
-                    Smyrna, TN and surrounding areas since 2015, we’re committed to helping you drive away with
-                    confidence.</p>
+                <p>{!! data_get($about, 'paragraphs.0') !!}</p>
 
-                <p>Explore our <a href="{{ route('frontend.inventory.type', 'cars') }}">wide selection of inspected cars</a>, <a href="{{ route('frontend.inventory.type', 'trucks') }}">trucks</a>, and <a
-                        href="{{ route('frontend.inventory.type', 'suvs') }}">SUVs</a>. Whether you're looking for a
-                    reliable daily driver or something with a little more space and power, our team is here to
-                    help you find the right vehicle for your lifestyle and budget.</p>
+                <p>{!! data_get($about, 'paragraphs.1') !!}</p>
             </div>
         </div>
     </div>
@@ -33,75 +53,43 @@
     <div class="cElement cColumnLayout row-bordered  row">
         <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-1">
             <div class="cElement cColumnLayout row-bordered  row">
-                <div class="cElement bottomBorder border-end  cColumn col-sm-6 col-12 order-sm-0 order-1">
-                    <div class="sc-24764b04-0 kdvjHq"></div>
-                    <div class="cElement cIcon text-center">
-                        <span class="d-inline-block fa-fw h1 mt-0 mb-3">
-                            <i class="fa-solid fa-car blue-large-text"></i>
-                        </span>
+                @for ($i = 0; $i < 2; $i++)
+                    @php $stat = $stats[$i] ?? []; @endphp
+                    <div class="cElement bottomBorder border-end  cColumn col-sm-6 col-12 order-sm-0 order-1">
+                        <div class="sc-24764b04-0 kdvjHq"></div>
+                        <div class="cElement cIcon text-center">
+                            <span class="d-inline-block fa-fw h1 mt-0 mb-3">
+                                <i class="{{ data_get($stat, 'icon') }} blue-large-text"></i>
+                            </span>
 
+                        </div>
+                        <div class="cElement cText h4 font-weight-bold mb-n2" bis_skin_checked="1">
+                            <p class="text-center"><strong>{{ data_get($stat, 'title') }}</strong></p>
+                        </div>
+                        <p class="text-center">{{ data_get($stat, 'text') }}</p>
                     </div>
-                    <div class="cElement cText h4 font-weight-bold mb-n2" bis_skin_checked="1">
-                        <p class="text-center"><strong>All makes &amp; models</strong></p>
-                    </div>
-                    <p class="text-center">Curated selection of top automotive brands</p>
-                </div>
-
-                <div class="cElement bottomBorder border-end cColumn col-sm-6 col-12 order-sm-0 order-1">
-                    <div class="sc-24764b04-0 kdvjHq"></div>
-                    <div class="cElement cIcon text-center">
-                        <span class="d-inline-block fa-fw h1 mt-0 mb-3">
-                            <i class="fa-solid fa-star blue-large-text"></i>
-                        </span>
-                    </div>
-                    <div class="cElement cText h4 font-weight-bold mb-n2" bis_skin_checked="1">
-                        <p class="text-center">
-                            <strong>4.4 stars
-                            </strong>
-                        </p>
-                    </div>
-                    <p class="text-center">On Google Reviews from our local community</p>
-                </div>
+                @endfor
             </div>
         </div>
 
         <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-1">
             <div class="cElement cColumnLayout row-bordered  row">
-                <div class="cElement bottomBorder border-end  cColumn col-sm-6 col-12 order-sm-0 order-1">
-                    <div class="sc-24764b04-0 kdvjHq"></div>
-                    <div class="cElement cIcon text-center">
-                        <span class="d-inline-block fa-fw h1 mt-0 mb-3">
-                            <i class="fa-regular fa-comment blue-large-text"></i>
-                        </span>
+                @for ($i = 2; $i < 4; $i++)
+                    @php $stat = $stats[$i] ?? []; @endphp
+                    <div class="cElement {{ $i === 2 ? 'bottomBorder border-end' : 'border-end' }} cColumn col-sm-6 col-12 order-sm-0 order-1">
+                        <div class="sc-24764b04-0 kdvjHq"></div>
+                        <div class="cElement cIcon text-center">
+                            <span class="d-inline-block fa-fw h1 mt-0 mb-3">
+                                <i class="{{ data_get($stat, 'icon') }} blue-large-text"></i>
+                            </span>
 
+                        </div>
+                        <div class="cElement cText h4 font-weight-bold mb-n2" bis_skin_checked="1">
+                            <p class="text-center"><strong>{{ data_get($stat, 'title') }}</strong></p>
+                        </div>
+                        <p class="text-center">{{ data_get($stat, 'text') }}</p>
                     </div>
-                    <div class="cElement cText h4 font-weight-bold mb-n2" bis_skin_checked="1">
-                        <p class="text-center"><strong>200+</strong></p>
-                    </div>
-                    <p class="text-center">reviews from happy customers
-
-                    </p>
-                </div>
-
-                <div class="cElement border-end cColumn col-sm-6 col-12 order-sm-0 order-1">
-                    <div class="sc-24764b04-0 kdvjHq"></div>
-                    <div class="cElement cIcon text-center">
-                        <span class="d-inline-block fa-fw h1 mt-0 mb-3">
-                            <i class="fa-solid fa-shield-halved blue-large-text"></i>
-                        </span>
-                    </div>
-                    <div class="cElement cText h4 font-weight-bold mb-n2" bis_skin_checked="1">
-                        <p class="text-center">
-                            <strong>Hand-selected quality
-
-
-                            </strong>
-                        </p>
-                    </div>
-                    <p class="text-center">Every vehicle rigorously inspected for reliability and value
-
-                    </p>
-                </div>
+                @endfor
             </div>
         </div>
     </div>
@@ -113,26 +101,22 @@
     <div class="cElement cColumnLayout  d-flex align-items-center row">
         <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-2">
             <div class="sc-1a7ba87f-0 cElement cContainer  w-100 card2 h-100 border">
-                <div class="cElement cIcon text-center">
+                <div class="cElement cIcon text-center d-flex justify-content-center">
                     <span class="d-inline-block fa-fw h1 primaryy">
-                        <i class="fa-solid fa-shield-halved font-55"></i>
+                        <i class="{{ data_get($card, 'icon') }} font-55"></i>
                     </span>
                 </div>
 
                 <div class="sc-24764b04-0 kdvVWg"></div>
 
-                <h2 class="text-center font-medium" id="eFw6ufiigV">Driven by transparency
-                    and reliability
-                </h2>
+                <h2 class="text-center font-medium" id="eFw6ufiigV">{{ data_get($card, 'title') }}</h2>
                 <div class="sc-24764b04-0 kdvVWg"></div>
-                <p class="text-center">As a Certified CARFAX Advantage Dealer, we provide a free CARFAX Vehicle
-                    History Report with every vehicle. From mechanical inspections to final detailing, we make
-                    sure each vehicle meets our standards before it reaches you.</p>
+                <p class="text-center">{{ data_get($card, 'text') }}</p>
             </div>
         </div>
 
         <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-1">
-            <img width="100%" height="703" src="{{ asset('assets/frontend/img/car-inspection.webp') }}" alt="" loading="lazy"
+            <img width="100%" height="703" src="{{ $cardImageSrc }}" alt="{{ data_get($card, 'image_alt') }}" loading="lazy"
                 fetchpriority="auto"
                 class="cElement cImage mb-2 mx-auto d-block rounded-2xl img-fluid mb-0 border img-fluid">
         </div>
@@ -143,18 +127,15 @@
     <div class="sc-24764b04-0 kdvVWh"></div>
     <div class="cElement cColumnLayout  row">
         <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-1">
-            <a href="{{ url('/get-approved') }}"
+            <a href="{{ $cta1Href }}"
                 class="sc-1a7ba87f-0 bwwxTl cElement cContainer  cursor-pointer  w-100 cursor-pointer text-white rounded border overflow-hidden d-block text-decoration-none">
                 <div class=" cElement cColorOverlay bg-black"></div>
                 <div class="sc-1a7ba87f-0 hAgfhi cElement cContainer  container ">
                     <div class="sc-24764b04-0 evgXRR"></div>
-                    <h3 class="h2  text-start  extrabold " id="rln4nJ9ffJ">Financing made
-                        simple</h3>
+                    <h3 class="h2  text-start  extrabold " id="rln4nJ9ffJ">{{ data_get($cta1, 'title') }}</h3>
                     <div class="sc-24764b04-0 kdvwXJ"></div>
 
-                    <p>We offer arranged financing solutions designed to help you secure the approval that fits
-                        your situation. Our team works with trusted lenders to make the process smooth,
-                        transparent, and straightforward from start to finish.</p>
+                    <p>{{ data_get($cta1, 'text') }}</p>
                     <div class="sc-24764b04-0 kdvwXJ"></div>
 
                 </div>
@@ -163,21 +144,15 @@
         </div>
 
         <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-1">
-            <a href="{{ url('/schedule-service') }}"
+            <a href="{{ $cta2Href }}"
                 class="sc-1a7ba87f-0 cbWkvM cElement cContainer  cursor-pointer  w-100 cursor-pointer text-white rounded border overflow-hidden d-block text-decoration-none">
                 <div class=" cElement cColorOverlay bg-black"></div>
                 <div class="sc-1a7ba87f-0 hAgfhi cElement cContainer  container ">
                     <div class="sc-24764b04-0 evgXRR"></div>
-                    <h3 class="h2 text-start extrabold " id="rln4nJ9ffJ">Here for you
-                        beyond the
-                        sale</h3>
+                    <h3 class="h2 text-start extrabold " id="rln4nJ9ffJ">{{ data_get($cta2, 'title') }}</h3>
                     <div class="sc-24764b04-0 kdvwXJ"></div>
 
-                    <p>
-                        Our commitment doesn’t end when you drive off the lot. From scheduling service to
-                        answering your questions, our team is here to provide dependable support and guidance
-                        you can rely on long after your purchase.
-                    </p>
+                    <p>{{ data_get($cta2, 'text') }}</p>
                     <div class="sc-24764b04-0 kdvwXJ"></div>
 
                 </div>
