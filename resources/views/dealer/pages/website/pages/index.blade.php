@@ -114,6 +114,70 @@
             letter-spacing: 0.5px;
         }
 
+        @media (max-width: 575.98px) {
+            .main-content {
+                padding: 15px;
+            }
+
+            .page-header-flex {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input-group {
+                width: 100%;
+            }
+
+            .table thead {
+                display: none;
+            }
+
+            .table tbody td {
+                display: block;
+                width: 100%;
+                text-align: left;
+                padding: 10px 15px;
+                border: none;
+            }
+
+            .table tbody td:before {
+                content: attr(data-label);
+                display: block;
+                font-size: 11px;
+                font-weight: 800;
+                text-transform: uppercase;
+                color: #8792a2;
+                margin-bottom: 4px;
+            }
+
+            .table tbody tr {
+                display: block;
+                border-bottom: 1px solid #e0e6ed;
+                padding: 10px 0;
+            }
+
+            .chk-col {
+                display: none !important;
+            }
+
+            .inline-actions {
+                flex-wrap: wrap;
+            }
+
+            .btn-action {
+                flex: 1 1 calc(50% - 8px);
+                justify-content: center;
+                padding: 8px 12px;
+            }
+        }
+
         .table tbody td {
             padding: 15px 15px;
             vertical-align: middle;
@@ -346,10 +410,10 @@
                     <i class="fas fa-search search-icon"></i>
                     <input type="text" class="search-input" placeholder="Search pages">
                 </div>
-                <a href="#" class="btn-template">
+                {{-- <a href="#" class="btn-template">
                     <i class="far fa-file-alt"></i> Start From Template
-                </a>
-                <a href="{{ $routes['create'] }}" class="btn-add-page">
+                </a> --}}
+                <a href="{{ $routes['create'] }}" class="btn-add-page d-none d-sm-flex">
                     <i class="fas fa-plus"></i> Add Page
                 </a>
             </div>
@@ -375,7 +439,7 @@
                             @foreach ($pages as $page)
                                 <tr>
                                     <td class="chk-col"><input type="checkbox" class="chk-custom"></td>
-                                    <td>
+                                    <td data-label="Title">
                                         <div class="d-flex flex-column">
                                             <div class="d-flex align-items-center">
                                                 <a href="{{ str_replace('__ID__', $page->id, $routes['edit']) }}"
@@ -389,7 +453,7 @@
                                             </div>
                                             <div class="inline-actions">
                                                 <a href="{{ str_replace('__ID__', $page->id, $routes['edit']) }}"
-                                                    class="btn-action">
+                                                    class="btn-action d-none d-sm-inline-flex">
                                                     <i class="fa-regular fa-pen-to-square"></i> Edit
                                                 </a>
                                                 <a href="{{ url($page->slug) }}" target="_blank" class="btn-action">
@@ -405,7 +469,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td data-label="URL">
                                         <div class="url-text d-flex align-items-center">
                                             <span class="text-muted">/{{ $page->slug }}</span>
                                             <a href="{{ url($page->slug) }}" target="_blank" rel="noopener noreferrer"
@@ -414,26 +478,30 @@
                                             </a>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td data-label="Author">
                                         {{-- Showing dealer name or placeholder as author --}}
                                         <span class="date-text">{{ $page->dealer->name ?? 'Admin' }}</span>
                                     </td>
-                                    <td>
+                                    <td data-label="Status">
                                         @php $isPublished = $page->is_active && $page->published_at && $page->published_at <= now(); @endphp
                                         <div class="status-dot">
                                             <div class="dot {{ $isPublished ? 'dot-published' : 'dot-draft' }}"></div>
                                             {{ $isPublished ? 'Published' : 'Draft' }}
                                         </div>
                                     </td>
-                                    <td class="text-center">
+                                    <td data-label="Meta Desc." class="text-center">
                                         @if($page->meta_description)
                                             <i class="fas fa-check-circle meta-check"></i>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
-                                    <td><span class="date-text">{{ $page->created_at->format('M d, Y') }}</span></td>
-                                    <td><span class="date-text">{{ $page->updated_at->format('M d, Y') }}</span></td>
+                                    <td data-label="Created">
+                                        <span class="date-text">{{ $page->created_at->format('M d, Y') }}</span>
+                                    </td>
+                                    <td data-label="Last Update">
+                                        <span class="date-text">{{ $page->updated_at->format('M d, Y') }}</span>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
