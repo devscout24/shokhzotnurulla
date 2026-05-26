@@ -17,6 +17,34 @@
             ? (int) $pricing['applied_special']->finance_term
             : 60;
 @endphp
+@once
+    <style>
+        #getEstimate .gep-stepper .input-group-text,
+        #getEstimate .gep-stepper .form-control {
+            border-radius: 0 !important;
+        }
+
+        #getEstimate .gep-stepper-btn {
+            width: 42px;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #getEstimate .gep-stepper-btn:first-child {
+            border-radius: 12px 0 0 12px !important;
+        }
+
+        #getEstimate .gep-stepper-btn:last-child {
+            border-radius: 0 12px 12px 0 !important;
+        }
+
+        #getEstimate .gep-stepper-symbol {
+            min-width: 38px;
+            justify-content: center;
+        }
+    </style>
+@endonce
 <div class="offcanvas offcanvas-end w-lg-50 w-100" tabindex="-1" id="getEstimate"
     aria-labelledby="getEstimateLabel">
 
@@ -64,15 +92,17 @@
             <div class="col-md-4 col-12">
                 <div class="mb-3 mb-md-4">
                     <label class="form-label">Unit price</label>
-                    <div class="input-group">
-                        <span class="bg-lighter prepend input-group-text"><b class="mx-auto">$</b></span>
+                    <div class="input-group gep-stepper">
+                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-100">
+                            <b class="mx-auto">-</b>
+                        </button>
+                        <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">$</b></span>
                         <input class="form-control border-radius-0" placeholder="10,000" disabled min="1000"
                             max="1000000" required type="text" value="{{ $estimatePrice ? number_format($estimatePrice) : '' }}" name="amount"
                             inputmode="numeric" style="font-size: inherit;">
-                        <span class="bg-lighter append input-group-text" role="button"><b
-                                class="mx-auto">-</b></span>
-                        <span class="bg-lighter append input-group-text" role="button"><b
-                                class="mx-auto">+</b></span>
+                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="100">
+                            <b class="mx-auto">+</b>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -93,11 +123,11 @@
             <div class="col-12">
                 <div class="border-top">
                     <div class="py-3 cursor-pointer d-flex align-items-center" role="button"
-                        data-bs-toggle="collapse" data-bs-target="#gep-amount-down"
+                        data-gep-collapse-toggle data-gep-target="#gep-amount-down"
                         aria-expanded="true" aria-controls="gep-amount-down">
                         <span class="d-inline-block me-2 mt-n1" style="color: #166B87;">
                             <svg height="16" width="16" fill="#166B87">
-                                <use xlink:href="/regular.svg#square-minus"></use>
+                                <use data-gep-collapse-icon xlink:href="/regular.svg#square-minus"></use>
                             </svg>
                         </span>
                         Amount Down
@@ -119,15 +149,17 @@
                             <div class="col-md-6 col-12">
                                 <div class="mb-0">
                                     <label class="form-label">Amount Down</label>
-                                    <div class="mb-3 mb-md-4 input-group">
-                                        <span class="bg-lighter prepend input-group-text"><b class="mx-auto">%</b></span>
+                                    <div class="mb-3 mb-md-4 input-group gep-stepper">
+                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-1">
+                                            <b class="mx-auto">-</b>
+                                        </button>
+                                        <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">%</b></span>
                                         <input class="form-control border-radius-0" data-cy="paymentcalc-down" step="1"
                                             min="0.0" max="99.9" placeholder="10" required type="text" value="0"
                                             name="down_pct" inputmode="numeric">
-                                        <span class="bg-lighter append input-group-text" role="button"><b
-                                                class="mx-auto">-</b></span>
-                                        <span class="bg-lighter append input-group-text" role="button"><b
-                                                class="mx-auto">+</b></span>
+                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="1">
+                                            <b class="mx-auto">+</b>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -139,11 +171,11 @@
             <div class="calc-tradein col-12">
                 <div class="border-top">
                     <div class="py-3 cursor-pointer d-flex align-items-center" role="button"
-                        data-bs-toggle="collapse" data-bs-target="#gep-tradein"
+                        data-gep-collapse-toggle data-gep-target="#gep-tradein"
                         aria-expanded="true" aria-controls="gep-tradein">
                         <span class="d-inline-block me-2 mt-n1" style="color: #166B87;">
                             <svg height="16" width="16" fill="#166B87">
-                                <use xlink:href="/regular.svg#square-minus"></use>
+                                <use data-gep-collapse-icon xlink:href="/regular.svg#square-minus"></use>
                             </svg>
                         </span>
                         Trade-in Value
@@ -154,30 +186,34 @@
                             <div class="col-md-6 col-12">
                                 <div class="mb-0">
                                     <label class="form-label">Est. Trade Value</label>
-                                    <div class="mb-3 mb-md-4 input-group">
-                                        <span class="bg-lighter prepend input-group-text"><b class="mx-auto">$</b></span>
+                                    <div class="mb-3 mb-md-4 input-group gep-stepper">
+                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-100">
+                                            <b class="mx-auto">-</b>
+                                        </button>
+                                        <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">$</b></span>
                                         <input class="form-control border-radius-0" placeholder="10,000" max="1000000"
                                             required type="text" value="0" name="tradeinamount"
                                             inputmode="numeric">
-                                        <span class="bg-lighter append input-group-text" role="button"><b
-                                                class="mx-auto">-</b></span>
-                                        <span class="bg-lighter append input-group-text" role="button"><b
-                                                class="mx-auto">+</b></span>
+                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="100">
+                                            <b class="mx-auto">+</b>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <div class="mb-0">
                                     <label class="form-label">Remaining Loan Balance</label>
-                                    <div class="mb-3 mb-md-4 input-group">
-                                        <span class="bg-lighter prepend input-group-text"><b class="mx-auto">$</b></span>
+                                    <div class="mb-3 mb-md-4 input-group gep-stepper">
+                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-100">
+                                            <b class="mx-auto">-</b>
+                                        </button>
+                                        <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">$</b></span>
                                         <input class="form-control border-radius-0" placeholder="5,000" max="1000000"
                                             required type="text" value="0" name="tradeinremainingbalance"
                                             inputmode="numeric">
-                                        <span class="bg-lighter append input-group-text" role="button"><b
-                                                class="mx-auto">-</b></span>
-                                        <span class="bg-lighter append input-group-text" role="button"><b
-                                                class="mx-auto">+</b></span>
+                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="100">
+                                            <b class="mx-auto">+</b>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -224,9 +260,34 @@
                     return moneyFormatter.format(Math.max(0, Math.round(numberFrom(value))));
                 }
 
+                function formatInputValue(input, value) {
+                    var next = numberFrom(value);
+
+                    if (input && input.name === 'down_pct' && !Number.isInteger(next)) {
+                        return next.toFixed(1);
+                    }
+
+                    return money(next);
+                }
+
                 function setValue(selector, value) {
                     var input = offcanvas.querySelector(selector);
                     if (input) input.value = money(value);
+                }
+
+                function setInputValue(input, value) {
+                    if (!input) return;
+
+                    var min = numberFrom(input.getAttribute('min'));
+                    var max = numberFrom(input.getAttribute('max'));
+                    var next = numberFrom(value);
+
+                    if (input.hasAttribute('min')) next = Math.max(min, next);
+                    if (input.hasAttribute('max')) next = Math.min(max, next);
+
+                    input.value = formatInputValue(input, next);
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
                 }
 
                 function getValue(selector) {
@@ -261,6 +322,20 @@
                     if (terms) terms.textContent = 'Est. payment for ' + term + ' months at ' + rate.toFixed(2) + '% APR';
                 }
 
+                function toggleCollapse(header) {
+                    var target = offcanvas.querySelector(header.dataset.gepTarget || '');
+                    if (!target) return;
+
+                    var isOpen = target.classList.toggle('show');
+                    var icon = header.querySelector('[data-gep-collapse-icon]');
+                    header.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
+                    if (icon) {
+                        icon.setAttribute('href', isOpen ? '/regular.svg#square-minus' : '/regular.svg#square-plus');
+                        icon.setAttribute('xlink:href', isOpen ? '/regular.svg#square-minus' : '/regular.svg#square-plus');
+                    }
+                }
+
                 offcanvas.addEventListener('show.bs.offcanvas', function (event) {
                     var trigger = event.relatedTarget;
                     if (!trigger) return;
@@ -292,6 +367,26 @@
                 offcanvas.querySelectorAll('input[name="down_pct"], input[name="tradeinamount"], input[name="tradeinremainingbalance"], select[name="state"]').forEach(function (field) {
                     field.addEventListener('input', calculateMonthly);
                     field.addEventListener('change', calculateMonthly);
+                });
+
+                offcanvas.querySelectorAll('.gep-stepper-btn').forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        var group = button.closest('.gep-stepper');
+                        var input = group ? group.querySelector('input') : null;
+                        if (!input) return;
+
+                        var delta = numberFrom(button.dataset.gepStep);
+                        setInputValue(input, getValue('[name="' + input.name + '"]') + delta);
+                        calculateMonthly();
+                    });
+                });
+
+                offcanvas.querySelectorAll('[data-gep-collapse-toggle]').forEach(function (header) {
+                    header.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        toggleCollapse(header);
+                    });
                 });
             })();
         </script>
