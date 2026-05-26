@@ -23,7 +23,8 @@
             <div class="hero-video">
                 @if($videoUrl ?? null)
                     <video src="{{ asset($videoUrl) }}" muted playsinline autoplay loop></video>
-                
+                @else
+                    <video src="{{ asset('assets/frontend/img/angel-motors-hero-video.mp4') }}" muted playsinline autoplay loop></video>
                 @endif
             </div>
 
