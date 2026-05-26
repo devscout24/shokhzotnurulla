@@ -90,11 +90,51 @@
                                 </div>
                                 <div class="mt-3">
                                     <label class="form-label">Paragraph 1 (HTML allowed)</label>
-                                    <textarea class="form-control form-control-sm ha-textarea" name="about_paragraph_1">{!! old('about_paragraph_1', data_get($content, 'about.paragraphs.0')) !!}</textarea>
+                                    <div class="rte-wrapper">
+                                        <div class="rte-toolbar" data-target="about_paragraph_1">
+                                            <button type="button" data-cmd="bold" title="Bold"><b>B</b></button>
+                                            <button type="button" data-cmd="italic" title="Italic"><i>I</i></button>
+                                            <button type="button" data-cmd="underline" title="Underline"><u>U</u></button>
+                                            <div class="rte-sep"></div>
+                                            <button type="button" data-cmd="justifyLeft" title="Align Left">&#8676;</button>
+                                            <button type="button" data-cmd="justifyCenter" title="Center">&#8596;</button>
+                                            <button type="button" data-cmd="justifyRight" title="Align Right">&#8677;</button>
+                                            <div class="rte-sep"></div>
+                                            <button type="button" data-cmd="insertUnorderedList" title="Bullet List">&#8226;&#8801;</button>
+                                            <button type="button" data-cmd="insertOrderedList" title="Numbered List">1&#8801;</button>
+                                            <div class="rte-sep"></div>
+                                            <button type="button" data-cmd="outdent" title="Outdent">&#8676;</button>
+                                            <button type="button" data-cmd="indent" title="Indent">&#8677;</button>
+                                            <div class="rte-sep"></div>
+                                            <button type="button" data-cmd="createLink" title="Insert Link">&#128279;</button>
+                                        </div>
+                                        <div class="rte-body" id="about_paragraph_1_editor" contenteditable="true" data-placeholder="Enter paragraph 1...">{!! old('about_paragraph_1', data_get($content, 'about.paragraphs.0')) !!}</div>
+                                    </div>
+                                    <input type="hidden" name="about_paragraph_1" id="about_paragraph_1" value="">
                                 </div>
                                 <div class="mt-3">
                                     <label class="form-label">Paragraph 2 (HTML allowed)</label>
-                                    <textarea class="form-control form-control-sm ha-textarea" name="about_paragraph_2">{!! old('about_paragraph_2', data_get($content, 'about.paragraphs.1')) !!}</textarea>
+                                    <div class="rte-wrapper">
+                                        <div class="rte-toolbar" data-target="about_paragraph_2">
+                                            <button type="button" data-cmd="bold" title="Bold"><b>B</b></button>
+                                            <button type="button" data-cmd="italic" title="Italic"><i>I</i></button>
+                                            <button type="button" data-cmd="underline" title="Underline"><u>U</u></button>
+                                            <div class="rte-sep"></div>
+                                            <button type="button" data-cmd="justifyLeft" title="Align Left">&#8676;</button>
+                                            <button type="button" data-cmd="justifyCenter" title="Center">&#8596;</button>
+                                            <button type="button" data-cmd="justifyRight" title="Align Right">&#8677;</button>
+                                            <div class="rte-sep"></div>
+                                            <button type="button" data-cmd="insertUnorderedList" title="Bullet List">&#8226;&#8801;</button>
+                                            <button type="button" data-cmd="insertOrderedList" title="Numbered List">1&#8801;</button>
+                                            <div class="rte-sep"></div>
+                                            <button type="button" data-cmd="outdent" title="Outdent">&#8676;</button>
+                                            <button type="button" data-cmd="indent" title="Indent">&#8677;</button>
+                                            <div class="rte-sep"></div>
+                                            <button type="button" data-cmd="createLink" title="Insert Link">&#128279;</button>
+                                        </div>
+                                        <div class="rte-body" id="about_paragraph_2_editor" contenteditable="true" data-placeholder="Enter paragraph 2...">{!! old('about_paragraph_2', data_get($content, 'about.paragraphs.1')) !!}</div>
+                                    </div>
+                                    <input type="hidden" name="about_paragraph_2" id="about_paragraph_2" value="">
                                     <div class="ha-help">Use links here for cars/trucks/SUVs.</div>
                                 </div>
                             </div>
@@ -196,8 +236,51 @@
         }
     }
 
+    function syncRteInputs() {
+        const p1 = document.getElementById('about_paragraph_1_editor');
+        const p2 = document.getElementById('about_paragraph_2_editor');
+        const p1Input = document.getElementById('about_paragraph_1');
+        const p2Input = document.getElementById('about_paragraph_2');
+
+        if (p1 && p1Input) p1Input.value = p1.innerHTML.trim();
+        if (p2 && p2Input) p2Input.value = p2.innerHTML.trim();
+    }
+
+    document.querySelectorAll('.rte-toolbar').forEach(toolbar => {
+        toolbar.querySelectorAll('button[data-cmd]').forEach(btn => {
+            btn.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+                const cmd = this.dataset.cmd;
+                const wrap = this.closest('.rte-wrapper');
+                const editor = wrap.querySelector('.rte-body');
+                editor.focus();
+
+                if (cmd === 'createLink') {
+                    const url = prompt('Enter URL:', 'https://');
+                    if (url) document.execCommand('createLink', false, url);
+                } else {
+                    document.execCommand(cmd, false, null);
+                }
+
+                if (['bold', 'italic', 'underline'].includes(cmd)) {
+                    this.classList.toggle('active', document.queryCommandState(cmd));
+                }
+                syncRteInputs();
+            });
+        });
+    });
+
+    document.querySelectorAll('.rte-body').forEach(editor => {
+        editor.addEventListener('keyup', syncRteInputs);
+        editor.addEventListener('mouseup', syncRteInputs);
+        editor.addEventListener('blur', syncRteInputs);
+    });
+
+    document.addEventListener('DOMContentLoaded', syncRteInputs);
+
     document.getElementById('btnSaveHomeAboutCta').addEventListener('click', function () {
         const form = document.getElementById('homeAboutCtaForm');
+        syncRteInputs();
         const formData = new FormData(form);
 
         fetch(form.action, {

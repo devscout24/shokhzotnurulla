@@ -7,12 +7,12 @@
 
     $aboutImageUrl = data_get($about, 'image_url');
     $aboutImageSrc = $aboutImageUrl
-        ? (preg_match('/^https?:\\/\\//', $aboutImageUrl) ? $aboutImageUrl : asset(ltrim($aboutImageUrl, '/')))
+        ? (preg_match('/^https?:\\/\\//', $aboutImageUrl) ? $aboutImageUrl : url('/' . ltrim($aboutImageUrl, '/')))
         : asset('assets/frontend/img/angel-motors-top-rated-dealer-2.webp');
 
     $cardImageUrl = data_get($card, 'image_url');
     $cardImageSrc = $cardImageUrl
-        ? (preg_match('/^https?:\\/\\//', $cardImageUrl) ? $cardImageUrl : asset(ltrim($cardImageUrl, '/')))
+        ? (preg_match('/^https?:\\/\\//', $cardImageUrl) ? $cardImageUrl : url('/' . ltrim($cardImageUrl, '/')))
         : asset('assets/frontend/img/car-inspection.webp');
 
     $cta1 = $ctas[0] ?? [];
