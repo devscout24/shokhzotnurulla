@@ -49,9 +49,14 @@ class UploadMediaAction
             [$width, $height] = $this->getImageDimensions($file, $mime);
         }
 
+        $locationId = Media::getActiveLocationId();
+        if ($locationId !== null && $locationId <= 0) {
+            $locationId = null;
+        }
+
         return Media::create([
             'dealer_id'     => $dealerId,
-            'location_id'   => Media::getActiveLocationId(),
+            'location_id'   => $locationId,
             'original_name' => $original,
             'name'          => $unique,
             'path'          => $path,

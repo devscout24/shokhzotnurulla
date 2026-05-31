@@ -201,6 +201,7 @@ class WebsiteSettingController extends Controller
             
             $dealer->update([
                 'video_source' => 'overfuel',
+                'video_url' => $media->url,
             ]);
 
             \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");

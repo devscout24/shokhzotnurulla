@@ -69,10 +69,7 @@ class DealerExportController extends Controller
             'year', 'make', 'model', 'trim', 'body_style', 'body_type',
             'list_price', 'price', 'special_price', 'cost_price',
             'addon_price', 'mileage.value', 'mileage.unit', 'fuel_type', 'exterior_color', 'interior_color',
-            'drivetrain', 'transmission', 'image[0].url', 'image[1].url', 'image[2].url', 'image[3].url',
-            'image[4].url', 'image[5].url', 'image[6].url', 'image[7].url', 'image[8].url', 'image[9].url',
-            'image[10].url', 'image[11].url', 'image[12].url', 'image[13].url', 'image[14].url', 'image[15].url',
-            'image[16].url', 'image[17].url', 'image[18].url', 'image[19].url', 'date_first_on_lot',
+            'drivetrain', 'transmission', 'images', 'date_first_on_lot',
             'days_on_lot', 'link', 'url', 'video_link', 'custom_label_0', 'custom_label_1', 'custom_label_2',
             'address', 'address.city', 'address.region', 'address.country', 'address.postal_code',
             'latitude', 'longitude',
@@ -110,7 +107,7 @@ class DealerExportController extends Controller
                 ->whereIn('status', ['active', 'sold'])
                 ->chunk(100, function ($vehicles) use ($file, $dealer, $dealerAddress) {
                     foreach ($vehicles as $vehicle) {
-                        $images = collect($vehicle->photos)->pluck('url')->take(20)->pad(20, '')->toArray();
+                        $images = collect($vehicle->photos)->pluck('url')->implode(',');
                         $url = $dealer->domain ? "https://{$dealer->domain}/vehicles/{$vehicle->slug}" : '';
 
                         $row = [
@@ -144,9 +141,8 @@ class DealerExportController extends Controller
                             $vehicle->interiorColor?->name ?? '',
                             $vehicle->drivetrainType?->name ?? '',
                             $vehicle->transmissionType?->name ?? '',
+                            $images,
                         ];
-
-                        $row = array_merge($row, $images);
 
                         $remainingRow = [
                             $vehicle->listed_at?->toDateString() ?? '',
@@ -193,6 +189,73 @@ class DealerExportController extends Controller
                         ];
 
                         $row = array_merge($row, $remainingRow);
+
+                        fputcsv($file, $row);
+                    }
+                });
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportDealerVehiclesCarsForSaleCsv(Dealer $dealer, Request $request)
+    {
+        $fileName = 'dealer_'.$dealer->id.'_carsforsale_'.date('Y-m-d_H-i-s').'.csv';
+
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $columns = [
+            'DealerID', 'NEWUSED', 'VIN', 'StockNumber', 'Make', 'Model', 'ModelYear', 'Trim', 'BodyStyle',
+            'Mileage', 'EngineDescription', 'Cylinders', 'FuelType', 'Transmission', 'Price', 'ExteriorColor',
+            'InteriorColor', 'Options', 'Description', 'Images',
+        ];
+
+        $callback = function () use ($columns, $dealer) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            Vehicle::withoutGlobalScopes()->where('dealer_id', $dealer->id)
+                ->with([
+                    'make', 'makeModel', 'bodyStyle', 'fuelType', 'exteriorColor', 'interiorColor',
+                    'transmissionType', 'photos', 'notes', 'specs', 'prices', 'factoryOptions',
+                ])
+                ->whereIn('status', ['active', 'sold'])
+                ->chunk(100, function ($vehicles) use ($file, $dealer) {
+                    foreach ($vehicles as $vehicle) {
+                        $images = collect($vehicle->photos)->pluck('url')->implode(',');
+                        $options = $vehicle->factoryOptions?->pluck('label')->implode(', ') ?? '';
+                        $description = $vehicle->notes?->dealer_notes ?? $vehicle->notes?->ai_description ?? '';
+
+                        $row = [
+                            $dealer->internal_id ?? $dealer->id,
+                            $vehicle->vehicle_condition ?? '',
+                            $vehicle->vin ?? '',
+                            $vehicle->stock_number ?? '',
+                            $vehicle->make?->name ?? '',
+                            $vehicle->makeModel?->name ?? '',
+                            $vehicle->year ?? '',
+                            $vehicle->trim ?? '',
+                            $vehicle->bodyStyle?->name ?? '',
+                            $vehicle->mileage ?? '',
+                            $vehicle->engine ?? '',
+                            $vehicle->specs?->cylinders ?? '',
+                            $vehicle->fuelType?->name ?? '',
+                            $vehicle->transmissionType?->name ?? '',
+                            $vehicle->prices?->internet_price ?? $vehicle->list_price ?? '',
+                            $vehicle->exteriorColor?->name ?? '',
+                            $vehicle->interiorColor?->name ?? '',
+                            $options,
+                            $description,
+                            $images,
+                        ];
 
                         fputcsv($file, $row);
                     }
