@@ -1,18 +1,17 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
-use Exception;
-use App\Http\Controllers\Controller;
 use App\Actions\User\UpdatePasswordAction;
 use App\Actions\User\UpdateProfileAction;
 use App\Actions\User\UpdateSecurityAction;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UpdatePasswordRequest;
 use App\Http\Requests\User\UpdateProfileRequest;
 use App\Http\Requests\User\UpdateSecurityRequest;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
+use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
@@ -20,7 +19,7 @@ use Illuminate\View\View;
 class SettingController extends Controller
 {
     public function __construct(
-        private readonly UpdateProfileAction  $updateProfile,
+        private readonly UpdateProfileAction $updateProfile,
         private readonly UpdatePasswordAction $updatePassword,
         private readonly UpdateSecurityAction $updateSecurity,
     ) {}
@@ -37,14 +36,14 @@ class SettingController extends Controller
     {
         $updated = ($this->updateProfile)(Auth::user(), $request->validated());
 
-        if (!$updated) {
+        if (! $updated) {
             return back()->with('info', 'No changes were made.');
         }
 
         return back()->with('success', 'Profile updated successfully.');
     }
 
-    public function updatePassword(UpdatePasswordRequest $request): JsonResponse|RedirectResponse
+    public function updatePassword(UpdatePasswordRequest $request): JsonResponse | RedirectResponse
     {
         $user = Auth::user();
 
@@ -78,15 +77,15 @@ class SettingController extends Controller
 
     public function authentication(): View
     {
-        $user = Auth::user();
+        $user      = Auth::user();
         $google2fa = app('pragmarx.google2fa');
 
         $QR_Image = null;
-        $secret = null;
+        $secret   = null;
 
-        if (!$user->google2fa_secret) {
+        if (! $user->google2fa_secret) {
             // Generate a new secret and store in session temporarily
-            if (!session('google2fa_secret_setup')) {
+            if (! session('google2fa_secret_setup')) {
                 session(['google2fa_secret_setup' => $google2fa->generateSecretKey()]);
             }
             $secret = session('google2fa_secret_setup');
@@ -103,7 +102,7 @@ class SettingController extends Controller
                 new \BaconQrCode\Renderer\RendererStyle\RendererStyle(200),
                 new \BaconQrCode\Renderer\Image\SvgImageBackEnd()
             );
-            $writer = new \BaconQrCode\Writer($renderer);
+            $writer   = new \BaconQrCode\Writer($renderer);
             $QR_Image = base64_encode($writer->writeString($qrCodeUrl));
         }
 
@@ -122,14 +121,14 @@ class SettingController extends Controller
         $user = Auth::user();
 
         // Check if user is trying to enable 2FA without setting it up
-        if ($request->validated('is_2fa_required') && !$user->google2fa_secret) {
+        if ($request->validated('is_2fa_required') && ! $user->google2fa_secret) {
             return redirect()->route('dealer.settings.authentication')
                 ->with('warning', 'Please set up your Google Authenticator before enabling 2FA.');
         }
 
         $updated = ($this->updateSecurity)($user, $request->validated());
 
-        if (!$updated) {
+        if (! $updated) {
             return back()->with('info', 'No changes were made.');
         }
 
@@ -150,6 +149,6 @@ class SettingController extends Controller
             ->latest()
             ->take($limit)
             ->pluck('password')
-            ->contains(fn ($old) => Hash::check($newPassword, $old));
+            ->contains(fn($old) => Hash::check($newPassword, $old));
     }
 }

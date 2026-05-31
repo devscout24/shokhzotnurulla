@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Actions\Inventory\DeletePrintableAction;
@@ -19,7 +18,7 @@ use Illuminate\View\View;
 class PrintableController extends Controller
 {
     public function __construct(
-        private readonly StorePrintableAction  $storePrintable,
+        private readonly StorePrintableAction $storePrintable,
         private readonly UpdatePrintableAction $updatePrintable,
         private readonly DeletePrintableAction $deletePrintable,
     ) {}
@@ -121,7 +120,7 @@ class PrintableController extends Controller
 
     // ─── Render ───────────────────────────────────────────────────────────────
 
-    public function render(Request $request, Vehicle $vehicle, VehiclePrintable $printable): View|Response
+    public function render(Request $request, Vehicle $vehicle, VehiclePrintable $printable): View | Response
     {
         $this->authorizeVehicle($request, $vehicle);
         $this->authorizePrintable($vehicle, $printable);

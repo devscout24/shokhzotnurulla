@@ -176,11 +176,13 @@ class WebsiteBlogPostController extends Controller
     public function duplicate(Request $request, BlogPost $blogPost): RedirectResponse
     {
         $dealerId = $request->user()->current_dealer_id;
-        if ($blogPost->dealer_id !== $dealerId) abort(403);
+        if ($blogPost->dealer_id !== $dealerId) {
+            abort(403);
+        }
 
-        $newPost = $blogPost->replicate();
-        $newPost->title = $blogPost->title . ' (Copy)';
-        $newPost->slug = $blogPost->slug . '-copy-' . time();
+        $newPost            = $blogPost->replicate();
+        $newPost->title     = $blogPost->title . ' (Copy)';
+        $newPost->slug      = $blogPost->slug . '-copy-' . time();
         $newPost->is_active = false;
         $newPost->save();
 

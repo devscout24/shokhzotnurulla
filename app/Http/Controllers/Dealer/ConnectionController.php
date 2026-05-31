@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Enums\IntegrationStatus;
@@ -12,7 +11,7 @@ class ConnectionController extends Controller
 {
     public function apps()
     {
-        $dealer = request()->user()->currentDealer;
+        $dealer       = request()->user()->currentDealer;
         $integrations = $dealer ? $dealer->integrations->keyBy('provider') : collect();
 
         return view('dealer.pages.connections.apps', compact('integrations'));
@@ -38,12 +37,12 @@ class ConnectionController extends Controller
         $integration = DealerIntegration::updateOrCreate(
             ['dealer_id' => $dealer->id, 'provider' => $request->provider],
             [
-                'settings'          => $request->settings,
-                'is_active'         => false, // NOT active until admin approves
-                'status'            => IntegrationStatus::PENDING_APPROVAL,
-                'submitted_by'      => $request->user()->id,
-                'submitted_at'      => now(),
-                'rejection_reason'  => null, // Clear any previous rejection
+                'settings'         => $request->settings,
+                'is_active'        => false, // NOT active until admin approves
+                'status'           => IntegrationStatus::PENDING_APPROVAL,
+                'submitted_by'     => $request->user()->id,
+                'submitted_at'     => now(),
+                'rejection_reason' => null, // Clear any previous rejection
             ]
         );
 

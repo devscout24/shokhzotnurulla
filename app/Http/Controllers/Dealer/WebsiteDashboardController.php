@@ -42,18 +42,18 @@ class WebsiteDashboardController extends Controller
             $prevStats = $prevTrafficData['summary'][$channel] ?? null;
 
             // Visits change
-            $currVisits             = $channelStats['visits'];
-            $prevVisits             = $prevStats ? $prevStats['visits'] : 0;
+            $currVisits                    = $channelStats['visits'];
+            $prevVisits                    = $prevStats ? $prevStats['visits'] : 0;
             $channelStats['visits_change'] = $prevVisits > 0 ? (int) round((($currVisits - $prevVisits) / $prevVisits) * 100) : ($currVisits > 0 ? 100 : 0);
 
             // Forms change
-            $currForms             = $channelStats['forms'];
-            $prevForms             = $prevStats ? $prevStats['forms'] : 0;
+            $currForms                    = $channelStats['forms'];
+            $prevForms                    = $prevStats ? $prevStats['forms'] : 0;
             $channelStats['forms_change'] = $prevForms > 0 ? (int) round((($currForms - $prevForms) / $prevForms) * 100) : ($currForms > 0 ? 100 : 0);
 
             // Calls change
-            $currCalls             = $channelStats['calls'];
-            $prevCalls             = $prevStats ? $prevStats['calls'] : 0;
+            $currCalls                    = $channelStats['calls'];
+            $prevCalls                    = $prevStats ? $prevStats['calls'] : 0;
             $channelStats['calls_change'] = $prevCalls > 0 ? (int) round((($currCalls - $prevCalls) / $prevCalls) * 100) : ($currCalls > 0 ? 100 : 0);
         }
 

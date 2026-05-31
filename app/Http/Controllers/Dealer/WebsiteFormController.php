@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Http\Controllers\Controller;
@@ -25,11 +24,11 @@ class WebsiteFormController extends Controller
 
         // ── Tab filter ────────────────────────────────────────────────────────
         match ($request->query('tab', 'all')) {
-            'unread'   => $query->unread(),
-            'complete' => $query->completed(),
-            'abandoned'=> $query->abandoned(),
-            'archived' => $query->read(),
-            default    => null,
+            'unread'    => $query->unread(),
+            'complete'  => $query->completed(),
+            'abandoned' => $query->abandoned(),
+            'archived'  => $query->read(),
+            default     => null,
         };
 
         // ── Search by name ────────────────────────────────────────────────────
@@ -65,7 +64,7 @@ class WebsiteFormController extends Controller
         $formEntry->load('vehicle', 'photos');
 
         if (isset($formEntry->data['borrower']['ssn_encrypted'])) {
-            $data = $formEntry->data;
+            $data                    = $formEntry->data;
             $data['borrower']['ssn'] = decrypt($data['borrower']['ssn_encrypted']);
             unset($data['borrower']['ssn_encrypted']);
 
@@ -216,11 +215,11 @@ class WebsiteFormController extends Controller
         $base = FormEntry::where('dealer_id', $dealerId)->forActiveLocation();
 
         return [
-            'all'      => (clone $base)->count(),
-            'unread'   => (clone $base)->unread()->count(),
-            'complete' => (clone $base)->completed()->count(),
-            'abandoned'=> (clone $base)->abandoned()->count(),
-            'archived' => (clone $base)->read()->count(),
+            'all'       => (clone $base)->count(),
+            'unread'    => (clone $base)->unread()->count(),
+            'complete'  => (clone $base)->completed()->count(),
+            'abandoned' => (clone $base)->abandoned()->count(),
+            'archived'  => (clone $base)->read()->count(),
         ];
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Http\Controllers\Controller;
@@ -15,7 +14,7 @@ class CustomerReviewController extends Controller
     public function index(): View
     {
         $categories = CustomerReviewCategory::orderBy('sort_order')->withCount('reviews')->get();
-        $reviews = CustomerReview::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
+        $reviews    = CustomerReview::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
 
         return view('dealer.pages.website.customer-reviews.index', compact('reviews', 'categories'));
     }
@@ -35,8 +34,8 @@ class CustomerReviewController extends Controller
         ]);
 
         $validated['location_id'] = CustomerReview::getActiveLocationId();
-        $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = CustomerReview::forActiveLocation()->max('sort_order') + 1;
+        $validated['author']      = Auth::user()->name;
+        $validated['sort_order']  = CustomerReview::forActiveLocation()->max('sort_order') + 1;
 
         $review = CustomerReview::create($validated);
         $review->load('category');
@@ -72,13 +71,13 @@ class CustomerReviewController extends Controller
 
     public function bulkUpdate(Request $request): JsonResponse
     {
-        $data = $request->input('reviews', []);
+        $data   = $request->input('reviews', []);
         $author = Auth::user()->name;
 
         foreach ($data as $index => $item) {
             $id = $item['id'] ?? null;
 
-            if (!empty($item['is_deleted']) && $id) {
+            if (! empty($item['is_deleted']) && $id) {
                 CustomerReview::where('id', $id)->delete();
                 continue;
             }
