@@ -26,15 +26,7 @@ input, button { font-family: inherit; }
 
 /* ─── Left Panel ─────────────────────────────────────────────────────────────── */
 .left-panel {
-    background: linear-gradient(135deg, #14002d, #2b0054);
-    color: #fff;
-    width: 100%;
-    min-height: 100vh;
-    padding: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
+    display: none;
 }
 
 .content-wrapper { max-width: 550px; width: 100%; }
@@ -55,6 +47,7 @@ input, button { font-family: inherit; }
     width: 100%;
     max-width: 420px;
     padding: 0 30px;
+    margin: 0 auto;
 }
 
 .login-card {
