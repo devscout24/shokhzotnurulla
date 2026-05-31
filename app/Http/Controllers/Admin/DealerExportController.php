@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -11,14 +10,14 @@ class DealerExportController extends Controller
 {
     public function exportCsv(Request $request)
     {
-        $fileName = 'dealers_export_'.date('Y-m-d_H-i-s').'.csv';
+        $fileName = 'dealers_export_' . date('Y-m-d_H-i-s') . '.csv';
 
         $headers = [
-            'Content-type' => 'text/csv',
+            'Content-type'        => 'text/csv',
             'Content-Disposition' => "attachment; filename=$fileName",
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
         ];
 
         $columns = ['ID', 'Company Name', 'Domain', 'Email', 'Phone', 'Status', 'Created At'];
@@ -51,14 +50,14 @@ class DealerExportController extends Controller
 
     public function exportDealerVehiclesCsv(Dealer $dealer, Request $request)
     {
-        $fileName = 'dealer_'.$dealer->id.'_vehicles_'.date('Y-m-d_H-i-s').'.csv';
+        $fileName = 'dealer_' . $dealer->id . '_vehicles_' . date('Y-m-d_H-i-s') . '.csv';
 
         $headers = [
-            'Content-type' => 'text/csv',
+            'Content-type'        => 'text/csv',
             'Content-Disposition' => "attachment; filename=$fileName",
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
         ];
 
         $columns = [
@@ -88,12 +87,12 @@ class DealerExportController extends Controller
         ]);
 
         $dealer->load('locations');
-        $location = $dealer->locations->first();
+        $location      = $dealer->locations->first();
         $dealerAddress = [
-            'address' => $location?->street1 ?? '',
-            'address.city' => $location?->city ?? '',
-            'address.region' => $location?->state ?? '',
-            'address.country' => $location?->country ?? '',
+            'address'             => $location?->street1 ?? '',
+            'address.city'        => $location?->city ?? '',
+            'address.region'      => $location?->state ?? '',
+            'address.country'     => $location?->country ?? '',
             'address.postal_code' => $location?->postalcode ?? '',
         ];
 
@@ -111,7 +110,7 @@ class DealerExportController extends Controller
                 ->chunk(100, function ($vehicles) use ($file, $dealer, $dealerAddress) {
                     foreach ($vehicles as $vehicle) {
                         $images = collect($vehicle->photos)->pluck('url')->take(20)->pad(20, '')->toArray();
-                        $url = $dealer->domain ? "https://{$dealer->domain}/vehicles/{$vehicle->slug}" : '';
+                        $url    = $dealer->domain ? "https://{$dealer->domain}/vehicles/{$vehicle->slug}" : '';
 
                         $row = [
                             $vehicle->display_title ?? '',
@@ -151,45 +150,45 @@ class DealerExportController extends Controller
                         $remainingRow = [
                             $vehicle->listed_at?->toDateString() ?? '',
                             $vehicle->days_on_lot ?? '',
-                            $url, // link
-                            $url, // url
-                            $vehicle->video?->url ?? '', // video_link
+                            $url,                             // link
+                            $url,                             // url
+                            $vehicle->video?->url ?? '',      // video_link
                             $vehicle->bodyStyle?->name ?? '', // custom_label_0
-                            '', // custom_label_1
-                            '', // custom_label_2
+                            '',                               // custom_label_1
+                            '',                               // custom_label_2
                             $dealerAddress['address'],
                             $dealerAddress['address.city'],
                             $dealerAddress['address.region'],
                             $dealerAddress['address.country'],
                             $dealerAddress['address.postal_code'],
-                            '', // latitude
-                            '', // longitude
+                            '',                             // latitude
+                            '',                             // longitude
                             $vehicle->ulid ?? $vehicle->id, // vehicle_id
 
-                            // Appended Columns
-                            $vehicle->specs?->interior_material ?? '', // Interior Material
-                            $vehicle->specs?->wheelbase ?? '', // Wheelbase
-                            $vehicle->doors ?? '', // Door Count
-                            $vehicle->specs?->displacement ?? '', // Engine Displacement
-                            $vehicle->specs?->cylinders ?? '', // Cylinders
-                            $vehicle->engine ?? '', // Engine
-                            $vehicle->specs?->transmission_standard ?? '', // Transmission Speed
-                            $vehicle->factoryOptions?->pluck('label')->implode(' | ') ?? '', // Option Description
+                                                                                                  // Appended Columns
+                            $vehicle->specs?->interior_material ?? '',                            // Interior Material
+                            $vehicle->specs?->wheelbase ?? '',                                    // Wheelbase
+                            $vehicle->doors ?? '',                                                // Door Count
+                            $vehicle->specs?->displacement ?? '',                                 // Engine Displacement
+                            $vehicle->specs?->cylinders ?? '',                                    // Cylinders
+                            $vehicle->engine ?? '',                                               // Engine
+                            $vehicle->specs?->transmission_standard ?? '',                        // Transmission Speed
+                            $vehicle->factoryOptions?->pluck('label')->implode(' | ') ?? '',      // Option Description
                             $vehicle->factoryOptions?->pluck('option_key')->implode(' | ') ?? '', // Option Code
-                            $vehicle->primaryPhoto?->updated_at?->toIso8601String() ?? '', // Photo Timestamp
-                            $vehicle->notes?->dealer_notes ?? '', // Dealer Comments on Vehicle
-                            $vehicle->updated_at?->toIso8601String() ?? '', // Last Modified Date
-                            $vehicle->original_price ?? '', // ExtraPrice1 (originalprice)
-                            $vehicle->prices?->addon_price ?? '', // ExtraPrice2 (addonprice)
-                            $vehicle->prices?->internet_price ?? '', // ExtraPrice3 (Internet Price)
-                            $vehicle->specs?->factory_certified ?? '', // Factory Certified
-                            $vehicle->specs?->dealer_certified ?? '', // Dealer Certified
-                            $vehicle->model_number ?? '', // Model Code
-                            $vehicle->specs?->chrome_style_id ?? '', // Chrome Style ID
-                            $vehicle->specs?->exterior_color_code ?? '', // Exterior Color Code
-                            $vehicle->specs?->interior_color_code ?? '', // Interior Color Code
-                            $vehicle->specs?->mpg_city ?? '', // City MPG
-                            $vehicle->specs?->mpg_highway ?? '', // Hwy MPG
+                            $vehicle->primaryPhoto?->updated_at?->toIso8601String() ?? '',        // Photo Timestamp
+                            $vehicle->notes?->dealer_notes ?? '',                                 // Dealer Comments on Vehicle
+                            $vehicle->updated_at?->toIso8601String() ?? '',                       // Last Modified Date
+                            $vehicle->original_price ?? '',                                       // ExtraPrice1 (originalprice)
+                            $vehicle->prices?->addon_price ?? '',                                 // ExtraPrice2 (addonprice)
+                            $vehicle->prices?->internet_price ?? '',                              // ExtraPrice3 (Internet Price)
+                            $vehicle->specs?->factory_certified ?? '',                            // Factory Certified
+                            $vehicle->specs?->dealer_certified ?? '',                             // Dealer Certified
+                            $vehicle->model_number ?? '',                                         // Model Code
+                            $vehicle->specs?->chrome_style_id ?? '',                              // Chrome Style ID
+                            $vehicle->specs?->exterior_color_code ?? '',                          // Exterior Color Code
+                            $vehicle->specs?->interior_color_code ?? '',                          // Interior Color Code
+                            $vehicle->specs?->mpg_city ?? '',                                     // City MPG
+                            $vehicle->specs?->mpg_highway ?? '',                                  // Hwy MPG
                         ];
 
                         $row = array_merge($row, $remainingRow);

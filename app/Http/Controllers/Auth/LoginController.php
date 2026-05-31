@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -38,7 +37,6 @@ class LoginController extends Controller
     {
         // Set permissions team
         setPermissionsTeamId($user->current_dealer_id);
-
 
         // Master validation — inactive, dealer, role etc
         if ($error = $user->validateUserLogin()) {
