@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class TwoFactorController extends Controller
@@ -20,11 +19,11 @@ class TwoFactorController extends Controller
             'one_time_password' => 'required|string',
         ]);
 
-        $user = Auth::user();
+        $user      = Auth::user();
         $google2fa = app('pragmarx.google2fa');
-        $secret = session('google2fa_secret_setup');
+        $secret    = session('google2fa_secret_setup');
 
-        if (!$secret) {
+        if (! $secret) {
             return back()->with('error', 'Session expired. Please try again.');
         }
 
@@ -34,7 +33,7 @@ class TwoFactorController extends Controller
             // Save the secret and enforce 2FA
             $user->update([
                 'google2fa_secret' => $secret,
-                'is_2fa_required' => true,
+                'is_2fa_required'  => true,
             ]);
 
             // Clear setup session and set verified session
@@ -56,7 +55,7 @@ class TwoFactorController extends Controller
 
         $user->update([
             'google2fa_secret' => null,
-            'is_2fa_required' => false,
+            'is_2fa_required'  => false,
         ]);
 
         Session::forget('2fa_verified');
@@ -83,7 +82,7 @@ class TwoFactorController extends Controller
             'one_time_password' => 'required|string',
         ]);
 
-        $user = Auth::user();
+        $user      = Auth::user();
         $google2fa = app('pragmarx.google2fa');
 
         $valid = $google2fa->verifyKey($user->google2fa_secret, $request->one_time_password);

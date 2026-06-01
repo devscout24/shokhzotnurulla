@@ -1,50 +1,47 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
-use App\Http\Controllers\Controller;
-use App\Helpers\TimeHelper;
-use App\Models\Website\Location;
-use App\Models\Website\DigitalRetailSetting;
-use App\Models\Website\Redirect;
-use App\Models\Dealership\DealerIp;
+use App\Actions\Website\CreateDealerIpAction;
 use App\Actions\Website\CreateLocationAction;
-use App\Actions\Website\UpdateLocationAction;
-use App\Actions\Website\DeleteLocationAction;
-use App\Actions\Website\ReorderLocationsAction;
-use App\Actions\Website\UploadMediaAction;
-use App\Actions\Website\DeleteMediaAction;
 use App\Actions\Website\CreateRedirectAction;
-use App\Actions\Website\UpdateRedirectAction;
+use App\Actions\Website\DeleteDealerIpAction;
+use App\Actions\Website\DeleteMediaAction;
 use App\Actions\Website\DeleteRedirectAction;
 use App\Actions\Website\ImportRedirectsAction;
-use App\Actions\Website\CreateDealerIpAction;
+use App\Actions\Website\ReorderLocationsAction;
 use App\Actions\Website\UpdateDealerIpAction;
-use App\Actions\Website\DeleteDealerIpAction;
-use App\Models\Website\HomeAboutCtaSection;
-use App\Http\Requests\Website\UpdateGeneralSettingsRequest;
-use App\Http\Requests\Website\UpdateDisclaimersRequest;
-use App\Http\Requests\Website\UpdateSocialLinksRequest;
-use App\Http\Requests\Website\StoreLocationRequest;
-use App\Http\Requests\Website\UpdateLocationRequest;
-use App\Http\Requests\Website\UpdateBannerSettingsRequest;
-use App\Http\Requests\Website\UpdateDigitalRetailRequest;
-use App\Http\Requests\Website\UpdateVideoRequest;
-use App\Http\Requests\Website\StoreRedirectRequest;
-use App\Http\Requests\Website\UpdateRedirectRequest;
+use App\Actions\Website\UpdateLocationAction;
+use App\Actions\Website\UpdateRedirectAction;
+use App\Actions\Website\UploadMediaAction;
+use App\Helpers\TimeHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Website\StoreDealerIpRequest;
+use App\Http\Requests\Website\StoreLocationRequest;
+use App\Http\Requests\Website\StoreRedirectRequest;
+use App\Http\Requests\Website\UpdateBannerSettingsRequest;
 use App\Http\Requests\Website\UpdateDealerIpRequest;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\JsonResponse;
+use App\Http\Requests\Website\UpdateDigitalRetailRequest;
+use App\Http\Requests\Website\UpdateDisclaimersRequest;
+use App\Http\Requests\Website\UpdateGeneralSettingsRequest;
+use App\Http\Requests\Website\UpdateLocationRequest;
+use App\Http\Requests\Website\UpdateRedirectRequest;
+use App\Http\Requests\Website\UpdateSocialLinksRequest;
+use App\Http\Requests\Website\UpdateVideoRequest;
+use App\Models\Dealership\DealerIp;
+use App\Models\Website\DigitalRetailSetting;
+use App\Models\Website\HomeAboutCtaSection;
+use App\Models\Website\Location;
+use App\Models\Website\Redirect;
 use App\Support\AuditLogger;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-
-
 class WebsiteSettingController extends Controller
 {
-    public function __construct(private readonly AuditLogger $auditLogger) {}
+    public function __construct(private readonly AuditLogger $auditLogger)
+    {}
 
     public function general(Request $request): View
     {
@@ -54,15 +51,15 @@ class WebsiteSettingController extends Controller
 
     public function updateGeneral(UpdateGeneralSettingsRequest $request): JsonResponse
     {
-        $dealer = $request->user()->currentDealer;
+        $dealer    = $request->user()->currentDealer;
         $validated = $request->validated();
 
         if ($request->hasFile('logo')) {
-            $file = $request->file('logo');
+            $file     = $request->file('logo');
             $filename = time() . '_' . $file->getClientOriginalName();
-            
+
             // Ensure directory exists
-            if (!file_exists(public_path('assets/frontend/img/logos'))) {
+            if (! file_exists(public_path('assets/frontend/img/logos'))) {
                 mkdir(public_path('assets/frontend/img/logos'), 0755, true);
             }
 
@@ -73,24 +70,24 @@ class WebsiteSettingController extends Controller
 
             $file->move(public_path('assets/frontend/img/logos'), $filename);
             $validated['logo'] = $filename;
-            $path = $filename;
+            $path              = $filename;
         }
 
         $dealer->update($validated);
         \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
         $this->auditLogger->info($request, 'General settings updated');
-        
+
         $responseData = ['success' => true, 'message' => 'General settings saved.'];
         if (isset($path)) {
             $responseData['logo_url'] = asset('assets/frontend/img/logos/' . $path);
         }
-        
+
         return response()->json($responseData);
     }
 
     public function updateDisclaimers(UpdateDisclaimersRequest $request): JsonResponse
     {
-        $dealer = $request->user()->currentDealer;
+        $dealer    = $request->user()->currentDealer;
         $validated = $request->validated();
         $dealer->update($validated);
         \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
@@ -100,28 +97,27 @@ class WebsiteSettingController extends Controller
 
     public function updateSocial(UpdateSocialLinksRequest $request): JsonResponse
     {
-        $dealer = $request->user()->currentDealer;
+        $dealer    = $request->user()->currentDealer;
         $validated = $request->validated();
-        
+
         $dealer->update(['social_links' => $validated]);
-        
+
         \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
-        
+
         $this->auditLogger->info($request, 'Social links updated');
         return response()->json(['success' => true, 'message' => 'Social links saved.']);
     }
 
-
     public function locations(Request $request): View
     {
-        $dealer = $request->user()->currentDealer;
+        $dealer    = $request->user()->currentDealer;
         $locations = $dealer->locations()->with(['phones', 'emails', 'hours', 'specialHours'])->get();
         return view('dealer.pages.website.settings.locations', compact('locations'));
     }
 
     public function storeLocation(StoreLocationRequest $request, CreateLocationAction $createLocation): JsonResponse
     {
-        $dealer = $request->user()->currentDealer;
+        $dealer   = $request->user()->currentDealer;
         $location = $createLocation($dealer, $request->validated());
         $this->auditLogger->info($request, 'Location created', ['location_id' => $location->id]);
         return response()->json(['success' => true, 'message' => 'Location created successfully.', 'location' => $location]);
@@ -135,7 +131,6 @@ class WebsiteSettingController extends Controller
         $location->load(['phones', 'emails', 'hours', 'specialHours']);
 
         $data = $location->toArray();
-
 
         // Format phones as flat array
         foreach ($location->phones as $phone) {
@@ -151,9 +146,9 @@ class WebsiteSettingController extends Controller
         $hours = [];
         foreach ($location->hours as $hour) {
             $hours[$hour->department][$hour->day_of_week - 1] = [
-                'open' => TimeHelper::fromDatabase($hour->open_time),
-                'close' => TimeHelper::fromDatabase($hour->close_time),
-                'is_closed' => $hour->is_closed,
+                'open'             => TimeHelper::fromDatabase($hour->open_time),
+                'close'            => TimeHelper::fromDatabase($hour->close_time),
+                'is_closed'        => $hour->is_closed,
                 'appointment_only' => $hour->appointment_only,
             ];
         }
@@ -162,9 +157,9 @@ class WebsiteSettingController extends Controller
         // Format special hours (no time conversion needed, as we don't use open/close for special hours in this modal)
         $data['special_hours'] = $location->specialHours->map(function ($sh) {
             return [
-                'department' => $sh->department,
-                'date' => $sh->date->format('Y-m-d'),
-                'is_closed' => $sh->is_closed,
+                'department'       => $sh->department,
+                'date'             => $sh->date->format('Y-m-d'),
+                'is_closed'        => $sh->is_closed,
                 'appointment_only' => $sh->appointment_only,
             ];
         })->toArray();
@@ -185,20 +180,20 @@ class WebsiteSettingController extends Controller
 
     public function video(Request $request): View
     {
-      
+
         $dealer = $request->user()->currentDealer;
         return view('dealer.pages.website.settings.video', compact('dealer'));
     }
 
     public function updateVideo(UpdateVideoRequest $request, UploadMediaAction $uploadMedia): RedirectResponse
     {
-        
+
         $dealer = $request->user()->currentDealer;
 
         if ($request->hasFile('video_file')) {
             $uploaded = $uploadMedia->execute($dealer->id, [$request->file('video_file')]);
-            $media = $uploaded[0];
-            
+            $media    = $uploaded[0];
+
             $dealer->update([
                 'video_source' => 'overfuel',
                 'video_url' => $media->url,
@@ -211,11 +206,10 @@ class WebsiteSettingController extends Controller
         return redirect()->back()->with('success', 'Video updated successfully.');
     }
 
-
     public function reorderLocations(Request $request, ReorderLocationsAction $reorderLocations): JsonResponse
     {
         $dealer = $request->user()->currentDealer;
-        $order = $request->validate(['order' => 'required|array', 'order.*' => 'integer|exists:locations,id']);
+        $order  = $request->validate(['order' => 'required|array', 'order.*' => 'integer|exists:locations,id']);
         $reorderLocations($dealer, $order['order']);
         $this->auditLogger->info($request, 'Locations reordered');
         return response()->json(['success' => true, 'message' => 'Locations reordered.']);
@@ -230,7 +224,7 @@ class WebsiteSettingController extends Controller
 
     public function homeAboutCta(Request $request): View
     {
-        $dealer = $request->user()->currentDealer;
+        $dealer  = $request->user()->currentDealer;
         $section = HomeAboutCtaSection::where('dealer_id', $dealer->id)->first();
         $content = array_replace_recursive(
             HomeAboutCtaSection::defaultContent(),
@@ -245,49 +239,49 @@ class WebsiteSettingController extends Controller
         $dealer = $request->user()->currentDealer;
 
         $validated = $request->validate([
-            'about_eyebrow' => 'nullable|string|max:120',
-            'about_heading' => 'nullable|string|max:255',
+            'about_eyebrow'     => 'nullable|string|max:120',
+            'about_heading'     => 'nullable|string|max:255',
             'about_paragraph_1' => 'nullable|string',
             'about_paragraph_2' => 'nullable|string',
-            'about_image_alt' => 'nullable|string|max:255',
-            'about_image_file' => 'nullable|image|max:4096',
+            'about_image_alt'   => 'nullable|string|max:255',
+            'about_image_file'  => 'nullable|image|max:4096',
 
-            'stats_1_icon' => 'nullable|string|max:120',
-            'stats_1_title' => 'nullable|string|max:255',
-            'stats_1_text' => 'nullable|string',
-            'stats_2_icon' => 'nullable|string|max:120',
-            'stats_2_title' => 'nullable|string|max:255',
-            'stats_2_text' => 'nullable|string',
-            'stats_3_icon' => 'nullable|string|max:120',
-            'stats_3_title' => 'nullable|string|max:255',
-            'stats_3_text' => 'nullable|string',
-            'stats_4_icon' => 'nullable|string|max:120',
-            'stats_4_title' => 'nullable|string|max:255',
-            'stats_4_text' => 'nullable|string',
+            'stats_1_icon'      => 'nullable|string|max:120',
+            'stats_1_title'     => 'nullable|string|max:255',
+            'stats_1_text'      => 'nullable|string',
+            'stats_2_icon'      => 'nullable|string|max:120',
+            'stats_2_title'     => 'nullable|string|max:255',
+            'stats_2_text'      => 'nullable|string',
+            'stats_3_icon'      => 'nullable|string|max:120',
+            'stats_3_title'     => 'nullable|string|max:255',
+            'stats_3_text'      => 'nullable|string',
+            'stats_4_icon'      => 'nullable|string|max:120',
+            'stats_4_title'     => 'nullable|string|max:255',
+            'stats_4_text'      => 'nullable|string',
 
-            'card_icon' => 'nullable|string|max:120',
-            'card_title' => 'nullable|string|max:255',
-            'card_text' => 'nullable|string',
-            'card_image_alt' => 'nullable|string|max:255',
-            'card_image_file' => 'nullable|image|max:4096',
+            'card_icon'         => 'nullable|string|max:120',
+            'card_title'        => 'nullable|string|max:255',
+            'card_text'         => 'nullable|string',
+            'card_image_alt'    => 'nullable|string|max:255',
+            'card_image_file'   => 'nullable|image|max:4096',
 
-            'cta_1_title' => 'nullable|string|max:255',
-            'cta_1_text' => 'nullable|string',
-            'cta_1_link' => 'nullable|string|max:255',
-            'cta_2_title' => 'nullable|string|max:255',
-            'cta_2_text' => 'nullable|string',
-            'cta_2_link' => 'nullable|string|max:255',
+            'cta_1_title'       => 'nullable|string|max:255',
+            'cta_1_text'        => 'nullable|string',
+            'cta_1_link'        => 'nullable|string|max:255',
+            'cta_2_title'       => 'nullable|string|max:255',
+            'cta_2_text'        => 'nullable|string',
+            'cta_2_link'        => 'nullable|string|max:255',
         ]);
 
-        $section = HomeAboutCtaSection::where('dealer_id', $dealer->id)->first();
+        $section  = HomeAboutCtaSection::where('dealer_id', $dealer->id)->first();
         $existing = $section?->content ?? HomeAboutCtaSection::defaultContent();
 
         $aboutImagePath = data_get($existing, 'about.image_url', '');
         if ($request->hasFile('about_image_file')) {
-            $file = $request->file('about_image_file');
+            $file     = $request->file('about_image_file');
             $filename = time() . '_about.' . $file->getClientOriginalExtension();
-            $dir = public_path('assets/frontend/img/home-about-cta');
-            if (!file_exists($dir)) {
+            $dir      = public_path('assets/frontend/img/home-about-cta');
+            if (! file_exists($dir)) {
                 mkdir($dir, 0755, true);
             }
             $file->move($dir, $filename);
@@ -296,10 +290,10 @@ class WebsiteSettingController extends Controller
 
         $cardImagePath = data_get($existing, 'card.image_url', '');
         if ($request->hasFile('card_image_file')) {
-            $file = $request->file('card_image_file');
+            $file     = $request->file('card_image_file');
             $filename = time() . '_card.' . $file->getClientOriginalExtension();
-            $dir = public_path('assets/frontend/img/home-about-cta');
-            if (!file_exists($dir)) {
+            $dir      = public_path('assets/frontend/img/home-about-cta');
+            if (! file_exists($dir)) {
                 mkdir($dir, 0755, true);
             }
             $file->move($dir, $filename);
@@ -326,24 +320,24 @@ class WebsiteSettingController extends Controller
 
         $content = [
             'about' => [
-                'eyebrow' => $validated['about_eyebrow'] ?? '',
-                'heading' => $validated['about_heading'] ?? '',
+                'eyebrow'    => $validated['about_eyebrow'] ?? '',
+                'heading'    => $validated['about_heading'] ?? '',
                 'paragraphs' => [
                     $validated['about_paragraph_1'] ?? '',
                     $validated['about_paragraph_2'] ?? '',
                 ],
-                'image_url' => $aboutImagePath,
-                'image_alt' => $validated['about_image_alt'] ?? '',
+                'image_url'  => $aboutImagePath,
+                'image_alt'  => $validated['about_image_alt'] ?? '',
             ],
             'stats' => $stats,
-            'card' => [
-                'icon' => $validated['card_icon'] ?? '',
-                'title' => $validated['card_title'] ?? '',
-                'text' => $validated['card_text'] ?? '',
+            'card'  => [
+                'icon'      => $validated['card_icon'] ?? '',
+                'title'     => $validated['card_title'] ?? '',
+                'text'      => $validated['card_text'] ?? '',
                 'image_url' => $cardImagePath,
                 'image_alt' => $validated['card_image_alt'] ?? '',
             ],
-            'ctas' => $ctas,
+            'ctas'  => $ctas,
         ];
 
         if ($section) {
@@ -351,7 +345,7 @@ class WebsiteSettingController extends Controller
         } else {
             HomeAboutCtaSection::create([
                 'dealer_id' => $dealer->id,
-                'content' => $content,
+                'content'   => $content,
             ]);
         }
 
@@ -364,17 +358,17 @@ class WebsiteSettingController extends Controller
     public function updateBanners(UpdateBannerSettingsRequest $request, UploadMediaAction $uploadMedia, DeleteMediaAction $deleteMedia): JsonResponse
     {
         $dealer = $request->user()->currentDealer;
-        $data = $request->validated();
+        $data   = $request->validated();
 
         //banner_title and banner_subtitle
-        $data['banner_title'] = $data['banner_title'] ?? null;
+        $data['banner_title']    = $data['banner_title'] ?? null;
         $data['banner_subtitle'] = $data['banner_subtitle'] ?? null;
-        $data['logo'] = $data['logo'] ?? null;
+        $data['logo']            = $data['logo'] ?? null;
 
         // Handle desktop image upload (if a new file was uploaded)
         if ($request->hasFile('banner_desktop_image')) {
             $uploaded = $uploadMedia->execute($dealer->id, [$request->file('banner_desktop_image')]);
-            $media = $uploaded[0];
+            $media    = $uploaded[0];
             // Delete old media if exists
             if ($dealer->banner_desktop_media_id) {
                 $deleteMedia->execute($dealer->bannerDesktopMedia);
@@ -385,7 +379,7 @@ class WebsiteSettingController extends Controller
         // Handle mobile image upload
         if ($request->hasFile('banner_mobile_image')) {
             $uploaded = $uploadMedia->execute($dealer->id, [$request->file('banner_mobile_image')]);
-            $media = $uploaded[0];
+            $media    = $uploaded[0];
             if ($dealer->banner_mobile_media_id) {
                 $deleteMedia->execute($dealer->bannerMobileMedia);
             }
@@ -410,7 +404,7 @@ class WebsiteSettingController extends Controller
 
     public function retail(Request $request): View
     {
-        $dealer = $request->user()->currentDealer;
+        $dealer   = $request->user()->currentDealer;
         $settings = $dealer->digitalRetailSettings ?? new DigitalRetailSetting();
         return view('dealer.pages.website.settings.retail', compact('settings'));
     }
@@ -418,21 +412,21 @@ class WebsiteSettingController extends Controller
     public function updateDigitalRetail(UpdateDigitalRetailRequest $request): JsonResponse
     {
         $dealer = $request->user()->currentDealer;
-        $data = $request->validated();
+        $data   = $request->validated();
 
         $settings = $dealer->digitalRetailSettings;
-        if (!$settings) {
-            $settings = new DigitalRetailSetting();
+        if (! $settings) {
+            $settings            = new DigitalRetailSetting();
             $settings->dealer_id = $dealer->id;
         }
 
         // Map request fields to database columns
-        $settings->shipping_free_miles = $data['free_shipping_miles'];
+        $settings->shipping_free_miles       = $data['free_shipping_miles'];
         $settings->shipping_discount_dollars = $data['shipping_discount'];
-        $settings->deposit_minimum = $data['deposit_amount'];
-        $settings->deposit_hold_hours = $data['deposit_hold_hours'];
+        $settings->deposit_minimum           = $data['deposit_amount'];
+        $settings->deposit_hold_hours        = $data['deposit_hold_hours'];
         $settings->digital_retail_hold_hours = $data['retail_hold_hours'];
-        $settings->trade_days_valid = $data['trade_offer_days'];
+        $settings->trade_days_valid          = $data['trade_offer_days'];
 
         $settings->save();
 
@@ -443,7 +437,7 @@ class WebsiteSettingController extends Controller
 
     public function redirects(Request $request): View
     {
-        $dealer = $request->user()->currentDealer;
+        $dealer    = $request->user()->currentDealer;
         $redirects = $dealer->redirects()->latest()->get();
         return view('dealer.pages.website.settings.redirects', compact('redirects'));
     }
@@ -451,7 +445,7 @@ class WebsiteSettingController extends Controller
     public function storeRedirect(StoreRedirectRequest $request, CreateRedirectAction $createRedirect): JsonResponse
     {
         $dealer = $request->user()->currentDealer;
-        $data = $request->validated();
+        $data   = $request->validated();
 
         $redirect = $createRedirect->execute($dealer, $data);
 
@@ -498,8 +492,8 @@ class WebsiteSettingController extends Controller
         $result = $importRedirects->execute($dealer, $request->file('csv_file'));
 
         $message = "<strong>{$result['success']} Redirects imported.</strong>";
-        if (!empty($result['errors'])) {
-            $message .= ' <br>Errors: ' . implode('; ', array_map(function($e) {
+        if (! empty($result['errors'])) {
+            $message .= ' <br>Errors: ' . implode('; ', array_map(function ($e) {
                 return "<br>Row {$e['row']}: " . implode(', ', $e['errors']);
             }, $result['errors']));
         }
@@ -510,7 +504,7 @@ class WebsiteSettingController extends Controller
         if ($result['success'] > 0 && empty($result['errors'])) {
             // All successful
             session()->flash('import_success', $message);
-        } elseif ($result['success'] > 0 && !empty($result['errors'])) {
+        } elseif ($result['success'] > 0 && ! empty($result['errors'])) {
             // Partial success
             session()->flash('import_warning', $message);
         } else {
@@ -524,11 +518,11 @@ class WebsiteSettingController extends Controller
     public function downloadSampleCsv()
     {
         $headers = [
-            'Content-Type' => 'text/csv',
+            'Content-Type'        => 'text/csv',
             'Content-Disposition' => 'attachment; filename="redirects_sample.csv"',
         ];
 
-        $columns = ['source_url', 'target_url', 'is_regex', 'status_code', 'is_enabled'];
+        $columns    = ['source_url', 'target_url', 'is_regex', 'status_code', 'is_enabled'];
         $sampleRows = [
             ['/demo-test', '/demo-new-page', 0, 301, 1],
             ['^/demo-old-page-([0-9]+)$', '/demo-new-location/$1', 1, 302, 1],
@@ -539,7 +533,7 @@ class WebsiteSettingController extends Controller
         $callback = function () use ($columns, $sampleRows) {
             $file = fopen('php://output', 'w');
             // Add BOM for UTF-8 support in Excel
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
             fputcsv($file, $columns);
             foreach ($sampleRows as $row) {
                 fputcsv($file, $row);
@@ -552,14 +546,14 @@ class WebsiteSettingController extends Controller
 
     public function ips(Request $request): View
     {
-        $dealer = $request->user()->currentDealer;
+        $dealer    = $request->user()->currentDealer;
         $dealerIps = $dealer->dealerIps()->latest()->get();
         return view('dealer.pages.website.settings.ips', compact('dealerIps'));
     }
 
     public function storeDealerIp(StoreDealerIpRequest $request, CreateDealerIpAction $createDealerIp): JsonResponse
     {
-        $dealer = $request->user()->currentDealer;
+        $dealer   = $request->user()->currentDealer;
         $dealerIp = $createDealerIp->execute($dealer, $request->validated());
 
         $this->auditLogger->info($request, 'Dealer IP created', ['dealer_ip_id' => $dealerIp->id]);

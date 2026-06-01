@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services\Inventory;
 
 use App\Models\Catalog\BodyStyle;
@@ -41,8 +40,8 @@ final class PricingCalculatorService
         Collection $specials,
         Collection $bodyStyleMap,
     ): array {
-        $listPrice    = (float) ($vehicle->list_price ?? 0);
-        $msrp         = $vehicle->relationLoaded('prices')
+        $listPrice = (float) ($vehicle->list_price ?? 0);
+        $msrp      = $vehicle->relationLoaded('prices')
             ? (float) ($vehicle->prices?->msrp ?? 0)
             : 0.0;
         $specialPrice = $vehicle->relationLoaded('prices')
@@ -56,12 +55,12 @@ final class PricingCalculatorService
                 : ($listPrice > $specialPrice ? $listPrice : 0.0);
 
             return $this->buildResult(
-                finalPrice:      $specialPrice,
+                finalPrice: $specialPrice,
                 displayOriginal: $wasPrice,
-                savings:         max(0.0, $wasPrice - $specialPrice),
-                msrp:            $msrp,
-                appliedSpecial:  null,
-                isFormfill:      false,
+                savings: max(0.0, $wasPrice - $specialPrice),
+                msrp: $msrp,
+                appliedSpecial: null,
+                isFormfill: false,
             );
         }
 
@@ -83,12 +82,12 @@ final class PricingCalculatorService
             $savings = $isIncrease ? 0.0 : max(0.0, $wasPrice - $finalPrice);
 
             return $this->buildResult(
-                finalPrice:      $finalPrice,
+                finalPrice: $finalPrice,
                 displayOriginal: (! $isIncrease && $wasPrice > $finalPrice) ? $wasPrice : 0.0,
-                savings:         $savings,
-                msrp:            $msrp,
-                appliedSpecial:  $best,
-                isFormfill:      $best->type === 'formfill',
+                savings: $savings,
+                msrp: $msrp,
+                appliedSpecial: $best,
+                isFormfill: $best->type === 'formfill',
             );
         }
 
@@ -98,12 +97,12 @@ final class PricingCalculatorService
         $wasPrice = $msrp > $listPrice ? $msrp : 0.0;
 
         return $this->buildResult(
-            finalPrice:      $listPrice,
+            finalPrice: $listPrice,
             displayOriginal: $wasPrice,
-            savings:         $wasPrice > 0 ? max(0.0, $wasPrice - $listPrice) : 0.0,
-            msrp:            $msrp,
-            appliedSpecial:  null,
-            isFormfill:      false,
+            savings: $wasPrice > 0 ? max(0.0, $wasPrice - $listPrice) : 0.0,
+            msrp: $msrp,
+            appliedSpecial: null,
+            isFormfill: false,
         );
     }
 
@@ -115,7 +114,7 @@ final class PricingCalculatorService
         Collection $bodyStyleMap,
     ): Collection {
         return $specials->filter(
-            fn (PricingSpecial $s) => $this->vehicleMatchesSpecial($vehicle, $s, $bodyStyleMap)
+            fn(PricingSpecial $s) => $this->vehicleMatchesSpecial($vehicle, $s, $bodyStyleMap)
         );
     }
 
@@ -128,12 +127,12 @@ final class PricingCalculatorService
         }
 
         $rate = ($special?->discount_type === 'special' && $special?->finance_rate)
-                ? (float) $special->finance_rate
-                : self::ANNUAL_RATE;
+            ? (float) $special->finance_rate
+            : self::ANNUAL_RATE;
 
         $term = ($special?->discount_type === 'special' && $special?->finance_term)
-                ? (int) $special->finance_term
-                : self::TERM_MONTHS;
+            ? (int) $special->finance_term
+            : self::TERM_MONTHS;
 
         $r = ($rate / 100) / 12;
 
@@ -278,8 +277,14 @@ final class PricingCalculatorService
 
     private function resolvePriceLabel(?PricingSpecial $special, bool $isFormfill): string
     {
-        if ($isFormfill)                                      return 'e-Price';
-        if ($special?->discount_type === 'special')           return 'Special Financing';
+        if ($isFormfill) {
+            return 'e-Price';
+        }
+
+        if ($special?->discount_type === 'special') {
+            return 'Special Financing';
+        }
+
         return 'Cash price';
     }
 }

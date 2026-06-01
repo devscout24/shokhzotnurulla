@@ -40,7 +40,7 @@ Route::prefix('dealer')->name('dealer.')
 
         // ─── Location Switcher ────────────────────────────────────────────────────
         Route::post('/switch-location', function (Request $request) {
-            $locationId = (int) $request->input('location_id');
+            $locationId      = (int) $request->input('location_id');
             $locationContext = app(LocationContext::class);
 
             if ($locationId === 0) {
@@ -54,7 +54,7 @@ Route::prefix('dealer')->name('dealer.')
                 }
 
                 $exists = Location::query()
-                    ->when($dealer, fn ($q) => $q->where('dealer_id', $dealer->id))
+                    ->when($dealer, fn($q) => $q->where('dealer_id', $dealer->id))
                     ->where('id', $locationId)
                     ->exists();
 
@@ -331,7 +331,6 @@ Route::prefix('dealer')->name('dealer.')
                 // video
                 Route::get('/video', [WebsiteSettingController::class, 'video'])->name('video');
                 Route::post('/video', [WebsiteSettingController::class, 'updateVideo'])->name('video.update');
-                
 
                 // Domains
                 // Route::get('/domains',    [WebsiteSettingController::class, 'domains'])->name('domains');

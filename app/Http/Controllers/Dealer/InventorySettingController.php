@@ -1,15 +1,20 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Actions\Inventory\BulkUpdateInterestRatesAction;
 use App\Actions\Inventory\CloneInterestRateAction;
+use App\Actions\Inventory\ReorderInventoryFeesAction;
 use App\Actions\Inventory\StoreInterestRateAction;
+use App\Actions\Inventory\StoreInventoryFeeAction;
+use App\Actions\Inventory\SyncInterestRatesAction;
+use App\Actions\Inventory\UpdateInventoryFeeAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Inventory\BulkUpdateInterestRatesRequest;
+use App\Http\Requests\Inventory\ReorderInventoryFeesRequest;
 use App\Http\Requests\Inventory\StoreInterestRateRequest;
-use App\Actions\Inventory\SyncInterestRatesAction;
+use App\Http\Requests\Inventory\StoreInventoryFeeRequest;
 use App\Http\Requests\Inventory\SyncInterestRatesRequest;
+use App\Http\Requests\Inventory\UpdateInventoryFeeRequest;
 use App\Models\Catalog\Make;
 use App\Models\Inventory\DealerInterestRate;
 use App\Models\Inventory\DealerInventoryFee;
@@ -17,23 +22,17 @@ use App\Support\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use App\Actions\Inventory\ReorderInventoryFeesAction;
-use App\Actions\Inventory\StoreInventoryFeeAction;
-use App\Actions\Inventory\UpdateInventoryFeeAction;
-use App\Http\Requests\Inventory\ReorderInventoryFeesRequest;
-use App\Http\Requests\Inventory\StoreInventoryFeeRequest;
-use App\Http\Requests\Inventory\UpdateInventoryFeeRequest;
 
 class InventorySettingController extends Controller
 {
     public function __construct(
-        private readonly StoreInterestRateAction       $storeInterestRate,
+        private readonly StoreInterestRateAction $storeInterestRate,
         private readonly BulkUpdateInterestRatesAction $bulkUpdateInterestRates,
-        private readonly CloneInterestRateAction       $cloneInterestRate,
-        private readonly SyncInterestRatesAction       $syncInterestRates,
-        private readonly StoreInventoryFeeAction       $storeInventoryFee,
-        private readonly UpdateInventoryFeeAction      $updateInventoryFee,
-        private readonly ReorderInventoryFeesAction    $reorderInventoryFees,
+        private readonly CloneInterestRateAction $cloneInterestRate,
+        private readonly SyncInterestRatesAction $syncInterestRates,
+        private readonly StoreInventoryFeeAction $storeInventoryFee,
+        private readonly UpdateInventoryFeeAction $updateInventoryFee,
+        private readonly ReorderInventoryFeesAction $reorderInventoryFees,
     ) {}
 
     // ── Pages ─────────────────────────────────────────────────────────
@@ -81,7 +80,7 @@ class InventorySettingController extends Controller
             'success'  => true,
             'fee_id'   => $fee->id,
             'row_html' => view('dealer.components.inventory.settings.fee-row',
-                            compact('fee', 'dealer'))->render(),
+                compact('fee', 'dealer'))->render(),
         ]);
     }
 
@@ -96,7 +95,7 @@ class InventorySettingController extends Controller
         return response()->json([
             'success'  => true,
             'row_html' => view('dealer.components.inventory.settings.fee-row',
-                            ['fee' => $fee, 'dealer' => $request->user()->currentDealer])->render(),
+                ['fee' => $fee, 'dealer' => $request->user()->currentDealer])->render(),
         ]);
     }
 
@@ -181,10 +180,10 @@ class InventorySettingController extends Controller
 
     public function syncRates(SyncInterestRatesRequest $request): JsonResponse
     {
-        $dealer   = $request->user()->currentDealer;
-        $creates  = $request->validated('creates');
-        $updates  = $request->validated('updates');
-        $deletes  = $request->validated('deletes');
+        $dealer  = $request->user()->currentDealer;
+        $creates = $request->validated('creates');
+        $updates = $request->validated('updates');
+        $deletes = $request->validated('deletes');
 
         ($this->syncInterestRates)($dealer, $creates, $updates, $deletes);
 

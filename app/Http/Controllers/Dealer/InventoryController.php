@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Actions\Inventory\BulkDeletePhotosAction;
@@ -88,8 +87,8 @@ class InventoryController extends Controller
 
     public function index(Request $request): View
     {
-        $dealerId = $request->user()->current_dealer_id;
-        $dealer = $request->user()->currentDealer;
+        $dealerId   = $request->user()->current_dealer_id;
+        $dealer     = $request->user()->currentDealer;
         $locationId = app(LocationContext::class)->getActiveLocationId();
 
         $query = Vehicle::with([
@@ -99,10 +98,10 @@ class InventoryController extends Controller
             'prices:vehicle_id,msrp,internet_price,dealer_cost',
         ])
             ->forDealer($dealerId)
-            ->when($locationId, fn ($q) => $q->where('location_id', $locationId));
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId));
 
         // ── Sorting ───────────────────────────────────────────────────────────
-        $sortBy = $request->input('sortby', 'listed_at');
+        $sortBy    = $request->input('sortby', 'listed_at');
         $sortOrder = $request->input('sortorder', 'desc');
 
         if ($sortBy === 'price') {
@@ -150,23 +149,23 @@ class InventoryController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->whereHas('make', fn ($m) => $m->where('name', 'like', "%{$search}%"))
-                    ->orWhereHas('makeModel', fn ($m) => $m->where('name', 'like', "%{$search}%"))
+                $q->whereHas('make', fn($m) => $m->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('makeModel', fn($m) => $m->where('name', 'like', "%{$search}%"))
                     ->orWhere('stock_number', 'like', "%{$search}%")
                     ->orWhere('vin', 'like', "%{$search}%");
             });
         }
 
-        $perPage = in_array($request->per_page, [12, 25, 48, 100]) ? (int) $request->per_page : 25;
+        $perPage  = in_array($request->per_page, [12, 25, 48, 100]) ? (int) $request->per_page : 25;
         $vehicles = $query->paginate($perPage)->withQueryString();
 
         // ── Sidebar filter data ───────────────────────────────────────────────
 
-        $baseQuery = Vehicle::forDealer($dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId));
+        $baseQuery  = Vehicle::forDealer($dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId));
         $totalCount = $baseQuery->count();
 
-        $makeCounts = Make::withCount(['vehicles' => fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId))])
-            ->whereHas('vehicles', fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId)))
+        $makeCounts = Make::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name']);
 
@@ -188,28 +187,28 @@ class InventoryController extends Controller
             ->orderBy('body_types.name')
             ->pluck('total', 'body_types.name');
 
-        $exteriorColorCounts = Color::withCount(['vehiclesExterior' => fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId))])
-            ->whereHas('vehiclesExterior', fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId)))
+        $exteriorColorCounts = Color::withCount(['vehiclesExterior' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehiclesExterior', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name', 'hex']);
 
-        $interiorColorCounts = Color::withCount(['vehiclesInterior' => fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId))])
-            ->whereHas('vehiclesInterior', fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId)))
+        $interiorColorCounts = Color::withCount(['vehiclesInterior' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehiclesInterior', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name', 'hex']);
 
-        $fuelTypeCounts = FuelType::withCount(['vehicles' => fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId))])
-            ->whereHas('vehicles', fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId)))
+        $fuelTypeCounts = FuelType::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        $transmissionCounts = TransmissionType::withCount(['vehicles' => fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId))])
-            ->whereHas('vehicles', fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId)))
+        $transmissionCounts = TransmissionType::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        $drivetrainCounts = DrivetrainType::withCount(['vehicles' => fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId))])
-            ->whereHas('vehicles', fn ($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn ($q) => $q->where('location_id', $locationId)))
+        $drivetrainCounts = DrivetrainType::withCount(['vehicles' => fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId))])
+            ->whereHas('vehicles', fn($q) => $q->where('dealer_id', $dealerId)->when($locationId, fn($q) => $q->where('location_id', $locationId)))
             ->orderBy('name')
             ->get(['id', 'name']);
 
@@ -237,7 +236,7 @@ class InventoryController extends Controller
 
     public function vinDecode(VinDecodeRequest $request): JsonResponse
     {
-        $vin = $request->input('vin');
+        $vin       = $request->input('vin');
         $modelYear = $request->integer('model_year') ?: null;
 
         $result = ($this->vinDecoder)->decode($vin, $modelYear);
@@ -250,11 +249,11 @@ class InventoryController extends Controller
         }
 
         return response()->json([
-            'success' => true,
-            'partial' => $result['partial'],
-            'message' => $result['message'],
+            'success'  => true,
+            'partial'  => $result['partial'],
+            'message'  => $result['message'],
             'warnings' => $result['warnings'],
-            'data' => $result['data'],
+            'data'     => $result['data'],
         ]);
     }
 
@@ -280,9 +279,9 @@ class InventoryController extends Controller
         $vehicle = ($this->createVehicle)($request->user()->currentDealer, $request->validated());
 
         AuditLogger::info($request, 'Vehicle created', [
-            'vehicle_id' => $vehicle->id,
+            'vehicle_id'   => $vehicle->id,
             'stock_number' => $vehicle->stock_number,
-            'vin' => $vehicle->vin,
+            'vin'          => $vehicle->vin,
         ]);
 
         session()->flash('success', 'Vehicle added successfully.');
@@ -306,8 +305,8 @@ class InventoryController extends Controller
 
         // Incentives — category match karo vehicle condition se
         $conditionMap = [
-            'Used' => 'used',
-            'New' => 'new',
+            'Used'                => 'used',
+            'New'                 => 'new',
             'Certified Pre-Owned' => 'cpo',
         ];
         $vehicleCategory = $conditionMap[$vehicle->vehicle_condition] ?? 'used';
@@ -335,7 +334,7 @@ class InventoryController extends Controller
 
     // ─── Update Pricing Tab ───────────────────────────────────────────────────
 
-    public function updatePricing(UpdatePricingRequest $request, Vehicle $vehicle): JsonResponse|RedirectResponse
+    public function updatePricing(UpdatePricingRequest $request, Vehicle $vehicle): JsonResponse | RedirectResponse
     {
         $this->authorizeVehicle($request, $vehicle);
         ($this->updatePricing)($vehicle, $request->validated());
@@ -347,7 +346,7 @@ class InventoryController extends Controller
 
     // ─── Update Details Tab ───────────────────────────────────────────────────
 
-    public function updateDetails(UpdateDetailsRequest $request, Vehicle $vehicle): JsonResponse|RedirectResponse
+    public function updateDetails(UpdateDetailsRequest $request, Vehicle $vehicle): JsonResponse | RedirectResponse
     {
         $this->authorizeVehicle($request, $vehicle);
         // dd($request->validated()); // Run validation first to catch any errors before updating
@@ -360,7 +359,7 @@ class InventoryController extends Controller
 
     // ─── Update Tags Tab ──────────────────────────────────────────────────────
 
-    public function updateTags(UpdateTagsRequest $request, Vehicle $vehicle): JsonResponse|RedirectResponse
+    public function updateTags(UpdateTagsRequest $request, Vehicle $vehicle): JsonResponse | RedirectResponse
     {
         $this->authorizeVehicle($request, $vehicle);
         ($this->updateTags)($vehicle, $request->validated());
@@ -372,7 +371,7 @@ class InventoryController extends Controller
 
     // ─── Update Notes Tab ─────────────────────────────────────────────────────
 
-    public function updateNotes(UpdateNotesRequest $request, Vehicle $vehicle): JsonResponse|RedirectResponse
+    public function updateNotes(UpdateNotesRequest $request, Vehicle $vehicle): JsonResponse | RedirectResponse
     {
         $this->authorizeVehicle($request, $vehicle);
         ($this->updateNotes)($vehicle, $request->validated());
@@ -404,19 +403,19 @@ class InventoryController extends Controller
 
         AuditLogger::info($request, 'Premium option added', [
             'vehicle_id' => $vehicle->id,
-            'option_id' => $option->id,
+            'option_id'  => $option->id,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Option added successfully.',
-            'option' => [
-                'id' => $option->id,
+            'option'  => [
+                'id'           => $option->id,
                 'factory_code' => $option->factory_code,
-                'category' => $option->category,
-                'name' => $option->name,
-                'description' => $option->description,
-                'msrp' => $option->msrp,
+                'category'     => $option->category,
+                'name'         => $option->name,
+                'description'  => $option->description,
+                'msrp'         => $option->msrp,
             ],
         ]);
     }
@@ -430,7 +429,7 @@ class InventoryController extends Controller
 
         AuditLogger::warning($request, 'Premium option deleted', [
             'vehicle_id' => $vehicle->id,
-            'option_id' => $option->id,
+            'option_id'  => $option->id,
         ]);
 
         return response()->json(['success' => true, 'message' => 'Option deleted.']);
@@ -438,14 +437,14 @@ class InventoryController extends Controller
 
     // ─── Update Status (Right Sidebar) ───────────────────────────────────────
 
-    public function updateStatus(UpdateVehicleStatusRequest $request, Vehicle $vehicle): JsonResponse|RedirectResponse
+    public function updateStatus(UpdateVehicleStatusRequest $request, Vehicle $vehicle): JsonResponse | RedirectResponse
     {
         $this->authorizeVehicle($request, $vehicle);
         ($this->updateVehicleStatus)($vehicle, $request->validated());
 
         AuditLogger::info($request, 'Vehicle status updated', [
             'vehicle_id' => $vehicle->id,
-            'status' => $request->status ?? 'unchanged',
+            'status'     => $request->status ?? 'unchanged',
         ]);
 
         return $this->jsonOrBack($request, 'Vehicle status updated successfully.');
@@ -459,8 +458,8 @@ class InventoryController extends Controller
 
         $vehicle->load(['make', 'makeModel']);
 
-        $photos = VehiclePhoto::where('vehicle_id', $vehicle->id)->orderBy('sort_order')->get();
-        $liveCount = $photos->where('status', 'live')->count();
+        $photos     = VehiclePhoto::where('vehicle_id', $vehicle->id)->orderBy('sort_order')->get();
+        $liveCount  = $photos->where('status', 'live')->count();
         $draftCount = $photos->where('status', 'draft')->count();
 
         return view('dealer.pages.inventory.gallery', compact('vehicle', 'photos', 'liveCount', 'draftCount'));
@@ -474,21 +473,21 @@ class InventoryController extends Controller
 
         AuditLogger::info($request, 'Vehicle photos uploaded', [
             'vehicle_id' => $vehicle->id,
-            'count' => count($photos),
+            'count'      => count($photos),
         ]);
 
-        $result = collect($photos)->map(fn ($p) => [
-            'id' => $p->id,
-            'url' => $p->url,
-            'status' => $p->status,
+        $result = collect($photos)->map(fn($p) => [
+            'id'         => $p->id,
+            'url'        => $p->url,
+            'status'     => $p->status,
             'sort_order' => $p->sort_order,
             'is_primary' => $p->is_primary,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => count($photos).' photo(s) uploaded successfully.',
-            'photos' => $result,
+            'message' => count($photos) . ' photo(s) uploaded successfully.',
+            'photos'  => $result,
         ]);
     }
 
@@ -502,8 +501,8 @@ class InventoryController extends Controller
 
         AuditLogger::info($request, 'Vehicle photo status updated', [
             'vehicle_id' => $vehicle->id,
-            'photo_id' => $photo->id,
-            'status' => $status,
+            'photo_id'   => $photo->id,
+            'status'     => $status,
         ]);
 
         return response()->json(['success' => true, 'message' => 'Photo status updated.']);
@@ -528,7 +527,7 @@ class InventoryController extends Controller
 
         AuditLogger::info($request, 'Vehicle primary photo set', [
             'vehicle_id' => $vehicle->id,
-            'photo_id' => $photo->id,
+            'photo_id'   => $photo->id,
         ]);
 
         return response()->json(['success' => true, 'message' => 'Primary photo updated.']);
@@ -543,7 +542,7 @@ class InventoryController extends Controller
 
         AuditLogger::warning($request, 'Vehicle photo deleted', [
             'vehicle_id' => $vehicle->id,
-            'photo_id' => $photo->id,
+            'photo_id'   => $photo->id,
         ]);
 
         return response()->json(['success' => true, 'message' => 'Photo deleted.']);
@@ -563,9 +562,9 @@ class InventoryController extends Controller
     {
         $this->authorizeVehicle($request, $vehicle);
 
-        $photos = VehiclePhoto::where('vehicle_id', $vehicle->id)->get();
-        $zipName = 'photos-'.$vehicle->stock_number.'-'.now()->format('Ymd').'.zip';
-        $zipPath = storage_path('app/temp/'.$zipName);
+        $photos  = VehiclePhoto::where('vehicle_id', $vehicle->id)->get();
+        $zipName = 'photos-' . $vehicle->stock_number . '-' . now()->format('Ymd') . '.zip';
+        $zipPath = storage_path('app/temp/' . $zipName);
 
         if (! is_dir(storage_path('app/temp'))) {
             mkdir(storage_path('app/temp'), 0755, true);
@@ -608,13 +607,13 @@ class InventoryController extends Controller
         $this->authorizeVehicle($request, $vehicle);
 
         VehicleHiddenIncentive::firstOrCreate([
-            'vehicle_id' => $vehicle->id,
+            'vehicle_id'   => $vehicle->id,
             'incentive_id' => $incentive->id,
-            'dealer_id' => $request->user()->current_dealer_id,
+            'dealer_id'    => $request->user()->current_dealer_id,
         ]);
 
         AuditLogger::info($request, 'Incentive hidden on vehicle', [
-            'vehicle_id' => $vehicle->id,
+            'vehicle_id'   => $vehicle->id,
             'incentive_id' => $incentive->id,
         ]);
 
@@ -630,7 +629,7 @@ class InventoryController extends Controller
             ->delete();
 
         AuditLogger::info($request, 'Incentive unhidden on vehicle', [
-            'vehicle_id' => $vehicle->id,
+            'vehicle_id'   => $vehicle->id,
             'incentive_id' => $incentive->id,
         ]);
 
@@ -639,10 +638,10 @@ class InventoryController extends Controller
 
     public function getSoldModelsByMake(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $dealerIds = $user->dealers()->pluck('dealers.id')->toArray();
+        $user            = $request->user();
+        $dealerIds       = $user->dealers()->pluck('dealers.id')->toArray();
         $currentDealerId = $request->integer('dealer_id');
-        $makeId = $request->integer('make_id');
+        $makeId          = $request->integer('make_id');
 
         $targetDealerIds = ($currentDealerId && in_array($currentDealerId, $dealerIds))
             ? [$currentDealerId]
@@ -650,14 +649,14 @@ class InventoryController extends Controller
 
         $dateRange = $request->input('date_range');
         $startDate = null;
-        $endDate = null;
+        $endDate   = null;
 
         if ($dateRange) {
             $dates = explode(' - ', $dateRange);
             if (count($dates) === 2) {
                 try {
                     $startDate = Carbon::parse($dates[0])->startOfDay();
-                    $endDate = Carbon::parse($dates[1])->endOfDay();
+                    $endDate   = Carbon::parse($dates[1])->endOfDay();
                 } catch (\Exception $e) {
                 }
             }
@@ -666,7 +665,7 @@ class InventoryController extends Controller
         $locationId = app(LocationContext::class)->getActiveLocationId();
 
         $query = Vehicle::whereIn('dealer_id', $targetDealerIds)
-            ->when($locationId, fn ($q) => $q->where('location_id', $locationId))
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->where('make_id', $makeId)
             ->sold();
 
@@ -678,24 +677,24 @@ class InventoryController extends Controller
             ->get()
             ->groupBy('make_model_id')
             ->map(function ($vehicles) {
-                $model = $vehicles->first()->makeModel;
+                $model     = $vehicles->first()->makeModel;
                 $soldCount = $vehicles->count();
-                $estSales = $vehicles->sum(fn ($v) => $v->prices->sold_price ?? 0);
-                $avgPrice = $soldCount > 0 ? $estSales / $soldCount : 0;
-                $avgDays = $vehicles->avg(fn ($v) => $v->days_on_lot);
-                $minDays = $vehicles->min(fn ($v) => $v->days_on_lot);
-                $maxDays = $vehicles->max(fn ($v) => $v->days_on_lot);
+                $estSales  = $vehicles->sum(fn($v) => $v->prices->sold_price ?? 0);
+                $avgPrice  = $soldCount > 0 ? $estSales / $soldCount : 0;
+                $avgDays   = $vehicles->avg(fn($v) => $v->days_on_lot);
+                $minDays   = $vehicles->min(fn($v) => $v->days_on_lot);
+                $maxDays   = $vehicles->max(fn($v) => $v->days_on_lot);
 
                 return [
-                    'model_name' => $model->name ?? 'Unknown',
-                    'sold' => $soldCount,
-                    'est_sales' => number_format($estSales),
-                    'avg_price' => number_format($avgPrice),
-                    'avg_days' => round($avgDays),
-                    'min_days' => $minDays,
-                    'max_days' => $maxDays,
+                    'model_name'    => $model->name ?? 'Unknown',
+                    'sold'          => $soldCount,
+                    'est_sales'     => number_format($estSales),
+                    'avg_price'     => number_format($avgPrice),
+                    'avg_days'      => round($avgDays),
+                    'min_days'      => $minDays,
+                    'max_days'      => $maxDays,
                     'changes_count' => '--',
-                    'avg_change' => '--',
+                    'avg_change'    => '--',
                 ];
             })->sortByDesc('sold')->values();
 
@@ -704,8 +703,8 @@ class InventoryController extends Controller
 
     public function exportInventory(Request $request): StreamedResponse
     {
-        $user = $request->user();
-        $dealerIds = $user->dealers()->pluck('dealers.id')->toArray();
+        $user            = $request->user();
+        $dealerIds       = $user->dealers()->pluck('dealers.id')->toArray();
         $currentDealerId = $request->integer('dealer_id');
         $targetDealerIds = ($currentDealerId && in_array($currentDealerId, $dealerIds))
             ? [$currentDealerId]
@@ -714,7 +713,7 @@ class InventoryController extends Controller
         $locationId = app(LocationContext::class)->getActiveLocationId();
 
         $query = Vehicle::whereIn('dealer_id', $targetDealerIds)
-            ->when($locationId, fn ($q) => $q->where('location_id', $locationId))
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->with([
                 'make', 'makeModel', 'bodyType', 'fuelType', 'drivetrainType',
                 'exteriorColor', 'interiorColor', 'prices', 'location', 'dealer',
@@ -723,9 +722,9 @@ class InventoryController extends Controller
             ->withCount('photos');
 
         $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="inventory-export-'.now()->format('Ymd-His').'.csv"',
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="inventory-export-' . now()->format('Ymd-His') . '.csv"',
+            'Cache-Control'       => 'no-cache, no-store, must-revalidate',
         ];
 
         $columns = [
@@ -746,7 +745,7 @@ class InventoryController extends Controller
             $query->chunk(500, function ($vehicles) use ($handle) {
                 foreach ($vehicles as $v) {
                     $domain = $v->dealer->domain ?? '';
-                    $url = $domain ? "https://{$domain}/inventory/{$v->slug}" : '';
+                    $url    = $domain ? "https://{$domain}/inventory/{$v->slug}" : '';
 
                     $row = [
                         $v->stock_number,
@@ -798,8 +797,8 @@ class InventoryController extends Controller
 
     public function exportSoldInventory(Request $request): StreamedResponse
     {
-        $user = $request->user();
-        $dealerIds = $user->dealers()->pluck('dealers.id')->toArray();
+        $user            = $request->user();
+        $dealerIds       = $user->dealers()->pluck('dealers.id')->toArray();
         $currentDealerId = $request->integer('dealer_id');
         $targetDealerIds = ($currentDealerId && in_array($currentDealerId, $dealerIds))
             ? [$currentDealerId]
@@ -812,7 +811,7 @@ class InventoryController extends Controller
             if (count($dates) === 2) {
                 try {
                     $startDate = Carbon::parse($dates[0])->startOfDay();
-                    $endDate = Carbon::parse($dates[1])->endOfDay();
+                    $endDate   = Carbon::parse($dates[1])->endOfDay();
                 } catch (\Exception $e) {
                 }
             }
@@ -821,7 +820,7 @@ class InventoryController extends Controller
         $locationId = app(LocationContext::class)->getActiveLocationId();
 
         $query = Vehicle::whereIn('dealer_id', $targetDealerIds)
-            ->when($locationId, fn ($q) => $q->where('location_id', $locationId))
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->sold()
             ->with(['make', 'makeModel', 'prices']);
 
@@ -837,34 +836,34 @@ class InventoryController extends Controller
 
                 return $makeVehicles->groupBy('make_model_id')
                     ->map(function ($vehicles) use ($make) {
-                        $model = $vehicles->first()->makeModel;
-                        $prices = $vehicles->map(fn ($v) => $v->prices->sold_price ?? $v->prices->internet_price ?? $v->prices->msrp ?? 0);
-                        $days = $vehicles->map(fn ($v) => $v->days_on_lot ?? 0);
-                        $soldCount = $vehicles->count();
+                        $model      = $vehicles->first()->makeModel;
+                        $prices     = $vehicles->map(fn($v) => $v->prices->sold_price ?? $v->prices->internet_price ?? $v->prices->msrp ?? 0);
+                        $days       = $vehicles->map(fn($v) => $v->days_on_lot ?? 0);
+                        $soldCount  = $vehicles->count();
                         $totalPrice = $prices->sum();
 
                         return [
-                            'make' => $make->name ?? '',
-                            'model' => $model->name ?? '',
-                            'avg_days' => $soldCount > 0 ? round($days->avg(), 2) : 0,
-                            'avg_price' => $soldCount > 0 ? round($totalPrice / $soldCount, 2) : 0,
+                            'make'               => $make->name ?? '',
+                            'model'              => $model->name ?? '',
+                            'avg_days'           => $soldCount > 0 ? round($days->avg(), 2) : 0,
+                            'avg_price'          => $soldCount > 0 ? round($totalPrice / $soldCount, 2) : 0,
                             'count_pricechanges' => '--',
-                            'max_days' => $days->max() ?? 0,
-                            'max_price' => $prices->max() ?? 0,
-                            'min_days' => $days->min() ?? 0,
-                            'min_price' => $prices->min() ?? 0,
-                            'pct_pricechanges' => '--',
-                            'soldcount' => $soldCount,
-                            'total_price' => $totalPrice,
+                            'max_days'           => $days->max() ?? 0,
+                            'max_price'          => $prices->max() ?? 0,
+                            'min_days'           => $days->min() ?? 0,
+                            'min_price'          => $prices->min() ?? 0,
+                            'pct_pricechanges'   => '--',
+                            'soldcount'          => $soldCount,
+                            'total_price'        => $totalPrice,
                             'total_pricechanges' => '--',
                         ];
                     });
             });
 
         $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="inventory-sold-export-'.now()->format('Ymd-His').'.csv"',
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="inventory-sold-export-' . now()->format('Ymd-His') . '.csv"',
+            'Cache-Control'       => 'no-cache, no-store, must-revalidate',
         ];
 
         $columns = [
@@ -877,7 +876,7 @@ class InventoryController extends Controller
             $handle = fopen('php://output', 'w');
             fputcsv($handle, $columns);
             foreach ($rows as $row) {
-                fputcsv($handle, array_map(fn ($col) => $row[$col] ?? '', $columns));
+                fputcsv($handle, array_map(fn($col) => $row[$col] ?? '', $columns));
             }
             fclose($handle);
         }, 200, $headers);
@@ -885,8 +884,8 @@ class InventoryController extends Controller
 
     public function exportSoldModelsByMake(Request $request, int $make_id): StreamedResponse
     {
-        $user = $request->user();
-        $dealerIds = $user->dealers()->pluck('dealers.id')->toArray();
+        $user            = $request->user();
+        $dealerIds       = $user->dealers()->pluck('dealers.id')->toArray();
         $currentDealerId = $request->integer('dealer_id');
         $targetDealerIds = ($currentDealerId && in_array($currentDealerId, $dealerIds))
             ? [$currentDealerId]
@@ -899,7 +898,7 @@ class InventoryController extends Controller
             if (count($dates) === 2) {
                 try {
                     $startDate = Carbon::parse($dates[0])->startOfDay();
-                    $endDate = Carbon::parse($dates[1])->endOfDay();
+                    $endDate   = Carbon::parse($dates[1])->endOfDay();
                 } catch (\Exception $e) {
                 }
             }
@@ -910,7 +909,7 @@ class InventoryController extends Controller
         $locationId = app(LocationContext::class)->getActiveLocationId();
 
         $query = Vehicle::whereIn('dealer_id', $targetDealerIds)
-            ->when($locationId, fn ($q) => $q->where('location_id', $locationId))
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->where('make_id', $make_id)
             ->sold()
             ->with(['makeModel', 'make', 'prices']);
@@ -922,34 +921,34 @@ class InventoryController extends Controller
         $rows = $query->get()
             ->groupBy('make_model_id')
             ->map(function ($vehicles) use ($makeName) {
-                $model = $vehicles->first()->makeModel;
-                $prices = $vehicles->map(fn ($v) => $v->prices->sold_price ?? $v->prices->internet_price ?? $v->prices->msrp ?? 0);
-                $days = $vehicles->map(fn ($v) => $v->days_on_lot ?? 0);
-                $soldCount = $vehicles->count();
+                $model      = $vehicles->first()->makeModel;
+                $prices     = $vehicles->map(fn($v) => $v->prices->sold_price ?? $v->prices->internet_price ?? $v->prices->msrp ?? 0);
+                $days       = $vehicles->map(fn($v) => $v->days_on_lot ?? 0);
+                $soldCount  = $vehicles->count();
                 $totalPrice = $prices->sum();
 
                 return [
-                    'make' => $makeName,
-                    'model' => $model->name ?? '',
-                    'avg_days' => $soldCount > 0 ? round($days->avg(), 2) : 0,
-                    'avg_price' => $soldCount > 0 ? round($totalPrice / $soldCount, 2) : 0,
+                    'make'               => $makeName,
+                    'model'              => $model->name ?? '',
+                    'avg_days'           => $soldCount > 0 ? round($days->avg(), 2) : 0,
+                    'avg_price'          => $soldCount > 0 ? round($totalPrice / $soldCount, 2) : 0,
                     'count_pricechanges' => '--',
-                    'max_days' => $days->max() ?? 0,
-                    'max_price' => $prices->max() ?? 0,
-                    'min_days' => $days->min() ?? 0,
-                    'min_price' => $prices->min() ?? 0,
-                    'pct_pricechanges' => '--',
-                    'soldcount' => $soldCount,
-                    'total_price' => $totalPrice,
+                    'max_days'           => $days->max() ?? 0,
+                    'max_price'          => $prices->max() ?? 0,
+                    'min_days'           => $days->min() ?? 0,
+                    'min_price'          => $prices->min() ?? 0,
+                    'pct_pricechanges'   => '--',
+                    'soldcount'          => $soldCount,
+                    'total_price'        => $totalPrice,
                     'total_pricechanges' => '--',
                 ];
             })->values();
 
         $safeMake = preg_replace('/[^a-z0-9]+/i', '-', strtolower($makeName));
-        $filename = "inventory-{$safeMake}-models-".now()->format('Ymd-His').'.csv';
+        $filename = "inventory-{$safeMake}-models-" . now()->format('Ymd-His') . '.csv';
 
         $headers = [
-            'Content-Type' => 'text/csv',
+            'Content-Type'        => 'text/csv',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
             'Cache-Control' => 'no-cache, no-store, must-revalidate',
         ];
@@ -964,7 +963,7 @@ class InventoryController extends Controller
             $handle = fopen('php://output', 'w');
             fputcsv($handle, $columns);
             foreach ($rows as $row) {
-                fputcsv($handle, array_map(fn ($col) => $row[$col] ?? '', $columns));
+                fputcsv($handle, array_map(fn($col) => $row[$col] ?? '', $columns));
             }
             fclose($handle);
         }, 200, $headers);
@@ -979,9 +978,9 @@ class InventoryController extends Controller
         ($this->deleteVehicle)($vehicle);
 
         AuditLogger::warning($request, 'Vehicle deleted', [
-            'vehicle_id' => $vehicle->id,
+            'vehicle_id'   => $vehicle->id,
             'stock_number' => $vehicle->stock_number,
-            'vin' => $vehicle->vin,
+            'vin'          => $vehicle->vin,
         ]);
 
         session()->flash('success', 'Vehicle removed successfully.');
@@ -993,8 +992,8 @@ class InventoryController extends Controller
 
     public function dashboard(Request $request): View
     {
-        $user = $request->user();
-        $dealerIds = $user->dealers()->pluck('dealers.id')->toArray();
+        $user            = $request->user();
+        $dealerIds       = $user->dealers()->pluck('dealers.id')->toArray();
         $currentDealerId = $request->integer('dealer_id');
 
         // If no dealer_id is provided or it's 0 (All Locations), use all dealer IDs the user belongs to
@@ -1007,14 +1006,14 @@ class InventoryController extends Controller
         // Date Range Filter
         $dateRange = $request->input('date_range');
         $startDate = null;
-        $endDate = null;
+        $endDate   = null;
 
         if ($dateRange) {
             $dates = explode(' - ', $dateRange);
             if (count($dates) === 2) {
                 try {
                     $startDate = Carbon::parse($dates[0])->startOfDay();
-                    $endDate = Carbon::parse($dates[1])->endOfDay();
+                    $endDate   = Carbon::parse($dates[1])->endOfDay();
                 } catch (\Exception $e) {
                     // Fallback or ignore
                 }
@@ -1023,12 +1022,12 @@ class InventoryController extends Controller
 
         // Summary Cards Data
         $baseQuery = Vehicle::whereIn('dealer_id', $targetDealerIds)
-            ->when($locationId, fn ($q) => $q->where('location_id', $locationId));
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId));
 
         // In Stock: Active vehicles
         $inStockQuery = (clone $baseQuery)->active();
         $inStockCount = $inStockQuery->count();
-        $inStockCost = (clone $inStockQuery)->join('vehicle_prices', 'vehicles.id', '=', 'vehicle_prices.vehicle_id')
+        $inStockCost  = (clone $inStockQuery)->join('vehicle_prices', 'vehicles.id', '=', 'vehicle_prices.vehicle_id')
             ->sum('vehicle_prices.dealer_cost');
         $inStockValue = (clone $inStockQuery)->join('vehicle_prices', 'vehicles.id', '=', 'vehicle_prices.vehicle_id')
             ->sum('vehicle_prices.internet_price');
@@ -1060,30 +1059,30 @@ class InventoryController extends Controller
 
         // Inventory: Units Sold Table (Make-wise)
         $soldMakes = (clone $baseQuery)->sold()
-            ->when($startDate && $endDate, fn ($q) => $q->whereBetween('sold_at', [$startDate, $endDate]))
+            ->when($startDate && $endDate, fn($q) => $q->whereBetween('sold_at', [$startDate, $endDate]))
             ->with(['make', 'prices'])
             ->get()
             ->groupBy('make_id')
             ->map(function ($vehicles) {
-                $make = $vehicles->first()->make;
+                $make      = $vehicles->first()->make;
                 $unitsSold = $vehicles->count();
-                $avgDays = $vehicles->avg(fn ($v) => $v->days_on_lot);
-                $estSales = $vehicles->sum(fn ($v) => $v->prices->sold_price ?? 0);
-                $avgPrice = $unitsSold > 0 ? $estSales / $unitsSold : 0;
+                $avgDays   = $vehicles->avg(fn($v) => $v->days_on_lot);
+                $estSales  = $vehicles->sum(fn($v) => $v->prices->sold_price ?? 0);
+                $avgPrice  = $unitsSold > 0 ? $estSales / $unitsSold : 0;
 
                 // For # Changes and Avg. Change - these would usually come from an audit log or price history table.
                 // Since I don't see a price history table yet, I'll return placeholder or 0 for now if not available.
                 // Wait, I should check if there's a price history table.
 
                 return [
-                    'make_id' => $make->id ?? 0,
-                    'make_name' => $make->name ?? 'Unknown',
-                    'units_sold' => $unitsSold,
-                    'avg_days' => round($avgDays),
-                    'est_sales' => $estSales,
-                    'avg_price' => $avgPrice,
+                    'make_id'       => $make->id ?? 0,
+                    'make_name'     => $make->name ?? 'Unknown',
+                    'units_sold'    => $unitsSold,
+                    'avg_days'      => round($avgDays),
+                    'est_sales'     => $estSales,
+                    'avg_price'     => $avgPrice,
                     'changes_count' => '--',
-                    'avg_change' => '--',
+                    'avg_change'    => '--',
                 ];
             })->sortByDesc('units_sold')->values();
 
@@ -1091,11 +1090,11 @@ class InventoryController extends Controller
 
         // ─── Inventory Activity Chart Data ─────────────────────
         $chartLabels = [];
-        $chartViews = [];
-        $chartStock = [];
+        $chartViews  = [];
+        $chartStock  = [];
 
         $chartStartDate = $startDate ? $startDate->copy() : now()->subDays(29)->startOfDay();
-        $chartEndDate = $endDate ? $endDate->copy() : now()->endOfDay();
+        $chartEndDate   = $endDate ? $endDate->copy() : now()->endOfDay();
 
         $stats = VehicleDailyStat::whereIn('vehicle_daily_stats.dealer_id', $targetDealerIds)
             ->when($locationId, function ($q) use ($locationId) {
@@ -1109,7 +1108,7 @@ class InventoryController extends Controller
             ->pluck('total_views', 'date');
 
         $vehicles = Vehicle::whereIn('dealer_id', $targetDealerIds)
-            ->when($locationId, fn ($q) => $q->where('location_id', $locationId))
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->whereIn('status', ['active', 'sold'])
             ->whereNotNull('listed_at')
             ->with('prices')
@@ -1118,15 +1117,15 @@ class InventoryController extends Controller
         $daysDiff = $chartStartDate->diffInDays($chartEndDate);
 
         for ($i = $daysDiff; $i >= 0; $i--) {
-            $date = $chartEndDate->copy()->subDays($i);
-            $dateStr = $date->format('Y-m-d');
+            $date          = $chartEndDate->copy()->subDays($i);
+            $dateStr       = $date->format('Y-m-d');
             $chartLabels[] = $date->format('n/j');
 
             // Views
             $chartViews[] = (int) ($stats[$dateStr] ?? 0);
 
             // Stock
-            $endOfDay = $date->copy()->endOfDay();
+            $endOfDay   = $date->copy()->endOfDay();
             $stockCount = $vehicles->filter(function ($v) use ($endOfDay) {
                 return $v->listed_at <= $endOfDay && ($v->sold_at === null || $v->sold_at > $endOfDay);
             })->count();
@@ -1135,16 +1134,16 @@ class InventoryController extends Controller
 
         // ─── Days in Inventory Chart Data (Active Vehicles Only) ──────────────
         $daysStats = [
-            '0-30' => ['units' => 0, 'total' => 0, 'avg' => 0],
-            '31-60' => ['units' => 0, 'total' => 0, 'avg' => 0],
-            '61-90' => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '0-30'   => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '31-60'  => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '61-90'  => ['units' => 0, 'total' => 0, 'avg' => 0],
             '91-120' => ['units' => 0, 'total' => 0, 'avg' => 0],
-            '120+' => ['units' => 0, 'total' => 0, 'avg' => 0],
+            '120+'   => ['units' => 0, 'total' => 0, 'avg' => 0],
         ];
 
         foreach ($vehicles as $v) {
             if ($v->sold_at === null) {
-                $days = (int) $v->listed_at->diffInDays(now());
+                $days   = (int) $v->listed_at->diffInDays(now());
                 $bucket = '120+';
                 if ($days <= 30) {
                     $bucket = '0-30';
@@ -1156,7 +1155,7 @@ class InventoryController extends Controller
                     $bucket = '91-120';
                 }
 
-                $price = $v->prices->internet_price ?? $v->prices->msrp ?? 0;
+                $price  = $v->prices->internet_price ?? $v->prices->msrp ?? 0;
                 $daysStats[$bucket]['units']++;
                 $daysStats[$bucket]['total'] += $price;
             }
@@ -1172,22 +1171,22 @@ class InventoryController extends Controller
 
         // ─── Inventory by Location (Per Dealer) ──────────────────────────────
         $locationStats = [];
-        $allVehicles = Vehicle::whereIn('dealer_id', $dealerIds)
+        $allVehicles   = Vehicle::whereIn('dealer_id', $dealerIds)
             ->active()
             ->with('prices')
             ->get();
 
         foreach ($dealers as $dealer) {
             $dealerVehicles = $allVehicles->where('dealer_id', $dealer->id);
-            $units = $dealerVehicles->count();
-            $total = $dealerVehicles->sum(fn ($v) => $v->prices->internet_price ?? 0);
-            $avg = $units > 0 ? $total / $units : 0;
+            $units          = $dealerVehicles->count();
+            $total          = $dealerVehicles->sum(fn($v) => $v->prices->internet_price ?? 0);
+            $avg            = $units > 0 ? $total / $units : 0;
 
             $locationStats[] = [
-                'name' => $dealer->name,
+                'name'  => $dealer->name,
                 'units' => $units,
                 'total' => $total,
-                'avg' => $avg,
+                'avg'   => $avg,
             ];
         }
 
@@ -1215,15 +1214,15 @@ class InventoryController extends Controller
         $ga4Service = new Ga4ReportingService($dealer);
 
         $isConfigured = $ga4Service->isConfigured();
-        $ga4Data = null;
-        $chartData = [];
-        $days = (int) $request->get('days', 30);
+        $ga4Data      = null;
+        $chartData    = [];
+        $days         = (int) $request->get('days', 30);
 
         if ($isConfigured) {
             // URL slug pattern matching VDP pages, e.g. using the vehicle's unique slug
             $vehicleSlug = $vehicle->slug;
-            $ga4Data = $ga4Service->getVehicleMetrics($vehicleSlug);
-            $chartData = $ga4Service->getVehicleViewsOverTime($vehicleSlug, $days) ?: [];
+            $ga4Data     = $ga4Service->getVehicleMetrics($vehicleSlug);
+            $chartData   = $ga4Service->getVehicleViewsOverTime($vehicleSlug, $days) ?: [];
         }
 
         // Fetch local price history
@@ -1253,7 +1252,7 @@ class InventoryController extends Controller
         abort_if((int) $photo->vehicle_id !== (int) $vehicle->id, 403);
     }
 
-    private function jsonOrBack(Request $request, string $message): JsonResponse|RedirectResponse
+    private function jsonOrBack(Request $request, string $message): JsonResponse | RedirectResponse
     {
         if ($request->expectsJson()) {
             return response()->json(['success' => true, 'message' => $message]);

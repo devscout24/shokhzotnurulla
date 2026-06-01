@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Services\Inventory;
 
 use App\Models\Catalog\Feature;
 use App\Models\Inventory\Vehicle;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 
 class InventoryListingService
 {
@@ -76,10 +75,10 @@ class InventoryListingService
                 'make:id,name',
                 'makeModel:id,name',
                 'exteriorColor:id,name',
-                'primaryPhoto' => fn ($q) => $q
+                'primaryPhoto' => fn($q) => $q
                     ->select(['id', 'vehicle_id', 'path', 'disk', 'url'])
                     ->live(),
-                'photos' => fn ($q) => $q
+                'photos'       => fn($q)       => $q
                     ->select(['id', 'vehicle_id', 'path', 'disk', 'url', 'sort_order', 'is_primary'])
                     ->live()
                     ->orderBy('sort_order')
@@ -89,7 +88,7 @@ class InventoryListingService
 
         // ── Body type scope (for /cars, /trucks, etc.) ────────────────────────
         if (! empty($bodyTypeNames)) {
-            $query->whereHas('bodyType', fn (Builder $q) => $q->whereIn('name', $bodyTypeNames));
+            $query->whereHas('bodyType', fn(Builder $q) => $q->whereIn('name', $bodyTypeNames));
         }
 
         // ── Search ────────────────────────────────────────────────────────────
@@ -100,32 +99,32 @@ class InventoryListingService
 
             foreach ($terms as $term) {
                 $query->where(function (Builder $q) use ($term) {
-                    $q->whereHas('make',        fn (Builder $m) => $m->where('name',  'like', "%{$term}%"))
-                      ->orWhereHas('makeModel', fn (Builder $m) => $m->where('name',  'like', "%{$term}%"))
-                      ->orWhereHas('bodyType',  fn (Builder $m) => $m->where('name',  'like', "%{$term}%"))
-                      ->orWhereHas('bodyStyle', fn (Builder $m) => $m->where('name',  'like', "%{$term}%"))
-                      ->orWhereHas('factoryOptions', fn (Builder $m) => $m->where('label', 'like', "%{$term}%"))
-                      ->orWhere('trim',          'like', "%{$term}%")
-                      ->orWhere('stock_number',  'like', "%{$term}%")
-                      ->orWhere('vin',           'like', "%{$term}%")
-                      ->orWhereRaw('CAST(`year` AS CHAR) LIKE ?', ["%{$term}%"]);
+                    $q->whereHas('make', fn(Builder $m) => $m->where('name', 'like', "%{$term}%"))
+                        ->orWhereHas('makeModel', fn(Builder $m) => $m->where('name', 'like', "%{$term}%"))
+                        ->orWhereHas('bodyType', fn(Builder $m) => $m->where('name', 'like', "%{$term}%"))
+                        ->orWhereHas('bodyStyle', fn(Builder $m) => $m->where('name', 'like', "%{$term}%"))
+                        ->orWhereHas('factoryOptions', fn(Builder $m) => $m->where('label', 'like', "%{$term}%"))
+                        ->orWhere('trim', 'like', "%{$term}%")
+                        ->orWhere('stock_number', 'like', "%{$term}%")
+                        ->orWhere('vin', 'like', "%{$term}%")
+                        ->orWhereRaw('CAST(`year` AS CHAR) LIKE ?', ["%{$term}%"]);
                 });
             }
         }
 
         // ── Make ─────────────────────────────────────────────────────────────
         if ($makes = $request->input('make')) {
-            $query->whereHas('make', fn (Builder $q) => $q->whereIn('name', (array) $makes));
+            $query->whereHas('make', fn(Builder $q) => $q->whereIn('name', (array) $makes));
         }
 
         // ── Model ─────────────────────────────────────────────────────────────
         if ($models = $request->input('model')) {
-            $query->whereHas('makeModel', fn (Builder $q) => $q->whereIn('name', (array) $models));
+            $query->whereHas('makeModel', fn(Builder $q) => $q->whereIn('name', (array) $models));
         }
 
         // ── Year ──────────────────────────────────────────────────────────────
-        $query->when($request->input('year.gt'), fn (Builder $q, $v) => $q->where('year', '>=', $v))
-              ->when($request->input('year.lt'), fn (Builder $q, $v) => $q->where('year', '<=', $v));
+        $query->when($request->input('year.gt'), fn(Builder $q, $v) => $q->where('year', '>=', $v))
+            ->when($request->input('year.lt'), fn(Builder $q, $v) => $q->where('year', '<=', $v));
 
         // ── Mileage ───────────────────────────────────────────────────────────
         if ($mileageMax = $request->input('mileage.lt')) {
@@ -135,42 +134,42 @@ class InventoryListingService
         }
 
         // ── Price ─────────────────────────────────────────────────────────────
-        $query->when($request->input('price.gt'), fn (Builder $q, $v) => $q->where('list_price', '>=', (int) $v))
-              ->when($request->input('price.lt'), fn (Builder $q, $v) => $q->where('list_price', '<=', (int) $v));
+        $query->when($request->input('price.gt'), fn(Builder $q, $v) => $q->where('list_price', '>=', (int) $v))
+            ->when($request->input('price.lt'), fn(Builder $q, $v) => $q->where('list_price', '<=', (int) $v));
 
         // ── Body Style ────────────────────────────────────────────────────────
         if ($bodyStyles = $request->input('body_style')) {
-            $query->whereHas('bodyStyle', fn (Builder $q) => $q->whereIn('name', (array) $bodyStyles));
+            $query->whereHas('bodyStyle', fn(Builder $q) => $q->whereIn('name', (array) $bodyStyles));
         }
 
         // ── Body Type (URL param: ?body_type[]=SUV) ───────────────────────────
         if ($bodyTypes = $request->input('body_type')) {
-            $query->whereHas('bodyType', fn (Builder $q) => $q->whereIn('name', (array) $bodyTypes));
+            $query->whereHas('bodyType', fn(Builder $q) => $q->whereIn('name', (array) $bodyTypes));
         }
 
         // ── Exterior Color ────────────────────────────────────────────────────
         if ($colors = $request->input('exterior_color')) {
-            $query->whereHas('exteriorColor', fn (Builder $q) => $q->whereIn('name', (array) $colors));
+            $query->whereHas('exteriorColor', fn(Builder $q) => $q->whereIn('name', (array) $colors));
         }
 
         // ── Interior Color ────────────────────────────────────────────────────
         if ($interiorColors = $request->input('interior_color')) {
-            $query->whereHas('interiorColor', fn (Builder $q) => $q->whereIn('name', (array) $interiorColors));
+            $query->whereHas('interiorColor', fn(Builder $q) => $q->whereIn('name', (array) $interiorColors));
         }
 
         // ── Transmission ──────────────────────────────────────────────────────
         if ($transmissions = $request->input('transmission')) {
-            $query->whereHas('transmissionType', fn (Builder $q) => $q->whereIn('name', (array) $transmissions));
+            $query->whereHas('transmissionType', fn(Builder $q) => $q->whereIn('name', (array) $transmissions));
         }
 
         // ── Drivetrain ────────────────────────────────────────────────────────
         if ($drivetrains = $request->input('drivetrain')) {
-            $query->whereHas('drivetrainType', fn (Builder $q) => $q->whereIn('name', (array) $drivetrains));
+            $query->whereHas('drivetrainType', fn(Builder $q) => $q->whereIn('name', (array) $drivetrains));
         }
 
         // ── Fuel Type ─────────────────────────────────────────────────────────
         if ($fuelTypes = $request->input('fuel_type')) {
-            $query->whereHas('fuelType', fn (Builder $q) => $q->whereIn('name', (array) $fuelTypes));
+            $query->whereHas('fuelType', fn(Builder $q) => $q->whereIn('name', (array) $fuelTypes));
         }
 
         // ── Engine ────────────────────────────────────────────────────────────
@@ -224,14 +223,14 @@ class InventoryListingService
     private function buildFilterData(int $dealerId, array $bodyTypeNames): array
     {
         $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
-        $version  = Cache::get("inv_filters_v:{$dealerId}", 1);
-        $bodyKey  = empty($bodyTypeNames) ? 'all' : md5(implode(',', $bodyTypeNames));
-        $cacheKey = "inv_filters:{$dealerId}:{$locationId}:{$version}:{$bodyKey}";
+        $version    = Cache::get("inv_filters_v:{$dealerId}", 1);
+        $bodyKey    = empty($bodyTypeNames) ? 'all' : md5(implode(',', $bodyTypeNames));
+        $cacheKey   = "inv_filters:{$dealerId}:{$locationId}:{$version}:{$bodyKey}";
 
         return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($dealerId, $bodyTypeNames, $cacheKey) {
 
             $trackingKey = "inv_filters_keys:{$dealerId}";
-            $keys = Cache::get($trackingKey, []);
+            $keys        = Cache::get($trackingKey, []);
 
             $keys[] = $cacheKey;
 
@@ -246,7 +245,7 @@ class InventoryListingService
     public function invalidateFilterCache(int $dealerId): void
     {
         $trackingKey = "inv_filters_keys:{$dealerId}";
-        $keys = Cache::get($trackingKey, []);
+        $keys        = Cache::get($trackingKey, []);
 
         foreach ($keys as $key) {
             Cache::forget($key);
@@ -264,14 +263,14 @@ class InventoryListingService
         $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
         // Fresh Builder factory — closure returns new instance on each call
-        $base = fn (): Builder => Vehicle::forDealer($dealerId)
+        $base = fn(): Builder => Vehicle::forDealer($dealerId)
             ->active()
             ->when($locationId, fn($q) => $q->where('location_id', $locationId))
             ->when(
                 ! empty($bodyTypeNames),
-                fn (Builder $q) => $q->whereHas(
+                fn(Builder $q) => $q->whereHas(
                     'bodyType',
-                    fn (Builder $bt) => $bt->whereIn('name', $bodyTypeNames)
+                    fn(Builder $bt) => $bt->whereIn('name', $bodyTypeNames)
                 )
             );
 
@@ -288,22 +287,22 @@ class InventoryListingService
         // Derive makes by summing model counts per make — no separate query
         $makes = $makeModelRows
             ->groupBy('make_id')
-            ->map(fn ($group) => (object) [
+            ->map(fn($group) => (object) [
                 'make_name' => $group->first()->make?->name,
                 'cnt'       => $group->sum('cnt'),
             ])
-            ->filter(fn ($v) => $v->make_name)
+            ->filter(fn($v) => $v->make_name)
             ->sortBy('make_name')
             ->values();
 
         // Models grouped by make name — same rows, no extra query
         $models = $makeModelRows
-            ->map(fn ($v) => (object) [
+            ->map(fn($v) => (object) [
                 'make_name'  => $v->make?->name,
                 'model_name' => $v->makeModel?->name,
                 'cnt'        => $v->cnt,
             ])
-            ->filter(fn ($v) => $v->make_name && $v->model_name)
+            ->filter(fn($v) => $v->make_name && $v->model_name)
             ->sortBy('model_name')
             ->groupBy('make_name');
 
@@ -314,8 +313,8 @@ class InventoryListingService
             ->groupBy('body_style_id')
             ->with('bodyStyle:id,name')
             ->get()
-            ->map(fn ($v) => (object) ['style_name' => $v->bodyStyle?->name, 'cnt' => $v->cnt])
-            ->filter(fn ($v) => $v->style_name)
+            ->map(fn($v) => (object) ['style_name' => $v->bodyStyle?->name, 'cnt' => $v->cnt])
+            ->filter(fn($v) => $v->style_name)
             ->sortBy('style_name')
             ->values();
 
@@ -326,8 +325,8 @@ class InventoryListingService
             ->groupBy('exterior_color_id')
             ->with('exteriorColor:id,name')
             ->get()
-            ->map(fn ($v) => (object) ['color_name' => $v->exteriorColor?->name, 'cnt' => $v->cnt])
-            ->filter(fn ($v) => $v->color_name)
+            ->map(fn($v) => (object) ['color_name' => $v->exteriorColor?->name, 'cnt' => $v->cnt])
+            ->filter(fn($v) => $v->color_name)
             ->sortBy('color_name')
             ->values();
 
@@ -338,8 +337,8 @@ class InventoryListingService
             ->groupBy('interior_color_id')
             ->with('interiorColor:id,name')
             ->get()
-            ->map(fn ($v) => (object) ['color_name' => $v->interiorColor?->name, 'cnt' => $v->cnt])
-            ->filter(fn ($v) => $v->color_name)
+            ->map(fn($v) => (object) ['color_name' => $v->interiorColor?->name, 'cnt' => $v->cnt])
+            ->filter(fn($v) => $v->color_name)
             ->sortBy('color_name')
             ->values();
 
@@ -350,8 +349,8 @@ class InventoryListingService
             ->groupBy('transmission_type_id')
             ->with('transmissionType:id,name')
             ->get()
-            ->map(fn ($v) => (object) ['name' => $v->transmissionType?->name, 'cnt' => $v->cnt])
-            ->filter(fn ($v) => $v->name)
+            ->map(fn($v) => (object) ['name' => $v->transmissionType?->name, 'cnt' => $v->cnt])
+            ->filter(fn($v) => $v->name)
             ->sortBy('name')
             ->values();
 
@@ -362,8 +361,8 @@ class InventoryListingService
             ->groupBy('drivetrain_type_id')
             ->with('drivetrainType:id,name')
             ->get()
-            ->map(fn ($v) => (object) ['name' => $v->drivetrainType?->name, 'cnt' => $v->cnt])
-            ->filter(fn ($v) => $v->name)
+            ->map(fn($v) => (object) ['name' => $v->drivetrainType?->name, 'cnt' => $v->cnt])
+            ->filter(fn($v) => $v->name)
             ->sortBy('name')
             ->values();
 
@@ -374,8 +373,8 @@ class InventoryListingService
             ->groupBy('fuel_type_id')
             ->with('fuelType:id,name')
             ->get()
-            ->map(fn ($v) => (object) ['name' => $v->fuelType?->name, 'cnt' => $v->cnt])
-            ->filter(fn ($v) => $v->name)
+            ->map(fn($v) => (object) ['name' => $v->fuelType?->name, 'cnt' => $v->cnt])
+            ->filter(fn($v) => $v->name)
             ->sortBy('name')
             ->values();
 
@@ -409,15 +408,15 @@ class InventoryListingService
 
         // ── Features (via Feature model — cleaner reverse relation) ───────────
         $features = Feature::whereHas('vehicles', function (Builder $q) use ($dealerId, $bodyTypeNames, $locationId) {
-                $q->forDealer($dealerId)->active()->when($locationId, fn($q) => $q->where('location_id', $locationId));
-                if (! empty($bodyTypeNames)) {
-                    $q->whereHas('bodyType', fn (Builder $bt) => $bt->whereIn('name', $bodyTypeNames));
-                }
-            })
+            $q->forDealer($dealerId)->active()->when($locationId, fn($q) => $q->where('location_id', $locationId));
+            if (! empty($bodyTypeNames)) {
+                $q->whereHas('bodyType', fn(Builder $bt) => $bt->whereIn('name', $bodyTypeNames));
+            }
+        })
             ->withCount(['vehicles' => function (Builder $q) use ($dealerId, $bodyTypeNames, $locationId) {
                 $q->forDealer($dealerId)->active()->when($locationId, fn($q) => $q->where('location_id', $locationId));
                 if (! empty($bodyTypeNames)) {
-                    $q->whereHas('bodyType', fn (Builder $bt) => $bt->whereIn('name', $bodyTypeNames));
+                    $q->whereHas('bodyType', fn(Builder $bt) => $bt->whereIn('name', $bodyTypeNames));
                 }
             }])
             ->orderBy('name')

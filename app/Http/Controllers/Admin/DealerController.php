@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\DealerStatus;
@@ -35,30 +34,30 @@ class DealerController extends Controller
     {
         $validated = $request->validate([
             'company_name' => 'required|string|max:50',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|string|max:16',
-            'domains' => 'required|array|min:1',
-            'domains.*' => 'required|string|unique:domains,domain',
+            'email'        => 'required|email|unique:users,email',
+            'phone'        => 'nullable|string|max:16',
+            'domains'      => 'required|array|min:1',
+            'domains.*'    => 'required|string|unique:domains,domain',
         ]);
 
         DB::transaction(function () use ($validated, $request) {
             $dealerData = [
-                'name' => $validated['company_name'],
+                'name'         => $validated['company_name'],
                 'company_name' => $validated['company_name'],
-                'slug' => Str::slug($validated['company_name']),
-                'email' => $validated['email'],
-                'phone' => $validated['phone'],
-                'status' => DealerStatus::INACTIVE,
-                'is_active' => false,
-                'domain' => $validated['domains'][0], // Set the first one as the primary on dealer table too
-                'internal_id' => TimeHelper::generateNumericId(),
+                'slug'         => Str::slug($validated['company_name']),
+                'email'        => $validated['email'],
+                'phone'        => $validated['phone'],
+                'status'       => DealerStatus::INACTIVE,
+                'is_active'    => false,
+                'domain'       => $validated['domains'][0], // Set the first one as the primary on dealer table too
+                'internal_id'  => TimeHelper::generateNumericId(),
             ];
 
             $dealer = Dealer::create($dealerData);
 
             foreach ($validated['domains'] as $index => $domainName) {
                 $dealer->domains()->create([
-                    'domain' => $domainName,
+                    'domain'     => $domainName,
                     'is_primary' => $index === 0,
                 ]);
             }
@@ -71,23 +70,23 @@ class DealerController extends Controller
                     }
 
                     $dealer->locations()->create([
-                        'name' => $locData['name'],
-                        'street1' => $locData['street1'] ?? '',
-                        'city' => $locData['city'] ?? '',
-                        'state' => $locData['state'] ?? '',
+                        'name'       => $locData['name'],
+                        'street1'    => $locData['street1'] ?? '',
+                        'city'       => $locData['city'] ?? '',
+                        'state'      => $locData['state'] ?? '',
                         'postalcode' => $locData['postalcode'] ?? '',
-                        'country' => 'US',
-                        'order' => $locOrder++,
+                        'country'    => 'US',
+                        'order'      => $locOrder++,
                     ]);
                 }
             }
 
             $user = User::create([
-                'first_name' => $validated['company_name'],
-                'last_name' => 'Admin',
-                'email' => $validated['email'],
-                'password' => Hash::make(Str::random(16)),
-                'is_system_user' => false,
+                'first_name'        => $validated['company_name'],
+                'last_name'         => 'Admin',
+                'email'             => $validated['email'],
+                'password'          => Hash::make(Str::random(16)),
+                'is_system_user'    => false,
                 'current_dealer_id' => $dealer->id,
             ]);
 
@@ -123,16 +122,16 @@ class DealerController extends Controller
         // Ensure permissions exist globally
         foreach ($allPermissions as $perm) {
             Permission::firstOrCreate([
-                'name' => $perm,
+                'name'       => $perm,
                 'guard_name' => 'web',
             ]);
         }
 
         // --- Dealer Owner Role ---
         $ownerRole = Role::firstOrCreate([
-            'name' => 'dealer_owner',
+            'name'       => 'dealer_owner',
             'guard_name' => 'web',
-            'dealer_id' => $dealer->id,
+            'dealer_id'  => $dealer->id,
         ], ['is_active' => true]);
         $ownerRole->syncPermissions($allPermissions);
 
@@ -142,29 +141,29 @@ class DealerController extends Controller
         // --- Dealer Manager Role ---
         // Access everything except dealership cancellation
         $managerRole = Role::firstOrCreate([
-            'name' => 'dealer_manager',
+            'name'       => 'dealer_manager',
             'guard_name' => 'web',
-            'dealer_id' => $dealer->id,
+            'dealer_id'  => $dealer->id,
         ], ['is_active' => true]);
         $managerRole->syncPermissions(array_diff($allPermissions, ['dealer.cancel_dealership']));
 
         // --- Dealer Sales Role ---
         // Same as manager, but cannot delete staff
         $salesRole = Role::firstOrCreate([
-            'name' => 'dealer_sales',
+            'name'       => 'dealer_sales',
             'guard_name' => 'web',
-            'dealer_id' => $dealer->id,
+            'dealer_id'  => $dealer->id,
         ], ['is_active' => true]);
         $salesRole->syncPermissions(array_diff($allPermissions, ['dealer.cancel_dealership', 'dealer.delete_staff']));
 
         // --- Dealer Support Role ---
         // Role of the owner but cannot affect dealer account settings/cancellation. Expires in 4 days.
         $supportRole = Role::firstOrCreate([
-            'name' => 'dealer_support',
+            'name'       => 'dealer_support',
             'guard_name' => 'web',
-            'dealer_id' => $dealer->id,
+            'dealer_id'  => $dealer->id,
         ], [
-            'is_active' => true,
+            'is_active'  => true,
             'expires_at' => now()->addDays(4), // Setting 4 days as middle ground
         ]);
         $supportRole->syncPermissions(array_diff($allPermissions, ['dealer.manage_settings', 'dealer.cancel_dealership']));
@@ -179,29 +178,29 @@ class DealerController extends Controller
     {
         $validated = $request->validate([
             'company_name' => 'required|string|max:50',
-            'email' => 'nullable|email',
-            'phone' => 'nullable|string|max:16',
-            'status' => 'required|string',
-            'domains' => 'required|array|min:1',
-            'domains.*' => 'required|string|unique:domains,domain,'.$dealer->id.',dealer_id',
+            'email'        => 'nullable|email',
+            'phone'        => 'nullable|string|max:16',
+            'status'       => 'required|string',
+            'domains'      => 'required|array|min:1',
+            'domains.*'    => 'required|string|unique:domains,domain,' . $dealer->id . ',dealer_id',
         ]);
 
         DB::transaction(function () use ($validated, $request, $dealer) {
             $dealer->update([
-                'name' => $validated['company_name'],
+                'name'         => $validated['company_name'],
                 'company_name' => $validated['company_name'],
-                'email' => $validated['email'],
-                'phone' => $validated['phone'],
-                'status' => $validated['status'],
-                'is_active' => $validated['status'] === DealerStatus::ACTIVE->value,
-                'domain' => $validated['domains'][0],
+                'email'        => $validated['email'],
+                'phone'        => $validated['phone'],
+                'status'       => $validated['status'],
+                'is_active'    => $validated['status'] === DealerStatus::ACTIVE->value,
+                'domain'       => $validated['domains'][0],
             ]);
 
             // Sync domains
             $dealer->domains()->delete();
             foreach ($validated['domains'] as $index => $domainName) {
                 $dealer->domains()->create([
-                    'domain' => $domainName,
+                    'domain'     => $domainName,
                     'is_primary' => $index === 0,
                 ]);
             }
@@ -216,13 +215,13 @@ class DealerController extends Controller
                     }
 
                     $locPayload = [
-                        'name' => $locData['name'],
-                        'street1' => $locData['street1'] ?? '',
-                        'city' => $locData['city'] ?? '',
-                        'state' => $locData['state'] ?? '',
+                        'name'       => $locData['name'],
+                        'street1'    => $locData['street1'] ?? '',
+                        'city'       => $locData['city'] ?? '',
+                        'state'      => $locData['state'] ?? '',
                         'postalcode' => $locData['postalcode'] ?? '',
-                        'country' => 'US',
-                        'order' => $locOrder++,
+                        'country'    => 'US',
+                        'order'      => $locOrder++,
                     ];
 
                     if (! empty($locData['id'])) {
@@ -232,7 +231,7 @@ class DealerController extends Controller
                             $submittedLocationIds[] = $location->id;
                         }
                     } else {
-                        $location = $dealer->locations()->create($locPayload);
+                        $location               = $dealer->locations()->create($locPayload);
                         $submittedLocationIds[] = $location->id;
                     }
                 }
@@ -245,7 +244,7 @@ class DealerController extends Controller
 
     public function toggleStatus(Dealer $dealer)
     {
-        $dealer->status = $dealer->status === DealerStatus::ACTIVE ? DealerStatus::INACTIVE : DealerStatus::ACTIVE;
+        $dealer->status    = $dealer->status === DealerStatus::ACTIVE ? DealerStatus::INACTIVE : DealerStatus::ACTIVE;
         $dealer->is_active = $dealer->status === DealerStatus::ACTIVE;
         $dealer->save();
 

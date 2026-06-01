@@ -1,15 +1,13 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Mail\Dealer\StaffInvitationMail;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Dealer\StaffInvitationMail;
-use Illuminate\Support\Str;
 
 class DealerUserController extends Controller
 {
@@ -18,18 +16,18 @@ class DealerUserController extends Controller
         $this->authorize('dealer.view_staff');
 
         $dealer = auth()->user()->currentDealer;
-        
+
         // Ensure requested roles exist for this dealer
         $this->ensureRolesExist($dealer);
 
         // Scope users to current dealer only and exclude system users
         $users = $dealer->users()
             ->where('is_system_user', false)
-            ->with(['roles' => function($query) use ($dealer) {
+            ->with(['roles' => function ($query) use ($dealer) {
                 $query->where('roles.dealer_id', $dealer->id);
             }])
             ->get();
-        
+
         // Load all available timezones
         $timezones = \DateTimeZone::listIdentifiers();
 
@@ -41,7 +39,7 @@ class DealerUserController extends Controller
         $this->authorize('dealer.edit_staff');
 
         $dealer = auth()->user()->currentDealer;
-        
+
         // Security check: user must belong to this dealer
         if ($user->current_dealer_id !== $dealer->id) {
             abort(403);
@@ -49,15 +47,15 @@ class DealerUserController extends Controller
 
         $request->validate([
             'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'timezone' => 'required|string',
-            'roles' => 'required|array|min:1',
+            'last_name'  => 'required|string|max:50',
+            'timezone'   => 'required|string',
+            'roles'      => 'required|array|min:1',
         ]);
 
         $user->update([
             'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'timezone' => $request->timezone,
+            'last_name'  => $request->last_name,
+            'timezone'   => $request->timezone,
         ]);
 
         // Sync roles
@@ -66,7 +64,7 @@ class DealerUserController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'User updated successfully.'
+            'message' => 'User updated successfully.',
         ]);
     }
 
@@ -75,11 +73,11 @@ class DealerUserController extends Controller
         $roles = ['dealer_manager', 'dealer_sales', 'dealer_support'];
         foreach ($roles as $roleName) {
             Role::firstOrCreate([
-                'name' => $roleName,
-                'dealer_id' => $dealer->id,
-                'guard_name' => 'web'
+                'name'       => $roleName,
+                'dealer_id'  => $dealer->id,
+                'guard_name' => 'web',
             ], [
-                'is_active' => true
+                'is_active' => true,
             ]);
         }
     }
@@ -89,24 +87,24 @@ class DealerUserController extends Controller
         $this->authorize('dealer.create_staff');
 
         $request->validate([
-            'email' => 'required|email|unique:users,email',
+            'email'      => 'required|email|unique:users,email',
             'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'timezone' => 'required|string',
-            'roles' => 'required|array|min:1',
-            'password' => 'required|string|min:8',
+            'last_name'  => 'required|string|max:50',
+            'timezone'   => 'required|string',
+            'roles'      => 'required|array|min:1',
+            'password'   => 'required|string|min:8',
         ]);
 
         $dealer = auth()->user()->currentDealer;
 
         $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'timezone' => $request->timezone,
-            'password' => Hash::make($request->password),
+            'first_name'        => $request->first_name,
+            'last_name'         => $request->last_name,
+            'email'             => $request->email,
+            'timezone'          => $request->timezone,
+            'password'          => Hash::make($request->password),
             'current_dealer_id' => $dealer->id,
-            'is_active' => true,
+            'is_active'         => true,
             'email_verified_at' => now(), // Auto-verify staff users
         ]);
 
@@ -122,10 +120,10 @@ class DealerUserController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'User added successfully and invitation sent.'
+            'message' => 'User added successfully and invitation sent.',
         ]);
     }
-    
+
     public function destroy(User $user)
     {
         $this->authorize('dealer.delete_staff');
@@ -136,7 +134,7 @@ class DealerUserController extends Controller
         }
 
         $dealer = auth()->user()->currentDealer;
-        
+
         // Check if user belongs to this dealer
         if ($user->current_dealer_id !== $dealer->id) {
             abort(403);

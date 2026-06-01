@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -50,7 +49,7 @@ class AdminRestrictedSiteController extends Controller
                 'required',
                 'string',
                 'unique:admin_restricted_sites,domain',
-                'regex:/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z0-9-]{2,}|localhost$/i'
+                'regex:/^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z0-9-]{2,}|localhost$/i',
             ],
         ], [
             'domain.regex' => 'The domain must be a valid hostname format.',

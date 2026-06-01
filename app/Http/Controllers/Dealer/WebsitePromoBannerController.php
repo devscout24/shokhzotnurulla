@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Http\Controllers\Controller;
@@ -16,7 +15,7 @@ class WebsitePromoBannerController extends Controller
     public function index(): View
     {
         $categories = PromoCategory::orderBy('sort_order')->withCount('banners')->get();
-        $banners = PromoBanner::forActiveLocation()->with('category')->orderBy('sort_order')->get();
+        $banners    = PromoBanner::forActiveLocation()->with('category')->orderBy('sort_order')->get();
 
         return view('dealer.pages.website.promo-banner.index', compact('banners', 'categories'));
     }
@@ -43,8 +42,8 @@ class WebsitePromoBannerController extends Controller
         ]);
 
         $validated['location_id'] = PromoBanner::getActiveLocationId();
-        $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = PromoBanner::forActiveLocation()->max('sort_order') + 1;
+        $validated['author']      = Auth::user()->name;
+        $validated['sort_order']  = PromoBanner::forActiveLocation()->max('sort_order') + 1;
 
         $banner = PromoBanner::create($validated);
         $banner->load('category');
@@ -103,10 +102,10 @@ class WebsitePromoBannerController extends Controller
             'SRP: Top Banner (Desktop)',
             'SRP: Top Banner (Mobile)',
             'SRP: Primary background color',
-            'SRP: Secondary background color'
+            'SRP: Secondary background color',
         ];
 
-        $callback = function() use ($headers) {
+        $callback = function () use ($headers) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $headers);
             fclose($file);
@@ -117,24 +116,24 @@ class WebsitePromoBannerController extends Controller
             "Content-Disposition" => "attachment; filename=promo_banner_template.csv",
             "Pragma"              => "no-cache",
             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            "Expires"             => "0",
         ]);
     }
 
     public function uploadCsv(Request $request): JsonResponse
     {
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt'
+            'file' => 'required|file|mimes:csv,txt',
         ]);
 
-        $file = $request->file('file');
+        $file   = $request->file('file');
         $handle = fopen($file->getPathname(), 'r');
         $header = fgetcsv($handle);
 
         $data = [];
         while (($row = fgetcsv($handle)) !== false) {
             $item = array_combine($header, $row);
-            
+
             // Map the friendly names back to field keys
             $mapped = [
                 'title'                  => $item['Promo Title / Image Alt Text'] ?? '',

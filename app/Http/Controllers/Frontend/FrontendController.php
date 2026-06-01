@@ -37,11 +37,11 @@ class FrontendController extends Controller
 
     public function home(): View
     {
-        $dealerId = $this->dealerResolver->resolve();
+        $dealerId   = $this->dealerResolver->resolve();
         $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
         // dd($dealerId, $locationId, auth()->user()->current_dealer_id);
-        
+
         $newArrivals = Vehicle::forDealer($dealerId)
             ->active()
             ->when($locationId, fn($q) => $q->where('location_id', $locationId))
@@ -73,7 +73,7 @@ class FrontendController extends Controller
         $this->attachPricing($newArrivals, $dealerId);
 
         $homeAboutCardCtaFallback = view('frontend.partials.home-about-card-cta')->render();
-        $homeAboutCardCtaContent = Page::firstOrCreateGlobalSectionContent(
+        $homeAboutCardCtaContent  = Page::firstOrCreateGlobalSectionContent(
             $dealerId,
             Page::HOME_ABOUT_CARD_CTA_SLUG,
             'Homepage About / Cards / CTA',
@@ -81,10 +81,10 @@ class FrontendController extends Controller
         );
 
         return view('frontend.pages.home', [
-            'newArrivals'                 => $newArrivals,
-            'homeAboutCardCtaContent'     => $homeAboutCardCtaContent,
-            'homeAboutCardCtaFallback'    => $homeAboutCardCtaFallback,
-            'seo'                         => [
+            'newArrivals'              => $newArrivals,
+            'homeAboutCardCtaContent'  => $homeAboutCardCtaContent,
+            'homeAboutCardCtaFallback' => $homeAboutCardCtaFallback,
+            'seo'                      => [
                 'title'       => 'Angel Motors Inc | Used Cars for Sale in Smyrna, TN',
                 'description' => 'Angel Motors Inc in Smyrna, TN offers quality pre-owned vehicles at competitive prices.',
                 'keywords'    => 'angel motors inc, used cars smyrna tn',
@@ -249,7 +249,7 @@ class FrontendController extends Controller
 
     public function aboutUs(): View
     {
-        $dealerId = $this->dealerResolver->resolve();
+        $dealerId   = $this->dealerResolver->resolve();
         $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
         $newArrivals = Vehicle::forDealer($dealerId)
@@ -368,7 +368,7 @@ class FrontendController extends Controller
     public function showBlogPost(string $slug): View
     {
         $dealerId = $this->dealerResolver->resolve();
-        $query = \App\Models\Website\BlogPost::where('slug', $slug)
+        $query    = \App\Models\Website\BlogPost::where('slug', $slug)
             ->where('dealer_id', $dealerId);
 
         $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
@@ -380,9 +380,9 @@ class FrontendController extends Controller
                     $q->whereNull('published_at')->orWhere('published_at', '<=', now());
                 });
         }
-        
+
         $dealerName = Dealer::where('id', $dealerId)->value('name') ?? 'the dealership';
-        $page = $query->firstOrFail();
+        $page       = $query->firstOrFail();
 
         $latestBlogs = \App\Models\Website\BlogPost::forDealer($dealerId)
             ->active()
@@ -398,7 +398,7 @@ class FrontendController extends Controller
                 'id', 'dealer_id', 'year', 'make_id', 'make_model_id', 'trim', 'vin',
                 'stock_number', 'mileage', 'list_price', 'original_price',
 
-                 'model_number',
+                'model_number',
             ])
             ->with([
                 'make:id,name',
@@ -412,14 +412,13 @@ class FrontendController extends Controller
             ->limit(12)
             ->get();
 
-
         return view('frontend.pages.blog-page', compact('page', 'dealerName', 'latestBlogs', 'newArrivals'));
     }
 
     public function showSlide(string $slug): View
     {
         $dealerId = $this->dealerResolver->resolve();
-        $query = \App\Models\Website\Slide::where('slug', $slug)
+        $query    = \App\Models\Website\Slide::where('slug', $slug)
             ->where('dealer_id', $dealerId);
 
         $canPreview = auth()->check() && auth()->user()->current_dealer_id === $dealerId;
