@@ -349,6 +349,104 @@
                 div.appendChild(ifr);
                 break;
 
+            case 'carousel':
+                const cWrap = document.createElement('div');
+                cWrap.className = 'rendered-carousel';
+                cWrap.style.cssText = 'position:relative;width:100%;overflow:hidden;border-radius:4px;background:#1a1a2e';
+
+                let cSlidesData = [];
+                try { cSlidesData = JSON.parse(data.slides || '[]'); } catch(e) {}
+                const cInterval = parseInt(data.interval) || 5000;
+                const cAutoplay = data.autoplay !== 'false';
+                const cNavStyle = data.navStyle || 'both';
+                const cHeight = parseInt(data.height) || 400;
+
+                cWrap.style.height = cHeight + 'px';
+
+                if (cSlidesData.length === 0) {
+                    cWrap.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666">Carousel Block</div>';
+                } else {
+                    let cHtml = '';
+                    cSlidesData.forEach((slide, i) => {
+                        cHtml += `<div class="carousel-slide" data-index="${i}" style="position:absolute;inset:0;transition:opacity 0.5s ease;opacity:${i === 0 ? 1 : 0};display:flex;align-items:center;justify-content:center;background:#1a1a2e">
+                            ${slide.url ? `<img src="${slide.url}" style="width:100%;height:100%;object-fit:cover" />` : '<span style="color:#555">No image</span>'}
+                        </div>`;
+                    });
+
+                    if (cNavStyle === 'dots' || cNavStyle === 'both') {
+                        cHtml += '<div class="carousel-indicators" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2">' +
+                            cSlidesData.map((_, i) => `<span style="width:10px;height:10px;border-radius:50%;border:2px solid #fff;background:${i === 0 ? '#fff' : 'transparent'};display:inline-block"></span>`).join('') +
+                            '</div>';
+                    }
+
+                    if (cNavStyle === 'arrows' || cNavStyle === 'both') {
+                        cHtml += `
+                            <button type="button" class="car-prev" style="position:absolute;top:50%;left:10px;transform:translateY(-50%);z-index:2;background:rgba(0,0,0,0.4);color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" class="car-next" style="position:absolute;top:50%;right:10px;transform:translateY(-50%);z-index:2;background:rgba(0,0,0,0.4);color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-chevron-right"></i></button>
+                        `;
+                    }
+
+                    cWrap.innerHTML = cHtml;
+
+                    if (cSlidesData.length > 1) {
+                        let ci = 0;
+                        const cSlides = cWrap.querySelectorAll('.carousel-slide');
+                        const cDots = cWrap.querySelectorAll('.carousel-indicators span');
+                        const cPrevBtn = cWrap.querySelector('.car-prev');
+                        const cNextBtn = cWrap.querySelector('.car-next');
+
+                        function goToC(i) {
+                            cSlides.forEach((s, idx) => {
+                                s.style.opacity = idx === i ? 1 : 0;
+                            });
+                            cDots.forEach((d, idx) => {
+                                d.style.background = idx === i ? '#fff' : 'transparent';
+                            });
+                            ci = i;
+                        }
+
+                        if (cPrevBtn) cPrevBtn.addEventListener('click', () => goToC((ci - 1 + cSlidesData.length) % cSlidesData.length));
+                        if (cNextBtn) cNextBtn.addEventListener('click', () => goToC((ci + 1) % cSlidesData.length));
+                        cDots.forEach((d, idx) => {
+                            d.addEventListener('click', () => goToC(idx));
+                        });
+
+                        if (cAutoplay) {
+                            setInterval(() => goToC((ci + 1) % cSlidesData.length), cInterval);
+                        }
+                    }
+                }
+                div.appendChild(cWrap);
+                break;
+
+            case 'accordion':
+                const aWrap = document.createElement('div');
+                aWrap.className = 'rendered-accordion';
+                aWrap.style.cssText = 'width:100%';
+                const accItems = data.items || [];
+                accItems.forEach((item, i) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.style.cssText = 'border:1px solid #dee2e6;margin-bottom:5px;border-radius:4px;overflow:hidden';
+                    const header = document.createElement('div');
+                    header.style.cssText = 'padding:10px;background:#f8f9fa;cursor:pointer;font-weight:600';
+                    header.innerText = item.header || ('Accordion Item #' + (i + 1));
+                    const content = document.createElement('div');
+                    content.style.cssText = 'padding:15px;display:none';
+                    if (item.blocks && item.blocks.length) {
+                        renderContent(item.blocks, content);
+                    } else {
+                        content.innerText = item.content || '';
+                    }
+                    header.addEventListener('click', () => {
+                        content.style.display = content.style.display === 'block' ? 'none' : 'block';
+                    });
+                    itemDiv.appendChild(header);
+                    itemDiv.appendChild(content);
+                    aWrap.appendChild(itemDiv);
+                });
+                div.appendChild(aWrap);
+                break;
+
             // Specialized Placeholders
             case 'inventory':
             case 'form':

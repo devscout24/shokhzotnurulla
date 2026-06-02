@@ -673,8 +673,8 @@
             csrf_token: "{{ csrf_token() }}"
         };
     </script>
-    <script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=6.0"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=6.1"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=6.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=6.0"></script>
@@ -682,7 +682,8 @@
     <script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=6.0"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=6.1"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/carousel.js') }}?v=6.1"></script>
     <script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=6.0"></script>
@@ -696,7 +697,7 @@
     <script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=6.0"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/export-import.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/export-import.js') }}?v=6.1"></script>
 
     <script>
         // Sync Top Bar Status

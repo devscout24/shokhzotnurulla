@@ -345,22 +345,42 @@ function restoreBlockProperties(block, type, data) {
       }
       break;
 
+    case 'carousel':
+      const carBlock = inner.querySelector('.editor-carousel');
+      if (carBlock) {
+        carBlock.dataset.slides = data.slides || '[]';
+        carBlock.dataset.interval = data.interval || '5000';
+        carBlock.dataset.autoplay = data.autoplay !== undefined ? data.autoplay : 'true';
+        carBlock.dataset.navStyle = data.navStyle || 'both';
+        carBlock.dataset.height = data.height || '400';
+      }
+      break;
+
     case 'accordion':
       const accBlock = inner.querySelector('.editor-accordion');
       if (accBlock && data.items) {
-        const accContent = accBlock.querySelector('.acc-content');
-        if (accContent) {
-          accContent.innerHTML = '';
-          data.items.forEach(item => {
-            const itemEl = document.createElement('div');
-            itemEl.className = 'acc-item';
-            itemEl.innerHTML = `
-              <div class="acc-header" contenteditable="true">${item.title || ''}</div>
-              <div class="acc-body" contenteditable="true">${item.content || ''}</div>
-            `;
-            accContent.appendChild(itemEl);
+        accBlock.innerHTML = '';
+        data.items.forEach(item => {
+          const itemEl = document.createElement('div');
+          itemEl.className = 'acc-item';
+          itemEl.style.cssText = 'border:1px solid #dee2e6;margin-bottom:5px;border-radius:4px';
+          itemEl.innerHTML = `
+            <div class="acc-header" style="padding:10px;background:#f8f9fa;cursor:pointer;font-weight:600;min-height:40px;display:block" contenteditable="true">${item.header || item.title || 'Accordion Item'}</div>
+            <div class="acc-content col-drop-zone" style="padding:15px;min-height:50px">
+              <p contenteditable="true" spellcheck="false" data-placeholder="Enter content here..." style="min-height:40px;padding:5px;margin:0;width:100%;display:block;outline:none"></p>
+            </div>
+          `;
+          accBlock.appendChild(itemEl);
+          const hdr = itemEl.querySelector('.acc-header');
+          const content = itemEl.querySelector('.acc-content');
+          hdr.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            }
           });
-        }
+          if (typeof attachDropZoneListeners === 'function') attachDropZoneListeners(content);
+        });
       }
       break;
 
