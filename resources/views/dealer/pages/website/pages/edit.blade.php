@@ -409,11 +409,17 @@
                             <div class="fw-bold bg-lighter card-header d-flex justify-content-between align-items-center py-3 border-0"
                                 style="background:transparent">
                                 <span class="small text-muted text-uppercase fw-bolder"
-                                    style="letter-spacing:1px">Document</span>
+                                    style="letter-spacing:1px">Content
+                                    Editor</span>
                                 <div class="d-flex align-items-center gap-2">
+                                    <button type="button" class="btn btn-light btn-sm px-3" title="Export"><i
+                                            class="fa-solid fa-download"></i></button>
+                                    <button type="button" class="btn btn-light btn-sm px-3" title="Import"><i
+                                            class="fa-solid fa-upload"></i></button>
                                     <div class="btn-group bg-white border shadow-sm"
                                         style="border-radius:6px; overflow:hidden">
-                                        <button type="button" class="btn btn-light btn-sm border-end px-3" id="btn-undo"><i
+                                        <button type="button" class="btn btn-light btn-sm border-end px-3" id="btn-undo"
+                                            disabled><i
                                                 class="fa-solid fa-rotate-left"></i></button>
                                         <button type="button" class="btn btn-light btn-sm px-3" id="btn-redo"><i
                                                 class="fa-solid fa-rotate-right text-primary"></i></button>
@@ -422,6 +428,9 @@
                             </div>
                             <div class="p-0">
                                 <div id="content-editor-zone">
+                                    <div class="editor-empty-state" id="empty-state"><span
+                                            class="editor-empty-badge">Content Editor</span><input
+                                            class="editor-empty-input" placeholder="" readonly /></div>
                                     <div id="blocks-container" style="min-height:1000px"></div>
                                 </div>
                             </div>
@@ -546,6 +555,7 @@
                         <div class="d-flex gap-2">
                             <input class="hs-input" name="slug" id="page-slug" value="{{ $page->slug }}" placeholder="home">
                             <a href="{{ url($page->slug) }}" target="_blank"
+                                id="slug-preview-link"
                                 class="btn btn-outline-secondary d-flex align-items-center" title="View Page">
                                 <i class="fa-solid fa-external-link"></i>
                             </a>
@@ -622,37 +632,36 @@
             return false;
         };
 
-        // Brute Force Pointer Events Fix
-        setInterval(() => {
-            window.CMS_CONFIG = {
-                upload_url: "{{ route('dealer.website.media.upload') }}",
-                csrf_token: "{{ csrf_token() }}"
-            };
+        window.CMS_CONFIG = {
+            upload_url: "{{ route('dealer.website.media.upload') }}",
+            csrf_token: "{{ csrf_token() }}"
+        };
     </script>
-    <script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=5.3"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=5.3"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=6.1"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=6.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=5.3"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=5.3"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=5.3"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/html-css.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=5.4"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/export-import.js') }}?v=5.4"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/button.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=6.1"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/carousel.js') }}?v=6.1"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/span.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/iFrame.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/2col.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/container.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/icon.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/cart.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/html-css.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/export-import.js') }}?v=6.1"></script>
 
     <script>
         // NUCLEAR FOCUS FIX: High-priority mousedown listener
@@ -686,15 +695,30 @@
         function toggleSidePanel(id) {
             const panels = ['page-settings', 'page-revisions'];
             const overlay = document.getElementById('side-overlay');
+
             panels.forEach(p => {
                 const el = document.getElementById('side-panel-' + p);
                 if (p === id) {
-                    if (el.classList.contains('open')) { el.classList.remove('open'); overlay.style.display = 'none'; }
-                    else { panels.forEach(o => document.getElementById('side-panel-' + o).classList.remove('open')); el.classList.add('open'); overlay.style.display = 'block'; }
-                } else { el.classList.remove('open'); }
+                    if (el.classList.contains('open')) {
+                        el.classList.remove('open');
+                        overlay.style.display = 'none';
+                    } else {
+                        // Close others first
+                        panels.forEach(other => document.getElementById('side-panel-' + other).classList.remove(
+                            'open'));
+                        el.classList.add('open');
+                        overlay.style.display = 'block';
+                    }
+                } else {
+                    el.classList.remove('open');
+                }
             });
+
+            const anyOpen = panels.some(p => document.getElementById('side-panel-' + p).classList.contains('open'));
+            overlay.style.display = anyOpen ? 'block' : 'none';
         }
-        document.getElementById('side-overlay').addEventListener('click', function () {
+
+        document.getElementById('side-overlay').addEventListener('click', function() {
             document.querySelectorAll('.side-panel').forEach(p => p.classList.remove('open'));
             this.style.display = 'none';
         });
