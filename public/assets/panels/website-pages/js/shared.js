@@ -979,7 +979,7 @@ function renderBlockData(data) {
             const item = document.createElement('div');
             item.className = 'acc-item';
             item.style.cssText = 'border:1px solid #dee2e6;margin-bottom:5px;border-radius:4px';
-            item.innerHTML = `<div class="acc-header" style="padding:10px;background:#f8f9fa;cursor:pointer;font-weight:600;min-height:40px;display:block" contenteditable="true">${itemData.header}</div><div class="acc-content col-drop-zone" style="padding:15px;min-height:50px"></div>`;
+            item.innerHTML = `<div class="acc-header" style="padding:10px;background:#f8f9fa;cursor:pointer;font-weight:600;min-height:40px;display:block" contenteditable="true">${itemData.header}</div><div class="acc-content col-drop-zone" style="padding:15px;min-height:50px"><p contenteditable="true" spellcheck="false" data-placeholder="Enter content here..." style="min-height:40px;padding:5px;margin:0;width:100%;display:block;outline:none"></p></div>`;
             container.appendChild(item);
             // Set up keyboard toggle on header
             const hdr = item.querySelector('.acc-header');
@@ -991,7 +991,8 @@ function renderBlockData(data) {
               }
             });
             if (typeof attachDropZoneListeners === 'function') attachDropZoneListeners(contentZone);
-            if (itemData.blocks) {
+            if (itemData.blocks && itemData.blocks.length > 0) {
+              contentZone.innerHTML = '';
               itemData.blocks.forEach(childData => {
                 const childBlock = renderBlockData(childData);
                 if (childBlock) { contentZone.appendChild(childBlock); attachBlockListeners(childBlock); }

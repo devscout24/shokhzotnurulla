@@ -2,7 +2,7 @@
 
 function openAccordionSettings(el) {
   closeAllPanels();
-  activeEl = el;
+  activeEl = el.classList.contains('editor-accordion') ? el : el.closest('.editor-accordion') || el;
   const block = el.closest('.dropped-block');
   block.classList.add('selected');
   document.getElementById('accordion-settings-panel').style.display = 'block';

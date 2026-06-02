@@ -662,6 +662,7 @@
     <script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/carousel.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=6.0"></script>
