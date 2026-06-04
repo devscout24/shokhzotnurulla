@@ -70,7 +70,7 @@
         <div class="pb-3 border-bottom row">
             <div class="col-12 px-3">
                 <div class="w-100 mt-3 dropdown">
-                    <button type="button" id="favorites" aria-expanded="false" data-bs-toggle="dropdown"
+                    <button type="button" id="favoritesMobile" aria-expanded="false" data-bs-toggle="dropdown"
                         class="text-decoration-none bg-white ps-0 d-block w-100 border border-dark dropdown-toggle btn btn-link">
                         <span class="me-2 text-danger">
                             <i class="fa-solid fa-heart"></i>
@@ -78,7 +78,7 @@
                         Favorites
                         <span class="badge bg-danger rounded-pill ms-2 d-none" id="fav-count-mobile">0</span>
                     </button>
-                    <div class="py-0 mt-3 absolute-offset dropdown-menu w-100 shadow-sm border-0">
+                    <div class="py-0 mt-3 absolute-offset dropdown-menu w-100 shadow-sm border-0" data-favorites-menu>
                         <div class="p-3 text-center">
                             <i class="fa-solid fa-heart-crack d-block mb-2 h4 opacity-50"></i>
                             <span class="text-muted small">No items saved yet.</span>

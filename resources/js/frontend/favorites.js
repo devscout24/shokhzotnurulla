@@ -55,7 +55,7 @@
 
     function updateDropdown() {
         // Find all potential dropdown menus for favorites
-        const dropdownLists = document.querySelectorAll('#favoritesDropdown + .dropdown-menu, #favorites + .dropdown-menu, [aria-labelledby="favoritesDropdown"]');
+        const dropdownLists = document.querySelectorAll('[data-favorites-menu]');
         const favorites = getFavorites();
 
         if (dropdownLists.length === 0) return;
@@ -146,7 +146,7 @@
     function init() {
         // Toggle Dropdowns Manually (Backup for Bootstrap)
         document.addEventListener('click', function(e) {
-            const toggle = e.target.closest('#favoritesDropdown, #favorites, #hoursDropdown');
+            const toggle = e.target.closest('#favoritesDropdown, #favoritesHeader, #favoritesMobile, #hoursDropdown');
             if (toggle) {
                 // If Bootstrap is not working, we toggle it ourselves
                 const menu = toggle.nextElementSibling;
