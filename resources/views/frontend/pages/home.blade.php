@@ -33,96 +33,92 @@
                     @if($bannerTitle ?? null)
                         <h1 class="font-weight-bold">{{ $bannerTitle }}</h1>
                     @endif
+
                     @if($bannerSubtitle ?? null)
                         <h2 class="font-weight-bold">{{ $bannerSubtitle }}</h2>
                     @endif
 
-                    <div class="bg-light p-3 rounded border">
+                    <div class="bg-light p-md-3 p-2 rounded border mt-md-0 mt-3 d-none d-md-block">
                         <div class="position-relative">
                             <span class="d-inline-block position-absolute search-icon iconPostion">
                                 <i class="fa-solid fa-magnifying-glass greyIcon"></i>
                             </span>
                             <input data-bs-toggle="modal" data-bs-target="#modalSearch"
                                 placeholder="Search by make, model, feature" autocomplete="off" tabindex="-1"
-                                class="ps-5 pe-5 py-3 searchbox form-control form-control-lg" name="search"
+                                class="ps-md-5 ps-5 pe-5 py-md-3 py-2 searchbox form-control form-control-lg" name="search"
                                 value="">
                         </div>
                     </div>
                 </div>
             </div>
-            
         </div>
     </div>
 
     <!-- Browse by Style  -->
     <div class="position-relative pt-0 mb-5">
         <div class="container">
-            <div class="d-xl-none pt-3 mx-n3 px-0">
-                <button type="button" class="me-3 btn btn-primary">Body Style</button>
-                <button type="button" class="btn btn-default">Make &amp; Model</button>
-            </div>
-            <h3 class="d-none d-xl-inline-block h4 border-bottom border-theme border-thick pb-3 mb-4 mt-5">
+            <h3 class="h4 border-bottom border-theme border-thick pb-3 mb-4 mt-5 d-inline-block">
                 Browse by Style
             </h3>
 
             <div class="mx-n1 mx-lg-0 my-3 row">
-                <div class="p-1 notranslate type-cars col-md-2 col-4">
+                <div class="p-1 notranslate type-cars col-lg-2 col-md-3 col-4">
                     <a href="{{ route('frontend.inventory.type', 'cars') }}"
-                        class="d-block cursor-pointer bg-white border rounded p-3 text-center"
+                        class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="Cars at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/sedan.webp') }}" class="my-1 img-fluid carss" alt="Cars">
+                        <img src="{{ asset('assets/frontend/img/sedan.webp') }}" class="my-1 img-fluid carss" alt="Cars" style="height: 48px; object-fit: contain;">
                         <br>
-                        Cars
+                        <span class="small font-weight-bold">Cars</span>
                     </a>
                 </div>
 
-                <div class="p-1 notranslate type-cars col-md-2 col-4">
+                <div class="p-1 notranslate type-cars col-lg-2 col-md-3 col-4">
                     <a href="{{ route('frontend.inventory.type', 'suvs') }}"
-                        class="d-block cursor-pointer bg-white border rounded p-3 text-center"
+                        class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="SUVs at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/suv.webp') }}" class="my-1 img-fluid carss" alt="SUVs">
+                        <img src="{{ asset('assets/frontend/img/suv.webp') }}" class="my-1 img-fluid carss" alt="SUVs" style="height: 48px; object-fit: contain;">
                         <br>
-                        SUVs
+                        <span class="small font-weight-bold">SUVs</span>
                     </a>
                 </div>
 
-                <div class="p-1 notranslate type-cars col-md-2 col-4">
+                <div class="p-1 notranslate type-cars col-lg-2 col-md-3 col-4">
                     <a href="{{ route('frontend.inventory.type', 'trucks') }}"
-                        class="d-block cursor-pointer bg-white border rounded p-3 text-center"
+                        class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="Trucks at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/truck.webp') }}" class="my-1 img-fluid carss" alt="Trucks">
+                        <img src="{{ asset('assets/frontend/img/truck.webp') }}" class="my-1 img-fluid carss" alt="Trucks" style="height: 48px; object-fit: contain;">
                         <br>
-                        Trucks
+                        <span class="small font-weight-bold">Trucks</span>
                     </a>
                 </div>
 
-                <div class="p-1 notranslate type-cars col-md-2 col-4">
+                <div class="p-1 notranslate type-cars col-lg-2 col-md-3 col-4">
                     <a href="{{ route('frontend.inventory.type', 'vans') }}"
-                        class="d-block cursor-pointer bg-white border rounded p-3 text-center"
+                        class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="Cargo Vans at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/cargovan.webp') }}" class="my-1 img-fluid carss" alt="Cargo Vans">
+                        <img src="{{ asset('assets/frontend/img/cargovan.webp') }}" class="my-1 img-fluid carss" alt="Cargo Vans" style="height: 48px; object-fit: contain;">
                         <br>
-                        Cargo Vans
+                        <span class="small font-weight-bold">Cargo Vans</span>
                     </a>
                 </div>
 
-                <div class="p-1 notranslate type-cars col-md-2 col-4">
+                <div class="p-1 notranslate type-cars col-lg-2 col-md-3 col-4">
                     <a href="{{ route('frontend.inventory.type', 'hatchbacks') }}"
-                        class="d-block cursor-pointer bg-white border rounded p-3 text-center"
+                        class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="Hatchbacks at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/wagon.webp') }}" class="my-1 img-fluid carss" alt="Hatchbacks">
+                        <img src="{{ asset('assets/frontend/img/wagon.webp') }}" class="my-1 img-fluid carss" alt="Hatchbacks" style="height: 48px; object-fit: contain;">
                         <br>
-                        Hatchback
+                        <span class="small font-weight-bold">Hatchback</span>
                     </a>
                 </div>
 
-                <div class="p-1 notranslate type-cars col-md-2 col-4">
+                <div class="p-1 notranslate type-cars col-lg-2 col-md-3 col-4">
                     <a href="{{ route('frontend.inventory') }}?fuel_type[]=Hybrid"
-                        class="d-block cursor-pointer bg-white border rounded p-3 text-center"
+                        class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="Hybrid vehicles at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/hybrid.webp') }}" class="my-1 img-fluid carss" alt="Hybrid">
+                        <img src="{{ asset('assets/frontend/img/hybrid.webp') }}" class="my-1 img-fluid carss" alt="Hybrid" style="height: 48px; object-fit: contain;">
                         <br>
-                        Hybrid
+                        <span class="small font-weight-bold">Hybrid</span>
                     </a>
                 </div>
             </div>
@@ -140,59 +136,57 @@
     </div>
 
 
-    <div class='sc-1a7ba87f-0 erNtBH cElement cContainer  w-100 '>
-        <div class="sc-1a7ba87f-0 cElement cContainer  container ">
-            <div class="cElement cColumnLayout  row">
-                <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-1">
-                    <div class="sc-1a7ba87f-0 hAgfhi cElement cContainer  container ">
-                        <div class="sc-24764b04-0 kduiyY"></div>
+    <div class='sc-1a7ba87f-0 erNtBH cElement cContainer w-100'>
+        <div class="sc-1a7ba87f-0 cElement cContainer container px-md-3 px-0">
+            <div class="cElement cColumnLayout row g-0">
+                <div class="cElement cColumn col-sm-6 col-12">
+                    <div class="sc-1a7ba87f-0 hAgfhi cElement cContainer container py-5">
+                        <div class="sc-24764b04-0 kduiyY d-none d-sm-block"></div>
 
                         <img width="100" height=""
                             src="{{ asset('assets/frontend/img/streamlinehq-car-tool-keys-transportation-white-200.png') }}" alt=""
                             loading="lazy" fetchpriority="auto"
-                            class="cElement rounded-0 cImage mb-2 mx-auto d-block opacity-50  img-fluid">
+                            class="cElement rounded-0 cImage mb-3 mx-auto d-block opacity-75 img-fluid">
 
-                        <div class="sc-24764b04-0 kdvjHq"></div>
-                        <h3 class="text-center" id="SpCVhCFnHE">
+                        <h3 class="text-center h4 font-weight-bold mb-3">
                             Trading in? Find out your car's trade-in value today.
                         </h3>
-                        <div class="sc-24764b04-0 kdvwXJ"></div>
+                        
                         <div class="text-center">
-                            <a href="javascript:void(0)" class="btn btn-outline-default" title="Get your trade-in value" data-bs-toggle="offcanvas" data-bs-target="#getTrade" aria-controls="offcanvasRight">
+                            <a href="javascript:void(0)" class="btn btn-outline-light px-4 py-2" title="Get your trade-in value" data-bs-toggle="offcanvas" data-bs-target="#getTrade" aria-controls="offcanvasRight">
                                 Get your trade-in value
                                 <span class="d-inline-block ms-2">
-                                    <i class="fa-solid fa-angle-right white-text-16"></i>
+                                    <i class="fa-solid fa-angle-right"></i>
                                 </span>
                             </a>
                         </div>
-                        <div class="sc-24764b04-0 kduiyY"></div>
+                        <div class="sc-24764b04-0 kduiyY d-none d-sm-block"></div>
                     </div>
                 </div>
 
 
-                <div class="cElement cColumn col-sm-6 col-12 order-sm-0 order-1">
-                    <div class="sc-1a7ba87f-0 hAgfhi cElement cContainer  container ">
-                        <div class="sc-24764b04-0 kduiyY"></div>
+                <div class="cElement cColumn col-sm-6 col-12">
+                    <div class="sc-1a7ba87f-0 hAgfhi cElement cContainer container py-5">
+                        <div class="sc-24764b04-0 kduiyY d-none d-sm-block"></div>
 
                         <img width="100" height=""
                             src="{{ asset('assets/frontend/img/streamlinehq-monetization-touch-browser-business-products-white-200.png') }}"
                             alt="" loading="lazy" fetchpriority="auto"
-                            class="cElement rounded-0 cImage mb-2 mx-auto d-block opacity-50  img-fluid">
+                            class="cElement rounded-0 cImage mb-3 mx-auto d-block opacity-75 img-fluid">
 
-                        <div class="sc-24764b04-0 kdvjHq"></div>
-                        <h3 class="text-center" id="SpCVhCFnHE">
+                        <h3 class="text-center h4 font-weight-bold mb-3">
                             Save an hour at the dealership with an online credit approval.
                         </h3>
-                        <div class="sc-24764b04-0 kdvwXJ"></div>
+                        
                         <div class="text-center">
-                            <a href="{{ route('frontend.get-approved') }}" class="btn btn-outline-default" title="Get your trade-in value">
+                            <a href="{{ route('frontend.get-approved') }}" class="btn btn-outline-light px-4 py-2" title="Get approved">
                                 Get approved
                                 <span class="d-inline-block ms-2">
-                                    <i class="fa-solid fa-angle-right white-text-16"></i>
+                                    <i class="fa-solid fa-angle-right"></i>
                                 </span>
                             </a>
                         </div>
-                        <div class="sc-24764b04-0 kduiyY"></div>
+                        <div class="sc-24764b04-0 kduiyY d-none d-sm-block"></div>
                     </div>
                 </div>
             </div>
@@ -277,7 +271,7 @@
 
             <div class="mt-3 row">
                 @foreach($makes as $make)
-                    <div class="pb-3 col-md-3 col-sm-2 col-6">
+                    <div class="pb-3 col-lg-3 col-md-4 col-sm-6 col-6">
                         <a title="{{ $make }} for sale in Smyrna, TN"
                            href="{{ route('frontend.inventory') }}?make[]={{ urlencode($make) }}">
                             {{ $make }}

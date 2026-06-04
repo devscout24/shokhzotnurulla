@@ -192,7 +192,6 @@ class WebsiteSettingController extends Controller
 
     public function updateVideo(UpdateVideoRequest $request, UploadMediaAction $uploadMedia): RedirectResponse
     {
-        
         $dealer = $request->user()->currentDealer;
 
         if ($request->hasFile('video_file')) {
@@ -207,7 +206,6 @@ class WebsiteSettingController extends Controller
             \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
             $this->auditLogger->info($request, 'Website background video updated');
         }
-
         return redirect()->back()->with('success', 'Video updated successfully.');
     }
 

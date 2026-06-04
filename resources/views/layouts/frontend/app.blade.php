@@ -1,19 +1,15 @@
 @extends('layouts.base')
 
 @push('panel-assets')
-    @vite([
-        'resources/css/frontend/app.css',
-        'resources/js/frontend/app.js',
-    ])
+    @vite(['resources/css/frontend/app.css', 'resources/js/frontend/app.js'])
     <script src="{{ asset('assets/frontend/js/favorites.js') }}"></script>
 @endpush
 
 @section('panel-content')
-
     {{-- Header (Desktop & Mobile) --}}
     @include('frontend.partials.header')
 
-    {{-- @if($bannerText ?? null)
+    {{-- @if ($bannerText ?? null)
         <div class="persistent-banner py-2 text-center" style="background: {{ $bannerBgColor ?? '#ce4f4b' }}; color: {{ $bannerTextColor ?? '#ffffff' }};" title="{{ $bannerHoverTitle ?? '' }}">
             <div class="container">
                 <span class="banner-message font-weight-bold">{{ $bannerText }}</span>
@@ -37,8 +33,10 @@
                         d="M21.9237 22.945L11.7076 0.472579C11.4211 -0.158087 10.5274 -0.157414 10.2422 0.473925L0.0757232 22.9275C-0.215476 23.5292 0.384368 24.1754 1.00367 23.927L10.7152 20.2184C10.8897 20.1484 11.0843 20.1484 11.2581 20.2184L20.9951 23.9452C21.6144 24.1942 22.2149 23.5481 21.9231 22.9457L21.9237 22.945Z">
                     </path>
                 </svg>Feedback
+                <a>favorites</a>
             </div>
         </div>
+    </div>
     </div>
 @endsection
 
