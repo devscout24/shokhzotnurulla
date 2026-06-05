@@ -28,9 +28,29 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="favoritesFeedbackModal" tabindex="-1" aria-labelledby="favoritesFeedbackModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="favoritesFeedbackModalLabel">
+                        <i class="fa-solid fa-heart text-danger me-2"></i>Favorites
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0" data-favorites-menu>
+                    <div class="p-4 text-center">
+                        <i class="fa-solid fa-heart-crack d-block mb-2 h4 opacity-25"></i>
+                        <div class="text-muted small mb-0">No items saved yet.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
-@push('panel-scripts')
+@push('pannel-scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
@@ -62,17 +82,51 @@
                     }
                 });
 
-                // Debug
-                console.log('Feedback button clicked');
-
-                // If Userback exists, open it manually
-                if (typeof Userback !== 'undefined') {
-                    try {
-                        Userback.open();
-                    } catch (e) {
-                        console.log(e);
-                    }
+                if (typeof window.refreshFavoritesDropdown === 'function') {
+                    window.refreshFavoritesDropdown();
                 }
+
+                const favoritesModal = document.getElementById('favoritesFeedbackModal');
+
+                if (!favoritesModal) {
+                    return;
+                }
+
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    bootstrap.Modal.getOrCreateInstance(favoritesModal).show();
+                    return;
+                }
+
+                favoritesModal.classList.add('show');
+                favoritesModal.style.display = 'block';
+                favoritesModal.removeAttribute('aria-hidden');
+                document.body.classList.add('modal-open');
+
+                if (!document.querySelector('.modal-backdrop')) {
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'modal-backdrop fade show';
+                    document.body.appendChild(backdrop);
+                }
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!event.target.matches('#favoritesFeedbackModal [data-bs-dismiss="modal"], #favoritesFeedbackModal .btn-close')) {
+                    return;
+                }
+
+                const favoritesModal = document.getElementById('favoritesFeedbackModal');
+
+                if (!favoritesModal || (typeof bootstrap !== 'undefined' && bootstrap.Modal)) {
+                    return;
+                }
+
+                favoritesModal.classList.remove('show');
+                favoritesModal.style.display = 'none';
+                favoritesModal.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('modal-open');
+                document.querySelectorAll('.modal-backdrop').forEach(function(backdrop) {
+                    backdrop.remove();
+                });
             });
 
         });
