@@ -58,7 +58,7 @@
     }
 
     function updateDropdown() {
-        const dropdownLists = document.querySelectorAll("#favoritesDropdown ~ .dropdown-menu, #favorites ~ .dropdown-menu, [aria-labelledby=\"favoritesDropdown\"], [aria-labelledby=\"favorites\"]");
+        const dropdownLists = document.querySelectorAll("[data-favorites-menu]");
         const favorites = getFavorites();
 
         if (dropdownLists.length === 0) return;

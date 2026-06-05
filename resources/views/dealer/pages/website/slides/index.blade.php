@@ -401,6 +401,7 @@
     </style>
 @endpush
 
+
 @section('page-content')
     <div class="main-content">
         <div class="page-header-flex">

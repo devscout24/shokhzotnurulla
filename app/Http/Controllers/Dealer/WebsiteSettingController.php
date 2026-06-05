@@ -187,7 +187,6 @@ class WebsiteSettingController extends Controller
 
     public function updateVideo(UpdateVideoRequest $request, UploadMediaAction $uploadMedia): RedirectResponse
     {
-
         $dealer = $request->user()->currentDealer;
 
         if ($request->hasFile('video_file')) {
@@ -202,7 +201,6 @@ class WebsiteSettingController extends Controller
             \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
             $this->auditLogger->info($request, 'Website background video updated');
         }
-
         return redirect()->back()->with('success', 'Video updated successfully.');
     }
 
@@ -225,7 +223,7 @@ class WebsiteSettingController extends Controller
     public function homeAboutCta(Request $request): View
     {
         $dealer  = $request->user()->currentDealer;
-        $section = HomeAboutCtaSection::where('dealer_id', $dealer->id)->first();
+        $section = HomeAboutCtaSection::query()->where('dealer_id', $dealer->id)->first();
         $content = array_replace_recursive(
             HomeAboutCtaSection::defaultContent(),
             $section?->content ?? []
@@ -273,7 +271,7 @@ class WebsiteSettingController extends Controller
             'cta_2_link'        => 'nullable|string|max:255',
         ]);
 
-        $section  = HomeAboutCtaSection::where('dealer_id', $dealer->id)->first();
+        $section  = HomeAboutCtaSection::query()->where('dealer_id', $dealer->id)->first();
         $existing = $section?->content ?? HomeAboutCtaSection::defaultContent();
 
         $aboutImagePath = data_get($existing, 'about.image_url', '');

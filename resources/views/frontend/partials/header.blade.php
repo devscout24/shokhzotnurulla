@@ -152,13 +152,13 @@
 
                     <div class="float-end py-2 border-end text-end">
                         <div class="dropdown">
-                            <button type="button" id="favorites" aria-expanded="false" data-bs-toggle="dropdown"
+                            <button type="button" id="favoritesHeader" aria-expanded="false" data-bs-toggle="dropdown"
                                 class="py-0 text-decoration-none text-15 text-white dropdown-toggle btn btn-link">
                                 <span class="d-inline-block faIcon ofa-solid ofa-heart me-2">
                                     <i class="fa-solid fa-heart"></i>
                                 </span>Favorites
                             </button>
-                            <div class="py-0 absolute-offset recent dropdown-menu">
+                            <div class="py-0 absolute-offset recent dropdown-menu" data-favorites-menu>
                                 <a href="#" class="border-bottom dropdown-item">
                                     <em class="text-muted">No items viewed yet.</em>
                                 </a>
@@ -208,7 +208,7 @@
                             Favorites
                             <span class="badge bg-danger rounded-pill ms-2 d-none" id="fav-count">0</span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 p-0 text-center" aria-labelledby="favoritesDropdown" style="min-width: 280px; overflow: hidden; z-index: 9999;">
+                        <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 p-0 text-center" aria-labelledby="favoritesDropdown" data-favorites-menu style="min-width: 280px; overflow: hidden; z-index: 9999;">
                             <div class="p-3">
                                 <i class="fa-solid fa-heart-crack d-block mb-2 h4 opacity-50"></i>
                                 <span class="text-muted small">No items saved yet.</span>
@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     setupDropdown('favoritesDropdown');
     setupDropdown('hoursDropdown');
-    setupDropdown('favorites');
+    setupDropdown('favoritesHeader');
     
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.dropdown')) {
