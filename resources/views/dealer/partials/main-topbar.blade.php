@@ -1,3 +1,60 @@
+@once
+    <style>
+        .topbar .main-nav-links {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+            height: 60px;
+        }
+
+        .topbar .main-nav-item {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center;
+            gap: 8px !important;
+            height: 40px;
+            min-width: 118px;
+            padding: 0 16px !important;
+            border: 1px solid rgba(255, 255, 255, .42);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, .18);
+            color: #111827 !important;
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            line-height: 1;
+            opacity: .92 !important;
+            text-decoration: none !important;
+            white-space: nowrap;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .topbar .main-nav-item i,
+        .topbar .main-nav-item span {
+            color: #111827 !important;
+            flex-shrink: 0;
+        }
+
+        .topbar .main-nav-item:hover,
+        .topbar .main-nav-item.active {
+            background: rgba(255, 255, 255, .38);
+            border-color: rgba(255, 255, 255, .68);
+            opacity: 1 !important;
+        }
+
+        .topbar .main-nav-item.active::after {
+            content: "";
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            bottom: 5px;
+            height: 3px;
+            border-radius: 3px;
+            background: #fff;
+        }
+    </style>
+@endonce
+
 <nav class="topbar">
     <div class="mobile-top">
         <div class="mobile-row-1">
@@ -41,7 +98,7 @@
                     @csrf
                     <input type="hidden" name="location_id" value="0">
                 </form>
-                
+
                 @foreach($availableLocations as $loc)
                     <a href="javascript:void(0)" class="settings-item" role="menuitem" onclick="event.preventDefault(); document.getElementById('switch-location-form-mobile-{{ $loc->id }}').submit();">
                         {{ $loc->name }}
@@ -88,33 +145,43 @@
                 </svg>
             </div>
 
-            <div class="nav-links">
-                <a href="{{ route('dealer.website.dashboard') }}">
-                    <div class="nav-item {{ request()->routeIs('dealer.website.dashboard') ? 'active' : '' }}" data-view="dashboard">
-                        <i class="bi bi-display"></i>
-                            <span>{{ __('Website') }}</span>
-                    </div>
-                </a>
-                <a href="{{ route('dealer.inventory.dashboard') }}">
-                    <div class="nav-item {{ request()->routeIs('dealer.inventory.*') ? 'active' : '' }}" data-view="inventory">
-                        <i class="bi bi-car-front"></i>
-                            <span>{{ __('Inventory') }}</span>
-                    </div>
-                </a>
+            @php
+                $mainNavItems = [
+                    [
+                        'label' => __('Website'),
+                        'route' => route('dealer.website.dashboard'),
+                        'active' => request()->routeIs('dealer.website.*'),
+                        'icon' => 'bi bi-display',
+                        'view' => 'dashboard',
+                    ],
+                    [
+                        'label' => __('Inventory'),
+                        'route' => route('dealer.inventory.dashboard'),
+                        'active' => request()->routeIs('dealer.inventory.*'),
+                        'icon' => 'bi bi-car-front',
+                        'view' => 'inventory',
+                    ],
+                    [
+                        'label' => __('Connections'),
+                        'route' => route('dealer.connections.apps'),
+                        'active' => request()->routeIs('dealer.connections.*'),
+                        'icon' => 'bi bi-box',
+                        'view' => 'connections',
+                    ],
+                ];
+            @endphp
 
-                <a href="{{ route('dealer.connections.apps') }}">
-                    <div class="nav-item {{ request()->routeIs('dealer.connections.*') ? 'active' : '' }}" data-view="connections">
-                        <i class="bi bi-box"></i>
-                            <span>{{ __('Connections') }}</span>
-                    </div>
-                </a>
-                {{-- <a href="{{ route('dealer.changelog') }}">
-                    <div class="nav-item {{ request()->routeIs('dealer.changelog') ? 'active' : '' }}" data-view="whatsnew">
-                        <i class="bi bi-stars"></i>
-                            <span>{{ __("What's New") }}</span>
-                            <span class="badge bg-danger ms-1">4</span>
-                    </div>
-                </a> --}}
+            <div class="main-nav-links">
+                @foreach ($mainNavItems as $item)
+                    <a
+                        href="{{ $item['route'] }}"
+                        class="main-nav-item {{ $item['active'] ? 'active' : '' }}"
+                        data-view="{{ $item['view'] }}"
+                    >
+                        <i class="{{ $item['icon'] }}"></i>
+                        <span>{{ $item['label'] }}</span>
+                    </a>
+                @endforeach
             </div>
         </div>
 
@@ -135,7 +202,7 @@
                         @csrf
                         <input type="hidden" name="location_id" value="0">
                     </form>
-                    
+
                     @foreach($availableLocations as $loc)
                         <a href="javascript:void(0)" class="settings-item" role="menuitem" onclick="event.preventDefault(); document.getElementById('switch-location-form-{{ $loc->id }}').submit();">
                             {{ $loc->name }}
