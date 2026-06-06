@@ -10,7 +10,7 @@
 @endpush
 
 @section('page-content')
-    <div class="d-block h-63 d-xl-none" id="mobile-nav-spacer"></div>
+    <div class="d-block h-104 d-xl-none" id="mobile-nav-spacer"></div>
 
     <div class="page-template-schedule-service" role="main">
         <header class="sc-5a5d3415-0 jHTnHg" id="interior-page-header" title="Auto financing in Smyrna, TN">

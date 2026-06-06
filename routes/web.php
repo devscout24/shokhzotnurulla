@@ -92,7 +92,7 @@ Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class])->name('frontend
         $dealerId = $dealerResolver->resolve();
 
         $dealer       = Dealer::find($dealerId, ['id', 'name', 'slug', 'domain', 'staging_domain', 'is_active']);
-        $domainRecord = Domain::where('domain', $host)
+        $domainRecord = Domain::query()->where('domain', $host)
             ->first(['id', 'dealer_id', 'domain', 'is_primary', 'is_verified']);
 
         return response()->json([
