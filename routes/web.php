@@ -72,6 +72,7 @@ Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class])->name('frontend
 
     // Static pages
     Route::view('/get-approved', 'frontend.pages.get-approved')->name('get-approved');
+    Route::view('/car-loan-calculator', 'frontend.pages.car-loan-calculator')->name('car-loan-calculator');
     Route::view('/schedule-service', 'frontend.pages.service')->name('service');
     Route::get('/about-us', [FrontendController::class, 'aboutUs'])->name('about');
     Route::get('/contact-us', [FrontendController::class, 'contactUs'])->name('contact');
