@@ -1,15 +1,9 @@
 @extends('layouts.frontend.app')
 
-@section('title', __('Home') . ' | '. __(config('app.name')))
+@section('title', __('Home') . ' | ' . __(config('app.name')))
 
 @push('page-assets')
-    @vite([
-        'resources/css/frontend/pages/home.css',
-        'resources/js/frontend/pages/trade-in.js',
-        'resources/js/frontend/pages/get-approved-offcanvas.js',
-        'resources/js/frontend/pages/unlock-eprice.js',
-        'resources/js/frontend/pages/nps.js',
-    ])
+    @vite(['resources/css/frontend/pages/home.css', 'resources/js/frontend/pages/trade-in.js', 'resources/js/frontend/pages/get-approved-offcanvas.js', 'resources/js/frontend/pages/unlock-eprice.js', 'resources/js/frontend/pages/nps.js'])
 @endpush
 
 @section('page-content')
@@ -21,20 +15,21 @@
             <div class="hero-video-overlay"></div>
 
             <div class="hero-video">
-                @if($videoUrl ?? null)
+                @if ($videoUrl ?? null)
                     <video src="{{ asset($videoUrl) }}" muted playsinline autoplay loop></video>
                 @else
-                    <video src="{{ asset('assets/frontend/img/angel-motors-hero-video.mp4') }}" muted playsinline autoplay loop></video>
+                    <video src="{{ asset('assets/frontend/img/angel-motors-hero-video.mp4') }}" muted playsinline autoplay
+                        loop></video>
                 @endif
             </div>
 
             <div class="hero-caption text-center text-white">
                 <div class="py-4">
-                    @if($bannerTitle ?? null)
+                    @if ($bannerTitle ?? null)
                         <h1 class="font-weight-bold">{{ $bannerTitle }}</h1>
                     @endif
 
-                    @if($bannerSubtitle ?? null)
+                    @if ($bannerSubtitle ?? null)
                         <h2 class="font-weight-bold">{{ $bannerSubtitle }}</h2>
                     @endif
 
@@ -66,7 +61,8 @@
                     <a href="{{ route('frontend.inventory.type', 'cars') }}"
                         class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="Cars at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/sedan.webp') }}" class="my-1 img-fluid carss" alt="Cars" style="height: 48px; object-fit: contain;">
+                        <img src="{{ asset('assets/frontend/img/sedan.webp') }}" class="my-1 img-fluid carss" alt="Cars"
+                            style="height: 48px; object-fit: contain;">
                         <br>
                         <span class="small font-weight-bold">Cars</span>
                     </a>
@@ -76,7 +72,8 @@
                     <a href="{{ route('frontend.inventory.type', 'suvs') }}"
                         class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="SUVs at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/suv.webp') }}" class="my-1 img-fluid carss" alt="SUVs" style="height: 48px; object-fit: contain;">
+                        <img src="{{ asset('assets/frontend/img/suv.webp') }}" class="my-1 img-fluid carss" alt="SUVs"
+                            style="height: 48px; object-fit: contain;">
                         <br>
                         <span class="small font-weight-bold">SUVs</span>
                     </a>
@@ -86,7 +83,8 @@
                     <a href="{{ route('frontend.inventory.type', 'trucks') }}"
                         class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="Trucks at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/truck.webp') }}" class="my-1 img-fluid carss" alt="Trucks" style="height: 48px; object-fit: contain;">
+                        <img src="{{ asset('assets/frontend/img/truck.webp') }}" class="my-1 img-fluid carss" alt="Trucks"
+                            style="height: 48px; object-fit: contain;">
                         <br>
                         <span class="small font-weight-bold">Trucks</span>
                     </a>
@@ -96,7 +94,8 @@
                     <a href="{{ route('frontend.inventory.type', 'vans') }}"
                         class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="Cargo Vans at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/cargovan.webp') }}" class="my-1 img-fluid carss" alt="Cargo Vans" style="height: 48px; object-fit: contain;">
+                        <img src="{{ asset('assets/frontend/img/cargovan.webp') }}" class="my-1 img-fluid carss"
+                            alt="Cargo Vans" style="height: 48px; object-fit: contain;">
                         <br>
                         <span class="small font-weight-bold">Cargo Vans</span>
                     </a>
@@ -106,7 +105,8 @@
                     <a href="{{ route('frontend.inventory.type', 'hatchbacks') }}"
                         class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="Hatchbacks at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/wagon.webp') }}" class="my-1 img-fluid carss" alt="Hatchbacks" style="height: 48px; object-fit: contain;">
+                        <img src="{{ asset('assets/frontend/img/wagon.webp') }}" class="my-1 img-fluid carss"
+                            alt="Hatchbacks" style="height: 48px; object-fit: contain;">
                         <br>
                         <span class="small font-weight-bold">Hatchback</span>
                     </a>
@@ -116,7 +116,8 @@
                     <a href="{{ route('frontend.inventory') }}?fuel_type[]=Hybrid"
                         class="d-block cursor-pointer bg-white border rounded p-3 text-center h-100"
                         title="Hybrid vehicles at Angel Motors Inc used car dealership in Smyrna, TN">
-                        <img src="{{ asset('assets/frontend/img/hybrid.webp') }}" class="my-1 img-fluid carss" alt="Hybrid" style="height: 48px; object-fit: contain;">
+                        <img src="{{ asset('assets/frontend/img/hybrid.webp') }}" class="my-1 img-fluid carss"
+                            alt="Hybrid" style="height: 48px; object-fit: contain;">
                         <br>
                         <span class="small font-weight-bold">Hybrid</span>
                     </a>
@@ -144,16 +145,18 @@
                         <div class="sc-24764b04-0 kduiyY d-none d-sm-block"></div>
 
                         <img width="100" height=""
-                            src="{{ asset('assets/frontend/img/streamlinehq-car-tool-keys-transportation-white-200.png') }}" alt=""
-                            loading="lazy" fetchpriority="auto"
+                            src="{{ asset('assets/frontend/img/streamlinehq-car-tool-keys-transportation-white-200.png') }}"
+                            alt="" loading="lazy" fetchpriority="auto"
                             class="cElement rounded-0 cImage mb-3 mx-auto d-block opacity-75 img-fluid">
 
                         <h3 class="text-center h4 font-weight-bold mb-3">
                             Trading in? Find out your car's trade-in value today.
                         </h3>
-                        
+
                         <div class="text-center">
-                            <a href="javascript:void(0)" class="btn btn-outline-light px-4 py-2" title="Get your trade-in value" data-bs-toggle="offcanvas" data-bs-target="#getTrade" aria-controls="offcanvasRight">
+                            <a href="javascript:void(0)" class="btn btn-outline-light px-4 py-2"
+                                title="Get your trade-in value" data-bs-toggle="offcanvas" data-bs-target="#getTrade"
+                                aria-controls="offcanvasRight">
                                 Get your trade-in value
                                 <span class="d-inline-block ms-2">
                                     <i class="fa-solid fa-angle-right"></i>
@@ -177,9 +180,10 @@
                         <h3 class="text-center h4 font-weight-bold mb-3">
                             Save an hour at the dealership with an online credit approval.
                         </h3>
-                        
+
                         <div class="text-center">
-                            <a href="{{ route('frontend.get-approved') }}" class="btn btn-outline-light px-4 py-2" title="Get approved">
+                            <a href="{{ route('frontend.get-approved') }}" class="btn btn-outline-light px-4 py-2"
+                                title="Get approved">
                                 Get approved
                                 <span class="d-inline-block ms-2">
                                     <i class="fa-solid fa-angle-right"></i>
@@ -228,12 +232,12 @@
 
                 {{-- Carousel wrapper --}}
                 <div class="mt-3 d-flex align-items-center new-arrivals-carousel-wrapper">
-                   
+
                     <div class="new-arrivals-arrow new-arrivals-prev">
                         <i class="fa-solid fa-angle-left"></i>
                     </div>
 
-                  
+
                     <div class="new-arrivals-track-outer">
                         <div class="new-arrivals-track">
                             @forelse($newArrivals as $vehicle)
@@ -246,7 +250,7 @@
                         </div>
                     </div>
 
-                   
+
                     <div class="new-arrivals-arrow new-arrivals-next">
                         <i class="fa-solid fa-angle-right"></i>
                     </div>
@@ -262,18 +266,36 @@
 
             @php
                 $makes = [
-                    'Audi', 'BMW', 'Cadillac', 'Chevrolet', 'Chrysler', 'Dodge',
-                    'Ford', 'Genesis', 'GMC', 'Honda', 'INFINITI', 'Jeep',
-                    'Land Rover', 'Lexus', 'Lincoln', 'Mazda', 'Mercedes-Benz',
-                    'Nissan', 'Ram', 'Subaru', 'Toyota', 'Volkswagen',
+                    'Audi',
+                    'BMW',
+                    'Cadillac',
+                    'Chevrolet',
+                    'Chrysler',
+                    'Dodge',
+                    'Ford',
+                    'Genesis',
+                    'GMC',
+                    'Honda',
+                    'INFINITI',
+                    'Jeep',
+                    'Land Rover',
+                    'Lexus',
+                    'Lincoln',
+                    'Mazda',
+                    'Mercedes-Benz',
+                    'Nissan',
+                    'Ram',
+                    'Subaru',
+                    'Toyota',
+                    'Volkswagen',
                 ];
             @endphp
 
             <div class="mt-3 row">
-                @foreach($makes as $make)
+                @foreach ($makes as $make)
                     <div class="pb-3 col-lg-3 col-md-4 col-sm-6 col-6">
                         <a title="{{ $make }} for sale in Smyrna, TN"
-                           href="{{ route('frontend.inventory') }}?make[]={{ urlencode($make) }}">
+                            href="{{ route('frontend.inventory') }}?make[]={{ urlencode($make) }}">
                             {{ $make }}
                         </a>
                     </div>
@@ -296,9 +318,9 @@
 @push('page-scripts')
     <script>
         window.tiRoutes = {
-            tradeIn:       '{{ route('frontend.forms.trade-in') }}',
+            tradeIn: '{{ route('frontend.forms.trade-in') }}',
             tradeInPhotos: '{{ route('frontend.forms.trade-in.photos') }}',
-            makeModels:    '{{ route('frontend.data.make-models', ['make' => '__make__']) }}',
+            makeModels: '{{ route('frontend.data.make-models', ['make' => '__make__']) }}',
         };
         window.gaRoutes = {
             submit: '{{ route('frontend.forms.get-approved') }}',
@@ -307,22 +329,22 @@
     </script>
 
     <script>
-        (function () {
-            var track   = document.querySelector('.new-arrivals-track');
-            var outer   = document.querySelector('.new-arrivals-track-outer');
+        (function() {
+            var track = document.querySelector('.new-arrivals-track');
+            var outer = document.querySelector('.new-arrivals-track-outer');
             var btnPrev = document.querySelector('.new-arrivals-prev');
             var btnNext = document.querySelector('.new-arrivals-next');
 
             if (!track || !outer || !btnPrev || !btnNext) return;
 
-            var cards      = track.querySelectorAll('.srp-cardcontainer');
-            var total      = cards.length;
+            var cards = track.querySelectorAll('.srp-cardcontainer');
+            var total = cards.length;
             var currentIdx = 0;
 
             function visibleCount() {
                 var w = outer.offsetWidth;
-                if (w < 576)  return 1;
-                if (w < 992)  return 2;
+                if (w < 576) return 1;
+                if (w < 992) return 2;
                 if (w < 1200) return 3;
                 return 4;
             }
@@ -338,23 +360,29 @@
             function update() {
                 var offset = currentIdx * cardWidth();
                 track.style.transform = 'translateX(-' + offset + 'px)';
-                btnPrev.style.opacity = currentIdx <= 0        ? '0.3' : '1';
+                btnPrev.style.opacity = currentIdx <= 0 ? '0.3' : '1';
                 btnNext.style.opacity = currentIdx >= maxIdx() ? '0.3' : '1';
             }
 
-            btnPrev.addEventListener('click', function () {
-                if (currentIdx > 0) { currentIdx--; update(); }
+            btnPrev.addEventListener('click', function() {
+                if (currentIdx > 0) {
+                    currentIdx--;
+                    update();
+                }
             });
 
-            btnNext.addEventListener('click', function () {
-                if (currentIdx < maxIdx()) { currentIdx++; update(); }
+            btnNext.addEventListener('click', function() {
+                if (currentIdx < maxIdx()) {
+                    currentIdx++;
+                    update();
+                }
             });
 
             // Recalculate on resize (debounced)
             var resizeTimer;
-            window.addEventListener('resize', function () {
+            window.addEventListener('resize', function() {
                 clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(function () {
+                resizeTimer = setTimeout(function() {
                     currentIdx = Math.min(currentIdx, maxIdx());
                     update();
                 }, 150);
