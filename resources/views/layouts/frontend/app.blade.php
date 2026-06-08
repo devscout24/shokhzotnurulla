@@ -85,6 +85,17 @@
                         document.querySelectorAll('.modal-backdrop').forEach(function (b) { b.remove(); });
                         document.body.classList.remove('modal-open');
                         document.body.style.removeProperty('padding-right');
+
+                        if (type === 'click') {
+                            const modalEl = document.getElementById('modalFavorites');
+                            if (modalEl && window.bootstrap) {
+                                if (typeof window.refreshFavoritesDropdown === 'function') {
+                                    window.refreshFavoritesDropdown();
+                                }
+                                const modal = window.bootstrap.Modal.getOrCreateInstance(modalEl);
+                                modal.show();
+                            }
+                        }
                     }
                 }, true); // capture phase — fires before Bootstrap
             });
@@ -99,6 +110,7 @@
             @include('frontend.offcanvas.mobile-drawer-header-menu')
             @include('frontend.offcanvas.location-menu')
             @include('frontend.modals.main-search')
+            @include('frontend.modals.favorites')
         @endpush
 
 
