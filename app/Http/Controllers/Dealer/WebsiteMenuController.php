@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Http\Controllers\Controller;
@@ -19,7 +18,7 @@ class WebsiteMenuController extends Controller
         $routes = [
             'data'    => route('dealer.website.menus.data'),
             'store'   => route('dealer.website.menus.store'),
-            'update'  => route('dealer.website.menus.update',  ['menu' => '__ID__']),
+            'update'  => route('dealer.website.menus.update', ['menu' => '__ID__']),
             'destroy' => route('dealer.website.menus.destroy', ['menu' => '__ID__']),
             'reorder' => route('dealer.website.menus.reorder'),
         ];
@@ -41,7 +40,7 @@ class WebsiteMenuController extends Controller
                 ->with('children')
                 ->orderBy('sort_order')
                 ->get()
-                ->map(fn ($item) => $this->formatItem($item));
+                ->map(fn($item) => $this->formatItem($item));
         };
 
         return response()->json([
@@ -72,14 +71,14 @@ class WebsiteMenuController extends Controller
             ->max('sort_order') + 1;
 
         $menu = Menu::create([
-            'dealer_id'  => $dealerId,
-            'location_id'=> Menu::getActiveLocationId(),
-            'location'   => $request->location,
-            'label'      => $request->label,
-            'url'        => $request->url,
-            'target'     => $request->target ?? '_self',
-            'parent_id'  => $request->parent_id,
-            'sort_order' => $sortOrder,
+            'dealer_id'   => $dealerId,
+            'location_id' => Menu::getActiveLocationId(),
+            'location'    => $request->location,
+            'label'       => $request->label,
+            'url'         => $request->url,
+            'target'      => $request->target ?? '_self',
+            'parent_id'   => $request->parent_id,
+            'sort_order'  => $sortOrder,
         ]);
 
         return response()->json([
@@ -137,12 +136,12 @@ class WebsiteMenuController extends Controller
     public function reorder(Request $request): JsonResponse
     {
         $request->validate([
-            'items'          => ['required', 'array'],
-            'items.*.id'     => ['required', 'integer'],
-            'items.*.order'  => ['required', 'integer'],
-            'items.*.children'          => ['nullable', 'array'],
-            'items.*.children.*.id'     => ['nullable', 'integer'],
-            'items.*.children.*.order'  => ['nullable', 'integer'],
+            'items'                    => ['required', 'array'],
+            'items.*.id'               => ['required', 'integer'],
+            'items.*.order'            => ['required', 'integer'],
+            'items.*.children'         => ['nullable', 'array'],
+            'items.*.children.*.id'    => ['nullable', 'integer'],
+            'items.*.children.*.order' => ['nullable', 'integer'],
         ]);
 
         $dealerId = $request->user()->current_dealer_id;
@@ -152,7 +151,7 @@ class WebsiteMenuController extends Controller
                 ->where('dealer_id', $dealerId)
                 ->update(['sort_order' => $item['order'], 'parent_id' => null]);
 
-            if (!empty($item['children'])) {
+            if (! empty($item['children'])) {
                 foreach ($item['children'] as $child) {
                     Menu::where('id', $child['id'])
                         ->where('dealer_id', $dealerId)
@@ -179,17 +178,17 @@ class WebsiteMenuController extends Controller
     private function formatItem(Menu $item): array
     {
         $data = [
-            'id'       => $item->id,
-            'label'    => $item->label,
-            'url'      => $item->url,
-            'target'   => $item->target,
-            'parent_id'=> $item->parent_id,
-            'children' => [],
+            'id'        => $item->id,
+            'label'     => $item->label,
+            'url'       => $item->url,
+            'target'    => $item->target,
+            'parent_id' => $item->parent_id,
+            'children'  => [],
         ];
 
         if ($item->relationLoaded('children')) {
             $data['children'] = $item->children
-                ->map(fn ($child) => $this->formatItem($child))
+                ->map(fn($child) => $this->formatItem($child))
                 ->values()
                 ->toArray();
         }

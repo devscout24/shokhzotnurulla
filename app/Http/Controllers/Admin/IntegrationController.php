@@ -33,39 +33,39 @@ class IntegrationController extends Controller
 
         // Specific validation rules for each app's credentials
         $settingRules = match ($provider) {
-            'carfax' => [
+            'carfax'     => [
                 'settings.username' => 'required|string',
                 'settings.password' => 'required|string',
             ],
-            '700credit' => [
+            '700credit'  => [
                 'settings.api_key'     => 'required|string',
                 'settings.dealer_code' => 'required|string',
             ],
-            'ga4' => [
+            'ga4'        => [
                 'settings.measurement_id' => ['required', 'string', 'regex:/^G-[A-Z0-9]+$/'],
             ],
-            'gtm' => [
+            'gtm'        => [
                 'settings.container_id' => ['required', 'string', 'regex:/^GTM-[A-Z0-9]+$/'],
             ],
-            'stripe' => [
+            'stripe'     => [
                 'settings.public_key' => 'required|string|starts_with:pk_',
                 'settings.secret_key' => 'required|string|starts_with:sk_',
             ],
-            'carnow' => [
+            'carnow'     => [
                 'settings.dealer_id' => 'required|string',
             ],
             'complyauto' => [
                 'settings.api_token' => 'required|string',
             ],
-            'ipacket' => [
+            'ipacket'    => [
                 'settings.api_key' => 'required|string',
             ],
-            'promax' => [
+            'promax'     => [
                 'settings.dealer_id' => 'required|string',
                 'settings.password'  => 'required|string',
             ],
-            // Default for services that might just require a toggle or simpler settings
-            default => [],
+        // Default for services that might just require a toggle or simpler settings
+            default      => [],
         };
 
         return array_merge($baseRules, $settingRules);
@@ -114,7 +114,7 @@ class IntegrationController extends Controller
 
         if ($integration) {
             $integration->update(['is_active' => false]);
-            
+
             return response()->json([
                 'success' => true,
                 'message' => ucfirst($provider) . ' integration made inactive successfully.',

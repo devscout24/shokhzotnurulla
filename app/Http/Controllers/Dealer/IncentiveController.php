@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Actions\Inventory\DeleteIncentiveAction;
@@ -17,7 +16,7 @@ use Illuminate\View\View;
 class IncentiveController extends Controller
 {
     public function __construct(
-        private readonly StoreIncentiveAction  $storeIncentive,
+        private readonly StoreIncentiveAction $storeIncentive,
         private readonly UpdateIncentiveAction $updateIncentive,
         private readonly DeleteIncentiveAction $deleteIncentive,
     ) {}
@@ -105,8 +104,8 @@ class IncentiveController extends Controller
     private function prepareBooleans(array $data): array
     {
         $data['is_guaranteed'] = (bool) ($data['is_guaranteed'] ?? false);
-        $data['is_featured']   = (bool) ($data['is_featured']   ?? false);
-        $data['is_enabled']    = (bool) ($data['is_enabled']    ?? false);
+        $data['is_featured']   = (bool) ($data['is_featured'] ?? false);
+        $data['is_enabled']    = (bool) ($data['is_enabled'] ?? false);
 
         return $data;
     }

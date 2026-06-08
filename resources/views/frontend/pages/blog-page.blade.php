@@ -195,6 +195,79 @@
             color: white;
         }
 
+        /* ── Sidebar: New Arrivals ──────────────────────────── */
+        .sidebar-divider {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--of-secondary);
+            padding: 16px 0 8px;
+            margin: 0 12px;
+            border-bottom: 2px solid var(--of-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sidebar-divider::before {
+            content: '\f0ca';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 12px;
+            color: var(--of-primary);
+        }
+
+        .arrival-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            text-decoration: none;
+            color: var(--of-text);
+            border-bottom: 1px solid var(--of-border);
+            transition: background 0.15s ease;
+        }
+        .arrival-card:hover {
+            background: #f8f9fa;
+            color: var(--of-secondary);
+        }
+
+        .arrival-img-wrap {
+            width: 60px;
+            height: 45px;
+            border-radius: 4px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #f0f1f3;
+        }
+        .arrival-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .arrival-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .arrival-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--of-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.3;
+        }
+        .arrival-price {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--of-primary);
+        }
+
         /* iOS Safari Fixes */
         @supports (-webkit-touch-callout: none) {
             .dynamic-content-wrapper {
@@ -247,10 +320,12 @@
                 <a href="{{ route('frontend.inventory.show', $vehicle->slug) }}" class="arrival-card">
                     <div class="arrival-img-wrap">
                         <img src="{{ $vehicle->primaryPhoto?->url ?? asset('images/placeholder-car.jpg') }}"
-                            alt="{{ $vehicle->make->name }} {{ $vehicle->makeModel->name }}"
-                            style="width:100%; height:100%; object-fit:cover;">
+                            alt="{{ $vehicle->make->name }} {{ $vehicle->makeModel->name }}">
                     </div>
-                    <div class="arrival-label">{{ $vehicle->make->name }} {{ $vehicle->makeModel->name }}</div>
+                    <div class="arrival-info">
+                        <span class="arrival-title">{{ $vehicle->year }} {{ $vehicle->make->name }} {{ $vehicle->makeModel->name }}</span>
+                        <span class="arrival-price">${{ number_format($vehicle->list_price) }}</span>
+                    </div>
                 </a>
             @endforeach
         </div>

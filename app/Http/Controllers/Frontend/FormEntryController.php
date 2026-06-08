@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Frontend;
 
 use App\Actions\Website\StoreGetApprovedAction;
@@ -20,11 +19,11 @@ use Illuminate\Http\JsonResponse;
 class FormEntryController extends Controller
 {
     public function __construct(
-        private readonly StoreTradeInAction           $storeTradeIn,
-        private readonly StoreGetApprovedAction       $storeGetApproved,
-        private readonly StoreSimpleFormEntryAction   $storeSimple,
+        private readonly StoreTradeInAction $storeTradeIn,
+        private readonly StoreGetApprovedAction $storeGetApproved,
+        private readonly StoreSimpleFormEntryAction $storeSimple,
         private readonly StoreScheduleTestDriveAction $storeTestDrive,
-        private readonly UploadFormEntryPhotosAction  $uploadPhotos,
+        private readonly UploadFormEntryPhotosAction $uploadPhotos,
     ) {}
 
     public function tradeIn(StoreTradeInRequest $request): JsonResponse

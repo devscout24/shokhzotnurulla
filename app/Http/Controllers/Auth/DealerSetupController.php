@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 
 class DealerSetupController extends Controller
 {
@@ -15,36 +14,36 @@ class DealerSetupController extends Controller
     {
         return view('auth.dealer-setup', [
             'token' => $token,
-            'email' => $request->email
+            'email' => $request->email,
         ]);
     }
 
     public function setupAccount(Request $request)
     {
         $request->validate([
-            'token' => 'required',
-            'email' => 'required|email|exists:users,email',
+            'token'    => 'required',
+            'email'    => 'required|email|exists:users,email',
             'password' => 'required|min:8|confirmed',
         ]);
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
+        if (! $user) {
             return back()->withErrors(['email' => 'User not found']);
         }
 
-        if (!Password::broker()->tokenExists($user, $request->token)) {
+        if (! Password::broker()->tokenExists($user, $request->token)) {
             return back()->withErrors(['email' => 'Invalid or expired token']);
         }
 
         $user->forceFill([
-            'password' => Hash::make($request->password),
+            'password'          => Hash::make($request->password),
             'email_verified_at' => now(),
         ])->save();
 
         if ($user->currentDealer) {
             $user->currentDealer->update([
-                'status' => \App\Enums\DealerStatus::ACTIVE,
+                'status'    => \App\Enums\DealerStatus::ACTIVE,
                 'is_active' => true,
             ]);
         }

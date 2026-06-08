@@ -395,10 +395,12 @@
             background-color: #e4e9ec !important;
             color: #000 !important;
         }
+
         .btn-danger:hover {
             background-color: #ce4f4b !important;
             border-color: #ce4f4b !important;
-        }    </style>
+        }
+    </style>
 @endpush
 @section('page-content')
     <div class="overlay" id="side-overlay"></div>
@@ -409,23 +411,24 @@
             <div class="of-header shadow-sm">
                 <h4 class="m-0 fs-5 text-dark">Add Page</h4>
                 <div class="ms-auto d-flex align-items-center gap-3">
-                    <button type="button" class="btn btn-outline-dark btn-sm px-4"
-                        style="border-radius:6px"><i class="fa-solid fa-eye me-2"></i>Preview</button>
-                    <button type="button" class="btn btn-outline-dark btn-sm px-4"
-                        style="border-radius:6px" onclick="toggleSidePanel('page-settings')"><i
-                            class="fa-solid fa-gear me-2"></i>Page Settings</button>
-                    <button type="button" class="btn btn-outline-dark btn-sm px-4"
-                        style="border-radius:6px" onclick="toggleSidePanel('page-revisions')"><i
+                    <button type="button" class="btn btn-outline-dark btn-sm px-4" style="border-radius:6px"><i
+                            class="fa-solid fa-eye me-2"></i>Preview</button>
+                    <button type="button" class="btn btn-outline-dark btn-sm px-4" style="border-radius:6px"
+                        onclick="toggleSidePanel('page-settings')"><i class="fa-solid fa-gear me-2"></i>Page
+                        Settings</button>
+                    <button type="button" class="btn btn-outline-dark btn-sm px-4" style="border-radius:6px"
+                        onclick="toggleSidePanel('page-revisions')"><i
                             class="fa-solid fa-clock-rotate-left me-2"></i>Revision History</button>
                     <button type="submit" class="btn btn-danger btn-sm px-4"
-                        style="border-radius:6px;background-color:#ce4f4b;border-color:#ce4f4b"><i class="fa-solid fa-check me-2"></i>Save</button>
+                        style="border-radius:6px;background-color:#ce4f4b;border-color:#ce4f4b"><i
+                            class="fa-solid fa-check me-2"></i>Save</button>
                 </div>
             </div>
             <div class="input-group border-bottom bg-white" style="height:55px">
-                <span class="bg-lighter input-group-text border-0 px-4 small text-muted"
-                    style="min-width:140px">PAGE TITLE</span>
-                <input type="text" value="" class="form-control border-0 px-4 fs-6" name="title" id="page-title" required
-                    autocomplete="off" placeholder="Enter page title...">
+                <span class="bg-lighter input-group-text border-0 px-4 small text-muted" style="min-width:140px">PAGE
+                    TITLE</span>
+                <input type="text" value="" class="form-control border-0 px-4 fs-6" name="title" id="page-title"
+                    required autocomplete="off" placeholder="Enter page title...">
                 <span class="bg-white input-group-text border-0 text-muted small px-4 border-start" id="top-status-badge">
                     <i class="fa-solid fa-circle me-2" style="font-size:8px;color:#ced4da"></i> Status: Draft
                 </span>
@@ -590,8 +593,9 @@
                             id="ps-tags" placeholder="news, update, gallery"></div>
                     <div class="hs-row"><label>Meta Title</label><input class="hs-input" name="meta_title"
                             id="ps-meta-title" placeholder="Page browser title"></div>
-                    <div class="hs-row"><label>Meta Description</label><textarea class="hs-input" name="meta_description"
-                            id="ps-meta-description" style="min-height:80px"></textarea></div>
+                    <div class="hs-row"><label>Meta Description</label>
+                        <textarea class="hs-input" name="meta_description" id="ps-meta-description" style="min-height:80px"></textarea>
+                    </div>
 
                     <hr class="hs-divider">
                     <div class="ps-section-title">Style</div>
@@ -608,8 +612,8 @@
                     </div>
                 </div>
                 <div class="side-panel-footer">
-                    <button type="button" class="btn btn-danger w-100 fw-bold" onclick="toggleSidePanel('page-settings')"
-                        style="background:#ce4f4b">Apply Settings</button>
+                    <button type="button" class="btn btn-danger w-100 fw-bold"
+                        onclick="toggleSidePanel('page-settings')" style="background:#ce4f4b">Apply Settings</button>
                 </div>
             </div>
 
@@ -659,7 +663,7 @@
 @push('pannel-scripts')
     <script>
         // Error Catcher
-        window.onerror = function (msg, url, lineNo, columnNo, error) {
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
             alert("Error: " + msg + "\nLine: " + lineNo + "\nFile: " + url);
             return false;
         };
@@ -669,8 +673,8 @@
             csrf_token: "{{ csrf_token() }}"
         };
     </script>
-    <script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=6.0"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/shared.js') }}?v=6.1"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/overfuel-blocks.js') }}?v=6.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('assets/panels/website-pages/js/heading.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/text.js') }}?v=6.0"></script>
@@ -678,7 +682,8 @@
     <script src="{{ asset('assets/panels/website-pages/js/divider.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/image.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/video.js') }}?v=6.0"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/accordion.js') }}?v=6.1"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/carousel.js') }}?v=6.1"></script>
     <script src="{{ asset('assets/panels/website-pages/js/card.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/3col.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/spacer.js') }}?v=6.0"></script>
@@ -692,7 +697,7 @@
     <script src="{{ asset('assets/panels/website-pages/js/main.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/save.js') }}?v=6.0"></script>
     <script src="{{ asset('assets/panels/website-pages/js/history.js') }}?v=6.0"></script>
-    <script src="{{ asset('assets/panels/website-pages/js/export-import.js') }}?v=6.0"></script>
+    <script src="{{ asset('assets/panels/website-pages/js/export-import.js') }}?v=6.1"></script>
 
     <script>
         // Sync Top Bar Status
@@ -702,7 +707,8 @@
             const dot = badge.querySelector('i');
             const text = select.options[select.selectedIndex].text;
             dot.style.color = select.value === '1' ? '#27ae60' : '#ced4da';
-            badge.innerHTML = `<i class="fa-solid fa-circle me-2" style="font-size:8px;color:${dot.style.color}"></i> Status: ${text}`;
+            badge.innerHTML =
+                `<i class="fa-solid fa-circle me-2" style="font-size:8px;color:${dot.style.color}"></i> Status: ${text}`;
         }
 
         function toggleSidePanel(id) {
@@ -717,7 +723,8 @@
                         overlay.style.display = 'none';
                     } else {
                         // Close others first
-                        panels.forEach(other => document.getElementById('side-panel-' + other).classList.remove('open'));
+                        panels.forEach(other => document.getElementById('side-panel-' + other).classList.remove(
+                            'open'));
                         el.classList.add('open');
                         overlay.style.display = 'block';
                     }
@@ -730,22 +737,23 @@
             overlay.style.display = anyOpen ? 'block' : 'none';
         }
 
-        document.getElementById('side-overlay').addEventListener('click', function () {
+        document.getElementById('side-overlay').addEventListener('click', function() {
             document.querySelectorAll('.side-panel').forEach(p => p.classList.remove('open'));
             this.style.display = 'none';
         });
 
         // Slug auto-generation & sanitization
-        document.getElementById('page-title').addEventListener('input', function () {
-            var slug = this.value.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/^-+|-+$/g, '');
+        document.getElementById('page-title').addEventListener('input', function() {
+            var slug = this.value.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(
+                /^-+|-+$/g, '');
             document.getElementById('page-slug').value = slug;
         });
 
-        document.getElementById('page-slug').addEventListener('input', function () {
+        document.getElementById('page-slug').addEventListener('input', function() {
             this.value = this.value.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-');
         });
 
-        document.getElementById('page-slug').addEventListener('blur', function () {
+        document.getElementById('page-slug').addEventListener('blur', function() {
             this.value = this.value.replace(/^-+|-+$/g, '');
         });
 
@@ -761,18 +769,25 @@
             var title = document.getElementById('page-title').value;
             var slugField = document.getElementById('page-slug');
             if (!slugField.value && title) {
-                slugField.value = title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/^-+|-+$/g, '');
+                slugField.value = title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(
+                    /^-+|-+$/g, '');
             }
 
             return true;
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Shared logic for sidebar panels is handled inside individual block JS files.
 
             // Fix layout overflow
             var layout = document.querySelector('.layout');
-            if (layout) { layout.style.display = 'flex'; layout.style.width = '100%'; layout.style.maxWidth = '100%'; layout.style.flex = '1'; layout.style.overflow = 'visible'; }
+            if (layout) {
+                layout.style.display = 'flex';
+                layout.style.width = '100%';
+                layout.style.maxWidth = '100%';
+                layout.style.flex = '1';
+                layout.style.overflow = 'visible';
+            }
         });
     </script>
 @endpush

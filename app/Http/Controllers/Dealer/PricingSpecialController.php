@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Actions\Inventory\DeletePricingSpecialAction;
@@ -8,11 +7,11 @@ use App\Actions\Inventory\UpdatePricingSpecialAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Inventory\StorePricingSpecialRequest;
 use App\Http\Requests\Inventory\UpdatePricingSpecialRequest;
+use App\Models\Catalog\BodyStyle;
 use App\Models\Catalog\Color;
 use App\Models\Catalog\Make;
 use App\Models\Inventory\PricingSpecial;
 use App\Models\Inventory\Vehicle;
-use App\Models\Catalog\BodyStyle;
 use App\Support\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,7 +20,7 @@ use Illuminate\View\View;
 class PricingSpecialController extends Controller
 {
     public function __construct(
-        private readonly StorePricingSpecialAction  $storePricingSpecial,
+        private readonly StorePricingSpecialAction $storePricingSpecial,
         private readonly UpdatePricingSpecialAction $updatePricingSpecial,
         private readonly DeletePricingSpecialAction $deletePricingSpecial,
     ) {}
@@ -69,9 +68,9 @@ class PricingSpecialController extends Controller
         $colors       = Color::orderBy('name')->get(['id', 'name']);
         $bodyStyles   = BodyStyle::orderBy('name')->get(['id', 'name']);
         $stockNumbers = Vehicle::forDealer($dealerId)
-                            ->active()
-                            ->orderBy('stock_number')
-                            ->pluck('stock_number');
+            ->active()
+            ->orderBy('stock_number')
+            ->pluck('stock_number');
 
         return view('dealer.pages.inventory.pricing-specials', compact(
             'pricingSpecials', 'dealer', 'makes', 'colors', 'stockNumbers', 'bodyStyles'
@@ -137,7 +136,7 @@ class PricingSpecialController extends Controller
     {
         $this->authorizePricingSpecial($request, $pricingSpecial);
 
-        $new = $pricingSpecial->replicate();
+        $new             = $pricingSpecial->replicate();
         $new->title      = $pricingSpecial->title . ' (Copy)';
         $new->is_enabled = false;
         $new->save();
@@ -208,7 +207,7 @@ class PricingSpecialController extends Controller
         }
 
         if ($request->filled('body_style')) {
-            $query->whereHas('bodyStyle', fn ($q) => $q->where('name', $request->body_style));
+            $query->whereHas('bodyStyle', fn($q) => $q->where('name', $request->body_style));
         }
 
         if ($request->filled('trim')) {
@@ -224,7 +223,7 @@ class PricingSpecialController extends Controller
         }
 
         if ($request->filled('tag')) {
-            $query->whereHas('tags', fn ($q) => $q->where('tag', $request->tag));
+            $query->whereHas('tags', fn($q) => $q->where('tag', $request->tag));
         }
 
         if ($request->filled('min_days')) {
@@ -247,7 +246,7 @@ class PricingSpecialController extends Controller
 
     private function prepareBooleans(array $data): array
     {
-        $data['stackable']  = (bool) ($data['stackable']  ?? false);
+        $data['stackable']  = (bool) ($data['stackable'] ?? false);
         $data['send_email'] = (bool) ($data['send_email'] ?? false);
         $data['hide_price'] = (bool) ($data['hide_price'] ?? false);
 

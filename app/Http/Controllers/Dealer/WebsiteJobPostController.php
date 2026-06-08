@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Http\Controllers\Controller;
@@ -15,7 +14,7 @@ class WebsiteJobPostController extends Controller
     public function index(): View
     {
         $categories = JobPostCategory::orderBy('sort_order')->withCount('jobPosts')->get();
-        $jobs = JobPost::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
+        $jobs       = JobPost::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
 
         return view('dealer.pages.website.job-posts.index', compact('jobs', 'categories'));
     }
@@ -30,8 +29,8 @@ class WebsiteJobPostController extends Controller
         ]);
 
         $validated['location_id'] = JobPost::getActiveLocationId();
-        $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = JobPost::forActiveLocation()->max('sort_order') + 1;
+        $validated['author']      = Auth::user()->name;
+        $validated['sort_order']  = JobPost::forActiveLocation()->max('sort_order') + 1;
 
         $job = JobPost::create($validated);
         $job->load('category');
@@ -62,13 +61,13 @@ class WebsiteJobPostController extends Controller
 
     public function bulkUpdate(Request $request): JsonResponse
     {
-        $data = $request->input('jobs', []);
+        $data   = $request->input('jobs', []);
         $author = Auth::user()->name;
 
         foreach ($data as $index => $item) {
             $id = $item['id'] ?? null;
 
-            if (!empty($item['is_deleted']) && $id) {
+            if (! empty($item['is_deleted']) && $id) {
                 JobPost::where('id', $id)->delete();
                 continue;
             }

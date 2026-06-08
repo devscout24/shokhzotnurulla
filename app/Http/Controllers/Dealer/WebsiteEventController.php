@@ -1,13 +1,11 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 use App\Models\Website\Event;
 use App\Models\Website\EventCategory;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -16,7 +14,7 @@ class WebsiteEventController extends Controller
     public function index(): View
     {
         $categories = EventCategory::orderBy('sort_order')->withCount('events')->get();
-        $events = Event::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
+        $events     = Event::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
 
         return view('dealer.pages.website.events.index', compact('events', 'categories'));
     }
@@ -37,8 +35,8 @@ class WebsiteEventController extends Controller
         ]);
 
         $validated['location_id'] = Event::getActiveLocationId();
-        $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = Event::forActiveLocation()->max('sort_order') + 1;
+        $validated['author']      = Auth::user()->name;
+        $validated['sort_order']  = Event::forActiveLocation()->max('sort_order') + 1;
 
         $event = Event::create($validated);
         $event->load('category');
@@ -75,13 +73,13 @@ class WebsiteEventController extends Controller
 
     public function bulkUpdate(Request $request): JsonResponse
     {
-        $data = $request->input('events', []);
+        $data   = $request->input('events', []);
         $author = Auth::user()->name;
 
         foreach ($data as $index => $item) {
             $id = $item['id'] ?? null;
 
-            if (!empty($item['is_deleted']) && $id) {
+            if (! empty($item['is_deleted']) && $id) {
                 Event::where('id', $id)->delete();
                 continue;
             }

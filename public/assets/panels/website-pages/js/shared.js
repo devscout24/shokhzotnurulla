@@ -456,6 +456,7 @@ function duplicateBlock(originalBlock) {
     else if (el.classList.contains('editor-container')) { openContainerSettings(el); }
     else if (el.classList.contains('editor-icon')) { openIconSettings(el); }
     else if (el.classList.contains('editor-cart')) { openCartSettings(el); }
+    else if (el.classList.contains('editor-carousel')) { openCarouselSettings(el); if (typeof saveHistory === 'function') saveHistory(); }
     else if (el.classList.contains('editor-iframe')) { openIFrameSettings(el); if (typeof saveHistory === 'function') saveHistory(); }
   }
 }
@@ -977,10 +978,21 @@ function renderBlockData(data) {
           data.items.forEach(itemData => {
             const item = document.createElement('div');
             item.className = 'acc-item';
-            item.innerHTML = `<div class="acc-header" contenteditable="true">${itemData.header}</div><div class="acc-content col-drop-zone"></div>`;
+            item.style.cssText = 'border:1px solid #dee2e6;margin-bottom:5px;border-radius:4px';
+            item.innerHTML = `<div class="acc-header" style="padding:10px;background:#f8f9fa;cursor:pointer;font-weight:600;min-height:40px;display:block" contenteditable="true">${itemData.header}</div><div class="acc-content col-drop-zone" style="padding:15px;min-height:50px"><p contenteditable="true" spellcheck="false" data-placeholder="Enter content here..." style="min-height:40px;padding:5px;margin:0;width:100%;display:block;outline:none"></p></div>`;
             container.appendChild(item);
+            // Set up keyboard toggle on header
+            const hdr = item.querySelector('.acc-header');
             const contentZone = item.querySelector('.acc-content');
-            if (itemData.blocks) {
+            hdr.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                contentZone.style.display = contentZone.style.display === 'block' ? 'none' : 'block';
+              }
+            });
+            if (typeof attachDropZoneListeners === 'function') attachDropZoneListeners(contentZone);
+            if (itemData.blocks && itemData.blocks.length > 0) {
+              contentZone.innerHTML = '';
               itemData.blocks.forEach(childData => {
                 const childBlock = renderBlockData(childData);
                 if (childBlock) { contentZone.appendChild(childBlock); attachBlockListeners(childBlock); }
@@ -1106,6 +1118,11 @@ function renderBlockData(data) {
         block = dropCarouselBlock(true);
         const el = block.querySelector('.editor-carousel');
         Object.assign(el.dataset, data);
+        if (typeof rebuildCarouselPreview === 'function') {
+          let slides = [];
+          try { slides = JSON.parse(data.slides || '[]'); } catch (e) {}
+          rebuildCarouselPreview(el, slides);
+        }
       }
       break;
     case 'row-container':

@@ -229,6 +229,8 @@ $visibilityHtml = '
 {{-- Accordion Settings --}}
 <div id="accordion-settings-panel" style="display:none">
 <button type="button" class="hs-back-btn" id="as-back-btn"><i class="fa-solid fa-arrow-left"></i> Accordion Settings</button>
+<div class="section-title" style="margin-top:0">Items</div>
+<div id="accordion-item-list" class="mb-2"></div>
 <div class="hs-row mt-2"><button type="button" class="btn btn-outline-danger btn-sm w-100" id="as-add-item">Add Item</button></div>
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
@@ -247,7 +249,35 @@ $visibilityHtml = '
 {{-- Carousel Settings --}}
 <div id="carousel-settings-panel" style="display:none">
 <button type="button" class="hs-back-btn" id="car-back-btn"><i class="fa-solid fa-arrow-left"></i> Carousel Settings</button>
+
+<div class="section-title" style="margin-top:0">Slides</div>
+<div id="car-slide-gallery" style="margin-bottom:12px"></div>
+
+<div class="hs-row"><label>Add Image</label>
+<div style="display:flex;gap:5px">
+  <input class="hs-input" id="car-add-url" placeholder="Image URL"/>
+  <button type="button" class="btn btn-outline-danger" id="car-upload-btn"><i class="fa-solid fa-upload"></i></button>
+</div>
+<input type="file" id="car-upload-input" style="display:none" accept="image/*"/>
+<button type="button" class="btn btn-outline-danger btn-sm w-100 mt-2" id="car-add-url-btn"><i class="fa-solid fa-plus"></i> Add Slide</button>
+</div>
+
+<hr class="hs-divider"/>
+<div class="section-title">Settings</div>
 <div class="hs-row"><label>Interval (ms)</label><input class="hs-input" id="car-interval" type="number" value="5000"/></div>
+<div class="hs-row d-flex justify-content-between align-items-center">
+  <label class="mb-0">Autoplay</label>
+  <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" id="car-autoplay" checked/></div>
+</div>
+<div class="hs-row"><label>Navigation Style</label>
+  <select class="hs-select" id="car-nav-style">
+    <option value="both">Arrows + Dots</option>
+    <option value="arrows">Arrows Only</option>
+    <option value="dots">Dots Only</option>
+    <option value="none">None</option>
+  </select>
+</div>
+<div class="hs-row"><label>Height (px)</label><input class="hs-input" id="car-height" type="number" value="400" min="100"/></div>
 {!! $visibilityHtml !!}
 <hr class="hs-divider"/>
 <div class="hs-actions"><button type="button" class="hs-btn-remove" id="car-remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button><button type="button" class="hs-btn-cancel" id="car-cancel-btn">Cancel</button></div>

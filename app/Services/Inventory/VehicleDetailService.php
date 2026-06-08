@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services\Inventory;
 
 use App\Models\Inventory\Vehicle;
@@ -50,16 +49,16 @@ final class VehicleDetailService
                 'drivetrainType:id,name',
                 'exteriorColor:id,name',
                 'specs',
-                'primaryPhoto' => fn ($q) => $q
+                'primaryPhoto'   => fn($q)   => $q
                     ->select(['id', 'vehicle_id', 'path', 'disk', 'url'])
                     ->live(),
-                'photos' => fn ($q) => $q
+                'photos'         => fn($q)         => $q
                     ->select(self::PHOTO_COLUMNS)
                     ->live()
                     ->orderByDesc('is_primary')
                     ->orderBy('sort_order'),
                 'features:id,name',
-                'factoryOptions' => fn ($q) => $q
+                'factoryOptions' => fn($q) => $q
                     ->select([
                         'factory_options.id',
                         'factory_options.label',
@@ -69,7 +68,7 @@ final class VehicleDetailService
                 'prices:vehicle_id,special_price,msrp',
                 'printables',
             ])
-            ->withCount(['photos' => fn ($q) => $q->live()])
+            ->withCount(['photos' => fn($q) => $q->live()])
             ->firstOrFail();
     }
 
@@ -84,7 +83,7 @@ final class VehicleDetailService
             ->where('make_id', $vehicle->make_id)
             ->select(self::RELATED_COLUMNS)
             ->with($this->relatedWith())
-            ->withCount(['photos' => fn ($q) => $q->live()])
+            ->withCount(['photos' => fn($q) => $q->live()])
             ->orderByDesc('listed_at')
             ->limit(8)
             ->get();
@@ -98,7 +97,7 @@ final class VehicleDetailService
                 ->whereNotIn('id', $existingIds)
                 ->select(self::RELATED_COLUMNS)
                 ->with($this->relatedWith())
-                ->withCount(['photos' => fn ($q) => $q->live()])
+                ->withCount(['photos' => fn($q) => $q->live()])
                 ->orderByDesc('listed_at')
                 ->limit(8 - $related->count())
                 ->get();
@@ -112,7 +111,7 @@ final class VehicleDetailService
     public function estimatedMonthly(
         float $price,
         float $annualRatePercent = 6.79,
-        int   $months = 60,
+        int $months = 60,
     ): float {
         if ($price <= 0) {
             return 0.0;
@@ -130,8 +129,8 @@ final class VehicleDetailService
     public function groupedFactoryOptions(Vehicle $vehicle): Collection
     {
         return $vehicle->factoryOptions
-            ->filter(fn ($fo) => $fo->category !== null)
-            ->groupBy(fn ($fo) => $fo->category->name);
+            ->filter(fn($fo) => $fo->category !== null)
+            ->groupBy(fn($fo) => $fo->category->name);
     }
 
     public function buildFaqs(Vehicle $vehicle): array
@@ -150,35 +149,35 @@ final class VehicleDetailService
         if ($fuelType) {
             $faqs[] = [
                 'question' => "What type of fuel does a {$title} use?",
-                'answer'   => "A {$title} uses {$fuelType}.",
+                'answer' => "A {$title} uses {$fuelType}.",
             ];
         }
 
         if ($spec?->fuel_capacity) {
             $faqs[] = [
                 'question' => "What is the {$title} fuel capacity?",
-                'answer'   => "A {$title} has the fuel capacity of {$spec->fuel_capacity} gallons.",
+                'answer' => "A {$title} has the fuel capacity of {$spec->fuel_capacity} gallons.",
             ];
         }
 
         if ($spec?->horsepower) {
             $faqs[] = [
                 'question' => "How much horsepower does a {$title} have?",
-                'answer'   => "A {$title} has {$spec->horsepower} horsepower.",
+                'answer' => "A {$title} has {$spec->horsepower} horsepower.",
             ];
         }
 
         if ($spec?->torque) {
             $faqs[] = [
                 'question' => "How much torque does a {$title} have?",
-                'answer'   => "A {$title} has {$spec->torque} lb-ft torque.",
+                'answer' => "A {$title} has {$spec->torque} lb-ft torque.",
             ];
         }
 
         if ($spec?->mpg_city) {
             $faqs[] = [
                 'question' => "What is the {$title} city fuel economy / miles per gallon?",
-                'answer'   => "A {$title} has a city fuel economy of {$spec->mpg_city} mpg.",
+                'answer' => "A {$title} has a city fuel economy of {$spec->mpg_city} mpg.",
             ];
         }
 
@@ -192,10 +191,10 @@ final class VehicleDetailService
         return [
             'make:id,name',
             'makeModel:id,name',
-            'primaryPhoto' => fn ($q) => $q
+            'primaryPhoto' => fn($q) => $q
                 ->select(['id', 'vehicle_id', 'path', 'disk', 'url'])
                 ->live(),
-            'photos' => fn ($q) => $q
+            'photos'       => fn($q)       => $q
                 ->select(self::PHOTO_COLUMNS)
                 ->live()
                 ->orderByDesc('is_primary')

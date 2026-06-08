@@ -175,11 +175,13 @@ class WebsitePageController extends Controller
     public function duplicate(Request $request, Page $page): RedirectResponse
     {
         $dealerId = $request->user()->current_dealer_id;
-        if ($page->dealer_id !== $dealerId) abort(403);
+        if ($page->dealer_id !== $dealerId) {
+            abort(403);
+        }
 
-        $newPage = $page->replicate();
-        $newPage->title = $page->title . ' (Copy)';
-        $newPage->slug = $page->slug . '-copy-' . time();
+        $newPage            = $page->replicate();
+        $newPage->title     = $page->title . ' (Copy)';
+        $newPage->slug      = $page->slug . '-copy-' . time();
         $newPage->is_active = false;
         $newPage->save();
 

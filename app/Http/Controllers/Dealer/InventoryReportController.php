@@ -11,12 +11,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class InventoryReportController extends Controller
 {
-    /**
+    /**F
      * Display the inventory reports page.
      */
     public function index(Request $request): View
     {
-        $dealerId = $request->user()->current_dealer_id;
+        $dealerId   = $request->user()->current_dealer_id;
         $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
 
         $query = Vehicle::with([
@@ -64,7 +64,7 @@ class InventoryReportController extends Controller
         }
 
         // Location (from session context or explicit filter)
-        if ($request->filled('location_id') && !$locationId) {
+        if ($request->filled('location_id') && ! $locationId) {
             $query->where('location_id', $request->location_id);
         }
 
@@ -141,9 +141,9 @@ class InventoryReportController extends Controller
      */
     public function export(Request $request): StreamedResponse
     {
-        $dealerId = $request->user()->current_dealer_id;
+        $dealerId   = $request->user()->current_dealer_id;
         $locationId = app(\App\Services\Location\LocationContext::class)->getActiveLocationId();
-        $filename = 'inventory-report-' . now()->format('Y-m-d') . '.csv';
+        $filename   = 'inventory-report-' . now()->format('Y-m-d') . '.csv';
 
         $query = Vehicle::with([
             'make', 'makeModel', 'bodyType', 'exteriorColor', 'drivetrainType', 'prices', 'specs', 'dealer',

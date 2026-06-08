@@ -2,13 +2,43 @@
 
 function openAccordionSettings(el) {
   closeAllPanels();
-  activeEl = el;
+  activeEl = el.classList.contains('editor-accordion') ? el : el.closest('.editor-accordion') || el;
   const block = el.closest('.dropped-block');
   block.classList.add('selected');
   document.getElementById('accordion-settings-panel').style.display = 'block';
 
   // Sync Visibility
   if (typeof syncVisibilityToggles === 'function') syncVisibilityToggles(block);
+
+  renderAccordionItemList();
+}
+
+function renderAccordionItemList() {
+  const list = document.getElementById('accordion-item-list');
+  if (!list || !activeEl) return;
+  list.innerHTML = '';
+  activeEl.querySelectorAll('.acc-item').forEach((item, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f1f3f5';
+    const hdr = item.querySelector('.acc-header');
+    row.innerHTML = `
+      <span style="flex:1;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${hdr ? hdr.innerText : 'Item ' + (i+1)}</span>
+      <button type="button" class="btn btn-sm btn-outline-danger accordion-item-remove" data-index="${i}" style="padding:2px 8px;font-size:11px"><i class="fa-solid fa-xmark"></i></button>
+    `;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('.accordion-item-remove').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!activeEl) return;
+      const idx = parseInt(btn.dataset.index);
+      const items = activeEl.querySelectorAll('.acc-item');
+      if (items[idx]) {
+        items[idx].remove();
+        renderAccordionItemList();
+        if (typeof saveHistory === 'function') saveHistory();
+      }
+    });
+  });
 }
 
 // Back / Cancel
@@ -45,6 +75,7 @@ document.getElementById('as-add-item')?.addEventListener('click', () => {
     });
     
     attachDropZoneListeners(content);
+    renderAccordionItemList();
     if (typeof saveHistory === 'function') saveHistory();
   }
 });
@@ -112,6 +143,6 @@ function dropAccordionBlock(returnBlock = false) {
   blocksContainer.appendChild(block);
   attachBlockListeners(block);
 
-  if (acc) openAccordionSettings(acc);
+  if (acc) { openAccordionSettings(acc); renderAccordionItemList(); }
   if (typeof saveHistory === 'function') saveHistory();
 }

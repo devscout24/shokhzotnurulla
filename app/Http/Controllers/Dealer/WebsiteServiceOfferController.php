@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Http\Controllers\Controller;
@@ -15,7 +14,7 @@ class WebsiteServiceOfferController extends Controller
     public function index(): View
     {
         $categories = ServiceOfferCategory::orderBy('sort_order')->withCount('serviceOffers')->get();
-        $offers = ServiceOffer::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
+        $offers     = ServiceOffer::forActiveLocation()->with('category')->orderBy('sort_order', 'desc')->get();
 
         return view('dealer.pages.website.service-offers.index', compact('offers', 'categories'));
     }
@@ -35,8 +34,8 @@ class WebsiteServiceOfferController extends Controller
         ]);
 
         $validated['location_id'] = ServiceOffer::getActiveLocationId();
-        $validated['author'] = Auth::user()->name;
-        $validated['sort_order'] = ServiceOffer::forActiveLocation()->max('sort_order') + 1;
+        $validated['author']      = Auth::user()->name;
+        $validated['sort_order']  = ServiceOffer::forActiveLocation()->max('sort_order') + 1;
 
         $offer = ServiceOffer::create($validated);
         $offer->load('category');
@@ -72,13 +71,13 @@ class WebsiteServiceOfferController extends Controller
 
     public function bulkUpdate(Request $request): JsonResponse
     {
-        $data = $request->input('offers', []);
+        $data   = $request->input('offers', []);
         $author = Auth::user()->name;
 
         foreach ($data as $index => $item) {
             $id = $item['id'] ?? null;
 
-            if (!empty($item['is_deleted']) && $id) {
+            if (! empty($item['is_deleted']) && $id) {
                 ServiceOffer::where('id', $id)->delete();
                 continue;
             }

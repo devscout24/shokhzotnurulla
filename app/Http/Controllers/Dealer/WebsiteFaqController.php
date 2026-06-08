@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Dealer;
 
 use App\Http\Controllers\Controller;
@@ -169,40 +168,40 @@ class WebsiteFaqController extends Controller
     public function bulkUpdate(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'faqs' => ['required', 'array'],
-            'faqs.*.id' => ['nullable', 'integer'],
-            'faqs.*.question' => ['required', 'string', 'max:1000'],
-            'faqs.*.answer' => ['required', 'string'],
+            'faqs'                   => ['required', 'array'],
+            'faqs.*.id'              => ['nullable', 'integer'],
+            'faqs.*.question'        => ['required', 'string', 'max:1000'],
+            'faqs.*.answer'          => ['required', 'string'],
             'faqs.*.faq_category_id' => ['nullable', 'integer', 'exists:faq_categories,id'],
-            'faqs.*.is_deleted' => ['nullable', 'boolean'],
+            'faqs.*.is_deleted'      => ['nullable', 'boolean'],
         ]);
 
-        $dealerId = $request->user()->current_dealer_id;
+        $dealerId   = $request->user()->current_dealer_id;
         $updatedIds = [];
 
         foreach ($validated['faqs'] as $index => $faqData) {
-            if (!empty($faqData['is_deleted']) && !empty($faqData['id'])) {
+            if (! empty($faqData['is_deleted']) && ! empty($faqData['id'])) {
                 Faq::forDealer($dealerId)->where('id', $faqData['id'])->delete();
                 continue;
             }
 
             $data = [
-                'dealer_id' => $dealerId,
-                'location_id' => Faq::getActiveLocationId(),
-                'question' => $faqData['question'],
-                'answer' => $faqData['answer'],
+                'dealer_id'       => $dealerId,
+                'location_id'     => Faq::getActiveLocationId(),
+                'question'        => $faqData['question'],
+                'answer'          => $faqData['answer'],
                 'faq_category_id' => $faqData['faq_category_id'],
-                'sort_order' => $index,
+                'sort_order'      => $index,
             ];
 
-            if (!empty($faqData['id'])) {
+            if (! empty($faqData['id'])) {
                 $faq = Faq::forDealer($dealerId)->find($faqData['id']);
                 if ($faq) {
                     $faq->update($data);
                     $updatedIds[] = $faq->id;
                 }
             } else {
-                $faq = Faq::create(array_merge($data, ['status' => 'Published', 'author' => $request->user()->name]));
+                $faq          = Faq::create(array_merge($data, ['status' => 'Published', 'author' => $request->user()->name]));
                 $updatedIds[] = $faq->id;
             }
         }

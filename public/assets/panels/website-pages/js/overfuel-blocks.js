@@ -31,15 +31,6 @@ function openSearchSettings(el) {
     document.getElementById('search-placeholder').value = el.dataset.placeholder || '';
 }
 
-function openCarouselSettings(el) {
-    activeEl = el;
-    const block = el.closest('.dropped-block');
-    block.classList.add('selected');
-    openPanel('carousel-settings-panel');
-    if (typeof syncVisibilityToggles === 'function') syncVisibilityToggles(block);
-    document.getElementById('car-interval').value = el.dataset.interval || 5000;
-}
-
 function openTabsSettings(el) {
     activeEl = el;
     const block = el.closest('.dropped-block');
@@ -373,10 +364,6 @@ function dropPluginBlock(ret=false){
     const b = makeOFBlock('plugin','Plugin', '<div style="padding:20px;background:#fffbe6;border:1px solid #ffe58f;text-align:center">Plugin Placeholder</div>');
     if(ret)return b; document.getElementById('blocks-container').appendChild(b); attachBlockListeners(b);
 }
-function dropCarouselBlock(ret=false){
-    const b = makeOFBlock('carousel','Carousel', '<div style="background:#333;height:200px;display:flex;align-items:center;justify-content:center;color:#fff;border-radius:4px"><i class="fa-solid fa-images" style="font-size:3rem"></i></div>');
-    if(ret)return b; document.getElementById('blocks-container').appendChild(b); attachBlockListeners(b);
-}
 function dropTabsBlock(ret=false){
     const b = makeOFBlock('tabs','Tabs', '<div class="nav nav-tabs mb-2"><div class="nav-link active">Tab 1</div><div class="nav-link">Tab 2</div></div><div style="padding:15px;border:1px solid #dee2e6;border-top:0" class="col-drop-zone"></div>');
     if(ret)return b; document.getElementById('blocks-container').appendChild(b); attachBlockListeners(b);
@@ -404,7 +391,6 @@ window.dropBlogBlock=dropBlogBlock;
 window.dropContentBlockBlock=dropContentBlockBlock;
 window.dropBodyTypesBlock=dropBodyTypesBlock;
 window.dropPluginBlock=dropPluginBlock;
-window.dropCarouselBlock=dropCarouselBlock;
 window.dropTabsBlock=dropTabsBlock;
 window.dropOverlayBlock=dropOverlayBlock;
 window.dropCheckBlock=dropCheckBlock;
@@ -413,7 +399,6 @@ window.dropModalBlock=dropModalBlock;
 window.openInventorySettings=openInventorySettings;
 window.openFormSettings=openFormSettings;
 window.openSearchSettings=openSearchSettings;
-window.openCarouselSettings=openCarouselSettings;
 window.openTabsSettings=openTabsSettings;
 window.openMapSettings=openMapSettings;
 window.openBlogSettings=openBlogSettings;
