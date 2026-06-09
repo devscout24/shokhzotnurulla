@@ -20,7 +20,7 @@ class DealerController extends Controller
 {
     public function index()
     {
-        $dealers = Dealer::latest()->paginate(15);
+        $dealers = Dealer::query()->latest()->paginate(15);
 
         return view('admin.pages.dealers.index', compact('dealers'));
     }

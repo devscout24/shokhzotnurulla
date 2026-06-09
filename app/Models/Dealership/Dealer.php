@@ -184,11 +184,11 @@ class Dealer extends Model
 
     public function roles(): Builder
     {
-        return Role::where('dealer_id', $this->id);
+        return Role::query()->where('dealer_id', $this->id);
     }
 
     public function permissions(): Builder
     {
-        return Permission::where('dealer_id', $this->id);
+        return Permission::query()->where('dealer_id', $this->id);
     }
 }
