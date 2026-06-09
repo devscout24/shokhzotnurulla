@@ -17,7 +17,8 @@ class CarsForSalesExportService
     }
 
     public function carsForSaleCsv(Dealer $dealer, Request $request){
-        $fileName = 'dealer_'.$dealer->id.'_carsforsale_'.date('Y-m-d_H-i-s').'.csv';
+        // $fileName = 'inventory'.$dealer->id.'_carsforsale_'.date('Y-m-d_H-i-s').'.csv';
+        $fileName = 'inventory'.$dealer->id.'.csv';
 
         $headers = [
             'Content-type' => 'text/csv',
@@ -29,8 +30,15 @@ class CarsForSalesExportService
 
         $columns = [
             'DealerID', 'NEWUSED', 'VIN', 'StockNumber', 'Make', 'Model', 'ModelYear', 'Trim', 'BodyStyle',
-            'Mileage', 'EngineDescription', 'Cylinders', 'FuelType', 'Transmission', 'Price', 'ExteriorColor',
-            'InteriorColor', 'Options', 'Description', 'Images',
+            'Mileage', 'EngineDescription', 'Cylinders', 'FuelType', 'Transmission', 'Price', 
+            // 'Status', 
+            'ExteriorColor', 'InteriorColor', 'Options', 'Description', 'Images',
+        ];
+
+        $condition =[
+            'New' => 'N',
+            'Used' => 'U',
+            'Certified Pre-Owned' => 'CPO',
         ];
 
         $callback = function () use ($columns, $dealer) {
@@ -42,7 +50,7 @@ class CarsForSalesExportService
                     'make', 'makeModel', 'bodyStyle', 'fuelType', 'exteriorColor', 'interiorColor',
                     'transmissionType', 'photos', 'notes', 'specs', 'prices', 'factoryOptions',
                 ])
-                ->whereIn('status', ['active', 'sold'])
+                ->whereIn('status', ['active'])
                 ->chunk(100, function ($vehicles) use ($file, $dealer) {
                     foreach ($vehicles as $vehicle) {
                         $images = collect($vehicle->photos)->pluck('url')->implode(',');
@@ -51,7 +59,7 @@ class CarsForSalesExportService
 
                         $row = [
                             $dealer->internal_id ?? $dealer->id,
-                            $vehicle->vehicle_condition ?? '',
+                            $condition[$vehicle->vehicle_condition] ?? '',
                             $vehicle->vin ?? '',
                             $vehicle->stock_number ?? '',
                             $vehicle->make?->name ?? '',
@@ -65,6 +73,7 @@ class CarsForSalesExportService
                             $vehicle->fuelType?->name ?? '',
                             $vehicle->transmissionType?->name ?? '',
                             $vehicle->prices?->internet_price ?? $vehicle->list_price ?? '',
+                            // $vehicle->status ?? '',
                             $vehicle->exteriorColor?->name ?? '',
                             $vehicle->interiorColor?->name ?? '',
                             $options,
