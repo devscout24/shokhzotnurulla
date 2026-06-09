@@ -24,7 +24,7 @@ class TimeHelper
 
             $candidate = $prefix.$suffix;
 
-        } while (Dealer::where('internal_id', $candidate)->exists()); // Check collision
+        } while (Dealer::query()->where('internal_id', $candidate)->exists()); // Check collision
 
         return $candidate;
     }

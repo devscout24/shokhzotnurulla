@@ -55,6 +55,13 @@ class DealerController extends Controller
 
             $dealer = Dealer::create($dealerData);
 
+            if(!$dealer) {
+                throw new \Exception('Failed to create dealer');
+            }
+            if (!$dealer->internal_id) {
+                throw new \Exception('Dealer ID or internal ID not found after creation');
+            }
+
             foreach ($validated['domains'] as $index => $domainName) {
                 $dealer->domains()->create([
                     'domain'     => $domainName,

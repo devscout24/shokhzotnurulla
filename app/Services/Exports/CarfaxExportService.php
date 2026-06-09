@@ -34,23 +34,25 @@ class CarfaxExportService
             fputcsv($file, $columns);
 
             Vehicle::withoutGlobalScopes()->where('dealer_id', $dealer->id)
-                ->with(['make', 'makeModel', 'bodyStyle', 'notes'])
+                ->with(['make', 'makeModel', 'bodyStyle', 'photos', 'notes', 'transmissionType'])
                 ->whereIn('status', ['active'])
                 ->chunk(100, function ($vehicles) use ($file) {
                     foreach ($vehicles as $vehicle) {
-                        $accidentHistory = $vehicle->notes?->accident_history ?? '';
-                        $serviceHistory = $vehicle->notes?->service_history ?? '';
+                        $images = collect($vehicle->photos)->pluck('url')->implode(',');
 
                         $row = [
                             $vehicle->vin ?? '',
                             $vehicle->make?->name ?? '',
                             $vehicle->makeModel?->name ?? '',
-                            $vehicle->year ?? '',
+                            $vehicle->dealer?->internal_id ?? '',
+                            $vehicle->dealer?->company_name ?? '',
+                            $vehicle->dealer?->phone ?? '',
+                            '', // Location info (i have multiple locations, not sure which one to use)
+                            $images,
                             $vehicle->trim ?? '',
+                            $vehicle->transmissionType?->name ?? '',
                             $vehicle->bodyStyle?->name ?? '',
                             $vehicle->mileage ?? '',
-                            $accidentHistory,
-                            $serviceHistory,
                         ];
 
                         fputcsv($file, $row);
