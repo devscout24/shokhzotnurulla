@@ -38,7 +38,7 @@
     </div>
 
 
-        @push('scripts') 
+        @push('page-scripts') 
         <script>
         (function () {
             function closeFavoritesDropdowns() {
@@ -88,12 +88,15 @@
 
                         if (type === 'click') {
                             const modalEl = document.getElementById('modalFavorites');
+                            console.log('[Feedback Debug] Clicked!', { modalEl: !!modalEl, bootstrap: typeof window.bootstrap !== 'undefined' ? window.bootstrap : 'undefined' });
                             if (modalEl && window.bootstrap) {
                                 if (typeof window.refreshFavoritesDropdown === 'function') {
                                     window.refreshFavoritesDropdown();
                                 }
                                 const modal = window.bootstrap.Modal.getOrCreateInstance(modalEl);
                                 modal.show();
+                            } else {
+                                console.warn('[Feedback Debug] Modal element or window.bootstrap is missing.');
                             }
                         }
                     }
