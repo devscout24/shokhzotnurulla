@@ -34,7 +34,7 @@ class CarfaxExportService
             fwrite($output, "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
             fwrite($output, "<listings>\n");
 
-            $dealer->load('locations');
+            $dealer->load(['locations', 'domains']);
             $location = $dealer->locations->first();
 
             // Calculate dealer fee
@@ -54,15 +54,27 @@ class CarfaxExportService
                 ->with([
                     'make', 'makeModel', 'bodyType', 'bodyStyle', 'photos', 'notes',
                     'transmissionType', 'drivetrainType', 'exteriorColor', 'interiorColor',
-                    'specs', 'prices', 'features', 'factoryOptions', 'premiumOptions'
+                    'specs', 'prices', 'features', 'factoryOptions', 'premiumOptions',
+                    'location', 'dealer.domains'
                 ])
                 ->whereIn('status', ['active'])
                 ->chunk(100, function ($vehicles) use ($output, $dealer, $location, $dealerFeeVal, $formatPrice) {
                     foreach ($vehicles as $vehicle) {
-                        $domain = $dealer->domain ?? '';
-                        $url = $domain ? "https://{$domain}/vehicles/{$vehicle->slug}" : '';
+                        // Resolve domain lookup logic
+                        $dealerWebsite = '';
+                        if ($vehicle->dealer && $vehicle->dealer->relationLoaded('domains') && $vehicle->dealer->domains->isNotEmpty()) {
+                            $primaryDomain = $vehicle->dealer->domains->firstWhere('is_primary', true) ?? $vehicle->dealer->domains->first();
+                            $dealerWebsite = $primaryDomain?->domain;
+                        }
+                        if (empty($dealerWebsite)) {
+                            $dealerWebsite = $dealer->domain ?? $dealer->staging_domain ?? '';
+                        }
 
-                        $photos = collect($vehicle->photos)->pluck('url')->all();
+                        // Resolve vehicle specific URL
+                        $url = $dealerWebsite ? "https://{$dealerWebsite}/vehicles/{$vehicle->slug}" : '';
+
+                        // Retrieve only live images
+                        $livePhotos = collect($vehicle->photos)->where('status', 'live')->pluck('url')->all();
                         
                         $standardFeatures = $vehicle->features->pluck('name')->implode(', ');
                         $optionalFeatures = collect($vehicle->factoryOptions->pluck('label'))
@@ -96,6 +108,9 @@ class CarfaxExportService
 
                         $invoicePrice = $vehicle->prices?->dealer_cost ?? 0;
 
+                        // Resolve location (vehicle specific first, then dealer fallback)
+                        $vehicleLocation = $vehicle->location ?? $location;
+
                         $xml = "    <listing>\n";
                         $xml .= "        <record_id>" . htmlspecialchars($vehicle->ulid ?? $vehicle->id) . "</record_id>\n";
                         $xml .= "        <vin>" . htmlspecialchars($vehicle->vin ?? '') . "</vin>\n";
@@ -103,21 +118,25 @@ class CarfaxExportService
                         $xml .= "        <title>" . htmlspecialchars($vehicle->display_title ?? '') . "</title>\n";
                         $xml .= "        <url>" . htmlspecialchars($url) . "</url>\n";
                         $xml .= "        <category>" . htmlspecialchars($vehicle->bodyType?->name ?? 'car') . "</category>\n";
-                        $xml .= "        <image>" . htmlspecialchars($photos[0] ?? '') . "</image>\n";
-                        $xml .= "        <image2>" . htmlspecialchars($photos[1] ?? '') . "</image2>\n";
-                        $xml .= "        <image3>" . htmlspecialchars($photos[2] ?? '') . "</image3>\n";
-                        $xml .= "        <image4>" . htmlspecialchars($photos[3] ?? '') . "</image4>\n";
-                        $xml .= "        <address>" . htmlspecialchars($location?->street1 ?? '') . "</address>\n";
-                        $xml .= "        <city>" . htmlspecialchars($location?->city ?? '') . "</city>\n";
-                        $xml .= "        <state>" . htmlspecialchars($location?->state ?? '') . "</state>\n";
-                        $xml .= "        <zip>" . htmlspecialchars($location?->postalcode ?? '') . "</zip>\n";
-                        $xml .= "        <country>" . htmlspecialchars($location?->country ?? 'United States') . "</country>\n";
+
+                        // Output live images dynamically (guarantee at least 4 tags, then dynamic additional tags)
+                        for ($i = 0; $i < max(4, count($livePhotos)); $i++) {
+                            $tagName = $i === 0 ? 'image' : 'image' . ($i + 1);
+                            $photoUrl = $livePhotos[$i] ?? '';
+                            $xml .= "        <{$tagName}>" . htmlspecialchars($photoUrl) . "</{$tagName}>\n";
+                        }
+
+                        $xml .= "        <address>" . htmlspecialchars($vehicleLocation?->street1 ?? '') . "</address>\n";
+                        $xml .= "        <city>" . htmlspecialchars($vehicleLocation?->city ?? '') . "</city>\n";
+                        $xml .= "        <state>" . htmlspecialchars($vehicleLocation?->state ?? '') . "</state>\n";
+                        $xml .= "        <zip>" . htmlspecialchars($vehicleLocation?->postalcode ?? '') . "</zip>\n";
+                        $xml .= "        <country>" . htmlspecialchars($vehicleLocation?->country ?? 'United States') . "</country>\n";
                         $xml .= "        <seller_type>Dealer</seller_type>\n";
                         $xml .= "        <dealer_name>" . htmlspecialchars($dealer->company_name ?? $dealer->name ?? '') . "</dealer_name>\n";
                         $xml .= "        <dealer_ID>" . htmlspecialchars($dealer->internal_id ?? $dealer->id) . "</dealer_ID>\n";
                         $xml .= "        <dealer_email>" . htmlspecialchars($dealer->email ?? $dealer->support_email ?? '') . "</dealer_email>\n";
                         $xml .= "        <dealer_phone>" . htmlspecialchars($dealer->phone ?? '') . "</dealer_phone>\n";
-                        $xml .= "        <dealer_website>" . htmlspecialchars($dealer->domain ?? '') . "</dealer_website>\n";
+                        $xml .= "        <dealer_website>" . htmlspecialchars($dealerWebsite) . "</dealer_website>\n";
                         $xml .= "        <dealer_fee>" . htmlspecialchars($dealerFeeVal) . "</dealer_fee>\n";
                         $xml .= "        <make>" . htmlspecialchars($vehicle->make?->name ?? '') . "</make>\n";
                         $xml .= "        <model>" . htmlspecialchars($vehicle->makeModel?->name ?? '') . "</model>\n";

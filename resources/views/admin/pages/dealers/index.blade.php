@@ -43,7 +43,7 @@
     }
     .status-active { background: #e6f4ea; color: #1e8e3e; }
     .status-inactive { background: #fce8e6; color: #d93025; }
-    
+
     .btn-action {
         padding: 6px 12px;
         border-radius: 4px;
@@ -58,7 +58,7 @@
         transition: all 0.2s;
     }
     .btn-action:hover { background: #f8f9fa; border-color: #ccc; }
-    
+
     .btn-primary-scout {
         background: #ce4f4b;
         color: #fff;
@@ -140,8 +140,9 @@
                                     <i class="bi bi-download"></i> Data <i class="bi bi-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles', $dealer) }}"><i class="bi bi-car-front"></i> Vehicles (CSV)</a></li>
+                                    {{-- <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles', $dealer) }}"><i class="bi bi-car-front"></i> Vehicles (CSV)</a></li> --}}
                                     <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles.carsforsale', $dealer) }}"><i class="bi bi-car-front"></i> Carsforsale (CSV)</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles.carfax', $dealer) }}"><i class="bi bi-car-front"></i> CarFax (XML)</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -154,12 +155,12 @@
                                 <a href="{{ route('admin.dealers.integrations.index', $dealer) }}" class="btn-action">
                                     <i class="bi bi-plug"></i> Integrations
                                 </a>
-                                
+
                                 <form action="{{ route('admin.dealers.toggle-status', $dealer) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" class="btn-action">
-                                        <i class="bi bi-arrow-repeat"></i> 
+                                        <i class="bi bi-arrow-repeat"></i>
                                         {{ $dealer->status === \App\Enums\DealerStatus::ACTIVE ? 'Deactivate' : 'Activate' }}
                                     </button>
                                 </form>
