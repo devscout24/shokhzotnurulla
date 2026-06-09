@@ -84,6 +84,7 @@
                     <i class="bi bi-download"></i> Export
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                    <li><a class="dropdown-item" href="{{ route('admin.dealers.export.cargurus') }}"><i class="bi bi-filetype-csv"></i> Export CarGurus CSV</a></li>
                     <li><a class="dropdown-item" href="{{ route('admin.dealers.export.csv') }}"><i class="bi bi-filetype-csv"></i> Export as CSV</a></li>
                 </ul>
             </div>

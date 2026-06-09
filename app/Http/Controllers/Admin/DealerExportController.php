@@ -3,16 +3,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dealership\Dealer;
+use App\Services\Exports\CarGurusService;
 use App\Services\Exports\ExportMakerService;
 use Illuminate\Http\Request;
 
 class DealerExportController extends Controller
 {
     protected ExportMakerService $exportMaker;
+    protected CarGurusService $cargursExporter;
 
-    public function __construct(ExportMakerService $exportMaker)
+    public function __construct(ExportMakerService $exportMaker, CarGurusService $cargursExporter)
     {
         $this->exportMaker = $exportMaker;
+        $this->cargursExporter = $cargursExporter;
     }
 
     public function exportDealerVehiclesCsv(Dealer $dealer, Request $request)
@@ -33,6 +36,11 @@ class DealerExportController extends Controller
     public function exportDealerVehiclesTrueCars(Dealer $dealer, Request $request)
     {
         return $this->exportMaker->makeExport($dealer, $request, 'truecars');
+    }
+
+    public function exportCarGurusCsv(Request $request)
+    {
+        return $this->cargursExporter->bulkExport($request);
     }
 
     public function exportCsv(Dealer $dealer, Request $request)
