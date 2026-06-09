@@ -143,6 +143,7 @@
                                     {{-- <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles', $dealer) }}"><i class="bi bi-car-front"></i> Vehicles (CSV)</a></li> --}}
                                     <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles.carsforsale', $dealer) }}"><i class="bi bi-car-front"></i> Carsforsale (CSV)</a></li>
                                     <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles.carfax', $dealer) }}"><i class="bi bi-car-front"></i> CarFax (XML)</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles.truecars', $dealer) }}"><i class="bi bi-car-front"></i> TrueCars (CSV)</a></li>
                                 </ul>
                             </div>
                         </td>

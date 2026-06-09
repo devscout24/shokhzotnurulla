@@ -21,7 +21,9 @@ class ExportMakerService
             case 'cars-for-sales':
                 return (new CarsForSalesExportService())->carsForSaleCsv($dealer, $request);
             case 'carfax':
-                return (new CarfaxExportService())->carfaxCsv($dealer, $request);
+                return (new CarfaxExportService())->carfaxXml($dealer, $request);
+            case 'truecars':
+                return (new TrueCarsService())->exportCsv($dealer, $request);
             default:
                 throw new \InvalidArgumentException("Unsupported export type: $exportType");
         }

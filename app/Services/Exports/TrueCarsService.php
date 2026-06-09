@@ -6,18 +6,13 @@ use App\Models\Dealership\Dealer;
 use App\Models\Inventory\Vehicle;
 use Illuminate\Http\Request;
 
-class CarsForSalesExportService
+class TrueCarsService
 {
-    /**
-     * Create a new class instance.
-     */
     public function __construct()
-    {
-        //
-    }
+    {}
 
-    public function carsForSaleCsv(Dealer $dealer, Request $request){
-        // $fileName = 'inventory'.$dealer->id.'_carsforsale_'.date('Y-m-d_H-i-s').'.csv';
+    public function exportCsv(Dealer $dealer, Request $request)
+    {
         $fileName = 'inventory'.$dealer->id.'.csv';
 
         $headers = [
@@ -29,56 +24,53 @@ class CarsForSalesExportService
         ];
 
         $columns = [
-            'DealerID', 'NEWUSED', 'VIN', 'StockNumber', 'Make', 'Model', 'ModelYear', 'Trim', 'BodyStyle',
-            'Mileage', 'EngineDescription', 'Cylinders', 'FuelType', 'Transmission', 'Price',
-            // 'Status',
-            'ExteriorColor', 'InteriorColor', 'Options', 'Description', 'Images',
+            'vin', 'stock_number', 'year', 'make', 'model', 'trim', 'body_style', 'mileage',
+            'condition', 'price', 'certified', 'exterior_color', 'interior_color',
+            'transmission', 'engine', 'drive_train', 'fuel_type', 'description', 'image_urls', 'dealer_code',
         ];
 
-        $condition =[
-            'New' => 'N',
-            'Used' => 'U',
+        $conditionMap = [
+            'New'                => 'New',
+            'Used'               => 'Used',
             'Certified Pre-Owned' => 'CPO',
         ];
 
-        $callback = function () use ($columns, $dealer, $condition) {
+        $callback = function () use ($columns, $dealer, $conditionMap) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
             Vehicle::withoutGlobalScopes()->where('dealer_id', $dealer->id)
                 ->with([
                     'make', 'makeModel', 'bodyStyle', 'fuelType', 'exteriorColor', 'interiorColor',
-                    'transmissionType', 'photos', 'notes', 'specs', 'prices', 'factoryOptions',
+                    'transmissionType', 'drivetrainType', 'photos', 'notes', 'specs', 'prices',
                 ])
                 ->whereIn('status', ['active'])
-                ->chunk(100, function ($vehicles) use ($file, $dealer, $condition) {
+                ->chunk(100, function ($vehicles) use ($file, $dealer, $conditionMap) {
                     foreach ($vehicles as $vehicle) {
-                        $images = collect($vehicle->photos)->pluck('url')->implode(',');
-                        $options = $vehicle->factoryOptions?->pluck('label')->implode(', ') ?? '';
+                        $images      = collect($vehicle->photos)->pluck('url')->implode('|');
                         $description = $vehicle->notes?->dealer_notes ?? $vehicle->notes?->ai_description ?? '';
 
                         $row = [
-                            $dealer->internal_id ?? $dealer->id,
-                            $condition[$vehicle->vehicle_condition] ?? '',
                             $vehicle->vin ?? '',
                             $vehicle->stock_number ?? '',
+                            $vehicle->year ?? '',
                             $vehicle->make?->name ?? '',
                             $vehicle->makeModel?->name ?? '',
-                            $vehicle->year ?? '',
                             $vehicle->trim ?? '',
                             $vehicle->bodyStyle?->name ?? '',
                             $vehicle->mileage ?? '',
-                            $vehicle->engine ?? '',
-                            $vehicle->specs?->cylinders ?? '',
-                            $vehicle->fuelType?->name ?? '',
-                            $vehicle->transmissionType?->name ?? '',
+                            $conditionMap[$vehicle->vehicle_condition] ?? '',
                             $vehicle->prices?->internet_price ?? $vehicle->list_price ?? '',
-                            // $vehicle->status ?? '',
+                            $vehicle->is_certified ? 1 : 0,
                             $vehicle->exteriorColor?->name ?? '',
                             $vehicle->interiorColor?->name ?? '',
-                            $options,
+                            $vehicle->transmissionType?->name ?? '',
+                            $vehicle->engine ?? '',
+                            $vehicle->drivetrainType?->name ?? '',
+                            $vehicle->fuelType?->name ?? '',
                             $description,
                             $images,
+                            $dealer->internal_id ?? $dealer->id,
                         ];
 
                         fputcsv($file, $row);
@@ -89,5 +81,6 @@ class CarsForSalesExportService
         };
 
         return response()->stream($callback, 200, $headers);
+
     }
 }

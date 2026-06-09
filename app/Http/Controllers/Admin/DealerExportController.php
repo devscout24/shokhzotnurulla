@@ -30,5 +30,13 @@ class DealerExportController extends Controller
         return $this->exportMaker->makeExport($dealer, $request, 'carfax');
     }
 
+    public function exportDealerVehiclesTrueCars(Dealer $dealer, Request $request)
+    {
+        return $this->exportMaker->makeExport($dealer, $request, 'truecars');
+    }
 
+    public function exportCsv(Dealer $dealer, Request $request)
+    {
+        return $this->exportMaker->makeExport($dealer, $request, 'truecars');
+    }
 }

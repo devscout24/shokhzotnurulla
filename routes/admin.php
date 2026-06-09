@@ -31,6 +31,8 @@ Route::prefix('admin')
 
         Route::get('dealers/{dealer}/export-vehicles-carfax', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportDealerVehiclesCarFax'])
             ->name('dealers.export.vehicles.carfax');
+        Route::get('dealers/{dealer}/export-vehicles-truecars', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportDealerVehiclesTrueCars'])
+            ->name('dealers.export.vehicles.truecars');
 
         // Dealers CRUD
         Route::resource('dealers', \App\Http\Controllers\Admin\DealerController::class);

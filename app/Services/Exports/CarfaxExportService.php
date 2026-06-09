@@ -15,7 +15,7 @@ class CarfaxExportService
     public function __construct()
     {}
 
-    public function carfaxCsv(Dealer $dealer, Request $request)
+    public function carfaxXml(Dealer $dealer, Request $request)
     {
         $fileName = 'inventory-feed-carfax_'.date('Y-m-d_H-i-s').'.xml';
 
