@@ -1,0 +1,72 @@
+﻿
+<listings>
+<listing>
+
+<record_id>12345678</record_id>
+<vin>5XXXXX4A63S139604</vin>
+
+<stock_number>12345</stock_number>
+<title>2003 Toyota Sequoia</title>
+<url>http://www.domain.com/cars/12345678.html</url>
+<category>car</category>
+<image>http://www.domain.com/cars/12345678.jpg</image>
+<image2>http://www.domain.com/cars/12345678_2.jpg</image2>
+<image3>http://www.domain.com/cars/12345678_3.jpg</image3>
+<image4>http://www.domain.com/cars/12345678_4.jpg</image4>
+<address>1234 Main Street</address>
+<city>San Francisco</city>
+<state>CA</state>
+<zip>94105</zip>
+<country>United States</country>
+
+<seller_type>Dealer</seller_type>
+<dealer_name>Dealer Name</dealer_name>
+<dealer_ID>4567</dealer_ID>
+<dealer_email>someone@dealerwebsite.com</dealer_email>
+<dealer_phone>800-123-4567</dealer_phone>
+
+<dealer_website>dealerwebsite.com</dealer_website>
+
+<dealer_fee>$399</dealer_fee>
+<make>Toyota</make>
+<model>Sequoia</model>
+<trim>SR5</trim>
+<body>SUV</body>
+<mileage>12345</mileage>
+<year>2003</year>
+<currency>USD</currency>
+<price>20,000</price>
+
+<MSRP>0</MSRP>
+
+<internet_price>19,000</internet_price>
+
+<selling_price>19,000</selling_price>
+
+<retail_price>20,000</retail_price>
+
+<invoice_price>20,000</invoice_price>
+<exterior_color>gray</exterior_color>
+<interior_color>black</interior_color>
+
+<interior_material>fabric</interior_material>
+<doors>5</doors>
+<cylinders>8</cylinders>
+<engine_size>3.0 L</engine_size>
+<drive_type>RWD</drive_type>
+<transmission>Automatic</transmission>
+<vehicle_condition>Used</vehicle_condition>
+
+<cpo>YES</cpo>
+<description><![CDATA[Free text]]></description>
+
+<standard_features><![CDATA[Free text]]></standard_features>
+
+<optional_features><![CDATA[Free text]]></optional_features>
+
+<seller_comments>![CDATA[Free text]]></seller_comments>
+
+<listing_time>2015-06-01-12:00:00</listing_time>
+<expire_time>2015-07-01-12:00:00</expire_time> </listing>
+
+</listings>

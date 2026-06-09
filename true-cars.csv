@@ -1,0 +1,4 @@
+vin,stock_number,year,make,model,trim,body_style,mileage,condition,price,certified,exterior_color,interior_color,transmission,engine,drive_train,fuel_type,description,image_urls,dealer_code
+
+"1FTFW1ED5PFA00001","STK1024A","2023","Ford","F-150","XLT","SuperCrew","15420","Used","45995","0","Oxford White","Medium Dark Slate","10-Speed Automatic","3.5L V6 EcoBoost","4WD","Gasoline","Clean one-owner truck equipped with towing package and backup camera.","https://images.dealer.com/1.jpg|https://images.dealer.com/2.jpg","TRUE-DEALER-01"
+"4T1BF1FKXPU000002","24055B","2024","Toyota","Camry","SE","Sedan","42","New","28500","0","Midnight Black Metallic","Black","8-Speed Automatic","2.5L 4-Cyl","FWD","Gasoline","Brand new Camry SE featuring latest safety sense packages. Inquire today.","https://images.dealer.com/3.jpg","TRUE-DEALER-01"

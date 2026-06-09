@@ -17,7 +17,7 @@ class CarfaxExportService
 
     public function carfaxCsv(Dealer $dealer, Request $request)
     {
-        $fileName = 'iventory-feed-carfax_'.date('Y-m-d_H-i-s').'.xml';
+        $fileName = 'inventory-feed-carfax_'.date('Y-m-d_H-i-s').'.xml';
 
         $headers = [
             'Content-type' => 'text/xml; charset=utf-8',
@@ -29,7 +29,7 @@ class CarfaxExportService
 
         $callback = function () use ($dealer) {
             $output = fopen('php://output', 'w');
-            
+
             // XML Declaration and root element
             fwrite($output, "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
             fwrite($output, "<listings>\n");
@@ -75,35 +75,35 @@ class CarfaxExportService
 
                         // Retrieve only live images
                         $livePhotos = collect($vehicle->photos)->where('status', 'live')->pluck('url')->all();
-                        
+
                         $standardFeatures = $vehicle->features->pluck('name')->implode(', ');
                         $optionalFeatures = collect($vehicle->factoryOptions->pluck('label'))
                             ->concat($vehicle->premiumOptions->pluck('name'))
                             ->implode(', ');
 
-                        $listingTime = $vehicle->listed_at 
-                            ? Carbon::parse($vehicle->listed_at)->format('Y-m-d-H:i:s') 
+                        $listingTime = $vehicle->listed_at
+                            ? Carbon::parse($vehicle->listed_at)->format('Y-m-d-H:i:s')
                             : ($vehicle->created_at ? Carbon::parse($vehicle->created_at)->format('Y-m-d-H:i:s') : '');
 
-                        $expireTime = $vehicle->expire_time 
-                            ? Carbon::parse($vehicle->expire_time)->format('Y-m-d-H:i:s') 
+                        $expireTime = $vehicle->expire_time
+                            ? Carbon::parse($vehicle->expire_time)->format('Y-m-d-H:i:s')
                             : '';
 
                         // Price calculations
                         $price = $vehicle->list_price ?? 0;
                         $msrp = $vehicle->prices?->msrp ?? 0;
                         $internetPrice = $vehicle->prices?->internet_price ?? 0;
-                        
-                        $sellingPrice = $vehicle->prices?->special_price > 0 
-                            ? $vehicle->prices->special_price 
-                            : ($vehicle->prices?->asking_price > 0 
-                                ? $vehicle->prices->asking_price 
-                                : ($vehicle->prices?->internet_price > 0 
-                                    ? $vehicle->prices->internet_price 
+
+                        $sellingPrice = $vehicle->prices?->special_price > 0
+                            ? $vehicle->prices->special_price
+                            : ($vehicle->prices?->asking_price > 0
+                                ? $vehicle->prices->asking_price
+                                : ($vehicle->prices?->internet_price > 0
+                                    ? $vehicle->prices->internet_price
                                     : ($vehicle->list_price ?? 0)));
 
-                        $retailPrice = $vehicle->prices?->msrp > 0 
-                            ? $vehicle->prices->msrp 
+                        $retailPrice = $vehicle->prices?->msrp > 0
+                            ? $vehicle->prices->msrp
                             : ($vehicle->list_price ?? 0);
 
                         $invoicePrice = $vehicle->prices?->dealer_cost ?? 0;
@@ -156,19 +156,19 @@ class CarfaxExportService
                         $xml .= "        <interior_material>" . htmlspecialchars($vehicle->specs?->interior_material ?? '') . "</interior_material>\n";
                         $xml .= "        <doors>" . htmlspecialchars($vehicle->doors ?? '') . "</doors>\n";
                         $xml .= "        <cylinders>" . htmlspecialchars($vehicle->specs?->cylinders ?? '') . "</cylinders>\n";
-                        
+
                         $engineSize = $vehicle->specs?->displacement ? number_format($vehicle->specs->displacement, 1) . ' L' : '';
                         $xml .= "        <engine_size>" . htmlspecialchars($engineSize) . "</engine_size>\n";
                         $xml .= "        <drive_type>" . htmlspecialchars($vehicle->drivetrainType?->name ?? $vehicle->specs?->drivetrain_standard ?? '') . "</drive_type>\n";
                         $xml .= "        <transmission>" . htmlspecialchars($vehicle->transmissionType?->name ?? $vehicle->specs?->transmission_standard ?? '') . "</transmission>\n";
                         $xml .= "        <vehicle_condition>" . htmlspecialchars($vehicle->vehicle_condition ?? '') . "</vehicle_condition>\n";
                         $xml .= "        <cpo>" . ($vehicle->is_certified ? 'YES' : 'NO') . "</cpo>\n";
-                        
+
                         $descriptionText = strip_tags($vehicle->notes?->dealer_notes ?? $vehicle->notes?->ai_description ?? '');
                         $xml .= "        <description><![CDATA[" . $descriptionText . "]]></description>\n";
                         $xml .= "        <standard_features><![CDATA[" . $standardFeatures . "]]></standard_features>\n";
                         $xml .= "        <optional_features><![CDATA[" . $optionalFeatures . "]]></optional_features>\n";
-                        
+
                         $sellerComments = strip_tags($vehicle->notes?->dealer_notes ?? '');
                         $xml .= "        <seller_comments><![CDATA[" . $sellerComments . "]]></seller_comments>\n";
                         $xml .= "        <listing_time>" . htmlspecialchars($listingTime) . "</listing_time>\n";
