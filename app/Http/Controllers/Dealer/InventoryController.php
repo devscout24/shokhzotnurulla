@@ -458,7 +458,7 @@ class InventoryController extends Controller
 
         $vehicle->load(['make', 'makeModel']);
 
-        $photos     = VehiclePhoto::where('vehicle_id', $vehicle->id)->orderBy('sort_order')->get();
+        $photos     = VehiclePhoto::query()->where('vehicle_id', $vehicle->id)->orderBy('sort_order', 'asc')->get();
         $liveCount  = $photos->where('status', 'live')->count();
         $draftCount = $photos->where('status', 'draft')->count();
 

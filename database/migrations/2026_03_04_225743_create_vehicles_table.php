@@ -73,7 +73,7 @@ return new class extends Migration
 
             $table->timestamp('listed_at')->nullable();
             $table->timestamp('sold_at')->nullable();
-
+            $table->timestamp('expire_time')->nullable();
 
             // Unique constraints
             $table->unique(['dealer_id', 'stock_number']);

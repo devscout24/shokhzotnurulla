@@ -74,6 +74,7 @@ class Vehicle extends Model
         'original_price',
         'listed_at',
         'sold_at',
+        'expire_time',
     ];
 
     protected $casts = [
@@ -88,6 +89,7 @@ class Vehicle extends Model
         'inventory_date'      => 'date',
         'listed_at'           => 'datetime',
         'sold_at'             => 'datetime',
+        'expire_time'         => 'datetime',
     ];
 
     // ─── Relationships — Dealership ───────────────────────────────────────────

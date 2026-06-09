@@ -15,7 +15,7 @@ class UpdateDetailsAction
         'location_status', 'fuel_type_id', 'transmission_type_id',
         'drivetrain_type_id', 'engine', 'mileage', 'exterior_color_id',
         'interior_color_id', 'doors', 'seating_capacity', 'inventory_date',
-        'location_id',
+        'location_id', 'expire_time',
     ];
 
     public function __invoke(Vehicle $vehicle, array $data): void

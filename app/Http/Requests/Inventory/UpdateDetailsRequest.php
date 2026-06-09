@@ -94,6 +94,7 @@ class UpdateDetailsRequest extends FormRequest
             'exterior_color_code'  => ['nullable', 'string', 'max:50'],
             'interior_color_code'  => ['nullable', 'string', 'max:50'],
             'interior_material'    => ['nullable', 'string', 'max:100'],
+            'expire_time'          => ['nullable', 'date'],
         ];
     }
 }

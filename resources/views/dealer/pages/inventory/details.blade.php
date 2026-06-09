@@ -466,6 +466,11 @@
                                                value="{{ $vehicle->seating_capacity ?? '' }}"
                                                placeholder="__,___">
                                     </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Expiration Time</label>
+                                        <input type="datetime-local" name="expire_time" class="vd-input"
+                                               value="{{ $vehicle->expire_time ? \Carbon\Carbon::parse($vehicle->expire_time)->format('Y-m-d\TH:i') : '' }}">
+                                    </div>
                                 </div>
 
                                 <hr class="vd-divider">
