@@ -10,7 +10,7 @@
     @include('frontend.partials.header')
 
     {{-- @if ($bannerText ?? null)
-        <div class="persistent-banner py-2 text-center" style="background: {{ $bannerBgColor ?? '#ce4f4b' }}; color: {{ $bannerTextColor ?? '#ffffff' }};" title="{{ $bannerHoverTitle ?? '' }}">
+        <div class="persistent-banner py-2 text-center" style="background: {{ $bannerBgColor ?? 'purple' }}; color: {{ $bannerTextColor ?? '#ffffff' }};" title="{{ $bannerHoverTitle ?? '' }}">
             <div class="container">
                 <span class="banner-message font-weight-bold">{{ $bannerText }}</span>
             </div>
@@ -23,22 +23,21 @@
     {{-- ── Footer ──────────────────────────────────────────────────────── --}}
     @include('frontend.partials.footer')
 
-    {{-- ── Feedback label ──────────────────────────────────────────────────────── --}}
+    {{-- ── Favorites Floating Button ──────────────────────────────────────────────────────── --}}
     <div class="userback-button-container" loadtype="web" id="userback_button_container" data-html2canvas-ignore="true"
         nextgen="1" data-ub-colour-scheme="light">
         <div class="userback-button userback-button-e" wstyle="text" wicon="7">
-            <div class="userback-button-content">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="#ffff" viewBox="0 0 22 24">
-                    <path
-                        d="M21.9237 22.945L11.7076 0.472579C11.4211 -0.158087 10.5274 -0.157414 10.2422 0.473925L0.0757232 22.9275C-0.215476 23.5292 0.384368 24.1754 1.00367 23.927L10.7152 20.2184C10.8897 20.1484 11.0843 20.1484 11.2581 20.2184L20.9951 23.9452C21.6144 24.1942 22.2149 23.5481 21.9231 22.9457L21.9237 22.945Z">
-                    </path>
-                </svg>Feedback
+            <div class="userback-button-content" style="background-color: purple !important;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" style="transform: rotate(90deg) !important;">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                </svg>Favorites
+                <span class="badge bg-white text-danger rounded-pill d-none ms-1" id="fav-count-floating" style="font-size: 0.75rem; vertical-align: middle; position: relative; top: -1px;">0</span>
             </div>
         </div>
     </div>
 
 
-        @push('page-scripts') 
+        @push('page-scripts')
         <script>
         (function () {
             function closeFavoritesDropdowns() {
@@ -88,15 +87,12 @@
 
                         if (type === 'click') {
                             const modalEl = document.getElementById('modalFavorites');
-                            console.log('[Feedback Debug] Clicked!', { modalEl: !!modalEl, bootstrap: typeof window.bootstrap !== 'undefined' ? window.bootstrap : 'undefined' });
                             if (modalEl && window.bootstrap) {
                                 if (typeof window.refreshFavoritesDropdown === 'function') {
                                     window.refreshFavoritesDropdown();
                                 }
                                 const modal = window.bootstrap.Modal.getOrCreateInstance(modalEl);
                                 modal.show();
-                            } else {
-                                console.warn('[Feedback Debug] Modal element or window.bootstrap is missing.');
                             }
                         }
                     }

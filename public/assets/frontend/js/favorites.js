@@ -28,7 +28,7 @@
     }
 
     function updateBadge(count) {
-        const badges = document.querySelectorAll("#fav-count, #fav-count-mobile");
+        const badges = document.querySelectorAll("#fav-count, #fav-count-mobile, #fav-count-floating");
         badges.forEach(badge => {
             badge.textContent = count;
             if (count > 0) {

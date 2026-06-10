@@ -25,7 +25,7 @@
     justify-content: center;
     gap: 6px;
     width: 100%;
-    background-color: #c0392b;
+    background-color: purple;
     border: none;
     color: #fff;
     font-size: 13px;
@@ -36,7 +36,7 @@
     margin-bottom: 20px;
     transition: background 0.2s;
 }
-.ps-sidebar .btn-add-special:hover { background-color: #a93226; }
+.ps-sidebar .btn-add-special:hover { background-color: #6b21a8; }
 
 .ps-sidebar .filter-label {
     font-size: 12px;
@@ -197,11 +197,11 @@
     border: 1px solid #f5c6c2;
     border-radius: 4px;
     background: #fff;
-    color: #c0392b;
+    color: purple;
     cursor: pointer;
     transition: background 0.15s;
 }
-.ps-btn-delete:hover { background: #fff5f5; }
+.ps-btn-delete:hover { background: #f3e8ff; }
 
 /* ══════════════════════════════════
    MODAL
@@ -286,7 +286,7 @@
     color: #444;
     margin-bottom: 5px;
 }
-.ps-req { color: #c0392b; }
+.ps-req { color: purple; }
 
 .ps-form-control {
     width: 100%;
@@ -301,7 +301,7 @@
 }
 .ps-form-control:focus { outline: none; border-color: #888; }
 .ps-form-control::placeholder { color: #bbb; }
-.ps-form-control.is-invalid { border-color: #c0392b; }
+.ps-form-control.is-invalid { border-color: purple; }
 
 .ps-form-select {
     width: 100%;
@@ -319,7 +319,7 @@
 }
 .ps-form-select:focus { outline: none; border-color: #888; }
 .ps-form-select:disabled { background-color: #f5f5f5; cursor: not-allowed; }
-.ps-form-select.is-invalid { border-color: #c0392b; }
+.ps-form-select.is-invalid { border-color: purple; }
 
 /* Input Group */
 .ps-input-group {
@@ -386,7 +386,7 @@
     color: #444;
     margin: 12px 0;
 }
-.ps-match-box b { color: #c0392b; }
+.ps-match-box b { color: purple; }
 
 /* Date wrap */
 .ps-date-wrap { position: relative; }
@@ -451,7 +451,7 @@
 /* Validation */
 .ps-invalid-feedback {
     font-size: 11px;
-    color: #c0392b;
+    color: purple;
     margin-top: 3px;
     min-height: 14px;
 }
@@ -481,7 +481,7 @@
 }
 .ps-btn-cancel:hover { background: #f5f5f5; }
 .ps-btn-save {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -494,7 +494,7 @@
     gap: 6px;
     transition: background 0.2s;
 }
-.ps-btn-save:hover { background: #a93226; }
+.ps-btn-save:hover { background: #6b21a8; }
 .ps-btn-save:disabled { opacity: 0.65; cursor: not-allowed; }
 
 .ps-row-actions button {

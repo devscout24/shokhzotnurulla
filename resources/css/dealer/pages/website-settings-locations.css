@@ -30,7 +30,7 @@
 .ws-sidebar .menu-item:last-child { border-bottom: none; }
 .ws-sidebar .menu-item:hover { background: #f8f8f8; color: #555; }
 .ws-sidebar .menu-item.active {
-    color: #c0392b;
+    color: purple;
     font-weight: 700;
     background: #fff;
 }
@@ -41,7 +41,7 @@
     color: #aaa;
     flex-shrink: 0;
 }
-.ws-sidebar .menu-item.active .ws-icon { color: #c0392b; }
+.ws-sidebar .menu-item.active .ws-icon { color: purple; }
 
 /* ── Locations Card ── */
 .loc-card {
@@ -64,7 +64,7 @@
     color: #333;
 }
 .loc-btn-add {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -77,7 +77,7 @@
     gap: 5px;
     transition: background 0.2s;
 }
-.loc-btn-add:hover { background: #a93226; }
+.loc-btn-add:hover { background: #6b21a8; }
 
 /* ── Locations Table ── */
 .loc-table {
@@ -124,7 +124,7 @@
     color: #555;
 }
 .loc-btn-edit:hover  { background: #f0f0f0; }
-.loc-btn-trash { color: #c0392b; }
+.loc-btn-trash { color: purple; }
 .loc-btn-trash:hover { background: #fdf0f0; }
 
 /* ══════════════════════════════
@@ -321,7 +321,7 @@
 .hours-table .day-check {
     width: 18px;
     height: 18px;
-    accent-color: #c0392b;
+    accent-color: purple;
     cursor: pointer;
     display: block;
     margin: 0 auto;
@@ -405,7 +405,7 @@
 .btn-remove-row:hover { background: #5a6268; }
 
 .btn-add-row {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -415,7 +415,7 @@
     cursor: pointer;
     transition: background 0.2s;
 }
-.btn-add-row:hover { background: #a93226; }
+.btn-add-row:hover { background: #6b21a8; }
 
 /* Modal Footer */
 .el-footer {
@@ -428,7 +428,7 @@
     gap: 10px;
 }
 .el-btn-next, .el-btn-save {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -441,7 +441,7 @@
     gap: 6px;
     transition: background 0.2s;
 }
-.el-btn-next:hover, .el-btn-save:hover { background: #a93226; }
+.el-btn-next:hover, .el-btn-save:hover { background: #6b21a8; }
 /* sortable placeholder */
 .sortable-drag {
     opacity: 0.4;

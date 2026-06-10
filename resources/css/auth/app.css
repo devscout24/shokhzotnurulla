@@ -37,7 +37,7 @@ input, button { font-family: inherit; }
 .sub-heading strong { font-weight: 600; }
 .description { margin-bottom: 30px; font-size: 14px; line-height: 1.7; opacity: .95; }
 .btn-group-custom { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 30px; }
-.btn-primary-custom { background-color: #e74c3c; border: none; padding: 12px 24px; color: #fff; font-size: 14px; font-weight: 600; border-radius: 6px; text-decoration: none; cursor: pointer; transition: .3s; }
+.btn-primary-custom { background-color: #a855f7; border: none; padding: 12px 24px; color: #fff; font-size: 14px; font-weight: 600; border-radius: 6px; text-decoration: none; cursor: pointer; transition: .3s; }
 .btn-primary-custom:hover { background-color: #d9534f; color: #fff; }
 .btn-outline-custom { border: 1px solid #ff9f43; color: #ff9f43; padding: 12px 24px; background: transparent; font-size: 14px; font-weight: 600; border-radius: 6px; text-decoration: none; cursor: pointer; transition: .3s; }
 .btn-outline-custom:hover { background: #ff9f43; color: #14002d; }
@@ -97,7 +97,7 @@ input, button { font-family: inherit; }
 
 .btn-login {
     height: 44px;
-    background: #e74c3c;
+    background: #a855f7;
     color: #fff;
     border: none;
     font-size: 15px;
@@ -147,7 +147,7 @@ input, button { font-family: inherit; }
 
 .dropdown-link:hover { background-color: #f8f9fa; }
 .dropdown-divider { height: 1px; background-color: #eee; margin: 8px 0; }
-.dropdown-link.logout { color: #e74c3c !important; display: flex !important; align-items: center; gap: 8px; }
+.dropdown-link.logout { color: #a855f7 !important; display: flex !important; align-items: center; gap: 8px; }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────────── */
 @media (max-width: 991px) {

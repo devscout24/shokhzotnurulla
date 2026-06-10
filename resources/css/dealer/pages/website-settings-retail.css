@@ -29,7 +29,7 @@
 .ws-sidebar .menu-item:last-child { border-bottom: none; }
 .ws-sidebar .menu-item:hover { background: #f8f8f8; color: #555; }
 .ws-sidebar .menu-item.active {
-    color: #c0392b;
+    color: purple;
     font-weight: 700;
     background: #fff;
 }
@@ -40,7 +40,7 @@
     color: #aaa;
     flex-shrink: 0;
 }
-.ws-sidebar .menu-item.active .ws-icon { color: #c0392b; }
+.ws-sidebar .menu-item.active .ws-icon { color: purple; }
 
 /* ── Right Content ── */
 .dr-content {
@@ -133,7 +133,7 @@
 /* ── Save ── */
 .dr-save-wrap { padding: 16px 20px 18px; }
 .dr-btn-save {
-    background: #c0392b;
+    background: purple;
     border: none;
     border-radius: 4px;
     color: #fff;
@@ -146,4 +146,4 @@
     gap: 6px;
     transition: background 0.2s;
 }
-.dr-btn-save:hover { background: #a93226; }
+.dr-btn-save:hover { background: #6b21a8; }

@@ -251,7 +251,7 @@
         });
         dropZone.addEventListener('dragover', function (e) {
             e.preventDefault();
-            dropZone.style.background = '#fff0f0';
+            dropZone.style.background = '#f3e8ff';
         });
         dropZone.addEventListener('dragleave', function () {
             dropZone.style.background = '';

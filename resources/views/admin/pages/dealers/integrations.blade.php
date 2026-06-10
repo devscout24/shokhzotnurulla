@@ -45,7 +45,7 @@
     .form-control { width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; }
     
     .btn-test { background: #f8f9fa; border: 1px solid #ddd; color: #444; padding: 8px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
-    .btn-save { background: #ce4f4b; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-save { background: purple; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
     .btn-deactivate { background: #fff; border: 1px solid #dc3545; color: #dc3545; padding: 8px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; margin-right: 5px; }
     .btn-deactivate:hover { background: #dc3545; color: #fff; }
 </style>
@@ -252,7 +252,7 @@
                 text: "Are you sure you want to make this integration inactive?",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ce4f4b',
+                confirmButtonColor: 'purple',
                 cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Yes, deactivate it!'
             }).then((result) => {

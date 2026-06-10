@@ -40,7 +40,7 @@
                         text: message,
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonColor: '#ce4f4b',
+                        confirmButtonColor: 'purple',
                         cancelButtonColor: '#6c757d',
                         confirmButtonText: 'Continue',
                         cancelButtonText: 'Cancel',

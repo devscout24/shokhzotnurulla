@@ -93,7 +93,7 @@
 
 /* ── SAVE BUTTON ── */
 .btn-save {
-  background-color: #c0392b;
+  background-color: purple;
   color: #fff;
   border: none;
   padding: 9px 22px;
@@ -109,7 +109,7 @@
 }
 
 .btn-save:hover {
-  background-color: #a93226;
+  background-color: #6b21a8;
 }
 
 /* ── DIVIDER ── */

@@ -63,7 +63,7 @@
         }
 
         .rc-sidebar-item.active i {
-            color: #ce4f4b !important;
+            color: purple !important;
         }
 
         .rc-main-container {
@@ -111,7 +111,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #ce4f4b;
+            background: purple;
             color: #fff !important;
             border: none;
             padding: 9px 20px;
@@ -125,7 +125,7 @@
 
         .btn-save-red {
             padding: 10px 30px !important;
-            background: #ce4f4b !important;
+            background: purple !important;
             color: #fff !important;
             border: none !important;
             border-radius: 4px !important;
@@ -140,7 +140,7 @@
         }
 
         .btn-save-red:hover {
-            background: #a93226 !important;
+            background: #6b21a8 !important;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
         }
 
@@ -150,7 +150,7 @@
         }
 
         .rc-btn-add:hover {
-            background: #a93226;
+            background: #6b21a8;
             color: #fff !important;
         }
 
@@ -231,11 +231,11 @@
         }
 
         .faq-row-btn.trash-btn {
-            color: #ce4f4b !important;
+            color: purple !important;
         }
 
         .faq-row-btn.trash-btn:hover {
-            background: #fff0f0;
+            background: #f3e8ff;
             border-color: #f5c6cb;
         }
 
@@ -285,9 +285,9 @@
         }
 
         .faq-page-btn.active {
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
-            border-color: #ce4f4b;
+            border-color: purple;
         }
 
         .faq-page-btn:hover:not(.active) {
@@ -315,7 +315,7 @@
         }
 
         .field-label span {
-            color: #ce4f4b;
+            color: purple;
             margin-left: 2px;
         }
 
@@ -341,8 +341,8 @@
         }
 
         .field-input:focus {
-            border-color: #ce4f4b;
-            box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.05);
+            border-color: purple;
+            box-shadow: 0 0 0 2px rgba(128, 0, 128, 0.05);
             outline: none;
         }
 
@@ -483,7 +483,7 @@
         }
 
         .bulk-header-label span {
-            color: #ce4f4b;
+            color: purple;
             margin-left: 2px;
         }
 
@@ -553,7 +553,7 @@
         }
 
         .bulk-action-del:hover {
-            color: #ce4f4b;
+            color: purple;
         }
 
         .bulk-footer {
@@ -739,7 +739,7 @@
         }
 
         .bulk-rte:focus-within {
-            border-color: #ce4f4b;
+            border-color: purple;
         }
 
         .rte-toolbar {
@@ -781,13 +781,13 @@
 
         .rte-btn:hover {
             background: #f8f9fa;
-            color: #ce4f4b;
+            color: purple;
             border-color: #eee;
         }
 
         .rte-btn.active {
-            background: #fff5f5;
-            color: #ce4f4b;
+            background: #f3e8ff;
+            color: purple;
             border-color: #f5c6cb;
         }
 

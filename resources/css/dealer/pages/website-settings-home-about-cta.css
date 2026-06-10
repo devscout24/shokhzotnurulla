@@ -74,7 +74,7 @@
 }
 
 .ha-btn-save {
-    background: #c0392b;
+    background: purple;
     border: none;
     border-radius: 4px;
     color: #fff;
@@ -86,7 +86,7 @@
 }
 
 .ha-btn-save:hover {
-    background: #a93226;
+    background: #6b21a8;
 }
 
 @media (max-width: 900px) {

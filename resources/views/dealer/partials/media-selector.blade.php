@@ -40,8 +40,8 @@
     .media-grid.compact { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
 
     .media-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; cursor: pointer; transition: all .2s; background: #fff; display: flex; flex-direction: column; }
-    .media-card:hover { border-color: #ce4f4b; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .media-card.selected { border-color: #ce4f4b; border-width: 2px; box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1); }
+    .media-card:hover { border-color: purple; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .media-card.selected { border-color: purple; border-width: 2px; box-shadow: 0 0 0 3px rgba(128, 0, 128, 0.1); }
     .media-thumb { aspect-ratio: 4/3; width: 100%; object-fit: cover; border-bottom: 1px solid #f5f5f5; }
     
     .media-info { padding: 12px; font-size: 11px; color: #666; line-height: 1.5; font-family: 'Inter', -apple-system, sans-serif; }
@@ -67,7 +67,7 @@
     .pagination-list { display: flex; align-items: center; gap: 5px; }
     .pag-btn { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border: 1px solid #e0e0e0; border-radius: 4px; background: #fff; color: #666; font-size: 13px; cursor: pointer; transition: all .2s; }
     .pag-btn:hover { background: #f8f9fa; border-color: #ccc; }
-    .pag-btn.active { background: #ce4f4b; color: #fff; border-color: #ce4f4b; }
+    .pag-btn.active { background: purple; color: #fff; border-color: purple; }
     .pag-btn.disabled { opacity: 0.5; pointer-events: none; }
     .pag-dots { color: #999; padding: 0 5px; font-size: 18px; line-height: 1; }
     .pag-info { font-size: 13px; color: #777; margin-top: 5px; }

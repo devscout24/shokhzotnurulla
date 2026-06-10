@@ -33,10 +33,10 @@
     }
     .ai-sidebar .menu-item:hover { background: #f8f8f8; }
     .ai-sidebar .menu-item.active {
-        border-left-color: #ce4f4b;
-        color: #ce4f4b;
+        border-left-color: purple;
+        color: purple;
         font-weight: 600;
-        background: #fdf5f5;
+        background: #f3e8ff;
     }
     .ai-sidebar .menu-item .icon {
         font-size: 14px;
@@ -66,7 +66,7 @@
         color: #333;
     }
     .ls-btn-shorten {
-        background: #ce4f4b;
+        background: purple;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -80,7 +80,7 @@
         transition: background 0.2s;
         white-space: nowrap;
     }
-    .ls-btn-shorten:hover { background: #a93226; }
+    .ls-btn-shorten:hover { background: #6b21a8; }
 
     /* ── Table Card ── */
     .ls-card {
@@ -227,7 +227,7 @@
         padding: 14px 18px;
     }
     .sl-btn-save {
-        background: #ce4f4b;
+        background: purple;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -240,7 +240,7 @@
         gap: 6px;
         transition: background 0.2s;
     }
-    .sl-btn-save:hover { background: #a93226; }
+    .sl-btn-save:hover { background: #6b21a8; }
     .main-content{
         padding: 0px !important;
     }
@@ -290,7 +290,7 @@
                                 <tr>
                                     <td>
                                         <a href="{{ $link->short_url }}" target="_blank"
-                                           style="color:#ce4f4b;text-decoration:none;">
+                                           style="color:purple;text-decoration:none;">
                                             {{ $link->short_url }}
                                         </a>
                                     </td>

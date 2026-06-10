@@ -229,7 +229,7 @@
         }
 
         .ws-btn-print {
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -240,7 +240,7 @@
         }
 
         .ws-btn-print:hover {
-            background: #a93226;
+            background: #6b21a8;
         }
 
         @media print {

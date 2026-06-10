@@ -20,7 +20,7 @@
 .ws-sidebar .menu-item:last-child { border-bottom: none; }
 .ws-sidebar .menu-item:hover { background: #f8f8f8; color: #555; }
 .ws-sidebar .menu-item.active {
-    color: #c0392b;
+    color: purple;
     font-weight: 700;
     background: #fff;
 }
@@ -31,7 +31,7 @@
     color: #aaa;
     flex-shrink: 0;
 }
-.ws-sidebar .menu-item.active .ws-icon { color: #c0392b; }
+.ws-sidebar .menu-item.active .ws-icon { color: purple; }
 
 /* ── Setting Row ── */
 .ws-setting-row {
@@ -47,7 +47,7 @@
 
 /* ── Save Button ── */
 .ws-btn-save {
-    background: #c0392b;
+    background: purple;
     border: none;
     border-radius: 4px;
     color: #fff;
@@ -57,7 +57,7 @@
     cursor: pointer;
     transition: background 0.2s;
 }
-.ws-btn-save:hover { background: #a93226; color: #fff; }
+.ws-btn-save:hover { background: #6b21a8; color: #fff; }
 /* ── Disclaimers Section ── */
 .disc-section {
     background: #fff;
@@ -166,7 +166,7 @@
     padding: 16px 20px 18px;
 }
 .disc-btn-save {
-    background: #c0392b;
+    background: purple;
     border: none;
     border-radius: 4px;
     color: #fff;
@@ -179,7 +179,7 @@
     gap: 6px;
     transition: background 0.2s;
 }
-.disc-btn-save:hover { background: #a93226; }
+.disc-btn-save:hover { background: #6b21a8; }
 /* ── Social Section ── */
 .social-section {
     background: #fff;
@@ -226,7 +226,7 @@
 }
 .social-save-wrap { padding: 14px 20px 16px; }
 .social-btn-save {
-    background: #c0392b;
+    background: purple;
     border: none;
     border-radius: 4px;
     color: #fff;
@@ -239,4 +239,4 @@
     gap: 6px;
     transition: background 0.2s;
 }
-.social-btn-save:hover { background: #a93226; }
+.social-btn-save:hover { background: #6b21a8; }

@@ -5,7 +5,7 @@
 @push('page-assets')
     <style>
         :root {
-            --of-primary: #ce4f4b;
+            --of-primary: purple;
             --of-secondary: #1a1f36;
             --of-text: #4f566b;
             --of-border: #e0e6ed;
@@ -147,7 +147,7 @@
             border: 2px dashed var(--of-border);
             border-radius: 12px;
             text-align: center;
-            color: #ce4f4b;
+            color: purple;
         }
 
         .block-placeholder i {

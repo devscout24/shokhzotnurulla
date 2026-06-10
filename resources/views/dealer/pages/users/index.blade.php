@@ -71,7 +71,7 @@
         margin-left: 5px;
     }
     .btn-add-user {
-        background: #ce4f4b;
+        background: purple;
         color: #fff !important;
         border: none;
         padding: 8px 16px;
@@ -128,7 +128,7 @@
         text-align: left;
     }
     .dropdown-item-scout:hover { background: #f8f9fa; }
-    .dropdown-item-scout.danger { color: #ce4f4b; }
+    .dropdown-item-scout.danger { color: purple; }
     .dropdown-item-scout.disabled { color: #ccc; cursor: not-allowed; }
 
     /* Modal Styles */
@@ -216,7 +216,7 @@
         text-align: right;
     }
     .btn-save-user {
-        background: #ce4f4b;
+        background: purple;
         color: #fff !important;
         border: none;
         padding: 10px 24px;
@@ -244,7 +244,7 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     #toaster.success { background: #27ae60; }
-    #toaster.error { background: #ce4f4b; }
+    #toaster.error { background: purple; }
 </style>
 @endpush
 
@@ -300,7 +300,7 @@
                                 @endphp
                                 {{ implode(', ', array_unique($roleNames)) }}
                             </td>
-                            <td style="color: #ce4f4b;"><i class="bi bi-x-lg"></i> No</td>
+                            <td style="color: purple;"><i class="bi bi-x-lg"></i> No</td>
                             <td style="color: #2c3e50;"><i class="bi bi-unlock"></i> No</td>
                             <td style="text-align: right;">
                                 <div class="dropdown-scout">
