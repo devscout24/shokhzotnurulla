@@ -29,7 +29,7 @@
 .ws-sidebar .menu-item:last-child { border-bottom: none; }
 .ws-sidebar .menu-item:hover { background: #f8f8f8; color: #555; }
 .ws-sidebar .menu-item.active {
-    color: #c0392b;
+    color: purple;
     font-weight: 700;
     background: #fff;
 }
@@ -40,7 +40,7 @@
     color: #aaa;
     flex-shrink: 0;
 }
-.ws-sidebar .menu-item.active .ws-icon { color: #c0392b; }
+.ws-sidebar .menu-item.active .ws-icon { color: purple; }
 
 /* ── Right Content ── */
 .rd-content {
@@ -91,7 +91,7 @@
 }
 .rd-btn-upload:hover { background: #f5f5f5; }
 .rd-btn-add {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -104,7 +104,7 @@
     gap: 5px;
     transition: background 0.2s;
 }
-.rd-btn-add:hover { background: #a93226; }
+.rd-btn-add:hover { background: #6b21a8; }
 
 /* ── Table ── */
 .rd-table {
@@ -182,7 +182,7 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    color: #c0392b;
+    color: purple;
     transition: background 0.15s;
 }
 .rd-btn-remove:hover { background: #fdf0f0; }
@@ -291,7 +291,7 @@
     border-top: 1px solid #eee;
 }
 .er-btn-save {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -304,4 +304,4 @@
     gap: 6px;
     transition: background 0.2s;
 }
-.er-btn-save:hover { background: #a93226; }
+.er-btn-save:hover { background: #6b21a8; }

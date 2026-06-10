@@ -1191,7 +1191,7 @@
         .catch(function () {
             if (printablesTableBody) {
                 printablesTableBody.innerHTML =
-                    '<tr><td colspan="3" class="vd-table-empty" style="color:#c0392b;">Failed to load printables.</td></tr>';
+                    '<tr><td colspan="3" class="vd-table-empty" style="color:purple;">Failed to load printables.</td></tr>';
             }
         });
     }

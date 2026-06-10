@@ -111,7 +111,7 @@
     border: 1px solid #f5c6c2;
     border-radius: 5px;
     background: #fff;
-    color: #c0392b;
+    color: purple;
     padding: 7px 14px;
     font-size: 13px;
     cursor: pointer;
@@ -119,7 +119,7 @@
 }
 
 .vd-btn-remove-listing:hover {
-    background: #fff5f5;
+    background: #f3e8ff;
 }
 
 /* ══════════════════
@@ -362,7 +362,7 @@ hr {
 }
 
 .vd-field-label .req {
-    color: #c0392b;
+    color: purple;
 }
 
 .vd-price-input-wrap {
@@ -516,7 +516,7 @@ hr {
     border: 1px solid #ccc;
     border-radius: 5px;
     background: #fff;
-    color: #c0392b;
+    color: purple;
     padding: 7px 12px;
     font-size: 13px;
     cursor: pointer;
@@ -525,7 +525,7 @@ hr {
 }
 
 .vd-customer-btn:hover {
-    background: #fff5f5;
+    background: #f3e8ff;
 }
 
 .vd-date-wrap {
@@ -577,7 +577,7 @@ hr {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -589,7 +589,7 @@ hr {
 }
 
 .vd-btn-save:hover {
-    background: #a93226;
+    background: #6b21a8;
 }
 
 .vd-divider {
@@ -672,7 +672,7 @@ hr {
 }
 
 .vd-det-section i {
-    color: #c0392b;
+    color: purple;
     font-size: 14px;
 }
 
@@ -767,7 +767,7 @@ hr {
 }
 
 .vd-tag-hint i {
-    color: #c0392b;
+    color: purple;
     font-size: 11px;
 }
 
@@ -982,7 +982,7 @@ hr {
 
 .vd-canvas-header i.bi-search {
     font-size: 16px;
-    color: #c0392b;
+    color: purple;
 }
 
 .vd-canvas-title {
@@ -1072,7 +1072,7 @@ hr {
     gap: 8px;
     margin: 16px 20px;
     padding: 11px;
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -1084,7 +1084,7 @@ hr {
 }
 
 .vd-btn-create-new:hover {
-    background: #a93226;
+    background: #6b21a8;
 }
 
 .vd-canvas-back {
@@ -1153,7 +1153,7 @@ hr {
 .vd-btn-canvas-save {
     width: 100%;
     padding: 11px;
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -1164,7 +1164,7 @@ hr {
 }
 
 .vd-btn-canvas-save:hover {
-    background: #a93226;
+    background: #6b21a8;
 }
 
 /* ══════════════════════════════════════════════
@@ -1297,7 +1297,7 @@ hr {
     border: 1px solid #f5c6c2;
     border-radius: 5px;
     background: #fff;
-    color: #c0392b;
+    color: purple;
     padding: 7px 14px;
     font-size: 13px;
     cursor: pointer;
@@ -1305,7 +1305,7 @@ hr {
 }
 
 .vd-btn-remove:hover {
-    background: #fff5f5;
+    background: #f3e8ff;
 }
 
 /* ── Notes ── */
@@ -1340,7 +1340,7 @@ hr {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    background: linear-gradient(135deg, purple, #a855f7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1608,7 +1608,7 @@ hr {
 
 /* Checkbox icon — checked state (red) */
 .vd-feat-check-label:has(input:checked) .vd-feat-checkbox-icon i {
-    color: #c0392b;
+    color: purple;
 }
 
 /* Starred key feature — gold star icon */
@@ -1679,7 +1679,7 @@ hr {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -1691,7 +1691,7 @@ hr {
 }
 
 .vd-btn-add-option:hover {
-    background: #a93226;
+    background: #6b21a8;
 }
 
 .vd-table {
@@ -1831,9 +1831,9 @@ hr {
 }
 
 .vd-period-btn.active {
-    background: #c0392b;
+    background: purple;
     color: #fff;
-    border-color: #c0392b;
+    border-color: purple;
 }
 
 .vd-chart-wrap {
@@ -1998,7 +1998,7 @@ canvas#analyticsChart {
 }
 
 .vd-modal-label .req {
-    color: #c0392b;
+    color: purple;
 }
 
 .vd-modal-row {
@@ -2044,8 +2044,8 @@ canvas#analyticsChart {
 }
 
 .vd-input.is-invalid {
-    border-color: #c0392b;
-    box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.08);
+    border-color: purple;
+    box-shadow: 0 0 0 2px rgba(128, 0, 128, 0.08);
 }
 
 /* ── Incentive type badges ── */
@@ -2119,8 +2119,8 @@ canvas#analyticsChart {
 
 /* Add karo existing .vd-input.is-invalid rule ke baad */
 .vd-select.is-invalid {
-    border-color: #c0392b !important;
-    box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.08);
+    border-color: purple !important;
+    box-shadow: 0 0 0 2px rgba(128, 0, 128, 0.08);
 }
 
 /* ══════════════════════════════════════════════════
@@ -2218,7 +2218,7 @@ canvas#analyticsChart {
         border-bottom: 2px solid transparent;
         gap: 6px;
     }
-    .vd-nav-item.active { border-bottom-color: #c0392b; border-left: none; background: transparent; }
+    .vd-nav-item.active { border-bottom-color: purple; border-left: none; background: transparent; }
     .vd-nav-badge { font-size: 11px; }
 
     /* Middle */

@@ -35,10 +35,10 @@
 }
 .fs-sidebar .menu-item:hover { background: #f8f8f8; }
 .fs-sidebar .menu-item.active {
-    border-left-color: #c0392b;
-    color: #c0392b;
+    border-left-color: purple;
+    color: purple;
     font-weight: 600;
-    background: #fdf5f5;
+    background: #f3e8ff;
 }
 .fs-sidebar .menu-item .icon {
     font-size: 14px;
@@ -110,7 +110,7 @@
     color: #333;
 }
 .if-btn-add-fee {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -124,7 +124,7 @@
     transition: background 0.2s;
     white-space: nowrap;
 }
-.if-btn-add-fee:hover { background: #a93226; }
+.if-btn-add-fee:hover { background: #6b21a8; }
 
 /* ── Table ── */
 .if-table {
@@ -162,7 +162,7 @@
     padding: 2px 4px;
     transition: color 0.15s;
 }
-.if-action-btn:hover { color: #c0392b; }
+.if-action-btn:hover { color: purple; }
 
 /* ══════════════════════════════
    ADD INVENTORY FEE MODAL
@@ -225,7 +225,7 @@
     color: #444;
     margin-bottom: 5px;
 }
-.aif-label .req { color: #c0392b; }
+.aif-label .req { color: purple; }
 
 .aif-control {
     width: 100%;
@@ -277,7 +277,7 @@
     border-top: 1px solid #f0f0f0;
 }
 .aif-btn-save {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -290,7 +290,7 @@
     gap: 6px;
     transition: background 0.2s;
 }
-.aif-btn-save:hover { background: #a93226; }
+.aif-btn-save:hover { background: #6b21a8; }
 /* ── Amount field with dynamic prefix/suffix ── */
 .aif-amount-wrap {
     position: relative;

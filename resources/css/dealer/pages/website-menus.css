@@ -26,9 +26,9 @@
     transition: background 0.15s;
 }
 .mn-menu-tab:hover { background: #ebebeb; }
-.mn-menu-tab.active { color: #c0392b; font-weight: 700; border-left-color: #c0392b; }
+.mn-menu-tab.active { color: purple; font-weight: 700; border-left-color: purple; }
 .mn-menu-tab i { font-size: 16px; color: #aaa; }
-.mn-menu-tab.active i { color: #c0392b; }
+.mn-menu-tab.active i { color: purple; }
 
 /* ── Center ── */
 .mn-center { flex: 1; padding: 24px 28px; max-width: 700px; }
@@ -59,7 +59,7 @@
     padding: 11px 14px; gap: 10px;
 }
 .mn-drag-handle {
-    color: #c0392b; font-size: 16px;
+    color: purple; font-size: 16px;
     cursor: grab; padding: 4px; line-height: 1; flex-shrink: 0;
     border-radius: 3px; transition: background 0.12s;
 }
@@ -75,16 +75,16 @@
 .mn-btn-edit:hover { background: #f5f5f5; }
 .mn-btn-remove {
     background: #fff; border: 1px solid #ddd; border-radius: 4px;
-    color: #c0392b; font-size: 12px; padding: 5px 12px; cursor: pointer;
+    color: purple; font-size: 12px; padding: 5px 12px; cursor: pointer;
     display: inline-flex; align-items: center; gap: 4px; transition: background 0.15s;
 }
-.mn-btn-remove:hover { background: #fff5f5; }
+.mn-btn-remove:hover { background: #f3e8ff; }
 
 /* ── Drag placeholder ── */
 .mn-ph {
     height: 44px;
-    background: #fff5f5;
-    border: 2px dashed #c0392b;
+    background: #f3e8ff;
+    border: 2px dashed purple;
     border-radius: 6px;
     margin-bottom: 5px;
     list-style: none;
@@ -165,8 +165,8 @@
 }
 .al-btn-cancel:hover { background: #f5f5f5; }
 .al-btn-save {
-    background: #c0392b; color: #fff; border: none; border-radius: 4px;
+    background: purple; color: #fff; border: none; border-radius: 4px;
     padding: 8px 22px; font-size: 13px; font-weight: 500; cursor: pointer;
     display: inline-flex; align-items: center; gap: 6px;
 }
-.al-btn-save:hover { background: #a93226; }
+.al-btn-save:hover { background: #6b21a8; }

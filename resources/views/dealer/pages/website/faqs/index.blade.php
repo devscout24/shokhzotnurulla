@@ -58,7 +58,7 @@
         }
 
         .rc-sidebar-item.active i {
-            color: #ce4f4b !important;
+            color: purple !important;
         }
 
         .rc-main-container {
@@ -104,7 +104,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
             border: none;
             padding: 11px 22px;
@@ -116,7 +116,7 @@
         }
 
         .rc-btn-add:hover {
-            background: #a93226;
+            background: #6b21a8;
         }
 
         /* Table Styling */
@@ -200,11 +200,11 @@
         }
 
         .faq-row-btn.trash-btn {
-            color: #ce4f4b;
+            color: purple;
         }
 
         .faq-row-btn.trash-btn:hover {
-            background: #fff0f0;
+            background: #f3e8ff;
             border-color: #f5c6cb;
         }
 
@@ -271,9 +271,9 @@
         }
 
         .faq-page-btn.active {
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
-            border-color: #ce4f4b;
+            border-color: purple;
         }
 
         .faq-page-btn:hover:not(.active) {
@@ -325,13 +325,13 @@
 
         .rc-filter-item:hover {
             background: #f8f9fa;
-            color: #ce4f4b;
+            color: purple;
         }
 
         .rc-filter-item.active {
-            color: #ce4f4b;
+            color: purple;
             font-weight: 600;
-            background: #fff5f5;
+            background: #f3e8ff;
         }
 
         /* Modals */
@@ -479,7 +479,7 @@
         }
 
         .bulk-col-label span {
-            color: #ce4f4b;
+            color: purple;
             margin-left: 2px;
         }
 
@@ -517,7 +517,7 @@
         }
 
         .bulk-rte:focus-within {
-            border-color: #ce4f4b;
+            border-color: purple;
         }
 
         .rte-toolbar {
@@ -559,13 +559,13 @@
 
         .rte-btn:hover {
             background: #f8f9fa;
-            color: #ce4f4b;
+            color: purple;
             border-color: #eee;
         }
 
         .rte-btn.active {
-            background: #fff5f5;
-            color: #ce4f4b;
+            background: #f3e8ff;
+            color: purple;
             border-color: #f5c6cb;
         }
 
@@ -689,7 +689,7 @@
         .bulk-col-del { width: 50px; }
 
         .bulk-action-del {
-            color: #ce4f4b;
+            color: purple;
             cursor: pointer;
             font-size: 18px;
             opacity: 0.7;
@@ -722,7 +722,7 @@
 
         .btn-save-red {
             padding: 8px 25px;
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -735,7 +735,7 @@
         }
 
         .btn-save-red:hover {
-            background: #a93226;
+            background: #6b21a8;
         }
 
 

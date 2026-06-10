@@ -40,10 +40,10 @@
     }
     .fs-sidebar .menu-item:hover { background: #f8f8f8; }
     .fs-sidebar .menu-item.active {
-        border-left-color: #ce4f4b;
-        color: #ce4f4b;
+        border-left-color: purple;
+        color: purple;
         font-weight: 600;
-        background: #fdf5f5;
+        background: #f3e8ff;
     }
     .fs-sidebar .menu-item .icon {
         font-size: 14px;
@@ -82,7 +82,7 @@
         color: #222;
     }
     .syn-btn-request {
-        background: #ce4f4b;
+        background: purple;
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -98,7 +98,7 @@
         white-space: nowrap;
     }
     .syn-btn-request:hover {
-        background: #a93226;
+        background: #6b21a8;
         color: #fff;
         text-decoration: none;
     }

@@ -60,11 +60,11 @@
     .btn-action:hover { background: #f8f9fa; border-color: #ccc; }
     
     .btn-primary-scout {
-        background: #ce4f4b;
+        background: purple;
         color: #fff;
         border: none;
     }
-    .btn-primary-scout:hover { background: #ce4f4b; color: #fff; }
+    .btn-primary-scout:hover { background: purple; color: #fff; }
 
     .header-flex {
         display: flex;

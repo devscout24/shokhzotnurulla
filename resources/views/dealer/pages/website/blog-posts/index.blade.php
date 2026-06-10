@@ -59,7 +59,7 @@
         }
 
         .btn-add-page {
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
             border: none;
             padding: 8px 20px;
@@ -74,7 +74,7 @@
         }
 
         .btn-add-page:hover {
-            background: #a93226;
+            background: #6b21a8;
             color: #fff;
         }
 
@@ -230,11 +230,11 @@
         }
 
         .btn-action.action-trash {
-            color: #ce4f4b;
+            color: purple;
         }
 
         .btn-action.action-trash i {
-            color: #ce4f4b;
+            color: purple;
         }
 
         /* Custom Modal */
@@ -323,7 +323,7 @@
 
         .btn-modal-continue {
             padding: 8px 25px;
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
             border: none;
             border-radius: 6px;
@@ -332,7 +332,7 @@
         }
 
         .btn-modal-continue:hover {
-            background: #a93226;
+            background: #6b21a8;
         }
 
         .url-text {

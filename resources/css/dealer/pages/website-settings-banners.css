@@ -30,7 +30,7 @@
 .ws-sidebar .menu-item:last-child { border-bottom: none; }
 .ws-sidebar .menu-item:hover { background: #f8f8f8; color: #555; }
 .ws-sidebar .menu-item.active {
-    color: #c0392b;
+    color: purple;
     font-weight: 700;
     background: #fff;
 }
@@ -41,7 +41,7 @@
     color: #aaa;
     flex-shrink: 0;
 }
-.ws-sidebar .menu-item.active .ws-icon { color: #c0392b; }
+.ws-sidebar .menu-item.active .ws-icon { color: purple; }
 
 /* ── Right Content ── */
 .bn-content {
@@ -187,7 +187,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: #c0392b;
+    color: purple;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -196,13 +196,13 @@
     padding: 0;
     transition: color 0.15s;
 }
-.bn-select-media:hover { color: #a93226; }
+.bn-select-media:hover { color: #6b21a8; }
 .bn-select-media i { font-size: 15px; }
 
 /* ── Save Button ── */
 .bn-save-wrap { padding: 16px 20px 18px; }
 .bn-btn-save {
-    background: #c0392b;
+    background: purple;
     border: none;
     border-radius: 4px;
     color: #fff;
@@ -215,7 +215,7 @@
     gap: 6px;
     transition: background 0.2s;
 }
-.bn-btn-save:hover { background: #a93226; }
+.bn-btn-save:hover { background: #6b21a8; }
 
 /* ── Hidden file input ── */
 .bn-file-input { display: none; }
@@ -312,7 +312,7 @@
 }
 .sm-search::placeholder { color: #bbb; }
 .sm-btn-add-media {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -326,7 +326,7 @@
     transition: background 0.2s;
     white-space: nowrap;
 }
-.sm-btn-add-media:hover { background: #a93226; }
+.sm-btn-add-media:hover { background: #6b21a8; }
 
 /* Upload drop zone */
 .sm-dropzone {
@@ -342,8 +342,8 @@
 }
 .sm-dropzone.visible { display: block; }
 .sm-dropzone:hover, .sm-dropzone.dragover {
-    border-color: #c0392b;
-    background: #fff5f5;
+    border-color: purple;
+    background: #f3e8ff;
 }
 .sm-dropzone-icon {
     font-size: 28px;
@@ -364,7 +364,7 @@
 }
 .sm-upload-actions.visible { display: flex; }
 .sm-btn-upload {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -377,7 +377,7 @@
     gap: 5px;
     transition: background 0.2s;
 }
-.sm-btn-upload:hover { background: #a93226; }
+.sm-btn-upload:hover { background: #6b21a8; }
 .sm-btn-close-upload {
     background: #fff;
     color: #555;
@@ -441,14 +441,14 @@
     position: relative;
     background: #f0f0f0;
 }
-.sm-item:hover { border-color: #c0392b; transform: scale(1.03); }
-.sm-item.selected { border-color: #c0392b; }
+.sm-item:hover { border-color: purple; transform: scale(1.03); }
+.sm-item.selected { border-color: purple; }
 .sm-item.selected::after {
     content: '✓';
     position: absolute;
     top: 3px;
     right: 3px;
-    background: #c0392b;
+    background: purple;
     color: #fff;
     font-size: 10px;
     width: 16px;
@@ -483,7 +483,7 @@
     justify-content: flex-end;
 }
 .sm-btn-select {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -496,7 +496,7 @@
     gap: 6px;
     transition: background 0.2s;
 }
-.sm-btn-select:hover { background: #a93226; }
+.sm-btn-select:hover { background: #6b21a8; }
 
 /* Pagination */
 .sm-pagination {
@@ -521,9 +521,9 @@
 .sm-page-btn:hover:not(:disabled) { background: #f5f5f5; }
 .sm-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .sm-page-btn.active {
-    background: #c0392b;
+    background: purple;
     color: #fff;
-    border-color: #c0392b;
+    border-color: purple;
     font-weight: 600;
 }
 .sm-showing {

@@ -58,7 +58,7 @@
         }
 
         .rc-sidebar-item.active i {
-            color: #ce4f4b !important;
+            color: purple !important;
         }
 
         .rc-main-container {
@@ -104,7 +104,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
             border: none;
             padding: 10px 22px;
@@ -116,7 +116,7 @@
         }
 
         .rc-btn-add:hover {
-            background: #a93226;
+            background: #6b21a8;
         }
 
         /* Table Styling */
@@ -200,11 +200,11 @@
         }
 
         .rc-row-btn.trash-btn {
-            color: #ce4f4b;
+            color: purple;
         }
 
         .rc-row-btn.trash-btn:hover {
-            background: #fff0f0;
+            background: #f3e8ff;
             border-color: #f5c6cb;
         }
 
@@ -241,7 +241,7 @@
         }
 
         .bulk-col-label span {
-            color: #ce4f4b;
+            color: purple;
             margin-left: 2px;
         }
 
@@ -256,7 +256,7 @@
         }
 
         .bulk-input:focus {
-            border-color: #ce4f4b;
+            border-color: purple;
             outline: none;
         }
 
@@ -477,7 +477,7 @@
         }
 
         .bulk-header-label span {
-            color: #ce4f4b;
+            color: purple;
             margin-left: 2px;
         }
 
@@ -511,7 +511,7 @@
         }
 
         .btn-save-red {
-            background: #ce4f4b !important;
+            background: purple !important;
             color: #fff !important;
             border: none !important;
             border-radius: 4px !important;
@@ -525,7 +525,7 @@
         }
 
         .btn-save-red:hover {
-            background: #a93226 !important;
+            background: #6b21a8 !important;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
         }
 
@@ -701,7 +701,7 @@
         }
 
         .bulk-rte:focus-within {
-            border-color: #ce4f4b;
+            border-color: purple;
         }
 
         .rte-toolbar {
@@ -743,13 +743,13 @@
 
         .rte-btn:hover {
             background: #f8f9fa;
-            color: #ce4f4b;
+            color: purple;
             border-color: #eee;
         }
 
         .rte-btn.active {
-            background: #fff5f5;
-            color: #ce4f4b;
+            background: #f3e8ff;
+            color: purple;
             border-color: #f5c6cb;
         }
 

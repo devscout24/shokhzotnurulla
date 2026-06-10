@@ -48,7 +48,7 @@
 
         .rc-sidebar-item.active {
             background: #fff;
-            color: #ce4f4b;
+            color: purple;
             font-weight: 600;
         }
 
@@ -60,7 +60,7 @@
         }
 
         .rc-sidebar-item.active i {
-            color: #ce4f4b !important;
+            color: purple !important;
         }
 
         .rc-main-container {
@@ -91,7 +91,7 @@
         }
 
         .report-support-text a {
-            color: #ce4f4b;
+            color: purple;
             text-decoration: none;
         }
 

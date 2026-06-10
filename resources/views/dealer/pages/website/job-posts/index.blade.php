@@ -60,7 +60,7 @@
         }
 
         .rc-sidebar-item.active i {
-            color: #ce4f4b !important;
+            color: purple !important;
         }
 
         .rc-main-container {
@@ -84,7 +84,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
             border: none;
             padding: 10px 22px;
@@ -203,11 +203,11 @@
         }
 
         .rc-row-btn.trash-btn {
-            color: #ce4f4b;
+            color: purple;
         }
 
         .rc-row-btn.trash-btn:hover {
-            background: #fff5f5;
+            background: #f3e8ff;
             border-color: #f5c6cb;
         }
 
@@ -221,7 +221,7 @@
         }
 
         .bulk-col-label span {
-            color: #ce4f4b;
+            color: purple;
         }
 
         .bulk-input,
@@ -238,7 +238,7 @@
 
         .bulk-input:focus,
         .bulk-select:focus {
-            border-color: #ce4f4b;
+            border-color: purple;
             outline: none;
             background: #fff;
             box-shadow: 0 0 0 4px rgba(208, 2, 27, 0.05);
@@ -265,7 +265,7 @@
         }
 
         .bulk-rte:focus-within {
-            border-color: #ce4f4b;
+            border-color: purple;
         }
 
         .rte-toolbar {
@@ -307,13 +307,13 @@
 
         .rte-btn:hover {
             background: #f8f9fa;
-            color: #ce4f4b;
+            color: purple;
             border-color: #eee;
         }
 
         .rte-btn.active {
-            background: #fff5f5;
-            color: #ce4f4b;
+            background: #f3e8ff;
+            color: purple;
             border-color: #f5c6cb;
         }
 
@@ -437,7 +437,7 @@
         }
 
         .btn-save-red {
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
             border: none;
             padding: 12px 35px;
@@ -663,7 +663,7 @@
         }
 
         .bulk-edit-input:focus {
-            border-color: #ce4f4b;
+            border-color: purple;
             outline: none;
             background: #fff;
         }
@@ -916,7 +916,7 @@
             <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure you want to delete this post?</div>
             <div class="confirm-modal-footer">
                 <button class="rc-btn-outline" style="padding: 8px 20px;" id="confirmCancelBtn">Cancel</button>
-                <button class="btn-save-red" style="padding: 8px 20px; background: #ce4f4b;"
+                <button class="btn-save-red" style="padding: 8px 20px; background: purple;"
                     id="confirmContinueBtn">Continue</button>
             </div>
         </div>

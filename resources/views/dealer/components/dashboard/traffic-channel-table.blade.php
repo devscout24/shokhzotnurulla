@@ -309,7 +309,7 @@
     }
 
     .btn-metric-toggle.active {
-        background: #ce4f4b !important;
+        background: purple !important;
         color: #fff !important;
         border-radius: 4px;
     }

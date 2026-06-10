@@ -60,7 +60,7 @@
         }
 
         .rc-sidebar-item.active i {
-            color: #ce4f4b !important;
+            color: purple !important;
         }
 
         .rc-main-container {
@@ -84,7 +84,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
             border: none;
             padding: 10px 22px;
@@ -203,11 +203,11 @@
         }
 
         .rc-row-btn.trash-btn {
-            color: #ce4f4b;
+            color: purple;
         }
 
         .rc-row-btn.trash-btn:hover {
-            background: #fff5f5;
+            background: #f3e8ff;
             border-color: #f5c6cb;
         }
 
@@ -222,7 +222,7 @@
         }
 
         .bulk-col-label span {
-            color: #ce4f4b;
+            color: purple;
             margin-left: 2px;
         }
 
@@ -241,7 +241,7 @@
 
         .bulk-input:focus,
         .bulk-select:focus {
-            border-color: #ce4f4b;
+            border-color: purple;
             outline: none;
             background: #fff;
             box-shadow: none;
@@ -261,7 +261,7 @@
         }
 
         .bulk-rte:focus-within {
-            border-color: #ce4f4b;
+            border-color: purple;
         }
 
         .rte-toolbar {
@@ -303,13 +303,13 @@
 
         .rte-btn:hover {
             background: #f8f9fa;
-            color: #ce4f4b;
+            color: purple;
             border-color: #eee;
         }
 
         .rte-btn.active {
-            background: #fff5f5;
-            color: #ce4f4b;
+            background: #f3e8ff;
+            color: purple;
             border-color: #f5c6cb;
         }
 
@@ -347,7 +347,7 @@
         }
 
         .btn-save-red {
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
             border: none;
             padding: 8px 25px;
@@ -580,7 +580,7 @@
         }
 
         .bulk-edit-input:focus {
-            border-color: #ce4f4b;
+            border-color: purple;
             outline: none;
             background: #fff;
         }
@@ -712,7 +712,7 @@
         .media-btn-select {
             font-size: 12px;
             font-weight: 600;
-            color: #ce4f4b;
+            color: purple;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -737,7 +737,7 @@
             position: absolute;
             top: -8px;
             right: -8px;
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
             width: 20px;
             height: 20px;
@@ -771,7 +771,7 @@
         }
 
         .cat-item-card:hover {
-            border-color: #ce4f4b;
+            border-color: purple;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
@@ -884,7 +884,7 @@
                                 <div class="media-row">
                                     <div class="media-header">
                                         <label class="bulk-col-label" style="margin: 0;">Event Image (600x300) <span>*</span></label>
-                                        <span class="media-btn-select" id="selectMediaBtn" style="color: #ce4f4b;"><i
+                                        <span class="media-btn-select" id="selectMediaBtn" style="color: purple;"><i
                                                 class="bi bi-images"></i> Select Media</span>
                                     </div>
                                     <input type="text" id="photoUrlInput" class="bulk-input"
@@ -998,7 +998,7 @@
             <div class="confirm-modal-body" id="confirmModalBodyText">Are you sure you want to delete this event?</div>
             <div class="confirm-modal-footer">
                 <button class="rc-btn-outline" style="padding: 8px 20px;" id="confirmCancelBtn">Cancel</button>
-                <button class="btn-save-red" style="padding: 8px 20px; background: #ce4f4b;"
+                <button class="btn-save-red" style="padding: 8px 20px; background: purple;"
                     id="confirmContinueBtn">Continue</button>
             </div>
         </div>
@@ -1589,7 +1589,7 @@
                         var btn = document.getElementById('confirmMediaBtn');
                         btn.style.opacity = '1';
                         btn.style.pointerEvents = 'auto';
-                        btn.style.background = '#ce4f4b';
+                        btn.style.background = 'purple';
                     };
                 });
             }

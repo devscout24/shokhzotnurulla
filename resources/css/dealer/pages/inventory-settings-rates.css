@@ -36,10 +36,10 @@
 }
 .fs-sidebar .menu-item:hover { background: #f8f8f8; }
 .fs-sidebar .menu-item.active {
-    border-left-color: #c0392b;
-    color: #c0392b;
+    border-left-color: purple;
+    color: purple;
     font-weight: 600;
-    background: #fdf5f5;
+    background: #f3e8ff;
 }
 .fs-sidebar .menu-item .icon {
     font-size: 14px;
@@ -107,7 +107,7 @@
 }
 .fs-btn-group button:last-child { border-right: none; }
 .fs-btn-group button.active {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     font-weight: 600;
 }
@@ -131,7 +131,7 @@
 
 .fs-btn-add-rate {
     margin-left: auto;
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -145,7 +145,7 @@
     transition: background 0.2s;
     white-space: nowrap;
 }
-.fs-btn-add-rate:hover { background: #a93226; }
+.fs-btn-add-rate:hover { background: #6b21a8; }
 
 /* Condition header */
 .fs-condition-header {
@@ -204,7 +204,7 @@
 }
 .fs-group-row .btn-add-group {
     float: right;
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 3px;
@@ -267,11 +267,11 @@
     padding: 2px;
     transition: color 0.15s;
 }
-.fs-actions button:hover { color: #c0392b; }
+.fs-actions button:hover { color: purple; }
 
 /* Save button */
 .fs-btn-save {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -285,7 +285,7 @@
     margin-top: 16px;
     transition: background 0.2s;
 }
-.fs-btn-save:hover { background: #a93226; }
+.fs-btn-save:hover { background: #6b21a8; }
 
 /* ══════════════════════════════
    ADD RATE MODAL
@@ -354,7 +354,7 @@
     color: #444;
     margin-bottom: 5px;
 }
-.ar-label .req { color: #c0392b; }
+.ar-label .req { color: purple; }
 
 .ar-control {
     width: 100%;
@@ -438,7 +438,7 @@
     border-top: 1px solid #f0f0f0;
 }
 .ar-btn-add {
-    background: #c0392b;
+    background: purple;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -451,7 +451,7 @@
     gap: 6px;
     transition: background 0.2s;
 }
-.ar-btn-add:hover { background: #a93226; }
+.ar-btn-add:hover { background: #6b21a8; }
 /* Rate cell with % suffix */
 .fs-rate-wrap {
     position: relative;

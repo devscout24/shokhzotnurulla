@@ -30,14 +30,14 @@
         transition: border-color 0.2s;
     }
     .form-control:focus {
-        border-color: #ce4f4b;
+        border-color: purple;
         outline: none;
-        box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+        box-shadow: 0 0 0 3px rgba(128, 0, 128, 0.1);
     }
     .text-danger { color: #d93025; font-size: 12px; margin-top: 4px; }
     
     .btn-save {
-        background: #ce4f4b;
+        background: purple;
         color: #fff;
         border: none;
         padding: 10px 24px;
@@ -46,7 +46,7 @@
         cursor: pointer;
         transition: background 0.2s;
     }
-    .btn-save:hover { background: #a93226; }
+    .btn-save:hover { background: #6b21a8; }
 
     .table-container {
         overflow-x: auto;
@@ -117,7 +117,7 @@
                     <div class="form-group">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <input type="hidden" name="restricted_login_enabled" value="0">
-                            <input type="checkbox" id="restricted_login_enabled" name="restricted_login_enabled" value="1" {{ old('restricted_login_enabled', $setting->value) == '1' ? 'checked' : '' }} style="width: 18px; height: 18px; cursor: pointer; accent-color: #ce4f4b;">
+                            <input type="checkbox" id="restricted_login_enabled" name="restricted_login_enabled" value="1" {{ old('restricted_login_enabled', $setting->value) == '1' ? 'checked' : '' }} style="width: 18px; height: 18px; cursor: pointer; accent-color: purple;">
                             <label for="restricted_login_enabled" class="form-label" style="margin-bottom: 0; font-weight: 500; cursor: pointer;">Enable Domain Restriction for Admins</label>
                         </div>
                         <p style="font-size: 12px; color: #666; margin-top: 8px; margin-left: 28px; line-height: 1.5;">

@@ -48,7 +48,7 @@
 
         .rc-sidebar-item.active {
             background: #fff;
-            color: #ce4f4b;
+            color: purple;
             font-weight: 600;
         }
 
@@ -60,7 +60,7 @@
         }
 
         .rc-sidebar-item.active i {
-            color: #ce4f4b !important;
+            color: purple !important;
         }
 
         .rc-main-container {
@@ -104,7 +104,7 @@
         }
 
         .btn-export {
-            background: #ce4f4b;
+            background: purple;
             color: #fff !important;
             border: none;
             padding: 8px 20px;

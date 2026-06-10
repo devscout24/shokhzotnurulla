@@ -10,7 +10,7 @@
     @include('frontend.partials.header')
 
     {{-- @if ($bannerText ?? null)
-        <div class="persistent-banner py-2 text-center" style="background: {{ $bannerBgColor ?? '#ce4f4b' }}; color: {{ $bannerTextColor ?? '#ffffff' }};" title="{{ $bannerHoverTitle ?? '' }}">
+        <div class="persistent-banner py-2 text-center" style="background: {{ $bannerBgColor ?? 'purple' }}; color: {{ $bannerTextColor ?? '#ffffff' }};" title="{{ $bannerHoverTitle ?? '' }}">
             <div class="container">
                 <span class="banner-message font-weight-bold">{{ $bannerText }}</span>
             </div>
@@ -27,7 +27,7 @@
     <div class="userback-button-container" loadtype="web" id="userback_button_container" data-html2canvas-ignore="true"
         nextgen="1" data-ub-colour-scheme="light">
         <div class="userback-button userback-button-e" wstyle="text" wicon="7">
-            <div class="userback-button-content" style="background-color: #ce4f4b !important;">
+            <div class="userback-button-content" style="background-color: purple !important;">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" viewBox="0 0 24 24" style="transform: rotate(90deg) !important;">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
                 </svg>Favorites

@@ -30,11 +30,11 @@
 
 /* Pagination override */
 .pagination .page-item.active .page-link {
-    background-color: #c0392b;
-    border-color:     #c0392b;
+    background-color: purple;
+    border-color:     purple;
 }
 
 .pagination .page-link {
-    color: #c0392b;
+    color: purple;
     font-size: 13px;
 }

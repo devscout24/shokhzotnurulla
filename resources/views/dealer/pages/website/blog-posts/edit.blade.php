@@ -50,7 +50,7 @@
         .section-title {
             font-size: 11px;
             font-weight: 800;
-            color: #ce4f4b;
+            color: purple;
             text-transform: uppercase;
             letter-spacing: 1.2px;
             margin: 25px 0 15px
@@ -73,7 +73,7 @@
         }
 
         .block-item:hover {
-            border-color: #ce4f4b;
+            border-color: purple;
             background: #fffcfc;
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, .06)
@@ -83,7 +83,7 @@
             font-size: 22px;
             display: block;
             margin-bottom: 10px;
-            color: #ce4f4b
+            color: purple
         }
 
         .block-item span {
@@ -142,8 +142,8 @@
         }
 
         .hs-btn-remove {
-            background: #fff5f5;
-            color: #ce4f4b;
+            background: #f3e8ff;
+            color: purple;
             border: 1px solid #ffe3e3;
             padding: 10px 15px;
             border-radius: 8px;
@@ -158,7 +158,7 @@
         }
 
         .hs-btn-remove:hover {
-            background: #ce4f4b;
+            background: purple;
             color: #fff
         }
 
@@ -215,7 +215,7 @@
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
-            color: #ce4f4b;
+            color: purple;
             margin-bottom: 15px;
             letter-spacing: 1px;
         }
@@ -231,13 +231,13 @@
         }
 
         .featured-image-box:hover {
-            border-color: #ce4f4b;
+            border-color: purple;
             background: #fffcfc;
         }
 
         .featured-image-box i {
             font-size: 32px;
-            color: #ce4f4b;
+            color: purple;
             margin-bottom: 12px;
         }
 
@@ -282,8 +282,8 @@
         }
 
         .btn-restore {
-            background: #fff5f5;
-            color: #ce4f4b;
+            background: #f3e8ff;
+            color: purple;
             border: 1px solid #ffe3e3;
             padding: 4px 12px;
             border-radius: 6px;
@@ -293,23 +293,23 @@
         }
 
         .btn-restore:hover {
-            background: #ce4f4b;
+            background: purple;
             color: #fff;
         }
 
         #drop-indicator {
             height: 4px;
-            background: #ce4f4b;
+            background: purple;
             border-radius: 2px;
             margin: 10px 0;
             width: 100%;
             transition: all 0.2s ease;
-            box-shadow: 0 0 10px rgba(192, 57, 43, 0.4);
+            box-shadow: 0 0 10px rgba(128, 0, 128, 0.4);
         }
 
         .drag-over {
-            background-color: rgba(192, 57, 43, 0.02) !important;
-            outline: 2px dashed #ce4f4b !important;
+            background-color: rgba(128, 0, 128, 0.02) !important;
+            outline: 2px dashed purple !important;
             outline-offset: -2px;
         }
 
@@ -319,7 +319,7 @@
             padding: 10px 0;
             border-bottom: 1px solid #f1f3f5;
             margin-bottom: 20px;
-            color: #ce4f4b;
+            color: purple;
         }
 
         .editor-empty-badge {
@@ -338,7 +338,7 @@
             border: none;
             background: transparent;
             font-size: 14px;
-            color: #ce4f4b;
+            color: purple;
             width: 100%;
             outline: none;
         }
@@ -363,8 +363,8 @@
         }
 
         .btn-danger:hover {
-            background-color: #ce4f4b !important;
-            border-color: #ce4f4b !important;
+            background-color: purple !important;
+            border-color: purple !important;
         }
     </style>
 @endpush
@@ -387,7 +387,7 @@
                         style="border-radius:6px" onclick="toggleSidePanel('page-revisions')"><i
                             class="fa-solid fa-clock-rotate-left me-2"></i>Page Revisions</button>
                     <button type="submit" class="btn btn-danger btn-sm px-4"
-                        style="border-radius:6px;background-color:#ce4f4b;border-color:#ce4f4b"><i class="fa-solid fa-check me-2"></i>Update</button>
+                        style="border-radius:6px;background-color:purple;border-color:purple"><i class="fa-solid fa-check me-2"></i>Update</button>
                 </div>
             </div>
             <div class="input-group border-bottom bg-white" style="height:55px">
@@ -585,7 +585,7 @@
                 </div>
                 <div class="side-panel-footer">
                     <button type="button" class="btn btn-danger w-100 fw-bold" onclick="toggleSidePanel('page-settings')"
-                        style="background:#ce4f4b">Apply Settings</button>
+                        style="background:purple">Apply Settings</button>
                 </div>
             </div>
 

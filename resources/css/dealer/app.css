@@ -287,7 +287,7 @@ body {
 
 .sidebar-item.active {
     background: #f3f4f6;
-    color: black;
+    color: purple;
 }
 
 .main-content {
@@ -767,7 +767,7 @@ body {
 }
 
 .inv-card-amount.inv-warning {
-    color: #ce4f4b;
+    color: purple;
     font-size: 14px
 }
 
@@ -817,7 +817,7 @@ body {
 }
 
 .btn-export-all, .btn-export-make {
-    background: #ce4f4b !important;
+    background: purple !important;
     color: #fff;
     border: none;
     padding: 6px 12px;
@@ -834,7 +834,7 @@ body {
 }
 
 .btn-export-all:hover, .btn-export-make:hover {
-    background: #ce4f4b !important;
+    background: purple !important;
     opacity: 0.9;
 }
 
@@ -1298,7 +1298,7 @@ a.inv-stat-card:focus {
 }
 
 .inv-table .text-danger {
-    color: #ce4f4b;
+    color: purple;
     font-weight: 600
 }
 
