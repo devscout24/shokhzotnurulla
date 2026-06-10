@@ -15,6 +15,8 @@
     @vite(['resources/sass/app.scss', 'resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml" />
+
     <!-- Panel specific Assets -->
     @stack('panel-assets')
     @stack('page-assets')
