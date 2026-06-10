@@ -2,6 +2,7 @@
 
 namespace App\Services\Exports;
 
+use App\Helpers\TimeHelper;
 use App\Models\Dealership\Dealer;
 use App\Models\Inventory\Vehicle;
 use Illuminate\Http\Request;
@@ -134,9 +135,9 @@ class TrueCarsService
                             ->chunk(100, function ($vehicles) use ($file, $dealer, $conditionMap) {
                                 foreach ($vehicles as $vehicle) {
                                     $images      = collect($vehicle->photos)->pluck('url')->implode('|');
-                                    $description = $vehicle->notes?->dealer_notes ?? '';
-                                    $options     = $vehicle->factoryOptions?->pluck('label')->implode(' | ') ?? '';
-                                    $optionCodes = $vehicle->factoryOptions?->pluck('option_key')->implode(' | ') ?? '';
+                                    $description = TimeHelper::strip_tags($vehicle?->notes?->dealer_notes) ?? '';
+                                    $options     = $vehicle->factoryOptions?->pluck('label')->implode('|') ?? '';
+                                    $optionCodes = $vehicle->factoryOptions?->pluck('option_key')->implode('|') ?? '';
                                     $picUpdated  = $vehicle->primaryPhoto?->updated_at?->toIso8601String() ?? '';
 
                                     $row = [
@@ -152,10 +153,10 @@ class TrueCarsService
                                         $vehicle->engine ?? '',                        // engine
                                         $vehicle->status ?? '',                        // new_used  (vehicle->status)
                                         $vehicle->location_status ?? '',               // vehicle_status (location_status)
-                                        $vehicle->date_in_stock ?? '',                 // date-in-stock
-                                        $vehicle->specs?->doors ?? '',                 // door_count
-                                        $vehicle->exteriorColor?->code ?? '',          // exteriorcolor_code
-                                        $vehicle->interiorColor?->code ?? '',          // interiorcolor_code
+                                        $vehicle->listed_at?->toDateString() ?? '',    // date-in-stock
+                                        $vehicle->doors ?? '',                         // door_count
+                                        $vehicle->specs?->exterior_color_code ?? '',   // exteriorcolor_code
+                                        $vehicle->specs?->interior_color_code ?? '',   // interiorcolor_code
                                         $conditionMap[$vehicle->vehicle_condition] ?? '', // condition
                                         $vehicle->prices?->internet_price ?? $vehicle->list_price ?? '', // price
                                         // $vehicle->is_certified ? 1 : 0,            // certified (commented out)
@@ -170,7 +171,7 @@ class TrueCarsService
                                         $picUpdated,                                   // picture_updated
                                         $vehicle->updated_at?->toIso8601String() ?? '', // modified_date
                                         $description,                                  // description (dealer comments)
-                                        '',                                            // url
+                                        $dealer->domain ? "https://{$dealer->domain}/vehicles/{$vehicle->slug}" : '', // url
                                         $images,                                       // image_urls (pipe-separated)
                                     ];
 

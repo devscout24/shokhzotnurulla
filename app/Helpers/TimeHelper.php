@@ -55,6 +55,9 @@ class TimeHelper
     }
 
     public static function strip_tags($text) {
+        if(empty($text)) {
+            return '';
+        }
         // Remove script and style blocks (including their content)
         $text = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $text);
         $text = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $text);

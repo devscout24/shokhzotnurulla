@@ -24,6 +24,8 @@ Route::prefix('admin')
             ->name('dealers.export.csv');
         Route::get('dealers/export/cargurus', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportCarGurusCsv'])
             ->name('dealers.export.cargurus');
+        Route::get('dealers/export/truecars', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportTrueCarsCsv'])
+            ->name('dealers.export.truecars');
 
 
         Route::get('dealers/{dealer}/export-vehicles', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportDealerVehiclesCsv'])
