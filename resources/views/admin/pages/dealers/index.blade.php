@@ -43,7 +43,7 @@
     }
     .status-active { background: #e6f4ea; color: #1e8e3e; }
     .status-inactive { background: #fce8e6; color: #d93025; }
-    
+
     .btn-action {
         padding: 6px 12px;
         border-radius: 4px;
@@ -58,7 +58,7 @@
         transition: all 0.2s;
     }
     .btn-action:hover { background: #f8f9fa; border-color: #ccc; }
-    
+
     .btn-primary-scout {
         background: purple;
         color: #fff;
@@ -71,6 +71,42 @@
         justify-content: space-between;
         align-items: center;
     }
+
+    /* Search Bar Design */
+    .search-container {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding-left: 10px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        width: 220px;
+        height: 33px;
+        box-sizing: border-box;
+    }
+    .search-container:focus-within {
+        border-color: purple;
+        box-shadow: 0 0 0 2px rgba(128, 0, 128, 0.15);
+    }
+    .search-icon {
+        color: #888;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .search-input {
+        border: none;
+        outline: none;
+        padding: 4px 8px 4px 6px;
+        font-size: 12.5px;
+        width: 100%;
+        background: transparent;
+        color: #333;
+        height: 100%;
+    }
 </style>
 @endpush
 
@@ -78,7 +114,12 @@
 <main class="main-content" id="mainContent">
     <div class="page-header header-flex">
         <h2 class="view-title">Dealer Management</h2>
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" placeholder="Search dealer..." id="searchInput" class="search-input">
+            </div>
+
             <div class="dropdown">
                 <button class="btn-action dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="background: #fff; border: 1px solid #ddd; cursor: pointer;">
                     <i class="bi bi-download"></i> Export
@@ -154,12 +195,12 @@
                                 <a href="{{ route('admin.dealers.integrations.index', $dealer) }}" class="btn-action">
                                     <i class="bi bi-plug"></i> Integrations
                                 </a>
-                                
+
                                 <form action="{{ route('admin.dealers.toggle-status', $dealer) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit" class="btn-action">
-                                        <i class="bi bi-arrow-repeat"></i> 
+                                        <i class="bi bi-arrow-repeat"></i>
                                         {{ $dealer->status === \App\Enums\DealerStatus::ACTIVE ? 'Deactivate' : 'Activate' }}
                                     </button>
                                 </form>
@@ -200,4 +241,40 @@
         </div>
     </div>
 </main>
+
+@push('page-scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('.dealer-table tbody tr');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            tableRows.forEach(row => {
+                // Skip empty state row if present
+                if (row.cells.length < 3) return;
+                
+                const nameEl = row.querySelector('td:nth-child(1)');
+                const domainEl = row.querySelector('td:nth-child(2)');
+                const emailEl = row.querySelector('td:nth-child(3)');
+                
+                if (!nameEl) return;
+                
+                const nameText = nameEl.textContent.toLowerCase();
+                const domainText = domainEl ? domainEl.textContent.toLowerCase() : '';
+                const emailText = emailEl ? emailEl.textContent.toLowerCase() : '';
+                
+                if (nameText.includes(query) || domainText.includes(query) || emailText.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>
+@endpush
 @endsection
