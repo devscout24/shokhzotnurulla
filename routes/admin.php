@@ -26,6 +26,10 @@ Route::prefix('admin')
             ->name('dealers.export.cargurus');
         Route::get('dealers/export/truecars', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportTrueCarsCsv'])
             ->name('dealers.export.truecars');
+        Route::get('dealers/export/carsdotcom', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportCarsDotComCsv'])
+            ->name('dealers.export.carsdotcom');
+        Route::get('dealers/export/carfax', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportCarFaxXml'])
+            ->name('dealers.export.carfax');
 
 
         Route::get('dealers/{dealer}/export-vehicles', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportDealerVehiclesCsv'])
@@ -37,6 +41,8 @@ Route::prefix('admin')
             ->name('dealers.export.vehicles.carfax');
         Route::get('dealers/{dealer}/export-vehicles-truecars', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportDealerVehiclesTrueCars'])
             ->name('dealers.export.vehicles.truecars');
+        Route::get('dealers/{dealer}/export-vehicles-carsdotcom', [\App\Http\Controllers\Admin\DealerExportController::class, 'exportDealerVehiclesCarsDotCom'])
+            ->name('dealers.export.vehicles.carsdotcom');
 
         // Dealers CRUD
         Route::resource('dealers', \App\Http\Controllers\Admin\DealerController::class);

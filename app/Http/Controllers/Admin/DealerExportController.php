@@ -3,7 +3,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dealership\Dealer;
+use App\Services\Exports\CarfaxExportService;
 use App\Services\Exports\CarGurusService;
+use App\Services\Exports\CarsDotComService;
 use App\Services\Exports\ExportMakerService;
 use App\Services\Exports\TrueCarsService;
 use Illuminate\Http\Request;
@@ -41,6 +43,13 @@ class DealerExportController extends Controller
         return $this->exportMaker->makeExport($dealer, $request, 'truecars');
     }
 
+    public function exportDealerVehiclesCarsDotCom(Dealer $dealer, Request $request)
+    {
+        return (new CarsDotComService())->export($dealer, $request);
+    }
+
+    // -------------------------------------------------------------------------------
+
     public function exportCarGurusCsv(Request $request)
     {
         return $this->cargursExporter->bulkExport($request);
@@ -49,6 +58,16 @@ class DealerExportController extends Controller
     public function exportTrueCarsCsv(Request $request)
     {
         return $this->truecarsExporter->exportBulkCsv($request);
+    }
+
+    public function exportCarsDotComCsv(Request $request)
+    {
+        return (new CarsDotComService())->exportBulk($request);
+    }
+
+    public function exportCarFaxXml(Request $request)
+    {
+        return (new CarfaxExportService())->bulkCarfaxXmlAll($request);
     }
 
     public function exportCsv(Dealer $dealer, Request $request)

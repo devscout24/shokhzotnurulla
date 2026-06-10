@@ -127,7 +127,8 @@
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
                     <li><a class="dropdown-item" href="{{ route('admin.dealers.export.cargurus') }}"><i class="bi bi-filetype-csv"></i> Export CarGurus CSV</a></li>
                     <li><a class="dropdown-item" href="{{ route('admin.dealers.export.truecars') }}"><i class="bi bi-filetype-csv"></i> Export TrueCars CSV</a></li>
-                    <li><a class="dropdown-item" href="{{ route('admin.dealers.export.csv') }}"><i class="bi bi-filetype-csv"></i> Export as CSV</a></li>
+                    <li><a class="dropdown-item" href="{{ route('admin.dealers.export.carsdotcom') }}"><i class="bi bi-filetype-csv"></i> Export Cars.com CSV</a></li>
+                    <li><a class="dropdown-item" href="{{ route('admin.dealers.export.carfax') }}"><i class="bi bi-filetype-xml"></i> Export CarFax XML</a></li>
                 </ul>
             </div>
             <a href="{{ route('admin.dealers.create') }}" class="btn-action btn-primary-scout">
@@ -187,6 +188,7 @@
                                     <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles.carsforsale', $dealer) }}"><i class="bi bi-car-front"></i> Carsforsale (Txt)</a></li>
                                     <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles.carfax', $dealer) }}"><i class="bi bi-car-front"></i> CarFax (XML)</a></li>
                                     <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles.truecars', $dealer) }}"><i class="bi bi-car-front"></i> TrueCars (CSV)</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('admin.dealers.export.vehicles.carsdotcom', $dealer) }}"><i class="bi bi-car-front"></i> Cars.com (CSV)</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -255,21 +257,21 @@ document.addEventListener('DOMContentLoaded', function() {
     if (searchInput) {
         searchInput.addEventListener('input', function() {
             const query = this.value.toLowerCase().trim();
-            
+
             tableRows.forEach(row => {
                 // Skip empty state row if present
                 if (row.cells.length < 3) return;
-                
+
                 const nameEl = row.querySelector('td:nth-child(1)');
                 const domainEl = row.querySelector('td:nth-child(2)');
                 const emailEl = row.querySelector('td:nth-child(3)');
-                
+
                 if (!nameEl) return;
-                
+
                 const nameText = nameEl.textContent.toLowerCase();
                 const domainText = domainEl ? domainEl.textContent.toLowerCase() : '';
                 const emailText = emailEl ? emailEl.textContent.toLowerCase() : '';
-                
+
                 if (nameText.includes(query) || domainText.includes(query) || emailText.includes(query)) {
                     row.style.display = '';
                 } else {
