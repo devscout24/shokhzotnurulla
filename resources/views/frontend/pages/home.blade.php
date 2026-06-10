@@ -182,7 +182,7 @@
                         </h3>
 
                         <div class="text-center">
-                            <a href="{{ route('frontend.get-approved') }}" class="btn btn-outline-light px-4 py-2"
+                            <a href="{{ route('frontend.get-approved') }}" class="btn btn-outline-light px-4 py-2" style="color:black"
                                 title="Get approved">
                                 Get approved
                                 <span class="d-inline-block ms-2">

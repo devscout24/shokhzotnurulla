@@ -287,7 +287,7 @@ body {
 
 .sidebar-item.active {
     background: #f3f4f6;
-    color: #ce4f4b
+    color: black;
 }
 
 .main-content {
@@ -475,12 +475,12 @@ body {
         padding: 0 10px 5px 10px;
         display: block; /* Show on mobile */
     }
-    
+
     .topbar-inner .logo-wrapper,
     .topbar-inner .topbar-right {
         display: none; /* Hide logo and right section */
     }
-    
+
     .topbar-inner .topbar-left {
         gap: 0;
     }
@@ -494,7 +494,7 @@ body {
         padding-bottom: 5px;
         width: 100%;
     }
-    
+
     .topbar-inner .nav-item {
         padding: 10px 0;
         white-space: nowrap;

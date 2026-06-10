@@ -105,7 +105,12 @@
 @endphp
 <!-- header desktop  -->
 <style>
-    .dropdown-menu.show { display: block !important; visibility: visible !important; opacity: 1 !important; transform: none !important; }
+    .dropdown-menu.show {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
 </style>
 <header class="d-flex d-none d-xl-block ">
     <div class="bg-preheader text-preheader theme-dark">
@@ -166,25 +171,31 @@
                         </div>
                     </div> --}}
 
-                   
+
 
                     <div class="float-end py-2 px-3 border-end">
                         <div class="dropdown h-100 d-flex align-items-center">
-                            <a href="javascript:void(0)" class="text-decoration-none text-white dropdown-toggle d-flex align-items-center" 
-                                id="hoursDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 15px; font-weight: 500;">
+                            <a href="javascript:void(0)"
+                                class="text-decoration-none text-white dropdown-toggle d-flex align-items-center"
+                                id="hoursDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                                style="font-size: 15px; font-weight: 500;">
                                 <i class="fa-solid fa-calendar-days me-2 text-info"></i>
                                 <span>{{ $todayDisplay }}</span>
                             </a>
 
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 p-0" aria-labelledby="hoursDropdown" style="min-width: 320px; z-index: 9999; border-radius: 8px; overflow: hidden;">
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 p-0"
+                                aria-labelledby="hoursDropdown"
+                                style="min-width: 320px; z-index: 9999; border-radius: 8px; overflow: hidden;">
                                 <li class="px-3 py-2 bg-light border-bottom">
-                                    <div class="d-flex justify-content-between w-100 fw-bold text-dark" style="font-size: 14px;">
+                                    <div class="d-flex justify-content-between w-100 fw-bold text-dark"
+                                        style="font-size: 14px;">
                                         <span>Day</span>
                                         <span>Sales Hours</span>
                                     </div>
                                 </li>
                                 @foreach ($resolvedSalesHours as $item)
-                                    <li class="px-3 py-2 d-flex justify-content-between align-items-center {{ $today === $item['day_name'] ? 'bg-primary bg-opacity-10 fw-bold' : '' }}" style="font-size: 14px; border-bottom: 1px solid #f1f1f1;">
+                                    <li class="px-3 py-2 d-flex justify-content-between align-items-center {{ $today === $item['day_name'] ? 'bg-primary bg-opacity-10 fw-bold' : '' }}"
+                                        style="font-size: 14px; border-bottom: 1px solid #f1f1f1;">
                                         <span class="text-secondary">{{ $item['day_name'] }}</span>
                                         <span class="text-dark">
                                             @if ($item['is_closed'])
@@ -202,13 +213,17 @@
                     </div>
 
                     <div class="float-end py-2 px-3 border-end dropdown">
-                        <a href="javascript:void(0)" class="text-white text-decoration-none d-flex align-items-center dropdown-toggle" 
-                            id="favoritesDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 15px;">
-                            <i class="fa-solid fa-heart me-2 text-danger"></i> 
+                        <a href="javascript:void(0)"
+                            class="text-white text-decoration-none d-flex align-items-center dropdown-toggle"
+                            id="favoritesDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                            style="font-size: 15px;">
+                            <i class="fa-solid fa-heart me-2 text-danger"></i>
                             Favorites
                             <span class="badge bg-danger rounded-pill ms-2 d-none" id="fav-count">0</span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 p-0 text-center" aria-labelledby="favoritesDropdown" data-favorites-menu style="min-width: 280px; overflow: hidden; z-index: 9999;">
+                        <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 p-0 text-center"
+                            aria-labelledby="favoritesDropdown" data-favorites-menu
+                            style="min-width: 280px; overflow: hidden; z-index: 9999;">
                             <div class="p-3">
                                 <i class="fa-solid fa-heart-crack d-block mb-2 h4 opacity-50"></i>
                                 <span class="text-muted small">No items saved yet.</span>
@@ -325,50 +340,51 @@
 </header>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    function setupDropdown(id) {
-        const toggle = document.getElementById(id);
-        if (!toggle) return;
-        
-        toggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const menu = toggle.nextElementSibling;
-            if (!menu) return;
-            
-            const isShown = menu.classList.contains('show');
-            
-            // Close others
-            document.querySelectorAll('.dropdown-menu.show').forEach(m => {
-                if (m !== menu) m.classList.remove('show');
-            });
-            
-            if (!isShown) {
-                menu.classList.add('show');
-                toggle.classList.add('show');
-                if (id.toLowerCase().includes('favorite') && typeof window.refreshFavoritesDropdown === 'function') {
-                    window.refreshFavoritesDropdown();
+    document.addEventListener('DOMContentLoaded', function() {
+        function setupDropdown(id) {
+            const toggle = document.getElementById(id);
+            if (!toggle) return;
+
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const menu = toggle.nextElementSibling;
+                if (!menu) return;
+
+                const isShown = menu.classList.contains('show');
+
+                // Close others
+                document.querySelectorAll('.dropdown-menu.show').forEach(m => {
+                    if (m !== menu) m.classList.remove('show');
+                });
+
+                if (!isShown) {
+                    menu.classList.add('show');
+                    toggle.classList.add('show');
+                    if (id.toLowerCase().includes('favorite') && typeof window
+                        .refreshFavoritesDropdown === 'function') {
+                        window.refreshFavoritesDropdown();
+                    }
+                } else {
+                    menu.classList.remove('show');
+                    toggle.classList.remove('show');
                 }
-            } else {
-                menu.classList.remove('show');
-                toggle.classList.remove('show');
-            }
-        });
-    }
-    
-    setupDropdown('favoritesDropdown');
-    setupDropdown('hoursDropdown');
-    setupDropdown('favoritesHeader');
-    
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.dropdown')) {
-            document.querySelectorAll('.dropdown-menu.show').forEach(m => {
-                m.classList.remove('show');
             });
         }
+
+        setupDropdown('favoritesDropdown');
+        setupDropdown('hoursDropdown');
+        setupDropdown('favoritesHeader');
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown-menu.show').forEach(m => {
+                    m.classList.remove('show');
+                });
+            }
+        });
     });
-});
 </script>
 
 <!-- Header mobile -->
