@@ -53,4 +53,22 @@ class TimeHelper
 
         return $date ? $date->format('g:i A') : null;
     }
+
+    public static function strip_tags($text) {
+        // Remove script and style blocks (including their content)
+        $text = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $text);
+        $text = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $text);
+
+        // Strip all remaining HTML tags
+        $text = strip_tags($text);
+
+        // Decode HTML entities (e.g. &amp; → &, &nbsp; → space)
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // Clean up excess whitespace
+        $text = preg_replace('/\s+/', ' ', $text);
+        $text = trim($text);
+
+        return $text;
+    }
 }

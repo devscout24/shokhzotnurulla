@@ -376,6 +376,9 @@
                                                 {{ $vehicle->makeModel->name }}
                                             </option>
                                         </select>
+                                        {{-- <input type="text" name="make_model_id" class="vd-input"
+                                               value="{{ $vehicle->make_model_id ? $vehicle->makeModel->name : '' }}"
+                                               placeholder="e.g. Civic, F-150, Wrangler" id="detModelId" required> --}}
                                     </div>
                                     <div class="vd-det-field">
                                         <label class="vd-field-label">Trim</label>
