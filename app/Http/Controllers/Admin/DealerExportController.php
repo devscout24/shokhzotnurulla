@@ -23,7 +23,7 @@ class DealerExportController extends Controller
         return $this->exportMaker->defaultExport($dealer, $request);
     }
 
-    public function exportDealerVehiclesCarsForSaleCsv(Dealer $dealer, Request $request)
+    public function exportDealerVehiclesCarsForSales(Dealer $dealer, Request $request)
     {
         return $this->exportMaker->makeExport($dealer, $request, 'cars-for-sales');
     }

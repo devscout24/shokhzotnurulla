@@ -19,7 +19,8 @@ class ExportMakerService
     {
         switch ($exportType) {
             case 'cars-for-sales':
-                return (new CarsForSalesExportService())->carsForSaleCsv($dealer, $request);
+                return (new CarsForSalesExportService())->carsForSaleTxt($dealer, $request);
+                // return (new CarsForSalesExportService())->carsForSaleCsv($dealer, $request);
             case 'carfax':
                 return (new CarfaxExportService())->carfaxXml($dealer, $request);
             case 'truecars':

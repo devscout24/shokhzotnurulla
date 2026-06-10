@@ -83,4 +83,106 @@ class TrueCarsService
         return response()->stream($callback, 200, $headers);
 
     }
+
+    public function exportBulkCsv(Request $request)
+    {
+        $fileName = 'webgurus365.csv';
+
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $columns = [
+            'dealer_id',
+            'vin', 'stock_number', 'year', 'make', 'model', 'trim', 'body_style', 'mileage',
+            'engine', 'new_used', 'vehicle_status', 'date-in-stock', 'door_count',
+            'exteriorcolor_code', 'interiorcolor_code',
+            'condition', 'price',
+            // 'certified',
+            'exterior_color', 'interior_color',
+            'transmission', 'engine', 'drive_train', 'fuel_type',
+            'option_descriptions', 'option_codes', 'picture_updated', 'modified_date',
+            'description', 'url', 'image_urls',
+        ];
+
+        $conditionMap = [
+            'New'                 => 'New',
+            'Used'                => 'Used',
+            'Certified Pre-Owned' => 'CPO',
+        ];
+
+        $callback = function () use ($columns, $conditionMap) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            Dealer::query()->where('status', 'active')
+                ->where('is_active', true)
+                ->chunk(20, function ($dealers) use ($file, $conditionMap) {
+                    foreach ($dealers as $dealer) {
+                        Vehicle::withoutGlobalScopes()
+                            ->where('dealer_id', $dealer->id)
+                            ->with([
+                                'make', 'makeModel', 'bodyStyle', 'fuelType', 'exteriorColor', 'interiorColor',
+                                'transmissionType', 'drivetrainType', 'photos', 'primaryPhoto', 'notes',
+                                'specs', 'prices', 'factoryOptions',
+                            ])
+                            ->whereIn('status', ['active'])
+                            ->chunk(100, function ($vehicles) use ($file, $dealer, $conditionMap) {
+                                foreach ($vehicles as $vehicle) {
+                                    $images      = collect($vehicle->photos)->pluck('url')->implode('|');
+                                    $description = $vehicle->notes?->dealer_notes ?? '';
+                                    $options     = $vehicle->factoryOptions?->pluck('label')->implode(' | ') ?? '';
+                                    $optionCodes = $vehicle->factoryOptions?->pluck('option_key')->implode(' | ') ?? '';
+                                    $picUpdated  = $vehicle->primaryPhoto?->updated_at?->toIso8601String() ?? '';
+
+                                    $row = [
+                                        $dealer->internal_id ?? $dealer->id,          // dealer_id
+                                        $vehicle->vin ?? '',                           // vin
+                                        $vehicle->stock_number ?? '',                  // stock_number
+                                        $vehicle->year ?? '',                          // year
+                                        $vehicle->make?->name ?? '',                   // make
+                                        $vehicle->makeModel?->name ?? '',              // model
+                                        $vehicle->trim ?? '',                          // trim
+                                        $vehicle->bodyStyle?->name ?? '',              // body_style
+                                        $vehicle->mileage ?? '',                       // mileage
+                                        $vehicle->engine ?? '',                        // engine
+                                        $vehicle->status ?? '',                        // new_used  (vehicle->status)
+                                        $vehicle->location_status ?? '',               // vehicle_status (location_status)
+                                        $vehicle->date_in_stock ?? '',                 // date-in-stock
+                                        $vehicle->specs?->doors ?? '',                 // door_count
+                                        $vehicle->exteriorColor?->code ?? '',          // exteriorcolor_code
+                                        $vehicle->interiorColor?->code ?? '',          // interiorcolor_code
+                                        $conditionMap[$vehicle->vehicle_condition] ?? '', // condition
+                                        $vehicle->prices?->internet_price ?? $vehicle->list_price ?? '', // price
+                                        // $vehicle->is_certified ? 1 : 0,            // certified (commented out)
+                                        $vehicle->exteriorColor?->name ?? '',          // exterior_color
+                                        $vehicle->interiorColor?->name ?? '',          // interior_color
+                                        $vehicle->transmissionType?->name ?? '',       // transmission
+                                        $vehicle->engine ?? '',                        // engine (2nd col)
+                                        $vehicle->drivetrainType?->name ?? '',         // drive_train
+                                        $vehicle->fuelType?->name ?? '',               // fuel_type
+                                        $options,                                      // option_descriptions
+                                        $optionCodes,                                  // option_codes
+                                        $picUpdated,                                   // picture_updated
+                                        $vehicle->updated_at?->toIso8601String() ?? '', // modified_date
+                                        $description,                                  // description (dealer comments)
+                                        '',                                            // url
+                                        $images,                                       // image_urls (pipe-separated)
+                                    ];
+
+                                    fputcsv($file, $row);
+                                }
+                            });
+                    }
+                });
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

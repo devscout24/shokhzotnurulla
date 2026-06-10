@@ -17,7 +17,7 @@ class CarfaxExportService
 
     public function carfaxXml(Dealer $dealer, Request $request)
     {
-        $fileName = 'inventory-feed-carfax_'.date('Y-m-d_H-i-s').'.xml';
+        $fileName = 'carfax_inventory_'.$dealer->internal_id.'.xml';
 
         $headers = [
             'Content-type' => 'text/xml; charset=utf-8',

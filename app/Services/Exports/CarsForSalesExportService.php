@@ -93,7 +93,8 @@ class CarsForSalesExportService
     }
 
     public function carsForSaleTxt(Dealer $dealer, Request $request){
-        $fileName = 'inventory'.$dealer->id.'.txt';
+        // $fileName = 'inventory'.$dealer->id.'.txt';
+        $fileName = 'inventory'.'.txt';
 
         $headers = [
             'Content-type' => 'text/plain',
@@ -117,7 +118,7 @@ class CarsForSalesExportService
         ];
 
         $formatRow = function (array $fields): string {
-            return implode("\t", array_map(fn ($v) => '"'.str_replace('"', '""', (string) $v).'"', $fields))."\n";
+            return implode(", ", array_map(fn ($v) => '"'.str_replace('"', '""', (string) $v).'"', $fields))."\n";
         };
 
         $callback = function () use ($columns, $dealer, $condition, $formatRow) {
