@@ -6,6 +6,7 @@ use App\Models\Dealership\Dealer;
 use App\Services\Exports\CarfaxExportService;
 use App\Services\Exports\CarGurusService;
 use App\Services\Exports\CarsDotComService;
+use App\Services\Exports\CarsForSalesExportService;
 use App\Services\Exports\ExportMakerService;
 use App\Services\Exports\TrueCarsService;
 use Illuminate\Http\Request;
@@ -49,6 +50,11 @@ class DealerExportController extends Controller
     }
 
     // -------------------------------------------------------------------------------
+
+    public function exportCarsForSalesTxt(Request $request)
+    {
+        return (new CarsForSalesExportService)->bulkTxt($request);
+    }
 
     public function exportCarGurusCsv(Request $request)
     {
