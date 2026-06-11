@@ -9,6 +9,7 @@ use App\Models\Dealership\Dealer;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\Menu\MenuService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -101,6 +102,8 @@ class DealerController extends Controller
 
             // Initialize Dealer Roles and Assign Owner Role
             $this->initializeDealerRoles($dealer, $user);
+
+            (new MenuService)->buildForDealer($dealer);
         });
 
         return redirect()->route('admin.dealers.index')->with('success', 'Dealer created successfully.');

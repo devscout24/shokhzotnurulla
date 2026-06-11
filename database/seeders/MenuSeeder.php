@@ -13,7 +13,7 @@ class MenuSeeder extends Seeder
     public function run(): void
     {
         // Seed for all existing dealers that don't have menus yet
-        $dealers = Dealer::whereDoesntHave('menus')->get();
+        $dealers = Dealer::whereDoesntHave('menus')->with('locations')->get();
 
         foreach ($dealers as $dealer) {
             self::seedForDealer($dealer);
@@ -130,27 +130,41 @@ class MenuSeeder extends Seeder
             ],
         ];
 
+        $locationIds = $dealer->locations()->pluck('id');
+
+        foreach ($locationIds as $locationId) {
+            self::seedMenusForLocation($dealer, $menus, $locationId);
+        }
+    }
+
+    /**
+     * Insert the full menu set for a single dealer location.
+     */
+    private static function seedMenusForLocation(Dealer $dealer, array $menus, int $locationId): void
+    {
         foreach ($menus as $menuData) {
             $parentMenu = Menu::create([
-                'dealer_id'  => $dealer->id,
-                'location'   => $menuData['location'],
-                'label'      => $menuData['label'],
-                'url'        => $menuData['url'],
-                'target'     => $menuData['target'],
-                'parent_id'  => null,
-                'sort_order' => $menuData['sort_order'],
+                'dealer_id'   => $dealer->id,
+                'location_id' => $locationId,
+                'location'    => $menuData['location'],
+                'label'       => $menuData['label'],
+                'url'         => $menuData['url'],
+                'target'      => $menuData['target'],
+                'parent_id'   => null,
+                'sort_order'  => $menuData['sort_order'],
             ]);
 
             if (! empty($menuData['children'])) {
                 foreach ($menuData['children'] as $childData) {
                     Menu::create([
-                        'dealer_id'  => $dealer->id,
-                        'location'   => $menuData['location'],
-                        'label'      => $childData['label'],
-                        'url'        => $childData['url'],
-                        'target'     => $childData['target'] ?? '_self',
-                        'parent_id'  => $parentMenu->id,
-                        'sort_order' => $childData['sort_order'],
+                        'dealer_id'   => $dealer->id,
+                        'location_id' => $locationId,
+                        'location'    => $menuData['location'],
+                        'label'       => $childData['label'],
+                        'url'         => $childData['url'],
+                        'target'      => $childData['target'] ?? '_self',
+                        'parent_id'   => $parentMenu->id,
+                        'sort_order'  => $childData['sort_order'],
                     ]);
                 }
             }
