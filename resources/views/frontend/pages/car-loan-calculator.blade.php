@@ -261,9 +261,9 @@
 
                             {{-- CTA Button --}}
                             <div class="mt-4">
-                                <a href="{{ route('frontend.get-approved') }}" class="btn btn-primary w-100 py-2.5 fw-bold" id="clc-cta-btn"
+                                <a href="{{ route('frontend.inventory') }}?price[lt]=30000" class="btn btn-primary w-100 py-2.5 fw-bold" id="clc-cta-btn"
                                     style="background-color: #166B87; border-color: #166B87; border-radius: 8px;">
-                                    Pre-qualify now ($27,000)
+                                    Shop inventory under $30,000
                                 </a>
                             </div>
                             
@@ -405,7 +405,8 @@
                 // Update display values
                 monthlyEl.textContent = '$' + (monthlyRate > 0 ? monthly.toFixed(2) : money(monthly)) + ' / mo';
                 termsDisplayEl.textContent = 'Est. payment for ' + term + ' months at ' + apr.toFixed(2) + '% APR';
-                ctaBtn.textContent = 'Pre-qualify now ($' + money(financedAmount) + ')';
+                ctaBtn.href = "{{ route('frontend.inventory') }}?price[lt]=" + Math.round(price);
+                ctaBtn.textContent = 'Shop inventory under $' + money(price);
             }
 
             // Input validation and formatting helpers
