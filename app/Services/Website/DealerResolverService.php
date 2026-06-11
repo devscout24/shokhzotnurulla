@@ -13,7 +13,6 @@ class DealerResolverService
 
     public function resolve(): int
     {
-        return 2;
 
         if (self::$resolved !== null) {
             return self::$resolved;

@@ -265,8 +265,8 @@ class InventoryController extends Controller
             'make_id' => ['required', 'integer', 'exists:makes,id'],
         ]);
 
-        $models = MakeModel::where('make_id', $request->make_id)
-            ->orderBy('name')
+        $models = MakeModel::query()->where('make_id', $request->make_id)
+            ->orderBy('name', 'asc')
             ->get(['id', 'name']);
 
         return response()->json($models);
@@ -317,7 +317,7 @@ class InventoryController extends Controller
             ->orderBy('title')
             ->get();
 
-        $hiddenIncentiveIds = VehicleHiddenIncentive::where('vehicle_id', $vehicle->id)
+        $hiddenIncentiveIds = VehicleHiddenIncentive::query()->where('vehicle_id', $vehicle->id)
             ->pluck('incentive_id')
             ->toArray();
 
@@ -349,7 +349,7 @@ class InventoryController extends Controller
     public function updateDetails(UpdateDetailsRequest $request, Vehicle $vehicle): JsonResponse | RedirectResponse
     {
         $this->authorizeVehicle($request, $vehicle);
-        // dd($request->validated()); // Run validation first to catch any errors before updating
+
         ($this->updateDetails)($vehicle, $request->validated());
 
         AuditLogger::info($request, 'Vehicle details updated', ['vehicle_id' => $vehicle->id]);

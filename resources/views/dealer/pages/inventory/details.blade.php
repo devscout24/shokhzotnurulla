@@ -308,10 +308,15 @@
                                     <i class="bi bi-car-front-fill"></i> Basics
                                 </div>
                                 <div class="vd-det-grid">
-                                    <div class="vd-det-field vd-det-field-span2">
+                                    <div class="vd-det-field">
                                         <label class="vd-field-label">VIN</label>
                                         <input type="text" name="vin" class="vd-input"
                                                value="{{ $vehicle->vin }}" maxlength="17">
+                                    </div>
+                                    <div class="vd-det-field">
+                                        <label class="vd-field-label">Inventory Date</label>
+                                        <input type="datetime-local" name="listed_at" class="vd-input"
+                                               value="{{ $vehicle->listed_at ? \Carbon\Carbon::parse($vehicle->listed_at)->format('Y-m-d\TH:i') : '' }}">
                                     </div>
                                     <div class="vd-det-field">
                                         <label class="vd-field-label">Stock # <span class="req">*</span></label>
