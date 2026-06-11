@@ -102,6 +102,12 @@
     } else {
         $todayDisplay = 'Open 9:00 AM to 6:00 PM';
     }
+
+    $favicon = app('currentDealer') ? asset('assets/frontend/img/favicons/' . app('currentDealer')->favicon) : null;
+    $mimeType = $favicon
+        ? mime_content_type(public_path(parse_url($favicon, PHP_URL_PATH)))
+        : null;
+
 @endphp
 <!-- header desktop  -->
 <style>
@@ -444,3 +450,13 @@
         </div>
     @endif
 </div>
+
+@php
+
+@endphp
+
+@push('base-assets')
+    @if($favicon)
+        <link rel="icon" href="{{ $favicon }}" @if($mimeType) type="{{ $mimeType }}" @endif>
+    @endif
+@endpush

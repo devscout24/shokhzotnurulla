@@ -9,6 +9,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endpush
 
+
+@push('base-assets')
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml" />
+@endpush
+
+
 @section('panel-content')
     <!-- Main Topbar -->
     @include('admin.partials.topbar')

@@ -5,6 +5,7 @@
     <script src="{{ asset('assets/frontend/js/favorites.js') }}"></script>
 @endpush
 
+
 @section('panel-content')
     {{-- Header (Desktop & Mobile) --}}
     @include('frontend.partials.header')

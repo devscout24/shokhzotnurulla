@@ -64,7 +64,7 @@
                 <div class="flex-grow-1 p-4 overflow-auto">
                     <div class="bg-white border rounded" style="max-width: 1200px;">
 
-                      
+
 
                         {{-- Card Title --}}
                         <div class="px-3 py-3 border-bottom fw-semibold" style="font-size: 14px; color: #333;">
@@ -87,6 +87,21 @@
                                             <img src="" id="logoPreview" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;">
                                         @endif
                                         <input type="file" name="logo" id="logoInput" accept="image/*" style="display: none;">
+                                    </div>
+                                    <div class="mt-1 text-muted" style="font-size: 11px;">Recommended size: 325x65px (WebP/PNG)</div>
+                                </div>
+                            </div>
+
+                            <div class="ws-input-col">
+                                <div class="ws-logo-card">
+                                    <div class="ws-logo-card-placeholder" onclick="document.getElementById('faviconInput').click()" style="cursor: pointer; border: 2px dashed #ccc; width: 200px; height: 100px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f8f9fa;">
+                                        @if($dealer->favicon)
+                                            <img src="{{ asset('assets/frontend/img/favicons/' . $dealer->favicon) }}" id="faviconPreview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                        @else
+                                            <div id="faviconText" class="text-muted">Click to upload favicon</div>
+                                            <img src="" id="faviconPreview" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;">
+                                        @endif
+                                        <input type="file" name="favicon" id="faviconInput" accept="image/*" style="display: none;">
                                     </div>
                                     <div class="mt-1 text-muted" style="font-size: 11px;">Recommended size: 325x65px (WebP/PNG)</div>
                                 </div>
@@ -476,10 +491,14 @@
         formData.append('corporate_address', document.querySelector('[name="corporate_address"]').value);
         formData.append('support_email', document.querySelector('[name="support_email"]').value);
         formData.append('abandoned_form_minutes', document.querySelector('[name="abandoned_form_minutes"]').value);
-        
+
         const logoFile = document.getElementById('logoInput').files[0];
+        const faviconFile = document.getElementById('faviconInput').files[0];
         if (logoFile) {
             formData.append('logo', logoFile);
+        }
+        if (faviconFile) {
+            formData.append('favicon', faviconFile);
         }
 
         fetch('{{ route("dealer.website.settings.general.update") }}', {
@@ -496,6 +515,9 @@
                 showToast('success', data.message);
                 if (data.logo_url) {
                     document.getElementById('logoPreview').src = data.logo_url;
+                }
+                if (data.favicon_url) {
+                    document.getElementById('faviconPreview').src = data.favicon_url;
                 }
             } else {
                 showToast('error', data.message || 'An error occurred while saving.');
@@ -515,6 +537,22 @@
             reader.onload = function(event) {
                 const preview = document.getElementById('logoPreview');
                 const text = document.getElementById('logoText');
+                preview.src = event.target.result;
+                preview.style.display = 'block';
+                if (text) text.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Favicon preview logic
+    document.getElementById('faviconInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const preview = document.getElementById('faviconPreview');
+                const text = document.getElementById('faviconText');
                 preview.src = event.target.result;
                 preview.style.display = 'block';
                 if (text) text.style.display = 'none';

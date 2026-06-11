@@ -73,13 +73,32 @@ class WebsiteSettingController extends Controller
             $path              = $filename;
         }
 
+        if ($request->hasFile('favicon')) {
+            $file     = $request->file('favicon');
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Ensure directory exists
+            if (! file_exists(public_path('assets/frontend/img/favicons'))) {
+                mkdir(public_path('assets/frontend/img/favicons'), 0755, true);
+            }
+
+            // Delete old favicon if exists
+            if ($dealer->favicon && file_exists(public_path('assets/frontend/img/favicons/' . $dealer->favicon))) {
+                @unlink(public_path('assets/frontend/img/favicons/' . $dealer->favicon));
+            }
+
+            $file->move(public_path('assets/frontend/img/favicons'), $filename);
+            $validated['favicon'] = $filename;
+            $path              = $filename;
+        }
+
         $dealer->update($validated);
         \Illuminate\Support\Facades\Cache::forget("dealer_{$dealer->id}_frontend_settings");
         $this->auditLogger->info($request, 'General settings updated');
 
         $responseData = ['success' => true, 'message' => 'General settings saved.'];
         if (isset($path)) {
-            $responseData['logo_url'] = asset('assets/frontend/img/logos/' . $path);
+            $responseData['favicon_url'] = asset('assets/frontend/img/favicons/' . $path);
         }
 
         return response()->json($responseData);

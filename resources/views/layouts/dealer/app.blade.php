@@ -7,6 +7,10 @@
     ])
 @endpush
 
+@push('base-assets')
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml" />
+@endpush
+
 @section('panel-content')
     <!-- Main Topbar -->
     @include('dealer.partials.main-topbar')
