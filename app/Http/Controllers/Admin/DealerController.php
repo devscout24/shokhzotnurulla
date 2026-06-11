@@ -26,6 +26,24 @@ class DealerController extends Controller
         return view('admin.pages.dealers.index', compact('dealers'));
     }
 
+    public function search(Request $request)
+    {
+        $q = trim($request->query('q', ''));
+
+        $dealers = Dealer::query()
+            ->where(function ($query) use ($q) {
+                $query->where('internal_id', 'like', "%{$q}%")
+                      ->orWhere('company_name', 'like', "%{$q}%")
+                      ->orWhere('domain', 'like', "%{$q}%")
+                      ->orWhere('email', 'like', "%{$q}%");
+            })
+            ->latest()
+            ->limit(50)
+            ->get(['id', 'internal_id', 'company_name', 'slug', 'domain', 'email', 'status']);
+
+        return response()->json($dealers);
+    }
+
     public function create()
     {
         return view('admin.pages.dealers.create');

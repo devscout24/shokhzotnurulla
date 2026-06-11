@@ -51,6 +51,10 @@ Route::prefix('admin')
             ->name('dealers.export.vehicles.carsdotcom');
 
         // Dealers CRUD
+        // dealer search
+        Route::get('dealers/search', [\App\Http\Controllers\Admin\DealerController::class, 'search'])
+            ->name('dealers.search');
+
         Route::resource('dealers', \App\Http\Controllers\Admin\DealerController::class);
         Route::patch('dealers/{dealer}/toggle-status', [\App\Http\Controllers\Admin\DealerController::class, 'toggleStatus'])
             ->name('dealers.toggle-status');

@@ -251,36 +251,61 @@
 
 @push('page-scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('searchInput');
-    const tableRows = document.querySelectorAll('.dealer-table tbody tr');
+    const tbody = document.querySelector('.dealer-table tbody');
 
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            const query = this.value.toLowerCase().trim();
+    if (!searchInput || !tbody) return;
 
-            tableRows.forEach(row => {
-                // Skip empty state row if present
-                if (row.cells.length < 3) return;
+    searchInput.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter') return;
 
-                const nameEl = row.querySelector('td:nth-child(1)');
-                const domainEl = row.querySelector('td:nth-child(2)');
-                const emailEl = row.querySelector('td:nth-child(3)');
+        const query = this.value.trim();
 
-                if (!nameEl) return;
+        if (query === '') {
+            window.location.href = '{{ route('admin.dealers.index') }}';
+            return;
+        }
 
-                const nameText = nameEl.textContent.toLowerCase();
-                const domainText = domainEl ? domainEl.textContent.toLowerCase() : '';
-                const emailText = emailEl ? emailEl.textContent.toLowerCase() : '';
+        fetch('{{ route('admin.dealers.search') }}?q=' + encodeURIComponent(query), {
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.json())
+        .then(dealers => {
+            tbody.innerHTML = '';
 
-                if (nameText.includes(query) || domainText.includes(query) || emailText.includes(query)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+            if (dealers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#999;">No dealers found.</td></tr>';
+                return;
+            }
+
+            dealers.forEach(dealer => {
+                const statusClass  = dealer.status === 'active' ? 'status-active' : 'status-inactive';
+                const statusLabel  = dealer.status.charAt(0).toUpperCase() + dealer.status.slice(1);
+                const editUrl      = '{{ route('admin.dealers.edit', ':id') }}'.replace(':id', dealer.id);
+
+                tbody.innerHTML += `
+                <tr>
+                    <td>
+                        <div style="font-weight:600;color:#222;">${dealer.company_name}</div>
+                        <div style="font-size:11px;color:#888;">Slug: ${dealer.slug}</div>
+                    </td>
+                    <td><code style="background:#f1f3f4;padding:2px 6px;border-radius:4px;font-family:monospace;">${dealer.domain ?? ''}</code></td>
+                    <td>${dealer.email ?? 'N/A'}</td>
+                    <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+                    <td>—</td>
+                    <td>
+                        <div style="display:flex;gap:8px;">
+                            <a href="${editUrl}" class="btn-action"><i class="bi bi-pencil"></i> Edit</a>
+                        </div>
+                    </td>
+                </tr>`;
             });
+        })
+        .catch(() => {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#d93025;">Search failed. Please try again.</td></tr>';
         });
-    }
+    });
 });
 </script>
 @endpush
