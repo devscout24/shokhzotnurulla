@@ -26,8 +26,17 @@ class TrueCarsService
 
         $columns = [
             'vin', 'stock_number', 'year', 'make', 'model', 'trim', 'body_style', 'mileage',
-            'condition', 'price', 'certified', 'exterior_color', 'interior_color',
-            'transmission', 'engine', 'drive_train', 'fuel_type', 'description', 'image_urls', 'dealer_code',
+            'condition', 'price', 'certified',
+            'exterior_color', 'interior_color',
+            'transmission_type', 'engine', 'drive_train', 'fuel_type',
+
+            'new_used', 'vehicle_status', 'date-in-stock', 'door_count',
+
+            'exteriorcolor_code', 'interiorcolor_code',
+            'picture_updated', 'modified_date',
+
+            'option_descriptions', 'option_codes',
+            'description', 'image_urls', 'dealer_code',
         ];
 
         $conditionMap = [
@@ -52,26 +61,44 @@ class TrueCarsService
                         $description = $vehicle->notes?->dealer_notes ?? $vehicle->notes?->ai_description ?? '';
 
                         $row = [
-                            $vehicle->vin ?? '',
-                            $vehicle->stock_number ?? '',
-                            $vehicle->year ?? '',
-                            $vehicle->make?->name ?? '',
-                            $vehicle->makeModel?->name ?? '',
-                            $vehicle->trim ?? '',
-                            $vehicle->bodyStyle?->name ?? '',
-                            $vehicle->mileage ?? '',
-                            $conditionMap[$vehicle->vehicle_condition] ?? '',
-                            $vehicle->prices?->internet_price ?? $vehicle->list_price ?? '',
-                            $vehicle->is_certified ? 1 : 0,
-                            $vehicle->exteriorColor?->name ?? '',
-                            $vehicle->interiorColor?->name ?? '',
-                            $vehicle->transmissionType?->name ?? '',
-                            $vehicle->engine ?? '',
-                            $vehicle->drivetrainType?->name ?? '',
-                            $vehicle->fuelType?->name ?? '',
-                            $description,
-                            $images,
-                            $dealer->internal_id ?? $dealer->id,
+                            $vehicle->vin ?? '', // vin
+                            $vehicle->stock_number ?? '', // stock_number
+                            $vehicle->year ?? '', // year
+                            $vehicle->make?->name ?? '', // make
+                            $vehicle->makeModel?->name ?? '', // model
+                            $vehicle->trim ?? '', // trim
+                            $vehicle->bodyStyle?->name ?? '', // body_style
+                            $vehicle->mileage ?? '', // mileage
+                            $conditionMap[$vehicle->vehicle_condition] ?? '', // condition
+                            $vehicle->prices?->internet_price ?? $vehicle->list_price ?? '', // price
+                            $vehicle->is_certified ? 1 : 0, // certified
+                            $vehicle->exteriorColor?->name ?? '', // exterior_color
+                            $vehicle->interiorColor?->name ?? '', // interior_color
+                            $vehicle->transmissionType?->name ?? '', // transmission_type
+                            $vehicle->engine ?? '', // engine
+                            $vehicle->drivetrainType?->name ?? '', // drive_train
+                            $vehicle->fuelType?->name ?? '', // fuel_type
+
+                            // ---------------- updates for TrueCar specific fields below ----------------
+
+                            $vehicle->status ?? '', // new_used
+                            $vehicle->location_status ?? '', // vehicle_status
+                            $vehicle->listed_at?->toDateString() ?? '', // date-in-stock
+                            $vehicle->doors ?? '', // door_count
+
+                            $vehicle->specs?->exterior_color_code ?? '', // exteriorcolor_code
+                            $vehicle->specs?->interior_color_code ?? '', // interiorcolor_code
+
+                            $vehicle->primaryPhoto?->updated_at?->toIso8601String() ?? '', // picture_updated
+                            $vehicle->updated_at?->toIso8601String() ?? '', // modified_date
+
+                            $vehicle->factoryOptions?->pluck('label')->implode('|') ?? '', // option_descriptions
+                            $vehicle->factoryOptions?->pluck('option_key')->implode('|') ?? '', // option_codes
+
+                            $description, // description
+                            $images, // image_urls
+                            $dealer->internal_id ?? $dealer->id, // dealer_code,
+
                         ];
 
                         fputcsv($file, $row);
@@ -100,13 +127,18 @@ class TrueCarsService
         $columns = [
             'dealer_id',
             'vin', 'stock_number', 'year', 'make', 'model', 'trim', 'body_style', 'mileage',
-            'engine', 'new_used', 'vehicle_status', 'date-in-stock', 'door_count',
-            'exteriorcolor_code', 'interiorcolor_code',
-            'condition', 'price',
-            // 'certified',
+            'condition', 'price', 'certified',
+
             'exterior_color', 'interior_color',
-            'transmission', 'engine', 'drive_train', 'fuel_type',
-            'option_descriptions', 'option_codes', 'picture_updated', 'modified_date',
+
+            'transmission_type', 'engine', 'drive_train', 'fuel_type',
+
+            'new_used', 'vehicle_status', 'date-in-stock', 'door_count',
+
+            'exteriorcolor_code', 'interiorcolor_code',
+            'picture_updated', 'modified_date',
+
+            'option_descriptions', 'option_codes',
             'description', 'url', 'image_urls',
         ];
 
@@ -150,26 +182,34 @@ class TrueCarsService
                                         $vehicle->trim ?? '',                          // trim
                                         $vehicle->bodyStyle?->name ?? '',              // body_style
                                         $vehicle->mileage ?? '',                       // mileage
+
+                                        $conditionMap[$vehicle->vehicle_condition] ?? '', // condition
+                                        $vehicle->prices?->internet_price ?? $vehicle->list_price ?? '', // price
+                                        $vehicle->is_certified ? 1 : 0,            // certified (to keep or not, doubt)
+
+
+                                        $vehicle->exteriorColor?->name ?? '',          // exterior_color
+                                        $vehicle->interiorColor?->name ?? '',          // interior_color
+
+                                        $vehicle->transmissionType?->name ?? '',       // transmission
                                         $vehicle->engine ?? '',                        // engine
+                                        $vehicle->drivetrainType?->name ?? '',         // drive_train
+                                        $vehicle->fuelType?->name ?? '',               // fuel_type
+
+
                                         $vehicle->status ?? '',                        // new_used  (vehicle->status)
                                         $vehicle->location_status ?? '',               // vehicle_status (location_status)
                                         $vehicle->listed_at?->toDateString() ?? '',    // date-in-stock
                                         $vehicle->doors ?? '',                         // door_count
+
                                         $vehicle->specs?->exterior_color_code ?? '',   // exteriorcolor_code
                                         $vehicle->specs?->interior_color_code ?? '',   // interiorcolor_code
-                                        $conditionMap[$vehicle->vehicle_condition] ?? '', // condition
-                                        $vehicle->prices?->internet_price ?? $vehicle->list_price ?? '', // price
-                                        // $vehicle->is_certified ? 1 : 0,            // certified (commented out)
-                                        $vehicle->exteriorColor?->name ?? '',          // exterior_color
-                                        $vehicle->interiorColor?->name ?? '',          // interior_color
-                                        $vehicle->transmissionType?->name ?? '',       // transmission
-                                        $vehicle->engine ?? '',                        // engine (2nd col)
-                                        $vehicle->drivetrainType?->name ?? '',         // drive_train
-                                        $vehicle->fuelType?->name ?? '',               // fuel_type
-                                        $options,                                      // option_descriptions
-                                        $optionCodes,                                  // option_codes
+
                                         $picUpdated,                                   // picture_updated
                                         $vehicle->updated_at?->toIso8601String() ?? '', // modified_date
+
+                                        $options,                                      // option_descriptions
+                                        $optionCodes,                                  // option_codes
                                         $description,                                  // description (dealer comments)
                                         $dealer->domain ? "https://{$dealer->domain}/vehicles/{$vehicle->slug}" : '', // url
                                         $images,                                       // image_urls (pipe-separated)

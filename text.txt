@@ -1,59 +1,75 @@
-vehicle_id	
-title	
-description	
-make	
-model	
-year	
-mileage.value	
-mileage.unit	
+$columns = [
+            'vin', 'stock_number', 'year', 'make', 'model', 'trim', 'body_style', 'mileage',
+            'condition', 'price', 'certified', 'exterior_color', 'interior_color',
+            'transmission', 'engine', 'drive_train', 'fuel_type', 'description', 'image_urls', 'dealer_code',
+        ];
 
-image[0].url	image[1].url	image[2].url	image[3].url	image[4].url	image[5].url	image[6].url	image[7].url	image[8].url	image[9].url	image[10].url	image[11].url	image[12].url	image[13].url	image[14].url	image[15].url	image[16].url	image[17].url	image[18].url	
-image[19].url	
+$row = [
+                            $vehicle->vin ?? '',
+                            $vehicle->stock_number ?? '',
+                            $vehicle->year ?? '',
+                            $vehicle->make?->name ?? '',
+                            $vehicle->makeModel?->name ?? '',
+                            $vehicle->trim ?? '',
+                            $vehicle->bodyStyle?->name ?? '',
+                            $vehicle->mileage ?? '',
+                            $conditionMap[$vehicle->vehicle_condition] ?? '',
+                            $vehicle->prices?->internet_price ?? $vehicle->list_price ?? '',
+                            $vehicle->is_certified ? 1 : 0,
+                            $vehicle->exteriorColor?->name ?? '',
+                            $vehicle->interiorColor?->name ?? '',
+                            $vehicle->transmissionType?->name ?? '',
+                            $vehicle->engine ?? '',
+                            $vehicle->drivetrainType?->name ?? '',
+                            $vehicle->fuelType?->name ?? '',
+                            $description,
+                            $images,
+                            $dealer->internal_id ?? $dealer->id,
+                        ];
+==================== bulk ==============================
 
-transmission	
-body_style	
-drivetrain	
-vin	
-price	
-exterior_color	
-state_of_vehicle	
-fuel_type	
-availability	
-trim	
-interior_color	
-date_first_on_lot	
-days_on_lot	
-status	
-address	
-address.city	
-address.region	
-address.country	
-latitude	
-longitude	
-address.postal_code	
-dealer_id	
-dealer_name	
-dealer_phone	
-stock_number	
-custom_label_0	
-custom_label_1	
-custom_label_2	
-link	
-url
+ 'dealer_id',
+            'vin', 'stock_number', 'year', 'make', 'model', 'trim', 'body_style', 'mileage',
+            'engine', 'new_used', 'vehicle_status', 'date-in-stock', 'door_count',
+            'exteriorcolor_code', 'interiorcolor_code',
+            'condition', 'price',
+            // 'certified',
+            'exterior_color', 'interior_color',
+            'transmission', 'engine', 'drive_train', 'fuel_type',
+            'option_descriptions', 'option_codes', 'picture_updated', 'modified_date',
+            'description', 'url', 'image_urls',
 
-
-=ASKED FOR ========= FOUND =============
-Body Type ==> body Type
-model number ==> model code
-Special Price => Special Price
-Cost Price ==> Cost Price
-Wheelbase ==> Wheelbase
-door count  ==> # Doors
-Engine ==> Engine
-Engine Displacement => Displacement
-Cylinders => Cylinders
-
-Dealer Comments on Vehicle ==> Dealer Notes
-
-Option Code ==> Premium Build Option ==> Factory Code
-Option Description ==> Premium Build Option ==> Description
+$row = [
+                                        $dealer->internal_id ?? $dealer->id,          // dealer_id
+                                        $vehicle->vin ?? '',                           // vin
+                                        $vehicle->stock_number ?? '',                  // stock_number
+                                        $vehicle->year ?? '',                          // year
+                                        $vehicle->make?->name ?? '',                   // make
+                                        $vehicle->makeModel?->name ?? '',              // model
+                                        $vehicle->trim ?? '',                          // trim
+                                        $vehicle->bodyStyle?->name ?? '',              // body_style
+                                        $vehicle->mileage ?? '',                       // mileage
+                                        $vehicle->engine ?? '',                        // engine
+                                        $vehicle->status ?? '',                        // new_used  (vehicle->status)
+                                        $vehicle->location_status ?? '',               // vehicle_status (location_status)
+                                        $vehicle->listed_at?->toDateString() ?? '',    // date-in-stock
+                                        $vehicle->doors ?? '',                         // door_count
+                                        $vehicle->specs?->exterior_color_code ?? '',   // exteriorcolor_code
+                                        $vehicle->specs?->interior_color_code ?? '',   // interiorcolor_code
+                                        $conditionMap[$vehicle->vehicle_condition] ?? '', // condition
+                                        $vehicle->prices?->internet_price ?? $vehicle->list_price ?? '', // price
+                                        // $vehicle->is_certified ? 1 : 0,            // certified (commented out)
+                                        $vehicle->exteriorColor?->name ?? '',          // exterior_color
+                                        $vehicle->interiorColor?->name ?? '',          // interior_color
+                                        $vehicle->transmissionType?->name ?? '',       // transmission
+                                        $vehicle->engine ?? '',                        // engine (2nd col)
+                                        $vehicle->drivetrainType?->name ?? '',         // drive_train
+                                        $vehicle->fuelType?->name ?? '',               // fuel_type
+                                        $options,                                      // option_descriptions
+                                        $optionCodes,                                  // option_codes
+                                        $picUpdated,                                   // picture_updated
+                                        $vehicle->updated_at?->toIso8601String() ?? '', // modified_date
+                                        $description,                                  // description (dealer comments)
+                                        $dealer->domain ? "https://{$dealer->domain}/vehicles/{$vehicle->slug}" : '', // url
+                                        $images,                                       // image_urls (pipe-separated)
+                                    ];
