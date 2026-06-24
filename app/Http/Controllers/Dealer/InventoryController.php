@@ -55,6 +55,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -349,8 +350,22 @@ class InventoryController extends Controller
     public function updateDetails(UpdateDetailsRequest $request, Vehicle $vehicle): JsonResponse | RedirectResponse
     {
         $this->authorizeVehicle($request, $vehicle);
+        $validated = $request->validated();
+        if($request->has('make_model_name') && !DB::table('make_models')->where('name', $request->make_model_name)->exists()){
+            $make = Make::where('id', $request->make_id)->first();
+            $slug = Str::slug($make->slug . '-' . $request->input('make_model_name'));
+            DB::table('make_models')->insertOrIgnore([
+                'make_id'    => $make->id,
+                'name'       => $request->input('make_model_name'),
+                'slug'       => $slug,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-        ($this->updateDetails)($vehicle, $request->validated());
+            $modelId = DB::table('make_models')->where('slug', $slug)->value('id');
+            $validated['make_model_id'] = $modelId;
+        }
+        ($this->updateDetails)($vehicle, $validated);
 
         AuditLogger::info($request, 'Vehicle details updated', ['vehicle_id' => $vehicle->id]);
 

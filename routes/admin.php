@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DataInsertController;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')
     ->name('admin.')
@@ -99,4 +100,15 @@ Route::prefix('admin')
         Route::delete('restricted-sites/{id}', [\App\Http\Controllers\Admin\AdminRestrictedSiteController::class, 'destroy'])
             ->name('restricted-sites.destroy');
 
+    });
+
+
+    
+
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth', 'verified', 'all.active', 'isAdmin', \App\Http\Middleware\EnsureTwoFactorAuthenticated::class])
+    ->group(function () {
+        Route::get('make-model-insert', [DataInsertController::class, 'makeModelInsert'])
+            ->name('make-model-insert');
     });

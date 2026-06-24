@@ -1,7 +1,6 @@
 {{-- ADD INVENTORY MODAL --}}
-<div class="inv-modal-overlay" id="invModalOverlay"
-     data-url-models="{{ route('dealer.inventory.models') }}"
-     data-url-vin-decode="{{ route('dealer.inventory.vin-decode') }}">
+<div class="inv-modal-overlay" id="invModalOverlay" data-url-models="{{ route('dealer.inventory.models') }}"
+    data-url-vin-decode="{{ route('dealer.inventory.vin-decode') }}">
 
     <div class="inv-modal">
 
@@ -12,7 +11,7 @@
         </div>
 
         {{-- ────────────────────────
-             STEP 1 : VIN entry
+        STEP 1 : VIN entry
         ──────────────────────── --}}
         <div id="invStep1">
             <div class="inv-modal-body">
@@ -31,13 +30,8 @@
                     <span class="inv-vin-icon">
                         <i class="bi bi-upc-scan"></i>
                     </span>
-                    <input type="text"
-                           id="invVinInput"
-                           class="inv-vin-input"
-                           placeholder="Enter 17-character VIN"
-                           maxlength="17"
-                           autocomplete="off"
-                           required>
+                    <input type="text" id="invVinInput" class="inv-vin-input" placeholder="Enter 17-character VIN"
+                        maxlength="17" autocomplete="off" required>
                 </div>
                 <div class="inv-vin-error" id="invVinError"></div>
 
@@ -51,30 +45,28 @@
         {{-- end Step 1 --}}
 
         {{-- ────────────────────────
-             STEP 2 : Vehicle details
+        STEP 2 : Vehicle details
         ──────────────────────── --}}
         <div id="invStep2" style="display:none;">
 
-            <form method="POST"
-                  action="{{ route('dealer.inventory.store') }}"
-                  id="invStep2Form">
+            <form method="POST" action="{{ route('dealer.inventory.store') }}" id="invStep2Form">
                 @csrf
 
                 {{-- Hidden VIN — populated by JS from step 1 --}}
                 <input type="hidden" name="vin" id="invVinHidden">
                 {{-- ── VIN-decoded hidden fields ────────────────────────── --}}
-                <input type="hidden" id="invFuelTypeId"         name="fuel_type_id">
+                <input type="hidden" id="invFuelTypeId" name="fuel_type_id">
                 <input type="hidden" id="invTransmissionTypeId" name="transmission_type_id">
-                <input type="hidden" id="invDrivetrainTypeId"   name="drivetrain_type_id">
-                <input type="hidden" id="invDoors"              name="doors">
-                <input type="hidden" id="invEngine"             name="engine">
-                <input type="hidden" id="invCylinders"          name="cylinders">
-                <input type="hidden" id="invDisplacement"       name="displacement">
-                <input type="hidden" id="invMaxHorsepower"      name="max_horsepower">
-                <input type="hidden" id="invBlockType"          name="block_type">
-                <input type="hidden" id="invTransmissionStd"    name="transmission_standard">
-                <input type="hidden" id="invDrivetrainStd"      name="drivetrain_standard">
-                <input type="hidden" id="invGvwr"               name="gvwr">
+                <input type="hidden" id="invDrivetrainTypeId" name="drivetrain_type_id">
+                <input type="hidden" id="invDoors" name="doors">
+                <input type="hidden" id="invEngine" name="engine">
+                <input type="hidden" id="invCylinders" name="cylinders">
+                <input type="hidden" id="invDisplacement" name="displacement">
+                <input type="hidden" id="invMaxHorsepower" name="max_horsepower">
+                <input type="hidden" id="invBlockType" name="block_type">
+                <input type="hidden" id="invTransmissionStd" name="transmission_standard">
+                <input type="hidden" id="invDrivetrainStd" name="drivetrain_standard">
+                <input type="hidden" id="invGvwr" name="gvwr">
 
                 <div class="inv-step2-body">
 
@@ -95,14 +87,8 @@
                             <label class="inv-form-label">
                                 Year <span class="inv-req">*</span>
                             </label>
-                            <input type="number"
-                                   id="invYear"
-                                   name="year"
-                                   class="inv-form-input"
-                                   placeholder="{{ date('Y') }}"
-                                   min="1900"
-                                   max="{{ date('Y') + 2 }}"
-                                   required>
+                            <input type="number" id="invYear" name="year" class="inv-form-input"
+                                placeholder="{{ date('Y') }}" min="1900" max="{{ date('Y') + 2 }}" required>
                         </div>
 
                         {{-- Make --}}
@@ -111,10 +97,7 @@
                                 Make <span class="inv-req">*</span>
                             </label>
                             <div class="inv-form-select-wrap">
-                                <select class="inv-form-select"
-                                        id="invMakeId"
-                                        name="make_id"
-                                        required>
+                                <select class="inv-form-select" id="invMakeId" name="make_id" required>
                                     <option value="">Select Make</option>
                                     @foreach($makes as $make)
                                         <option value="{{ $make->id }}">{{ $make->name }}</option>
@@ -129,11 +112,7 @@
                                 Model <span class="inv-req">*</span>
                             </label>
                             <div class="inv-form-select-wrap">
-                                <select class="inv-form-select"
-                                        id="invModelId"
-                                        name="make_model_id"
-                                        disabled
-                                        required>
+                                <select class="inv-form-select" id="invModelId" name="make_model_id" disabled required>
                                     <option value="">Select Make first</option>
                                 </select>
                             </div>
@@ -142,11 +121,8 @@
                         {{-- Trim — AJAX populated on model change --}}
                         <div class="inv-form-field">
                             <label class="inv-form-label">Trim</label>
-                            <input type="text"
-                                   id="invTrimInput"
-                                   name="trim"
-                                   class="inv-form-input"
-                                   placeholder="e.g. LE, Sport, Limited">
+                            <input type="text" id="invTrimInput" name="trim" class="inv-form-input"
+                                placeholder="e.g. LE, Sport, Limited">
                         </div>
 
                         {{-- Stock # --}}
@@ -154,12 +130,8 @@
                             <label class="inv-form-label">
                                 Stock # <span class="inv-req">*</span>
                             </label>
-                            <input type="text"
-                                   id="invStock"
-                                   name="stock_number"
-                                   class="inv-form-input"
-                                   placeholder="e.g. A10234"
-                                   required>
+                            <input type="text" id="invStock" name="stock_number" class="inv-form-input"
+                                placeholder="e.g. A10234" required>
                         </div>
 
                         {{-- List Price --}}
@@ -167,12 +139,8 @@
                             <label class="inv-form-label">List Price</label>
                             <div class="inv-price-field">
                                 <span class="inv-price-field-sym">$</span>
-                                <input type="number"
-                                       id="invListPrice"
-                                       name="list_price"
-                                       placeholder="0"
-                                       min="0"
-                                       step="1">
+                                <input type="number" id="invListPrice" name="list_price" placeholder="0" min="0"
+                                    step="1">
                             </div>
                         </div>
 
@@ -208,9 +176,7 @@
                                 Body Style <span class="inv-req">*</span>
                             </label>
                             <div class="inv-form-select-wrap">
-                                <select class="inv-form-select"
-                                        name="body_type_id"
-                                        required>
+                                <select class="inv-form-select" name="body_type_id" required>
                                     <option value="">Select...</option>
                                     @foreach($bodyTypeGroups as $group)
                                         <optgroup label="{{ $group->name }}">
@@ -249,12 +215,8 @@
                             <label class="inv-form-label">
                                 Mileage <span class="inv-req">*</span>
                             </label>
-                            <input type="text"
-                                   id="invMileage"
-                                   name="mileage"
-                                   class="inv-form-input"
-                                   placeholder="__,___"
-                                   required>
+                            <input type="text" id="invMileage" name="mileage" class="inv-form-input"
+                                placeholder="__,___" required>
                         </div>
 
                         {{-- Condition --}}
@@ -263,9 +225,7 @@
                                 Condition <span class="inv-req">*</span>
                             </label>
                             <div class="inv-form-select-wrap">
-                                <select class="inv-form-select"
-                                        name="vehicle_condition"
-                                        required>
+                                <select class="inv-form-select" name="vehicle_condition" required>
                                     <option value="">Select Condition</option>
                                     <option value="Used">Used</option>
                                     <option value="New">New</option>

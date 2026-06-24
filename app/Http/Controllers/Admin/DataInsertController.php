@@ -1,18 +1,19 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Http\Controllers\Admin;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use App\Http\Controllers\Controller;
 use App\Models\Catalog\Make;
+use App\Models\Catalog\MakeModel;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
-class MakeModelSeeder extends Seeder
+class DataInsertController extends Controller
 {
-    use WithoutModelEvents;
-
-    public function run(): void
+    public function makeModelInsert()
     {
         $data = [
             'Toyota'        => ['Camry', 'Corolla', 'RAV4', 'Highlander', 'Tacoma', 'Tundra', 'Sienna', '4Runner', 'Prius', 'Avalon', 'C-HR', 'Venza', 'Sequoia', 'Land Cruiser', 'GR86', 'Supra', 'bZ4X', 'Corolla Cross', 'Crown', 'Celica', 'Yaris'],
@@ -59,20 +60,26 @@ class MakeModelSeeder extends Seeder
             'Wagoneer'      => ['Wagoneer', 'Grand Wagoneer'],
         ];
 
-        foreach ($data as $makeName => $models) {
-            $make = Make::where('name', $makeName)->first();
-            if (!$make) continue;
+        try {
+            foreach ($data as $makeName => $models) {
+                $make = Make::where('name', $makeName)->first();
+                if (!$make) continue;
 
-            foreach ($models as $modelName) {
-                $slug = Str::slug($make->slug . '-' . $modelName);
-                DB::table('make_models')->insertOrIgnore([
-                    'make_id'    => $make->id,
-                    'name'       => $modelName,
-                    'slug'       => $slug,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+                foreach ($models as $modelName) {
+                    $slug = Str::slug($make->slug . '-' . $modelName);
+                    DB::table('make_models')->insertOrIgnore([
+                        'make_id'    => $make->id,
+                        'name'       => $modelName,
+                        'slug'       => $slug,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
             }
+        } catch (Exception $e) {
+            return back()->with('error', 'Make and model data insertion failed: ' . $e->getMessage());
         }
+
+        return back()->with('success', 'Make and model data inserted successfully');
     }
 }

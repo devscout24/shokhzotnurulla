@@ -376,14 +376,14 @@
                                     </div>
                                     <div class="vd-det-field">
                                         <label class="vd-field-label">Model <span class="req">*</span></label>
-                                        <select name="make_model_id" class="vd-select" id="detModelId" required>
+                                        {{-- <select name="make_model_id" class="vd-select" id="detModelId" required>
                                             <option value="{{ $vehicle->make_model_id }}" selected>
                                                 {{ $vehicle->makeModel->name }}
                                             </option>
-                                        </select>
-                                        {{-- <input type="text" name="make_model_id" class="vd-input"
+                                        </select> --}}
+                                        <input type="text" name="make_model_name" class="vd-input"
                                                value="{{ $vehicle->make_model_id ? $vehicle->makeModel->name : '' }}"
-                                               placeholder="e.g. Civic, F-150, Wrangler" id="detModelId" required> --}}
+                                               placeholder="e.g. Civic, F-150, Wrangler" id="detModelId" required>
                                     </div>
                                     <div class="vd-det-field">
                                         <label class="vd-field-label">Trim</label>
