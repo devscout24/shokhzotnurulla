@@ -41,19 +41,19 @@
 @endphp
 
 @php
-    $dealer      = $vehicle->dealer;
-    $spec        = $vehicle->specs;
-    $photosCount = $vehicle->photos_count ?? $allPhotos->count();
+    $dealer      = $vehicle?->dealer;
+    $spec        = $vehicle?->specs;
+    $photosCount = $vehicle?->photos_count ?? $allPhotos->count();
     $extraCount  = max(0, $photosCount - 5);
 
     // Main vehicle — loop se protect karo
-    $mainVehicleId    = $vehicle->id;
+    $mainVehicleId    = $vehicle?->id;
     $mainVehicleTitle = $vehicleTitle;
 
     $horsepower = null;
     if ($spec?->max_horsepower) {
         $horsepower = $spec->max_horsepower . ' hp';
-        if ($spec->max_horsepower_at) {
+        if ($spec?->max_horsepower_at) {
             $horsepower .= ' @ ' . number_format($spec->max_horsepower_at) . ' RPM';
         }
     }
@@ -61,7 +61,7 @@
     $torque = null;
     if ($spec?->max_torque) {
         $torque = $spec->max_torque . ' lb-ft';
-        if ($spec->max_torque_at) {
+        if ($spec?->max_torque_at) {
             $torque .= ' @ ' . number_format($spec->max_torque_at) . ' RPM';
         }
     }
@@ -117,9 +117,9 @@
     <div class="d-block d-xl-none h-63" id="mobile-nav-spacer"></div>
 
     <main class="mt-3 mb-3 mb-sm-5 vdp_pre-owned
-        make_{{ Str::slug($vehicle->make?->name ?? '') }}
-        {{ $vehicle->bodyType?->name ? 'body_' . Str::slug($vehicle->bodyType->name) : '' }}
-        {{ ($vehicle->original_price && $vehicle->list_price < $vehicle->original_price) ? 'has-discount' : 'no-discount' }}
+        make_{{ Str::slug($vehicle?->make?->name ?? '') }}
+        {{ $vehicle?->bodyType?->name ? 'body_' . Str::slug($vehicle?->bodyType?->name) : '' }}
+        {{ ($vehicle?->original_price && $vehicle?->list_price < $vehicle?->original_price) ? 'has-discount' : 'no-discount' }}
         container">
 
         <div class="row">
@@ -163,9 +163,9 @@
 
                                     @forelse($thumbnails as $thumb)
                                         <div class="thumbnail-wrapper">
-                                            <img src="{{ $thumb->url }}"
+                                            <img src="{{ $thumb?->url }}"
                                                  class="thumbnail vdp-thumb"
-                                                 data-full="{{ $thumb->url }}"
+                                                 data-full="{{ $thumb?->url }}"
                                                  alt="{{ $vehicleTitle }}"
                                                  loading="lazy">
                                         </div>
@@ -200,14 +200,14 @@
                                 </h1>
 
                                 <div class="vdp-miles">
-                                    {{ $vehicle->mileage ? number_format($vehicle->mileage) . ' miles' : '—' }}
+                                    {{ $vehicle?->mileage ? number_format($vehicle?->mileage) . ' miles' : '—' }}
                                 </div>
 
                                 {{-- Hidden fields for form JS --}}
-                                <div class="d-none" id="td_year">{{ $vehicle->year }}</div>
-                                <div class="d-none" id="td_make">{{ strtoupper($vehicle->make?->name ?? '') }}</div>
-                                <div class="d-none" id="td_model">{{ strtoupper($vehicle->makeModel?->name ?? '') }}</div>
-                                <div class="d-none" id="td_vehicle_id">{{ $vehicle->id }}</div>
+                                <div class="d-none" id="td_year">{{ $vehicle?->year }}</div>
+                                <div class="d-none" id="td_make">{{ strtoupper($vehicle?->make?->name ?? '') }}</div>
+                                <div class="d-none" id="td_model">{{ strtoupper($vehicle?->makeModel?->name ?? '') }}</div>
+                                <div class="d-none" id="td_vehicle_id">{{ $vehicle?->id }}</div>
                             </div>
                         </div>
                     </div>
@@ -248,9 +248,9 @@
                                             @if($pricing['applied_special']?->finance_rate)
                                                 <div class="mt-1">
                                                     <span class="badge bg-success text-white" style="font-size:11px;">
-                                                        {{ $pricing['applied_special']->finance_rate }}% APR
-                                                        @if($pricing['applied_special']->finance_term)
-                                                            / {{ $pricing['applied_special']->finance_term }} mo.
+                                                        {{ $pricing['applied_special']?->finance_rate }}% APR
+                                                        @if($pricing['applied_special']?->finance_term)
+                                                            / {{ $pricing['applied_special']?->finance_term }} mo.
                                                         @endif
                                                     </span>
                                                 </div>
@@ -288,13 +288,13 @@
                             @if($pricing['has_discount'] && ! $pricing['is_formfill'])
                                 @php
                                     $isOffsetType    = $pricing['applied_special'] &&
-                                                       in_array($pricing['applied_special']->discount_type, ['offsetdollar', 'offsetincrease']);
+                                                       in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
                                     $originalDisplay = $isOffsetType && $pricing['msrp'] > 0
                                                        ? $pricing['msrp']
-                                                       : $vehicle->list_price;
+                                                       : $vehicle?->list_price;
                                     $discountAmt     = $pricing['savings'];
                                     $isIncrease      = $pricing['applied_special'] &&
-                                                       in_array($pricing['applied_special']->discount_type, ['increase', 'offsetincrease']);
+                                                       in_array($pricing['applied_special']?->discount_type, ['increase', 'offsetincrease']);
                                     $sign            = $isIncrease ? '+' : '-';
                                 @endphp
                                 <div id="vdp-onsale-section-mobile" class="border rounded py-2 px-2 mt-3 mb-2">
@@ -309,10 +309,10 @@
                                     <div id="vdp-onsale-body-mobile" class="border-top mt-2 pt-2" style="font-size:13px;">
                                         @php
                                             $isOffsetType = $pricing['applied_special'] &&
-                                                            in_array($pricing['applied_special']->discount_type, ['offsetdollar', 'offsetincrease']);
+                                                            in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
                                             $originalDisplay = $isOffsetType && $pricing['msrp'] > 0
                                                                ? $pricing['msrp']
-                                                               : $vehicle->list_price;
+                                                               : $vehicle?->list_price;
                                         @endphp
                                         <div class="d-flex justify-content-between py-1 border-bottom">
                                             <span class="text-muted">Original price</span>
@@ -320,7 +320,7 @@
                                         </div>
                                         @if($pricing['applied_special'])
                                             <div class="d-flex justify-content-between py-1 border-bottom">
-                                                <span class="text-muted">{{ $pricing['applied_special']->title }}</span>
+                                                <span class="text-muted">{{ $pricing['applied_special']?->title }}</span>
                                                 <span class="{{ $isIncrease ? 'text-danger' : 'text-success' }}">
                                                     {{ $sign }}${{ number_format(abs($discountAmt)) }}
                                                 </span>
@@ -349,7 +349,7 @@
                                             </div>
                                         @endforeach
 
-                                        @if($applicableFees->isEmpty())
+                                        @if($applicableFees?->isEmpty())
                                             <div class="d-flex justify-content-between py-1">
                                                 <span class="text-muted d-flex align-items-center gap-1">
                                                     <i class="fa-solid fa-circle-info" style="font-size:11px;"></i>
@@ -446,11 +446,11 @@
                                     Questions?
                                 </div>
                                 <div class="py-3 cursor-pointer col-4" data-cy="btn-favorite"
-                                     data-vehicle-id="{{ $vehicle->id }}"
-                                     data-vehicle-name="{{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}"
-                                     data-vehicle-price="{{ $vehicle->price > 0 ? '$' . number_format($vehicle->price) : 'Call' }}"
-                                     data-vehicle-image="{{ $mainPhoto->url ?: asset('assets/frontend/img/no-photo.webp') }}"
-                                     data-vehicle-url="{{ route('frontend.inventory.show', $vehicle->slug) }}">
+                                     data-vehicle-id="{{ $vehicle?->id }}"
+                                     data-vehicle-name="{{ $vehicle?->year }} {{ $vehicle?->make?->name }} {{ $vehicle?->makeModel?->name }}"
+                                     data-vehicle-price="{{ $vehicle?->price > 0 ? '$' . number_format($vehicle?->price) : 'Call' }}"
+                                     data-vehicle-image="{{ $mainPhoto?->url ?: asset('assets/frontend/img/no-photo.webp') }}"
+                                     data-vehicle-url="{{ route('frontend.inventory.show', $vehicle?->slug) }}">
                                     <span class="text-muted d-block p-1">
                                         <i class="fa-regular fa-heart fa-lg"></i>
                                     </span>
@@ -488,47 +488,47 @@
                                         @if($vehicle->bodyType?->name)
                                             <tr class="notranslate tr_body">
                                                 <td width="50%"><b>Body Type</b></td>
-                                                <td class="pe-0">{{ $vehicle->bodyType->name }}</td>
+                                                <td class="pe-0">{{ $vehicle?->bodyType?->name }}</td>
                                             </tr>
                                         @endif
 
                                         @if($vehicle->trim)
                                             <tr class="tr_trim">
                                                 <td width="50%"><b>Trim</b></td>
-                                                <td class="pe-0">{{ $vehicle->trim }}</td>
+                                                <td class="pe-0">{{ $vehicle?->trim }}</td>
                                             </tr>
                                         @endif
 
                                         <tr class="tr_stocknumber">
                                             <td width="50%"><b>Stock #</b></td>
-                                            <td class="pe-0">{{ $vehicle->stock_number }}</td>
+                                            <td class="pe-0">{{ $vehicle?->stock_number }}</td>
                                         </tr>
 
                                         <tr class="notranslate tr_vin">
                                             <td width="50%"><b>VIN</b></td>
                                             <td class="pe-0">
-                                                <span data-vin="{{ $vehicle->vin }}">{{ $vehicle->vin }}</span>
+                                                <span data-vin="{{ $vehicle?->vin }}">{{ $vehicle?->vin }}</span>
                                             </td>
                                         </tr>
 
                                         @if($vehicle->exteriorColor?->name)
                                             <tr class="tr_exteriorcolor">
                                                 <td width="50%"><b>Exterior Color</b></td>
-                                                <td class="pe-0">{{ $vehicle->exteriorColor->name }}</td>
+                                                <td class="pe-0">{{ $vehicle?->exteriorColor?->name }}</td>
                                             </tr>
                                         @endif
 
                                         @if($vehicle->seating_capacity)
                                             <tr class="tr_seatingcapacity">
                                                 <td width="50%"><b>Passengers</b></td>
-                                                <td class="pe-0">{{ $vehicle->seating_capacity }}</td>
+                                                <td class="pe-0">{{ $vehicle?->seating_capacity }}</td>
                                             </tr>
                                         @endif
 
                                         @if($vehicle->drivetrainType?->name)
                                             <tr class="tr_drivetrain">
                                                 <td width="50%"><b>Drivetrain</b></td>
-                                                <td class="pe-0">{{ $vehicle->drivetrainType->name }}</td>
+                                                <td class="pe-0">{{ $vehicle?->drivetrainType?->name }}</td>
                                             </tr>
                                         @endif
 
@@ -549,7 +549,7 @@
                                         @if($vehicle->fuelType?->name)
                                             <tr class="tr_fuel">
                                                 <td width="50%"><b>Fuel Type</b></td>
-                                                <td class="pe-0">{{ $vehicle->fuelType->name }}</td>
+                                                <td class="pe-0">{{ $vehicle?->fuelType?->name }}</td>
                                             </tr>
                                         @endif
 
@@ -576,24 +576,24 @@
                                             </tr>
                                         @endif
 
-                                        @if($vehicle->transmissionType?->name)
+                                        @if($vehicle?->transmissionType?->name)
                                             <tr class="tr_transmission">
                                                 <td width="50%"><b>Transmission</b></td>
-                                                <td class="pe-0">{{ $vehicle->transmissionType->name }}</td>
+                                                <td class="pe-0">{{ $vehicle?->transmissionType?->name }}</td>
                                             </tr>
                                         @endif
 
-                                        @if($vehicle->engine)
+                                        @if($vehicle?->engine)
                                             <tr class="tr_engine">
                                                 <td width="50%"><b>Engine</b></td>
-                                                <td class="pe-0">{{ $vehicle->engine }}</td>
+                                                <td class="pe-0">{{ $vehicle?->engine }}</td>
                                             </tr>
                                         @endif
 
                                         @if($spec?->gvwr)
                                             <tr class="tr_gvwr">
                                                 <td width="50%"><b>Gross Vehicle Weight Rating</b></td>
-                                                <td class="pe-0">{{ number_format($spec->gvwr) }} lbs.</td>
+                                                <td class="pe-0">{{ number_format($spec?->gvwr) }} lbs.</td>
                                             </tr>
                                         @endif
 
@@ -693,7 +693,7 @@
                     </div>
 
                     {{-- ── Key Features ── --}}
-                    @if($vehicle->features->isNotEmpty())
+                    @if($vehicle?->features?->isNotEmpty())
                         <div class="px-4 py-3 bg-lighter font-weight-bold card-footer">
                             <h2 class="text-small my-0 font-weight-bold">
                                 {{ $vehicleTitle }} Key Features
@@ -702,11 +702,11 @@
 
                         <div class="text-start p-0 bg-lighter card-footer">
                             <div class="row no-gutters px-3 pt-3 pt-sm-0 pb-0 pb-sm-3">
-                                @foreach($vehicle->features->take(9) as $vf)
+                                @foreach($vehicle?->features?->take(9) as $vf)
                                     <div class="col-sm-4 col-12 pt-0 px-0 px-sm-2 pt-sm-3">
                                         <div class="p-3 mb-2 mb-sm-0 bg-white border rounded text-nowrap">
                                             <div class="text-truncate d-flex align-items-center">
-                                                {{ $vf->name }}
+                                                {{ $vf?->name }}
                                             </div>
                                         </div>
                                     </div>
@@ -733,7 +733,7 @@
                                 <div class="no-gutters row">
                                     @foreach($options as $fo)
                                         <div class="px-3 py-2 bg-white border-bottom border-end col-sm-6 col-12">
-                                            {{ $fo->label }}
+                                            {{ $fo?->label }}
                                         </div>
                                     @endforeach
                                 </div>
@@ -819,9 +819,9 @@
                                                 @if($pricing['applied_special']?->finance_rate)
                                                     <div class="mt-1">
                                                         <span class="badge bg-success text-white" style="font-size:11px;">
-                                                            {{ $pricing['applied_special']->finance_rate }}% APR
-                                                            @if($pricing['applied_special']->finance_term)
-                                                                / {{ $pricing['applied_special']->finance_term }} mo.
+                                                            {{ $pricing['applied_special']?->finance_rate }}% APR
+                                                            @if($pricing['applied_special']?->finance_term)
+                                                                / {{ $pricing['applied_special']?->finance_term }} mo.
                                                             @endif
                                                         </span>
                                                     </div>
@@ -856,13 +856,13 @@
                                 @if($pricing['has_discount'] && ! $pricing['is_formfill'])
                                     @php
                                         $isOffsetType    = $pricing['applied_special'] &&
-                                                           in_array($pricing['applied_special']->discount_type, ['offsetdollar', 'offsetincrease']);
+                                                           in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
                                         $originalDisplay = $isOffsetType && $pricing['msrp'] > 0
                                                            ? $pricing['msrp']
-                                                           : $vehicle->list_price;
+                                                           : $vehicle?->list_price;
                                         $discountAmt     = $pricing['savings'];
                                         $isIncrease      = $pricing['applied_special'] &&
-                                                           in_array($pricing['applied_special']->discount_type, ['increase', 'offsetincrease']);
+                                                           in_array($pricing['applied_special']?->discount_type, ['increase', 'offsetincrease']);
                                         $sign            = $isIncrease ? '+' : '-';
                                     @endphp
                                     <div id="vdp-onsale-section" class="border rounded py-2 px-2 mt-3 mb-2">
@@ -877,10 +877,10 @@
                                         <div id="vdp-onsale-body" class="border-top mt-2 pt-2" style="display:block; font-size:13px;">
                                             @php
                                                 $isOffsetType = $pricing['applied_special'] &&
-                                                                in_array($pricing['applied_special']->discount_type, ['offsetdollar', 'offsetincrease']);
+                                                                in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
                                                 $originalDisplay = $isOffsetType && $pricing['msrp'] > 0
                                                                    ? $pricing['msrp']
-                                                                   : $vehicle->list_price;
+                                                                   : $vehicle?->list_price;
                                             @endphp
                                             <div class="d-flex justify-content-between py-1 border-bottom">
                                                 <span class="text-muted">Original price</span>
@@ -888,7 +888,7 @@
                                             </div>
                                             @if($pricing['applied_special'])
                                                 <div class="d-flex justify-content-between py-1 border-bottom">
-                                                    <span class="text-muted">{{ $pricing['applied_special']->title }}</span>
+                                                    <span class="text-muted">{{ $pricing['applied_special']?->title }}</span>
                                                     <span class="{{ $isIncrease ? 'text-danger' : 'text-success' }}">
                                                         {{ $sign }}${{ number_format(abs($discountAmt)) }}
                                                     </span>
@@ -901,15 +901,15 @@
                                             {{-- ── Applicable Fees ── --}}
                                             @foreach($applicableFees as $fee)
                                                 @php
-                                                    $feeAmount = $fee->type === 'amount'
-                                                        ? '$' . number_format($fee->value, 2)
-                                                        : number_format($fee->value, 2) . '%';
+                                                    $feeAmount = $fee?->type === 'amount'
+                                                        ? '$' . number_format($fee?->value, 2)
+                                                        : number_format($fee?->value, 2) . '%';
                                                 @endphp
                                                 <div class="d-flex justify-content-between py-1 {{ ! $loop->last ? 'border-bottom' : '' }}">
                                                     <span class="text-muted d-flex align-items-center gap-1">
                                                         <i class="fa-solid fa-circle-info" style="font-size:11px;"></i>
-                                                        {{ $fee->name }}
-                                                        @if($fee->is_optional)
+                                                        {{ $fee?->name }}
+                                                        @if($fee?->is_optional)
                                                             <small class="text-muted">(optional)</small>
                                                         @endif
                                                     </span>
@@ -917,7 +917,7 @@
                                                 </div>
                                             @endforeach
 
-                                            @if($applicableFees->isEmpty())
+                                            @if($applicableFees?->isEmpty())
                                                 <div class="d-flex justify-content-between py-1">
                                                     <span class="text-muted d-flex align-items-center gap-1">
                                                         <i class="fa-solid fa-circle-info" style="font-size:11px;"></i>
@@ -1011,11 +1011,11 @@
                                     Questions?
                                 </div>
                                 <div data-cy="btn-favorite" class="py-3 cursor-pointer col-4"
-                                     data-vehicle-id="{{ $vehicle->id }}"
-                                     data-vehicle-name="{{ $vehicle->year }} {{ $vehicle->make?->name }} {{ $vehicle->makeModel?->name }}"
-                                     data-vehicle-price="{{ $vehicle->price > 0 ? '$' . number_format($vehicle->price) : 'Call' }}"
-                                     data-vehicle-image="{{ $mainPhoto->url ?: asset('assets/frontend/img/no-photo.webp') }}"
-                                     data-vehicle-url="{{ route('frontend.inventory.show', $vehicle->slug) }}">
+                                     data-vehicle-id="{{ $vehicle?->id }}"
+                                     data-vehicle-name="{{ $vehicle?->year }} {{ $vehicle?->make?->name }} {{ $vehicle?->makeModel?->name }}"
+                                     data-vehicle-price="{{ $vehicle?->price > 0 ? '$' . number_format($vehicle?->price) : 'Call' }}"
+                                     data-vehicle-image="{{ $mainPhoto?->url ?: asset('assets/frontend/img/no-photo.webp') }}"
+                                     data-vehicle-url="{{ route('frontend.inventory.show', $vehicle?->slug) }}">
                                     <span class="d-inline-block text-muted h4 w-100 d-block text-center mb-1">
                                         <i class="fa-regular fa-heart fa-lg"></i>
                                     </span>
@@ -1048,7 +1048,7 @@
     </main>
 
     {{-- ══ Related Vehicles ══ --}}
-    @if($related->isNotEmpty())
+    @if($related?->isNotEmpty())
         <div class="container" id="relatedvehicles">
             <h4 class="text-center mb-4">We think you might like these...</h4>
             <div class="mt-3 d-flex align-items-center">
