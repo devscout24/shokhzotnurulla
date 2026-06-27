@@ -73,6 +73,26 @@ class WebsiteSettingController extends Controller
             $path              = $filename;
         }
 
+        if ($request->hasFile('printable_logo')) {
+
+            $file     = $request->file('printable_logo');
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Ensure directory exists
+            if (! file_exists(public_path('assets/frontend/img/printable-logos'))) {
+                mkdir(public_path('assets/frontend/img/printable-logos'), 0755, true);
+            }
+
+            // Delete old logo if exists
+            if ($dealer->printable_logo && file_exists(public_path('assets/frontend/img/printable-logos/' . $dealer->printable_logo))) {
+                @unlink(public_path('assets/frontend/img/printable-logos/' . $dealer->printable_logo));
+            }
+
+            $file->move(public_path('assets/frontend/img/printable-logos'), $filename);
+            $validated['printable_logo'] = $filename;
+            $path              = $filename;
+        }
+
         if ($request->hasFile('favicon')) {
             $file     = $request->file('favicon');
             $filename = time() . '_' . $file->getClientOriginalName();

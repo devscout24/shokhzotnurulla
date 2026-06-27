@@ -91,6 +91,20 @@
                                     <div class="mt-1 text-muted" style="font-size: 11px;">Recommended size: 325x65px (WebP/PNG)</div>
                                 </div>
                             </div>
+                            <div class="ws-input-col">
+                                <div class="ws-logo-card">
+                                    <div class="ws-logo-card-placeholder" onclick="document.getElementById('printLogoInput').click()" style="cursor: pointer; border: 2px dashed #ccc; width: 200px; height: 100px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f8f9fa;">
+                                        @if($dealer->printable_logo)
+                                            <img src="{{ asset('assets/frontend/img/printable-logos/' . $dealer->printable_logo) }}" id="printLogoPreview" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                        @else
+                                            <div id="printLogoText" class="text-muted">Click to upload Printable Logo</div>
+                                            <img src="" id="printLogoPreview" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;">
+                                        @endif
+                                        <input type="file" name="printable_logo" id="printLogoInput" accept="image/*" style="display: none;">
+                                    </div>
+                                    <div class="mt-1 text-muted" style="font-size: 11px;">Recommended size: 325x65px (WebP/PNG)</div>
+                                </div>
+                            </div>
 
                             <div class="ws-input-col">
                                 <div class="ws-logo-card">
@@ -493,9 +507,13 @@
         formData.append('abandoned_form_minutes', document.querySelector('[name="abandoned_form_minutes"]').value);
 
         const logoFile = document.getElementById('logoInput').files[0];
+        const printLogoFile = document.getElementById('printLogoInput').files[0];
         const faviconFile = document.getElementById('faviconInput').files[0];
         if (logoFile) {
             formData.append('logo', logoFile);
+        }
+        if (printLogoFile) {
+            formData.append('printable_logo', printLogoFile);
         }
         if (faviconFile) {
             formData.append('favicon', faviconFile);
@@ -515,6 +533,9 @@
                 showToast('success', data.message);
                 if (data.logo_url) {
                     document.getElementById('logoPreview').src = data.logo_url;
+                }
+                if (data.printable_logo_url) {
+                    document.getElementById('printLogoPreview').src = data.printable_logo_url;
                 }
                 if (data.favicon_url) {
                     document.getElementById('faviconPreview').src = data.favicon_url;
@@ -537,6 +558,22 @@
             reader.onload = function(event) {
                 const preview = document.getElementById('logoPreview');
                 const text = document.getElementById('logoText');
+                preview.src = event.target.result;
+                preview.style.display = 'block';
+                if (text) text.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Logo preview logic
+    document.getElementById('printLogoInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const preview = document.getElementById('printLogoPreview');
+                const text = document.getElementById('printLogoText');
                 preview.src = event.target.result;
                 preview.style.display = 'block';
                 if (text) text.style.display = 'none';

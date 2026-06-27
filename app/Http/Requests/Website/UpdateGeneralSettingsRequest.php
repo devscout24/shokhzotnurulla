@@ -19,6 +19,7 @@ class UpdateGeneralSettingsRequest extends FormRequest
             'support_email' => 'nullable|email|max:255',
             'abandoned_form_minutes' => 'required|integer|min:1',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'printable_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ];
     }

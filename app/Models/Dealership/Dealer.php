@@ -47,6 +47,7 @@ class Dealer extends Model
         'staging_domain',
         'is_active',
         'logo',
+        'printable_logo',
         'favicon',
         'legal_name',
         'corporate_address',

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 @php
-    $dealerLogo = $vehicle->dealer->logo ?? null;
-    $dealerLogoUrl    = $dealerLogo ? asset('assets/frontend/img/logos/' . $dealerLogo) : null;
+    $dealerLogo = $vehicle->dealer->printable_logo ?? null;
+    $dealerLogoUrl    = $dealerLogo ? asset('assets/frontend/img/printable-logos/' . $dealerLogo) : null;
     $bbbLogoUrl       = asset('assets/Images/Logos/bbb.png');
     $carfaxLogoUrl    = asset('assets/Images/Logos/carfax-logo.png');
     $cargurusLogoUrl  = asset('assets/Images/Logos/car-gurus-2020.png');
