@@ -3,6 +3,7 @@
 namespace App\Models\Inventory;
 
 use App\Models\Dealership\Dealer;
+use App\Models\Website\Location;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -10,6 +11,7 @@ class DealerInventoryFee extends Model
 {
     protected $fillable = [
         'dealer_id',
+        'location_id',
         'name',
         'description',
         'type',
@@ -34,6 +36,11 @@ class DealerInventoryFee extends Model
     public function dealer(): BelongsTo
     {
         return $this->belongsTo(Dealer::class);
+    }
+
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(Location::class);
     }
 
     // ── Accessors ─────────────────────────────────────────────────────

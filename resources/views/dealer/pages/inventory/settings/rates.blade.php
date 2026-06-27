@@ -1,5 +1,5 @@
 @extends('layouts.dealer.app')
-@section('title', __('Finance Settings') . ' | '. __(config('app.name')))
+@section('title', __('Finance Settings') . ' | ' . __(config('app.name')))
 
 @push('page-assets')
     @vite([
@@ -33,8 +33,7 @@
                     </aside>
 
                     {{-- ── RIGHT CONTENT ── --}}
-                    <div class="fs-content"
-                         data-sync-url="{{ route('dealer.inventory.settings.rates.sync') }}">
+                    <div class="fs-content" data-sync-url="{{ route('dealer.inventory.settings.rates.sync') }}">
                         {{-- ── Unsaved Changes Banner ── --}}
                         <div class="fs-unsaved-banner mb-3" id="unsavedBanner" style="display:none;">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
@@ -93,35 +92,34 @@
                                 </thead>
                                 <tbody id="ratesBody">
 
-                                @forelse($grouped as $yearKey => $rates)
-                                    @php $firstRate = $rates->first(); @endphp
+                                    @forelse($grouped as $yearKey => $rates)
+                                        @php $firstRate = $rates->first(); @endphp
 
-                                    <tr class="fs-group-row"
-                                        data-year-key="{{ $yearKey }}"
-                                        data-min-year="{{ $firstRate->min_model_year }}"
-                                        data-max-year="{{ $firstRate->max_model_year }}">
-                                        <td colspan="10">
-                                            {{ $firstRate->year_range_label }}
-                                            <button class="btn-add-group" type="button"
-                                                    title="Add empty row to this group"
+                                        <tr class="fs-group-row" data-year-key="{{ $yearKey }}"
+                                            data-min-year="{{ $firstRate->min_model_year }}"
+                                            data-max-year="{{ $firstRate->max_model_year }}">
+                                            <td colspan="10">
+                                                {{ $firstRate->year_range_label }}
+                                                <button class="btn-add-group" type="button" title="Add empty row to this group"
                                                     data-min-year="{{ $firstRate->min_model_year }}"
                                                     data-max-year="{{ $firstRate->max_model_year }}">
-                                                <i class="bi bi-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
 
-                                    @foreach($rates as $rate)
-                                        @include('dealer.components.inventory.settings.interest-rate-row', ['rate' => $rate, 'makes' => $makes])
-                                    @endforeach
+                                        @foreach($rates as $rate)
+                                            @include('dealer.components.inventory.settings.interest-rate-row', ['rate' => $rate, 'makes' => $makes])
+                                        @endforeach
 
-                                @empty
-                                    <tr class="fs-empty-row" id="emptyRow">
-                                        <td colspan="10" class="text-center py-4 text-muted">
-                                            No interest rates configured yet. Click <strong>+ Add Rate</strong> to get started.
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                    @empty
+                                        <tr class="fs-empty-row" id="emptyRow">
+                                            <td colspan="10" class="text-center py-4 text-muted">
+                                                No interest rates configured yet. Click <strong>+ Add Rate</strong> to get
+                                                started.
+                                            </td>
+                                        </tr>
+                                    @endforelse
 
                                 </tbody>
                             </table>
@@ -144,7 +142,7 @@
 
 {{-- Pass makes list to JS --}}
 @push('page-scripts')
-<script>
-    window.ratesMakes = @json($makes->pluck('name'));
-</script>
+    <script>
+        window.ratesMakes = @json($makes->pluck('name'));
+    </script>
 @endpush

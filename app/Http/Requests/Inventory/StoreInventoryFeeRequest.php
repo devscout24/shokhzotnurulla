@@ -14,6 +14,7 @@ class StoreInventoryFeeRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'location_id' => ['required',  'exists:locations,id'],
             'name'        => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string', 'max:500'],
             'type'        => ['required', 'in:amount,percentage'],
@@ -27,10 +28,11 @@ class StoreInventoryFeeRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'  => 'Fee name is required.',
-            'type.required'  => 'Fee type is required.',
-            'value.required' => 'Fee amount is required.',
-            'tax.required'   => 'Tax type is required.',
+            'location_id.required' => 'Location is required.',
+            'name.required'        => 'Fee name is required.',
+            'type.required'        => 'Fee type is required.',
+            'value.required'       => 'Fee amount is required.',
+            'tax.required'         => 'Tax type is required.',
         ];
     }
 }

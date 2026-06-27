@@ -9,6 +9,7 @@ class UpdateInventoryFeeAction
     public function __invoke(DealerInventoryFee $fee, array $data): DealerInventoryFee
     {
         $fee->update([
+            'location_id' => $data['location_id'],
             'name'        => $data['name'],
             'description' => $data['description'] ?? null,
             'type'        => $data['type'],

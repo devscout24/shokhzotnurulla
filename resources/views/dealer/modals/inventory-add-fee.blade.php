@@ -8,6 +8,18 @@
 
         <div class="aif-body">
 
+            {{-- Location --}}
+            <div class="aif-form-group">
+                <label class="aif-label">Location</label>
+                <select class="aif-select" id="feeLocation">
+                    <option value="">All Locations</option>
+                    @foreach($locations as $location)
+                        <option value="{{ $location->id }}">{{ $location->name }}</option>
+                    @endforeach
+                </select>
+                <small style="color:#888;display:block;margin-top:4px;">Leave blank to apply to all locations.</small>
+            </div>
+
             {{-- Name --}}
             <div class="aif-form-group">
                 <label class="aif-label">Name <span class="req">*</span></label>

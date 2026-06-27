@@ -358,9 +358,6 @@
                                                 <span class="text-muted d-flex align-items-center gap-1">
                                                     <i class="fa-solid fa-circle-info" style="font-size:11px;"></i>
                                                     {{ $fee->name }}
-                                                    @if($fee->is_optional)
-                                                        <small class="text-muted">(optional)</small>
-                                                    @endif
                                                 </span>
                                                 <span class="text-muted">{{ $feeAmount }}</span>
                                             </div>
@@ -929,9 +926,6 @@
                                                     <span class="text-muted d-flex align-items-center gap-1">
                                                         <i class="fa-solid fa-circle-info" style="font-size:11px;"></i>
                                                         {{ $fee?->name }}
-                                                        @if($fee?->is_optional)
-                                                            <small class="text-muted">(optional)</small>
-                                                        @endif
                                                     </span>
                                                     <span class="text-muted">{{ $feeAmount }}</span>
                                                 </div>

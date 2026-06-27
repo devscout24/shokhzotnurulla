@@ -14,6 +14,7 @@ class StoreInventoryFeeAction
 
         return DealerInventoryFee::create([
             'dealer_id'   => $dealer->id,
+            'location_id' => $data['location_id'],
             'name'        => $data['name'],
             'description' => $data['description'] ?? null,
             'type'        => $data['type'],

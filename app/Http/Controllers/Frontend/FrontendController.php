@@ -207,6 +207,12 @@ class FrontendController extends Controller
         }
 
         $applicableFees = DealerInventoryFee::where('dealer_id', $dealerId)
+            ->where('is_optional', false)
+            ->where(function ($q) use ($vehicle) {
+                // null location_id = applies to all locations; or must match vehicle's location
+                $q->whereNull('location_id')
+                  ->orWhere('location_id', $vehicle->location_id);
+            })
             ->where(function ($q) use ($vehicle) {
                 $q->where('condition', 'any')
                     ->orWhere(function ($q2) use ($vehicle) {

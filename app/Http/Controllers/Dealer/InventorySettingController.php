@@ -60,11 +60,16 @@ class InventorySettingController extends Controller
         $dealer = $request->user()->currentDealer;
 
         $fees = $dealer->inventoryFees()
+            ->with('location')
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get();
 
-        return view('dealer.pages.inventory.settings.fees', compact('fees'));
+        $locations = $dealer->locations()
+            ->orderBy('order')
+            ->get();
+
+        return view('dealer.pages.inventory.settings.fees', compact('fees', 'locations'));
     }
 
     // ── Fees CRUD ─────────────────────────────────────────────────────
@@ -75,6 +80,8 @@ class InventorySettingController extends Controller
         $fee    = ($this->storeInventoryFee)($dealer, $request->validated());
 
         AuditLogger::info($request, 'Inventory fee created', ['fee_id' => $fee->id]);
+
+        $fee->loadMissing('location');
 
         return response()->json([
             'success'  => true,
@@ -91,6 +98,8 @@ class InventorySettingController extends Controller
         $fee = ($this->updateInventoryFee)($fee, $request->validated());
 
         AuditLogger::info($request, 'Inventory fee updated', ['fee_id' => $fee->id]);
+
+        $fee->loadMissing('location');
 
         return response()->json([
             'success'  => true,

@@ -11,9 +11,7 @@ return new class extends Migration
         Schema::create('dealer_inventory_fees', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('dealer_id')
-                  ->constrained('dealers')
-                  ->cascadeOnDelete();
+            $table->foreignId('dealer_id')->constrained('dealers')->cascadeOnDelete();
 
             $table->string('name', 150);
             $table->string('description', 500)->nullable();

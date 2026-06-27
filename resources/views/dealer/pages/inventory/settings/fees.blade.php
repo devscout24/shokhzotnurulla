@@ -1,5 +1,5 @@
 @extends('layouts.dealer.app')
-@section('title', __('Fees') . ' | '. __(config('app.name')))
+@section('title', __('Fees') . ' | ' . __(config('app.name')))
 
 @push('page-assets')
     @vite([
@@ -40,6 +40,8 @@
                             or only to vehicles that meet certain conditions (i.e. only new or used). Fees can be
                             either a flat amount or a percentage of the vehicle price, and can be designated as
                             pre-tax or post-tax, as well as optional or guaranteed.
+                            <strong>Guaranteed</strong> fees are always shown on the vehicle detail page.
+                            <strong>Optional</strong> fees are visible to staff only.
                         </p>
 
                         <p style="font-size:12.5px;color:#555;margin:0 0 2px;">Examples:</p>
@@ -69,6 +71,7 @@
                                     <tr>
                                         <th></th>
                                         <th>Dealer</th>
+                                        <th>Location</th>
                                         <th>Name</th>
                                         <th>Type</th>
                                         <th>Value</th>
@@ -80,12 +83,13 @@
                                 <tbody id="feesBody">
                                 @forelse($fees as $fee)
                                     @include('dealer.components.inventory.settings.fee-row', [
-                                        'fee'    => $fee,
-                                        'dealer' => auth()->user()->currentDealer,
+                                        'fee'       => $fee,
+                                        'dealer'    => auth()->user()->currentDealer,
+                                        'locations' => $locations,
                                     ])
                                 @empty
                                     <tr id="emptyRow">
-                                        <td colspan="8" class="no-results">No fees found.</td>
+                                        <td colspan="9" class="no-results">No fees found.</td>
                                     </tr>
                                 @endforelse
                                 </tbody>
@@ -111,6 +115,7 @@
             storeUrl:   '{{ route('dealer.inventory.settings.fees.store') }}',
             reorderUrl: '{{ route('dealer.inventory.settings.fees.reorder') }}',
             dealerName: '{{ auth()->user()->currentDealer->name }}',
+            locations:  @json($locations->map(fn($l) => ['id' => $l->id, 'name' => $l->name])),
         };
     </script>
 @endpush

@@ -8,7 +8,22 @@
     const storeUrl   = cfg.storeUrl   ?? '';
     const reorderUrl = cfg.reorderUrl ?? '';
     const dealerName = cfg.dealerName ?? '';
+    const locations  = cfg.locations  ?? [];
     const feesBody   = document.getElementById('feesBody');
+
+    // ── Populate location dropdown ────────────────────────────────────
+    (function populateLocations() {
+        const select = document.getElementById('feeLocation');
+        if (!select) return;
+        // Keep the first 'All Locations' option, add the rest from config
+        while (select.options.length > 1) select.remove(1);
+        locations.forEach(function (loc) {
+            const opt = document.createElement('option');
+            opt.value = loc.id;
+            opt.textContent = loc.name;
+            select.appendChild(opt);
+        });
+    })();
 
     // ── Current edit state ────────────────────────────────────────────
     let editingFeeId  = null;
@@ -54,6 +69,7 @@
         document.getElementById('feeTax').value         = '';
         document.getElementById('feeOptional').value    = '';
         document.getElementById('feeCondition').value   = 'any';
+        document.getElementById('feeLocation').value    = '';
         document.getElementById('feeModalTitle').textContent = 'Add Inventory Fee';
         updateAmountSymbol('');
 
@@ -69,6 +85,7 @@
             document.getElementById('feeTax').value         = fee.tax;
             document.getElementById('feeOptional').value    = fee.isOptional;
             document.getElementById('feeCondition').value   = fee.condition;
+            document.getElementById('feeLocation').value    = fee.locationId ?? '';
             updateAmountSymbol(fee.type);
         }
 
@@ -113,6 +130,7 @@
     // ── Save Fee ──────────────────────────────────────────────────────
 
     document.getElementById('btnSaveFee').addEventListener('click', async () => {
+        const locationId = document.getElementById('feeLocation').value || null;
         const name      = document.getElementById('feeName').value.trim();
         const type      = document.getElementById('feeType').value;
         const value     = document.getElementById('feeValue').value;
@@ -127,6 +145,7 @@
         if (isOptional === '') { toast('Optional/Guaranteed is required.', 'error'); return; }
 
         const payload = {
+            location_id: locationId ? parseInt(locationId) : null,
             name,
             description: document.getElementById('feeDescription').value.trim() || null,
             type,
@@ -179,15 +198,16 @@
         if (editBtn) {
             const tr = editBtn.closest('tr.if-row');
             openModal({
-                id:         parseInt(tr.dataset.id),
-                updateUrl:  tr.dataset.updateUrl,
-                name:       tr.dataset.name,
+                id:          parseInt(tr.dataset.id),
+                updateUrl:   tr.dataset.updateUrl,
+                name:        tr.dataset.name,
                 description: tr.dataset.description,
-                type:       tr.dataset.type,
-                value:      tr.dataset.value,
-                tax:        tr.dataset.tax,
-                isOptional: tr.dataset.isOptional,
-                condition:  tr.dataset.condition,
+                type:        tr.dataset.type,
+                value:       tr.dataset.value,
+                tax:         tr.dataset.tax,
+                isOptional:  tr.dataset.isOptional,
+                condition:   tr.dataset.condition,
+                locationId:  tr.dataset.locationId || '',
             });
             return;
         }
