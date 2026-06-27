@@ -266,6 +266,32 @@
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
+    <style>
+        .ws-wrap {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .ws-header {
+            border-top-right-radius: 8px;
+        }
+
+        .ws-sidebar {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        .ws-footer {
+            border-bottom-right-radius: 8px;
+        }
+    </style>
+    <style>
+        @media print {
+            .ws-print-bar { display: none !important; }
+            body { padding: 0; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
+
 </head>
 <body>
 
