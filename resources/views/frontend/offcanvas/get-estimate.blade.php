@@ -6,11 +6,21 @@
     $estimateMonthly = $monthly ?? 0;
     $estimatePrice = $pricing['final_price'] ?? 0;
     $estimateTitle = $vehicleTitle ?? 'Selected vehicle';
+    $matchingDefaultRate = ($interestRates ?? collect())->first(function ($rate) {
+        $termMatches = ($rate->min_term === null || 60 >= $rate->min_term)
+            && ($rate->max_term === null || 60 <= $rate->max_term);
+        $creditMatches = ($rate->min_credit_score === null || 740 >= $rate->min_credit_score)
+            && ($rate->max_credit_score === null || 740 <= $rate->max_credit_score);
+        return $termMatches && $creditMatches;
+    });
+
+    // dd($matchingDefaultRate);
+
     $estimateRate = ($pricing['applied_special'] ?? null)
         && $pricing['applied_special']?->discount_type === 'special'
         && $pricing['applied_special']?->finance_rate
             ? (float) $pricing['applied_special']->finance_rate
-            : 6.79;
+            : ($matchingDefaultRate ? (float) $matchingDefaultRate->rate : 6.79);
     $estimateTerm = ($pricing['applied_special'] ?? null)
         && $pricing['applied_special']?->discount_type === 'special'
         && $pricing['applied_special']?->finance_term
