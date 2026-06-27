@@ -88,7 +88,13 @@
             background-position: center;
             background-repeat: no-repeat;
         }
+.ws-header {
 
+    background-position: center center;
+    background-repeat: no-repeat;
+    /* background-size: auto 85%; */
+    background-size: 100% 100%;
+}
         .ws-dealer-name {
             font-size: 28px;
             font-weight: 900;
