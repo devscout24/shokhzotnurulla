@@ -16,6 +16,20 @@
         && $pricing['applied_special']?->finance_term
             ? (int) $pricing['applied_special']->finance_term
             : 60;
+
+    $interestRatesJson = ($interestRates ?? collect())->map(fn($r) => [
+        'id' => $r->id,
+        'make' => $r->make,
+        'min_model_year' => $r->min_model_year,
+        'max_model_year' => $r->max_model_year,
+        'min_term' => $r->min_term,
+        'max_term' => $r->max_term,
+        'min_credit_score' => $r->min_credit_score,
+        'max_credit_score' => $r->max_credit_score,
+        'condition' => $r->condition,
+        'rate' => (float) $r->rate,
+        'sort_order' => $r->sort_order,
+    ])->toJson();
 @endphp
 @once
     <style>
@@ -46,7 +60,8 @@
     </style>
 @endonce
 <div class="offcanvas offcanvas-end w-lg-50 w-100" tabindex="-1" id="getEstimate"
-    aria-labelledby="getEstimateLabel">
+    aria-labelledby="getEstimateLabel"
+    data-interest-rates='{{ $interestRatesJson }}'>
 
     {{-- ── Header ──────────────────────────────────────────────────────────── --}}
     <div class="offcanvas-header w-100">
@@ -70,7 +85,7 @@
 
         <div class="pt-3 border-top"></div>
         <div class="d-flex mb-2 align-items-center">
-            <b>Credit score: 740</b>
+            <b>Credit score: <span data-gep-credit-score>740</span></b>
             <a href="#" target="_blank" rel="noopener noreferrer" class="ms-auto"
                 style="color: #166B87;" data-cy="paymentcalc-print" title="Print payment details">
                 <span class="d-inline-block me-1">
@@ -85,7 +100,7 @@
 
         <div class="mb-3">
             <input type="range" class="form-range" min="400" max="850" value="740"
-                aria-label="Credit score">
+                aria-label="Credit score" data-gep-credit-slider>
         </div>
 
         <div class="row">
@@ -247,6 +262,14 @@
                 var offcanvas = document.getElementById('getEstimate');
                 if (!offcanvas) return;
 
+                // ── Parse interest rates from data attribute ──────────────────────
+                var interestRates = [];
+                try {
+                    var raw = offcanvas.dataset.interestRates;
+                    if (raw) interestRates = JSON.parse(raw);
+                } catch (e) { /* ignore — fall back to empty */ }
+
+                // ── Helpers ────────────────────────────────────────────────────────
                 var moneyFormatter = new Intl.NumberFormat('en-US', {
                     maximumFractionDigits: 0
                 });
@@ -262,11 +285,9 @@
 
                 function formatInputValue(input, value) {
                     var next = numberFrom(value);
-
                     if (input && input.name === 'down_pct' && !Number.isInteger(next)) {
                         return next.toFixed(1);
                     }
-
                     return money(next);
                 }
 
@@ -277,14 +298,11 @@
 
                 function setInputValue(input, value) {
                     if (!input) return;
-
                     var min = numberFrom(input.getAttribute('min'));
                     var max = numberFrom(input.getAttribute('max'));
                     var next = numberFrom(value);
-
                     if (input.hasAttribute('min')) next = Math.max(min, next);
                     if (input.hasAttribute('max')) next = Math.min(max, next);
-
                     input.value = formatInputValue(input, next);
                     input.dispatchEvent(new Event('input', { bubbles: true }));
                     input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -292,10 +310,6 @@
 
                 function getValue(selector) {
                     return numberFrom(offcanvas.querySelector(selector)?.value);
-                }
-
-                function currentRate() {
-                    return numberFrom(offcanvas.dataset.rate || '6.79');
                 }
 
                 function currentTerm() {
@@ -306,6 +320,65 @@
                     return offcanvas.querySelector('[data-gep-down-mode].active')?.dataset.gepDownMode || 'percentage';
                 }
 
+                function conditionMatches(rateCondition, vehicleCondition) {
+                    if (vehicleCondition === 'New') {
+                        return rateCondition === 'new' || rateCondition === 'any';
+                    }
+                    if (vehicleCondition === 'Certified Pre-Owned') {
+                        return rateCondition === 'cpo' || rateCondition === 'used' || rateCondition === 'any';
+                    }
+                    return rateCondition === 'used' || rateCondition === 'any';
+                }
+
+                // ── Find best matching rate ────────────────────────────────────────
+                function findMatchingRate(vehicleYear, vehicleMake, vehicleCondition, creditScore, term) {
+                    var matched = interestRates.filter(function (rate) {
+                        if (rate.min_model_year > vehicleYear || rate.max_model_year < vehicleYear) return false;
+                        if (rate.make && rate.make !== '' && rate.make !== vehicleMake) return false;
+                        if (!conditionMatches(rate.condition, vehicleCondition)) return false;
+                        if (rate.min_credit_score !== null && creditScore < rate.min_credit_score) return false;
+                        if (rate.max_credit_score !== null && creditScore > rate.max_credit_score) return false;
+                        if (rate.min_term !== null && term < rate.min_term) return false;
+                        if (rate.max_term !== null && term > rate.max_term) return false;
+                        return true;
+                    });
+
+                    if (matched.length === 0) return null;
+
+                    matched.sort(function (a, b) {
+                        var aMakeScore = a.make ? 0 : 1;
+                        var bMakeScore = b.make ? 0 : 1;
+                        if (aMakeScore !== bMakeScore) return aMakeScore - bMakeScore;
+                        var aCondScore = a.condition === 'any' ? 1 : 0;
+                        var bCondScore = b.condition === 'any' ? 1 : 0;
+                        if (aCondScore !== bCondScore) return aCondScore - bCondScore;
+                        if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
+                        return a.id - b.id;
+                    });
+
+                    return matched[0];
+                }
+
+                // ── Update rate display & recalculate monthly ─────────────────────
+                function updateRateAndRecalculate() {
+                    var vehicleYear = Number(offcanvas.dataset.vehicleYear || 0);
+                    var vehicleMake = offcanvas.dataset.vehicleMake || '';
+                    var vehicleCondition = offcanvas.dataset.vehicleCondition || '';
+                    var creditScore = Number(offcanvas.querySelector('[data-gep-credit-slider]')?.value || 740);
+                    var term = currentTerm();
+
+                    var matched = findMatchingRate(vehicleYear, vehicleMake, vehicleCondition, creditScore, term);
+                    var rate = matched ? matched.rate : numberFrom(offcanvas.dataset.fallbackRate || 6.79);
+
+                    offcanvas.dataset.rate = rate;
+
+                    var creditDisplay = offcanvas.querySelector('[data-gep-credit-score]');
+                    if (creditDisplay) creditDisplay.textContent = creditScore;
+
+                    calculateMonthly();
+                }
+
+                // ── Calculate monthly payment ──────────────────────────────────────
                 function calculateMonthly() {
                     var price = getValue('[name="amount"]');
                     var downValue = numberFrom(offcanvas.querySelector('[name="down_pct"]')?.value);
@@ -313,7 +386,7 @@
                     var tradeValue = getValue('[name="tradeinamount"]');
                     var tradeBalance = getValue('[name="tradeinremainingbalance"]');
                     var principal = Math.max(0, price - downAmount - tradeValue + tradeBalance);
-                    var rate = currentRate();
+                    var rate = numberFrom(offcanvas.dataset.rate || 6.79);
                     var term = currentTerm();
                     var monthlyRate = (rate / 100) / 12;
                     var monthly = monthlyRate > 0
@@ -330,21 +403,19 @@
                 function toggleCollapse(header) {
                     var target = offcanvas.querySelector(header.dataset.gepTarget || '');
                     if (!target) return;
-
                     var isOpen = target.classList.contains('show') && target.style.display !== 'none';
                     isOpen = !isOpen;
                     var icon = header.querySelector('[data-gep-collapse-icon]');
-
                     target.classList.toggle('show', isOpen);
                     target.style.display = isOpen ? 'block' : 'none';
                     header.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-
                     if (icon) {
                         icon.setAttribute('href', isOpen ? '/regular.svg#square-minus' : '/regular.svg#square-plus');
                         icon.setAttribute('xlink:href', isOpen ? '/regular.svg#square-minus' : '/regular.svg#square-plus');
                     }
                 }
 
+                // ── Offcanvas show handler ────────────────────────────────────────
                 offcanvas.addEventListener('show.bs.offcanvas', function (event) {
                     var trigger = event.relatedTarget;
                     if (!trigger) return;
@@ -355,8 +426,15 @@
                     var rate = numberFrom(trigger.dataset.vehicleRate || 6.79);
                     var term = Number(trigger.dataset.vehicleTerm || 60);
 
+                    offcanvas.dataset.fallbackRate = rate;
                     offcanvas.dataset.rate = rate;
                     offcanvas.dataset.term = term;
+                    offcanvas.dataset.vehicleYear = trigger.dataset.vehicleYear || '';
+                    offcanvas.dataset.vehicleMake = trigger.dataset.vehicleMake || '';
+                    offcanvas.dataset.vehicleCondition = trigger.dataset.vehicleCondition || '';
+
+                    var creditSlider = offcanvas.querySelector('[data-gep-credit-slider]');
+                    if (creditSlider) creditSlider.value = '740';
 
                     var titleEl = offcanvas.querySelector('[data-gep-vehicle-title]');
                     var amount = offcanvas.querySelector('[data-cy="paymentcalc-amount"]');
@@ -370,29 +448,47 @@
                     setValue('[name="tradeinremainingbalance"]', 0);
                     var downPct = offcanvas.querySelector('[name="down_pct"]');
                     if (downPct) downPct.value = '0';
-                    calculateMonthly();
+
+                    updateRateAndRecalculate();
                 });
 
-                offcanvas.querySelectorAll('input[name="down_pct"], input[name="tradeinamount"], input[name="tradeinremainingbalance"], select[name="state"]').forEach(function (field) {
+                // ── Credit score slider ────────────────────────────────────────────
+                var creditSlider = offcanvas.querySelector('[data-gep-credit-slider]');
+                if (creditSlider) {
+                    creditSlider.addEventListener('input', updateRateAndRecalculate);
+                }
+
+                // ── Inputs that trigger full rate + monthly recalculation ──────────
+                offcanvas.querySelectorAll('select[name="state"]').forEach(function (field) {
+                    field.addEventListener('change', updateRateAndRecalculate);
+                });
+
+                // ── Inputs that only recalculate monthly (rate stays) ──────────────
+                offcanvas.querySelectorAll('input[name="down_pct"], input[name="tradeinamount"], input[name="tradeinremainingbalance"]').forEach(function (field) {
                     field.addEventListener('input', calculateMonthly);
                     field.addEventListener('change', calculateMonthly);
                 });
 
+                // ── Stepper buttons ────────────────────────────────────────────────
                 offcanvas.querySelectorAll('.gep-stepper-btn').forEach(function (button) {
                     button.addEventListener('click', function () {
                         var group = button.closest('.gep-stepper');
                         var input = group ? group.querySelector('input') : null;
                         if (!input) return;
-
                         var delta = numberFrom(button.dataset.gepStep);
                         if (input.name === 'down_pct' && currentDownMode() === 'cash') {
                             delta = delta * 100;
                         }
                         setInputValue(input, getValue('[name="' + input.name + '"]') + delta);
-                        calculateMonthly();
+                        if (input.name === 'down_pct') {
+                            updateRateAndRecalculate();
+                        } else {
+                            calculateMonthly();
+                        }
                     });
                 });
 
+                // ── Down payment mode toggle ───────────────────────────────────────
                 offcanvas.querySelectorAll('[data-gep-down-mode]').forEach(function (button) {
                     button.addEventListener('click', function () {
                         var mode = button.dataset.gepDownMode || 'percentage';
@@ -411,17 +507,16 @@
                             input.placeholder = mode === 'cash' ? '1,000' : '10';
                             setInputValue(input, 0);
                         }
-
                         calculateMonthly();
                     });
                 });
 
+                // ── Collapse toggles ───────────────────────────────────────────────
                 offcanvas.querySelectorAll('[data-gep-collapse-toggle]').forEach(function (header) {
                     var target = offcanvas.querySelector(header.dataset.gepTarget || '');
                     if (target) {
                         target.style.display = target.classList.contains('show') ? 'block' : 'none';
                     }
-
                     header.addEventListener('click', function (event) {
                         event.preventDefault();
                         event.stopPropagation();

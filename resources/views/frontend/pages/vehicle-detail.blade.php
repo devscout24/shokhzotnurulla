@@ -71,16 +71,30 @@
         $dimensions = "{$spec->dimension_width}\" w x {$spec->dimension_length}\" l x {$spec->dimension_height}\" h";
     }
 
+    $matchingDefaultRate = ($interestRates ?? collect())->first(function ($rate) {
+        $termMatches = ($rate->min_term === null || 60 >= $rate->min_term)
+            && ($rate->max_term === null || 60 <= $rate->max_term);
+        $creditMatches = ($rate->min_credit_score === null || 740 >= $rate->min_credit_score)
+            && ($rate->max_credit_score === null || 740 <= $rate->max_credit_score);
+        return $termMatches && $creditMatches;
+    });
+
     $estimateRate = ($pricing['applied_special'] ?? null)
         && $pricing['applied_special']?->discount_type === 'special'
         && $pricing['applied_special']?->finance_rate
             ? (float) $pricing['applied_special']->finance_rate
-            : 6.79;
+            : ($matchingDefaultRate ? (float) $matchingDefaultRate->rate : 6.79);
+
     $estimateTerm = ($pricing['applied_special'] ?? null)
         && $pricing['applied_special']?->discount_type === 'special'
         && $pricing['applied_special']?->finance_term
             ? (int) $pricing['applied_special']->finance_term
             : 60;
+
+    $rRate = ($estimateRate / 100) / 12;
+    $calculatedMonthly = $rRate > 0
+        ? ($pricing['final_price'] * $rRate) / (1 - pow(1 + $rRate, -$estimateTerm))
+        : $pricing['final_price'] / $estimateTerm;
 @endphp
 
 @section('page-content')
@@ -269,14 +283,17 @@
                                           data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
                                           data-vehicle-title="{{ $mainVehicleTitle }}"
                                           data-vehicle-price="{{ $pricing['final_price'] }}"
-                                          data-vehicle-monthly="{{ $pricing['monthly'] }}"
+                                          data-vehicle-monthly="{{ $calculatedMonthly }}"
                                           data-vehicle-rate="{{ $estimateRate }}"
                                           data-vehicle-term="{{ $estimateTerm }}"
+                                          data-vehicle-year="{{ $vehicle->year }}"
+                                          data-vehicle-make="{{ $vehicle->make?->name }}"
+                                          data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
                                           aria-controls="getEstimate">
                                         <span class="badge badge-secondary text-uppercase me-2 float-start">
                                             Estimated Payment
                                         </span>
-                                        ${{ number_format($pricing['monthly']) }} / mo.
+                                        ${{ number_format($calculatedMonthly) }} / mo.
                                                                                 <span class="ms-2 text-primary">
                                             <i class="fa-regular fa-pen-to-square fa-lg"></i>
                                         </span>
@@ -836,17 +853,20 @@
                                     </div>
                                     <div class="text-end d-block d-xl-none col-5"><br></div>
                                     <div class="col-12">
-                                        <div class="bg-lighter border rounded py-2 px-3 mt-2 align-items-center text-center cursor-pointer"
-                                            data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
-                                            data-vehicle-title="{{ $mainVehicleTitle }}"
-                                            data-vehicle-price="{{ $pricing['final_price'] }}"
-                                            data-vehicle-monthly="{{ $pricing['monthly'] }}"
-                                            data-vehicle-rate="{{ $estimateRate }}"
-                                            data-vehicle-term="{{ $estimateTerm }}"
-                                            aria-controls="getEstimate">
+                                    <div class="bg-lighter border rounded py-2 px-3 mt-2 align-items-center text-center cursor-pointer"
+                                        data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                                        data-vehicle-title="{{ $mainVehicleTitle }}"
+                                        data-vehicle-price="{{ $pricing['final_price'] }}"
+                                        data-vehicle-monthly="{{ $calculatedMonthly }}"
+                                        data-vehicle-rate="{{ $estimateRate }}"
+                                        data-vehicle-term="{{ $estimateTerm }}"
+                                        data-vehicle-year="{{ $vehicle->year }}"
+                                        data-vehicle-make="{{ $vehicle->make?->name }}"
+                                        data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
+                                        aria-controls="getEstimate">
                                             <span class="badge badge-secondary text-uppercase mb-2">Estimated Payment</span>
                                             <div class="text-large">
-                                                ${{ number_format($pricing['monthly']) }} / month
+                                                ${{ number_format($calculatedMonthly) }} / month
                                             </div>
                                         </div>
                                     </div>

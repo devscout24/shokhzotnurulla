@@ -18,6 +18,10 @@ class DealerResolverService
             return self::$resolved;
         }
 
+        if(env('TEST_DEALER') && env('TEST_DEALER') == 2){
+            return 2;
+        }
+
         $domain = strtolower(request()->getHost());
 
         self::$resolved = Cache::remember(

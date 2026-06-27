@@ -6,6 +6,7 @@ use App\Http\Requests\Inventory\VinDecodeRequest;
 use App\Models\Catalog\Make;
 use App\Models\Catalog\MakeModel;
 use App\Models\Dealership\Dealer;
+use App\Models\Inventory\DealerInterestRate;
 use App\Models\Inventory\DealerInventoryFee;
 use App\Models\Inventory\Vehicle;
 use App\Models\Inventory\VehiclePrintable;
@@ -72,6 +73,10 @@ class FrontendController extends Controller
 
         $this->attachPricing($newArrivals, $dealerId);
 
+        $interestRates = DealerInterestRate::where('dealer_id', $dealerId)
+            ->orderBy('sort_order')
+            ->get();
+
         $homeAboutCardCtaFallback = view('frontend.partials.home-about-card-cta')->render();
         $homeAboutCardCtaContent  = Page::firstOrCreateGlobalSectionContent(
             $dealerId,
@@ -82,6 +87,7 @@ class FrontendController extends Controller
 
         return view('frontend.pages.home', [
             'newArrivals'              => $newArrivals,
+            'interestRates'            => $interestRates,
             'homeAboutCardCtaContent'  => $homeAboutCardCtaContent,
             'homeAboutCardCtaFallback' => $homeAboutCardCtaFallback,
             'seo'                      => [
@@ -101,10 +107,15 @@ class FrontendController extends Controller
 
         $this->attachPricing($result['vehicles'], $dealerId);
 
+        $interestRates = DealerInterestRate::where('dealer_id', $dealerId)
+            ->orderBy('sort_order')
+            ->get();
+
         return view('frontend.pages.inventory-listing', $result + [
             'type'              => null,
             'label'             => 'All Inventory',
             'mobileSpacerClass' => 'h-104',
+            'interestRates'     => $interestRates,
             'filters'           => $this->activeFilters($request),
             'seo'               => [
                 'title'       => 'Used Cars for Sale in Smyrna, TN | Angel Motors Inc',
@@ -144,10 +155,15 @@ class FrontendController extends Controller
 
         $this->attachPricing($result['vehicles'], $dealerId);
 
+        $interestRates = DealerInterestRate::where('dealer_id', $dealerId)
+            ->orderBy('sort_order')
+            ->get();
+
         return view('frontend.pages.inventory-listing', $result + [
             'type'              => $type,
             'label'             => $config['label'],
             'mobileSpacerClass' => 'h-104',
+            'interestRates'     => $interestRates,
             'filters'           => $this->activeFilters($request),
             'seo'               => [
                 'title'       => $config['title'],
@@ -179,7 +195,6 @@ class FrontendController extends Controller
     }
 
     // ── Inventory Detail ──────────────────────────────────────────────────────
-
     public function inventoryDetail(Request $request, string $slug): View
     {
         $dealerId = $this->dealerResolver->resolve();
@@ -205,6 +220,37 @@ class FrontendController extends Controller
             })
             ->orderBy('sort_order')
             ->get();
+
+        $interestRates = DealerInterestRate::where('dealer_id', $dealerId)
+            ->where('min_model_year', '<=', $vehicle->year)
+            ->where('max_model_year', '>=', $vehicle->year)
+            ->where(function ($q) use ($vehicle) {
+                $q->whereNull('make')
+                  ->orWhere('make', '')
+                  ->orWhere('make', $vehicle->make?->name);
+            })
+            ->where(function ($q) use ($vehicle) {
+                $vc = $vehicle->vehicle_condition ?? '';
+                if ($vc === 'New') {
+                    $q->whereIn('condition', ['new', 'any']);
+                } elseif ($vc === 'Certified Pre-Owned') {
+                    $q->whereIn('condition', ['cpo', 'used', 'any']);
+                } else {
+                    $q->whereIn('condition', ['used', 'any']);
+                }
+            })
+            ->get()
+            ->sortBy(function ($rate) {
+                $makeScore = empty($rate->make) ? 1 : 0;
+                $conditionScore = ($rate->condition === 'any') ? 1 : 0;
+                return [
+                    $makeScore,
+                    $conditionScore,
+                    $rate->sort_order,
+                    $rate->id
+                ];
+            })
+            ->values();
 
         // ── Pricing ───────────────────────────────────────────────────────────
         $specials     = $this->pricingCalculator->getActiveSpecials($dealerId);
@@ -244,6 +290,7 @@ class FrontendController extends Controller
         return view('frontend.pages.vehicle-detail', compact(
             'vehicle', 'spec', 'allPhotos', 'mainPhoto', 'thumbnails',
             'pricing', 'allSpecials', 'applicableFees', 'groupedOptions', 'faqs', 'related', 'vehicleTitle', 'seo', 'windowSticker',
+            'interestRates'
         ));
     }
 
@@ -282,7 +329,11 @@ class FrontendController extends Controller
 
         $this->attachPricing($newArrivals, $dealerId);
 
-        return view('frontend.pages.about-us', compact('newArrivals'));
+        $interestRates = DealerInterestRate::where('dealer_id', $dealerId)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('frontend.pages.about-us', compact('newArrivals', 'interestRates'));
     }
 
     // ── Contact Us ────────────────────────────────────────────────────────────

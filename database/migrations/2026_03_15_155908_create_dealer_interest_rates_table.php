@@ -14,26 +14,25 @@ return new class extends Migration
         Schema::create('dealer_interest_rates', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('dealer_id')
-                  ->constrained('dealers')
-                  ->cascadeOnUpdate()
-                  ->cascadeOnDelete();
+            $table->foreignId('dealer_id')->constrained('dealers')->cascadeOnUpdate()->cascadeOnDelete();
 
-            $table->string('make', 100)->nullable()
-                  ->comment('null = Any make');
+            $table->string('make', 100)->nullable()->comment('null = Any make');
 
             $table->unsignedSmallInteger('min_model_year')
                   ->comment('Oldest year in range, e.g. 2020');
+
             $table->unsignedSmallInteger('max_model_year')
                   ->comment('Newest year in range, e.g. 2026');
 
             $table->unsignedSmallInteger('min_term')->default(0)
                   ->comment('Minimum loan term in months');
+
             $table->unsignedSmallInteger('max_term')->default(36)
                   ->comment('Maximum loan term in months');
 
             $table->unsignedSmallInteger('min_credit_score')->nullable()
                   ->comment('FICO 300–850');
+                  
             $table->unsignedSmallInteger('max_credit_score')->nullable()
                   ->comment('FICO 300–850');
 

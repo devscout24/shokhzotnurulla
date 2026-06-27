@@ -20,7 +20,13 @@
     $btnText = $p ? $p['button_text'] : null;
     $estimateRate = ($p && $p['applied_special']?->discount_type === 'special' && $p['applied_special']?->finance_rate)
         ? (float) $p['applied_special']->finance_rate
-        : 6.79;
+        : (($interestRates ?? collect())->first(function ($rate) {
+            $termMatches = ($rate->min_term === null || 60 >= $rate->min_term)
+                && ($rate->max_term === null || 60 <= $rate->max_term);
+            $creditMatches = ($rate->min_credit_score === null || 740 >= $rate->min_credit_score)
+                && ($rate->max_credit_score === null || 740 <= $rate->max_credit_score);
+            return $termMatches && $creditMatches;
+        })?->rate ?? 6.79);
     $estimateTerm = ($p && $p['applied_special']?->discount_type === 'special' && $p['applied_special']?->finance_term)
         ? (int) $p['applied_special']->finance_term
         : 60;
@@ -191,6 +197,9 @@
                                             data-vehicle-monthly="{{ $monthly }}"
                                             data-vehicle-rate="{{ $estimateRate }}"
                                             data-vehicle-term="{{ $estimateTerm }}"
+                                            data-vehicle-year="{{ $vehicle->year }}"
+                                            data-vehicle-make="{{ $vehicle->make?->name }}"
+                                            data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
                                             aria-controls="getEstimate">
                                             <small class="opacity-75">Est. Payment</small><br>
                                             <span class="fw-bold">${{ number_format($monthly) }}/mo</span>
@@ -216,6 +225,9 @@
                     data-vehicle-monthly="{{ $monthly }}"
                     data-vehicle-rate="{{ $estimateRate }}"
                     data-vehicle-term="{{ $estimateTerm }}"
+                    data-vehicle-year="{{ $vehicle->year }}"
+                    data-vehicle-make="{{ $vehicle->make?->name }}"
+                    data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
                     aria-controls="getEstimate">
                     Estimate payment
                     <div style="font-size: 10px; font-weight: normal; opacity: 0.9;">No impact to your credit score</div>
