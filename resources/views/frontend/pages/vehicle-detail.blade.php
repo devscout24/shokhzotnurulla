@@ -15,39 +15,39 @@
 @endpush
 
 @php
-    $loc        = $locationMenuData[0] ?? null;
-    $phones     = $loc['phones'] ?? [];
+    $loc = $locationMenuData[0] ?? null;
+    $phones = $loc['phones'] ?? [];
 
     $mainPhone = collect($phones)->firstWhere('type', 'sales')
         ?? collect($phones)->firstWhere('type', 'main')
         ?? collect($phones)->first();
 
     $mainPhoneNumber = $mainPhone ? $mainPhone['number'] : '(615) 267-0590';
-    $mainPhoneRaw    = preg_replace('/\D/', '', $mainPhoneNumber);
+    $mainPhoneRaw = preg_replace('/\D/', '', $mainPhoneNumber);
 
-    $street1    = $loc['street1']    ?? '1339 South Lowry Street';
-    $city       = $loc['city']       ?? 'Smyrna';
-    $state      = $loc['state']      ?? 'TN';
+    $street1 = $loc['street1'] ?? '1339 South Lowry Street';
+    $city = $loc['city'] ?? 'Smyrna';
+    $state = $loc['state'] ?? 'TN';
     $postalcode = $loc['postalcode'] ?? '37167';
     $mapUrl = !empty($loc['map_override'])
-            ? $loc['map_override']
-            : 'https://www.google.com/maps/search/' . urlencode(
-                implode(', ', array_filter([
-                    $loc['street1'] ?? '',
-                    $loc['city']    ?? '',
-                    $loc['state']   ?? '',
-                ]))
-              );
+        ? $loc['map_override']
+        : 'https://www.google.com/maps/search/' . urlencode(
+            implode(', ', array_filter([
+                $loc['street1'] ?? '',
+                $loc['city'] ?? '',
+                $loc['state'] ?? '',
+            ]))
+        );
 @endphp
 
 @php
-    $dealer      = $vehicle?->dealer;
-    $spec        = $vehicle?->specs;
+    $dealer = $vehicle?->dealer;
+    $spec = $vehicle?->specs;
     $photosCount = $vehicle?->photos_count ?? $allPhotos->count();
-    $extraCount  = max(0, $photosCount - 5);
+    $extraCount = max(0, $photosCount - 5);
 
     // Main vehicle — loop se protect karo
-    $mainVehicleId    = $vehicle?->id;
+    $mainVehicleId = $vehicle?->id;
     $mainVehicleTitle = $vehicleTitle;
 
     $horsepower = null;
@@ -82,14 +82,14 @@
     $estimateRate = ($pricing['applied_special'] ?? null)
         && $pricing['applied_special']?->discount_type === 'special'
         && $pricing['applied_special']?->finance_rate
-            ? (float) $pricing['applied_special']->finance_rate
-            : ($matchingDefaultRate ? (float) $matchingDefaultRate->rate : 6.79);
+        ? (float) $pricing['applied_special']->finance_rate
+        : ($matchingDefaultRate ? (float) $matchingDefaultRate->rate : 6.79);
 
     $estimateTerm = ($pricing['applied_special'] ?? null)
         && $pricing['applied_special']?->discount_type === 'special'
         && $pricing['applied_special']?->finance_term
-            ? (int) $pricing['applied_special']->finance_term
-            : 60;
+        ? (int) $pricing['applied_special']->finance_term
+        : 60;
 
     $rRate = ($estimateRate / 100) / 12;
     $calculatedMonthly = $rRate > 0
@@ -98,30 +98,26 @@
 @endphp
 
 @section('page-content')
-
     {{-- ══ Breadcrumb ══ --}}
     <div class="my-3 d-none d-xl-block container">
-        <ol class="breadcrumb my-3 d-none d-xl-flex"
-            itemscope itemtype="https://schema.org/BreadcrumbList">
+        <ol class="breadcrumb my-3 d-none d-xl-flex" itemscope itemtype="https://schema.org/BreadcrumbList">
 
-            <li class="breadcrumb-item notranslate"
-                itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <li class="breadcrumb-item notranslate" itemprop="itemListElement" itemscope
+                itemtype="https://schema.org/ListItem">
                 <a itemprop="item" href="{{ route('frontend.home') }}">
                     <span itemprop="name">Angel Motors Inc</span>
                 </a>
                 <meta itemprop="position" content="1">
             </li>
 
-            <li class="breadcrumb-item"
-                itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                 <a itemprop="item" href="{{ route('frontend.inventory') }}">
                     <span itemprop="name">Inventory</span>
                 </a>
                 <meta itemprop="position" content="2">
             </li>
 
-            <li class="breadcrumb-item active"
-                itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
                 <span itemprop="name">Used {{ $vehicleTitle }}</span>
                 <meta itemprop="position" content="3">
             </li>
@@ -131,11 +127,10 @@
     <div class="d-block d-xl-none h-63" id="mobile-nav-spacer"></div>
 
     <main class="mt-3 mb-3 mb-sm-5 vdp_pre-owned
-        make_{{ Str::slug($vehicle?->make?->name ?? '') }}
-        {{ $vehicle?->bodyType?->name ? 'body_' . Str::slug($vehicle?->bodyType?->name) : '' }}
-        {{ ($vehicle?->original_price && $vehicle?->list_price < $vehicle?->original_price) ? 'has-discount' : 'no-discount' }}
-        container">
-
+            make_{{ Str::slug($vehicle?->make?->name ?? '') }}
+            {{ $vehicle?->bodyType?->name ? 'body_' . Str::slug($vehicle?->bodyType?->name) : '' }}
+            {{ ($vehicle?->original_price && $vehicle?->list_price < $vehicle?->original_price) ? 'has-discount' : 'no-discount' }}
+            container">
         <div class="row">
 
             {{-- ══════ LEFT COLUMN ══════ --}}
@@ -146,29 +141,16 @@
                             <div class="sc-5176998-0 jHXOJF {{ $photosCount > 0 ? 'hasPhotos' : '' }} noVideo">
 
                                 {{-- Main Photo --}}
-                                <div class="position-relative cursor-pointer"
-                                     data-bs-toggle="modal"
-                                     data-bs-target="#modalGallery"
-                                     id="vdp_photo_main">
+                                <div class="position-relative cursor-pointer" data-bs-toggle="modal"
+                                    data-bs-target="#modalGallery" id="vdp_photo_main">
                                     @if($mainPhoto)
-                                        <img id="vdpMainPhoto"
-                                             alt="{{ $vehicleTitle }} for sale in Smyrna, TN"
-                                             fetchpriority="high"
-                                             loading="eager"
-                                             width="926"
-                                             height="694"
-                                             decoding="async"
-                                             class="main-photo"
-                                             src="{{ $mainPhoto->url }}">
+                                        <img id="vdpMainPhoto" alt="{{ $vehicleTitle }} for sale in Smyrna, TN"
+                                            fetchpriority="high" loading="eager" width="926" height="694" decoding="async"
+                                            class="main-photo" src="{{ $mainPhoto->url }}">
                                     @else
-                                        <img id="vdpMainPhoto"
-                                             alt="{{ $vehicleTitle }}"
-                                             fetchpriority="high"
-                                             loading="eager"
-                                             width="926"
-                                             height="694"
-                                             class="main-photo"
-                                             src="{{ asset('assets/frontend/img/no-photo.webp') }}">
+                                        <img id="vdpMainPhoto" alt="{{ $vehicleTitle }}" fetchpriority="high" loading="eager"
+                                            width="926" height="694" class="main-photo"
+                                            src="{{ asset('assets/frontend/img/no-photo.webp') }}">
                                     @endif
                                 </div>
 
@@ -177,21 +159,16 @@
 
                                     @forelse($thumbnails as $thumb)
                                         <div class="thumbnail-wrapper">
-                                            <img src="{{ $thumb?->url }}"
-                                                 class="thumbnail vdp-thumb"
-                                                 data-full="{{ $thumb?->url }}"
-                                                 alt="{{ $vehicleTitle }}"
-                                                 loading="lazy">
+                                            <img src="{{ $thumb?->url }}" class="thumbnail vdp-thumb"
+                                                data-full="{{ $thumb?->url }}" alt="{{ $vehicleTitle }}" loading="lazy">
                                         </div>
                                     @empty
                                         {{-- No thumbnails — keep grid layout intact --}}
                                     @endforelse
 
                                     @if($extraCount > 0)
-                                        <div class="has-more-photos gallery-thumb-d"
-                                             data-bs-toggle="modal"
-                                             data-bs-target="#modalGallery"
-                                             style="cursor:pointer;">
+                                        <div class="has-more-photos gallery-thumb-d" data-bs-toggle="modal"
+                                            data-bs-target="#modalGallery" style="cursor:pointer;">
                                             <div class="more-photos-overlay cursor-pointer">
                                                 +{{ $extraCount }} more
                                             </div>
@@ -239,21 +216,19 @@
 
                                         @if($pricing['is_formfill'])
                                             <strong class="label-price mb-2 mb-md-1 text-muted"
-                                                    style="filter:blur(5px);user-select:none;">
+                                                style="filter:blur(5px);user-select:none;">
                                                 ${{ number_format($pricing['final_price']) }}
                                             </strong>
                                             <div class="mt-1">
                                                 {{-- Formfill button --}}
-                                            <button type="button"
+                                                <button type="button"
                                                     class="btn btn-outline-secondary btn-sm w-100 btn-unlock-price"
-                                                    data-bs-toggle="offcanvas"
-                                                    data-bs-target="#unlockEPrice"
+                                                    data-bs-toggle="offcanvas" data-bs-target="#unlockEPrice"
                                                     data-vehicle-id="{{ $mainVehicleId }}"
-                                                    data-vehicle-title="{{ $mainVehicleTitle }}"
-                                                    style="font-size:12px;">
-                                                <i class="fa-solid fa-lock me-1"></i>
-                                                {{ $pricing['button_text'] ?: 'Get e-Price' }}
-                                            </button>
+                                                    data-vehicle-title="{{ $mainVehicleTitle }}" style="font-size:12px;">
+                                                    <i class="fa-solid fa-lock me-1"></i>
+                                                    {{ $pricing['button_text'] ?: 'Get e-Price' }}
+                                                </button>
                                             </div>
                                         @elseif($pricing['is_special_finance'])
                                             <strong class="label-price mb-2 mb-md-1">
@@ -280,21 +255,20 @@
                                 <div class="text-end d-block d-xl-none col-5"><br></div>
                                 <div class="col-12">
                                     <span class="rounded bg-light p-2 d-block text-end border mt-1"
-                                          data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
-                                          data-vehicle-title="{{ $mainVehicleTitle }}"
-                                          data-vehicle-price="{{ $pricing['final_price'] }}"
-                                          data-vehicle-monthly="{{ $calculatedMonthly }}"
-                                          data-vehicle-rate="{{ $estimateRate }}"
-                                          data-vehicle-term="{{ $estimateTerm }}"
-                                          data-vehicle-year="{{ $vehicle->year }}"
-                                          data-vehicle-make="{{ $vehicle->make?->name }}"
-                                          data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
-                                          aria-controls="getEstimate">
+                                        data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                                        data-vehicle-title="{{ $mainVehicleTitle }}"
+                                        data-vehicle-price="{{ $pricing['final_price'] }}"
+                                        data-vehicle-monthly="{{ $calculatedMonthly }}"
+                                        data-vehicle-rate="{{ $estimateRate }}" data-vehicle-term="{{ $estimateTerm }}"
+                                        data-vehicle-year="{{ $vehicle->year }}"
+                                        data-vehicle-make="{{ $vehicle->make?->name }}"
+                                        data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
+                                        aria-controls="getEstimate">
                                         <span class="badge badge-secondary text-uppercase me-2 float-start">
                                             Estimated Payment
                                         </span>
                                         ${{ number_format($calculatedMonthly) }} / mo.
-                                                                                <span class="ms-2 text-primary">
+                                        <span class="ms-2 text-primary">
                                             <i class="fa-regular fa-pen-to-square fa-lg"></i>
                                         </span>
                                     </span>
@@ -302,22 +276,23 @@
                             </div>
 
                             {{-- ── On sale now! section ── --}}
-                            @if($pricing['has_discount'] && ! $pricing['is_formfill'])
+                            @if($pricing['has_discount'] && !$pricing['is_formfill'])
                                 @php
-                                    $isOffsetType    = $pricing['applied_special'] &&
-                                                       in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
+                                    $isOffsetType = $pricing['applied_special'] &&
+                                        in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
                                     $originalDisplay = $isOffsetType && $pricing['msrp'] > 0
-                                                       ? $pricing['msrp']
-                                                       : $vehicle?->list_price;
-                                    $discountAmt     = $pricing['savings'];
-                                    $isIncrease      = $pricing['applied_special'] &&
-                                                       in_array($pricing['applied_special']?->discount_type, ['increase', 'offsetincrease']);
-                                    $sign            = $isIncrease ? '+' : '-';
+                                        ? $pricing['msrp']
+                                        : $vehicle?->list_price;
+                                    $discountAmt = $pricing['savings'];
+                                    $isIncrease = $pricing['applied_special'] &&
+                                        in_array($pricing['applied_special']?->discount_type, ['increase', 'offsetincrease']);
+                                    $sign = $isIncrease ? '+' : '-';
                                 @endphp
                                 <div id="vdp-onsale-section-mobile" class="border rounded py-2 px-2 mt-3 mb-2">
                                     <div id="vdp-onsale-toggle-mobile" class="cursor-pointer d-flex">
                                         <div class="text-truncate pe-2 w-100 notranslate d-flex align-items-center">
-                                            <span class="pt-1" style="font-size:13px;font-weight:600;color:#333;">On sale now!</span>
+                                            <span class="pt-1" style="font-size:13px;font-weight:600;color:#333;">On sale
+                                                now!</span>
                                         </div>
                                         <span id="vdp-onsale-icon-mobile" class="d-inline-block text-primary mt-1 float-end">
                                             <i class="fa-solid fa-square-minus fa-sm"></i>
@@ -326,10 +301,10 @@
                                     <div id="vdp-onsale-body-mobile" class="border-top mt-2 pt-2" style="font-size:13px;">
                                         @php
                                             $isOffsetType = $pricing['applied_special'] &&
-                                                            in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
+                                                in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
                                             $originalDisplay = $isOffsetType && $pricing['msrp'] > 0
-                                                               ? $pricing['msrp']
-                                                               : $vehicle?->list_price;
+                                                ? $pricing['msrp']
+                                                : $vehicle?->list_price;
                                         @endphp
                                         <div class="d-flex justify-content-between py-1 border-bottom">
                                             <span class="text-muted">Original price</span>
@@ -348,16 +323,21 @@
                                             <span>${{ number_format($pricing['final_price']) }}</span>
                                         </div>
                                         {{-- ── Applicable Fees ── --}}
+
                                         @foreach($applicableFees as $fee)
                                             @php
                                                 $feeAmount = $fee->type === 'amount'
                                                     ? '$' . number_format($fee->value, 2)
                                                     : number_format($fee->value, 2) . '%';
                                             @endphp
-                                            <div class="d-flex justify-content-between py-1 {{ ! $loop->last ? 'border-bottom' : '' }}">
+
+                                            <div class="d-flex justify-content-between py-1 {{ !$loop->last ? 'border-bottom' : '' }}">
                                                 <span class="text-muted d-flex align-items-center gap-1">
                                                     <i class="fa-solid fa-circle-info" style="font-size:11px;"></i>
                                                     {{ $fee->name }}
+                                                    @if($fee->is_optional)
+                                                        <small class="text-muted">(optional)</small>
+                                                    @endif
                                                 </span>
                                                 <span class="text-muted">{{ $feeAmount }}</span>
                                             </div>
@@ -394,16 +374,15 @@
                                     {{ $city }}, {{ $state }} {{ $postalcode }}
                                     <div class="g-2 mt-2 pb-1 row">
                                         <div class="col-6">
-                                            <a href="{{ $mapUrl }}"
-                                               target="_blank"
-                                               class="btn btn-primary bg-white w-100 text-start d-flex align-items-center">
+                                            <a href="{{ $mapUrl }}" target="_blank"
+                                                class="btn btn-primary bg-white w-100 text-start d-flex align-items-center">
                                                 <i class="fa-solid fa-location-arrow me-2 text-white"></i>
                                                 Directions
                                             </a>
                                         </div>
                                         <div class="col-6">
                                             <a href="tel:{{ $mainPhoneRaw }}"
-                                               class="btn btn-primary bg-white w-100 text-start d-flex align-items-center">
+                                                class="btn btn-primary bg-white w-100 text-start d-flex align-items-center">
                                                 <i class="fa-solid fa-phone me-2 text-white"></i>
                                                 Call
                                             </a>
@@ -418,9 +397,8 @@
                     <div class="d-block d-xl-none bg-white text-center p-0 card-footer">
                         <div class="pt-0 pt-sm-1 pb-3 pb-sm-4 px-3 px-sm-4 bg-lighter card-footer" id="vdpctas">
 
-                            <button data-bs-toggle="offcanvas" data-bs-target="#unlockManager"
-                                    type="button"
-                                    class="text-nowrap text-start w-100 d-flex align-items-center mt-3 btn btn-primary">
+                            <button data-bs-toggle="offcanvas" data-bs-target="#unlockManager" type="button"
+                                class="text-nowrap text-start w-100 d-flex align-items-center mt-3 btn btn-primary">
                                 <span class="me-2 text-white">
                                     <i class="fa-solid fa-unlock-keyhole fa-lg"></i>
                                 </span>
@@ -428,7 +406,7 @@
                             </button>
 
                             <button type="button" data-bs-toggle="offcanvas" data-bs-target="#getApproved"
-                                    class="text-nowrap text-start w-100 d-flex align-items-center mt-3 bg-white btn btn-default">
+                                class="text-nowrap text-start w-100 d-flex align-items-center mt-3 bg-white btn btn-default">
                                 <span class="d-inline-block me-2 fa-fw text-primary">
                                     <i class="fa-solid fa-percent fa-lg"></i>
                                 </span>
@@ -436,7 +414,7 @@
                             </button>
 
                             <button type="button" data-bs-toggle="offcanvas" data-bs-target="#scheduleTest"
-                                    class="text-nowrap text-start w-100 d-flex align-items-center mt-3 bg-white btn btn-default">
+                                class="text-nowrap text-start w-100 d-flex align-items-center mt-3 bg-white btn btn-default">
                                 <span class="me-2 text-primary">
                                     <i class="fa-solid fa-car fa-lg"></i>
                                 </span>
@@ -452,19 +430,19 @@
                                     </span>
                                     Share
                                 </div>
-                                <div class="py-3 cursor-pointer col-4"
-                                     data-bs-toggle="offcanvas" data-bs-target="#askQuestion">
+                                <div class="py-3 cursor-pointer col-4" data-bs-toggle="offcanvas"
+                                    data-bs-target="#askQuestion">
                                     <span class="text-muted d-block">
                                         <i class="fa-regular fa-message fa-lg"></i>
                                     </span>
                                     Questions?
                                 </div>
                                 <div class="py-3 cursor-pointer col-4" data-cy="btn-favorite"
-                                     data-vehicle-id="{{ $vehicle?->id }}"
-                                     data-vehicle-name="{{ $vehicle?->year }} {{ $vehicle?->make?->name }} {{ $vehicle?->makeModel?->name }}"
-                                     data-vehicle-price="{{ $vehicle?->price > 0 ? '$' . number_format($vehicle?->price) : 'Call' }}"
-                                     data-vehicle-image="{{ $mainPhoto?->url ?: asset('assets/frontend/img/no-photo.webp') }}"
-                                     data-vehicle-url="{{ route('frontend.inventory.show', $vehicle?->slug) }}">
+                                    data-vehicle-id="{{ $vehicle?->id }}"
+                                    data-vehicle-name="{{ $vehicle?->year }} {{ $vehicle?->make?->name }} {{ $vehicle?->makeModel?->name }}"
+                                    data-vehicle-price="{{ $vehicle?->price > 0 ? '$' . number_format($vehicle?->price) : 'Call' }}"
+                                    data-vehicle-image="{{ $mainPhoto?->url ?: asset('assets/frontend/img/no-photo.webp') }}"
+                                    data-vehicle-url="{{ route('frontend.inventory.show', $vehicle?->slug) }}">
                                     <span class="text-muted d-block p-1">
                                         <i class="fa-regular fa-heart fa-lg"></i>
                                     </span>
@@ -658,18 +636,21 @@
                                             <td colspan="2" class="p-0">
                                                 @if($windowSticker ?? null)
                                                     <a href="{{ route('frontend.inventory.vehicle.printable', [$vehicle, $windowSticker]) }}"
-                                                       target="_blank"
-                                                       title="View Window Sticker"
-                                                       class="bg-white d-flex align-items-center p-2 w-100 border rounded mt-1">
+                                                        target="_blank" title="View Window Sticker"
+                                                        class="bg-white d-flex align-items-center p-2 w-100 border rounded mt-1">
                                                         <span class="px-2 py-1 bg-primary me-2 rounded text-white">
-                                                            <svg width="16" height="16" viewBox="0 0 448 512" fill="currentColor">
-                                                                <path d="M64 64h320v48H64zM64 160h320v48H64zM64 256h320v48H64z"/>
+                                                            <svg width="16" height="16" viewBox="0 0 448 512"
+                                                                fill="currentColor">
+                                                                <path
+                                                                    d="M64 64h320v48H64zM64 160h320v48H64zM64 256h320v48H64z" />
                                                             </svg>
                                                         </span>
                                                         View Window Sticker
                                                         <span class="ms-auto text-primary">
-                                                            <svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor">
-                                                                <path d="M320 0h192v192h-64V109.3L256 301.3l-45.3-45.3L402.7 64H320V0zM64 64h192v64H128v256h256V256h64v192c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128c0-35.3 28.7-64 64-64z"/>
+                                                            <svg width="16" height="16" viewBox="0 0 512 512"
+                                                                fill="currentColor">
+                                                                <path
+                                                                    d="M320 0h192v192h-64V109.3L256 301.3l-45.3-45.3L402.7 64H320V0zM64 64h192v64H128v256h256V256h64v192c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128c0-35.3 28.7-64 64-64z" />
                                                             </svg>
                                                         </span>
                                                     </a>
@@ -686,19 +667,17 @@
 
                     {{-- ── Carfax — static ── --}}
                     <div class="py-1 px-4 container-carfax card-footer">
-                        <a href="#" target="_blank"
-                           class="d-flex align-items-center w-100 text-decoration-none">
+                        <a href="#" target="_blank" class="d-flex align-items-center w-100 text-decoration-none">
                             <div class="carfax-badge py-1 px-2 rounded">
-                                <img src="{{ asset('assets/frontend/img/fair.svg') }}"
-                                     alt="Free Carfax Report"
-                                     width="105" height="70"
-                                     loading="lazy">
+                                <img src="{{ asset('assets/frontend/img/fair.svg') }}" alt="Free Carfax Report" width="105"
+                                    height="70" loading="lazy">
                             </div>
                             <div class="ms-auto text-md-end">
                                 <del class="text-muted">$44.99</del><br>
                                 <span class="text-primary d-inline-flex align-items-center gap-1">
                                     <svg width="16" height="16" viewBox="0 0 512 512" fill="currentColor">
-                                        <path d="M320 0h192v192h-64V109.3L256 301.3l-45.3-45.3L402.7 64H320V0zM64 64h192v64H128v256h256V256h64v192c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128c0-35.3 28.7-64 64-64z"/>
+                                        <path
+                                            d="M320 0h192v192h-64V109.3L256 301.3l-45.3-45.3L402.7 64H320V0zM64 64h192v64H128v256h256V256h64v192c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128c0-35.3 28.7-64 64-64z" />
                                     </svg>
                                     View CARFAX Report
                                 </span>
@@ -736,7 +715,8 @@
                                 <h5 class="h5 my-0 fw-bold mb-0">{{ $categoryName }}</h5>
                                 <span class="text-primary d-inline-block collapse-icon">
                                     <svg width="16" height="16" viewBox="0 0 448 512" fill="currentColor">
-                                        <path d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z"/>
+                                        <path
+                                            d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z" />
                                     </svg>
                                 </span>
                             </div>
@@ -764,7 +744,8 @@
                                 </h5>
                                 <span class="text-primary d-inline-block collapse-icon">
                                     <svg width="16" height="16" viewBox="0 0 448 512" fill="currentColor">
-                                        <path d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z"/>
+                                        <path
+                                            d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z" />
                                     </svg>
                                 </span>
                             </div>
@@ -774,11 +755,13 @@
                             <div class="bg-white border overflow-hidden rounded">
                                 @foreach($faqs as $faq)
                                     <div class="accordion-item bg-white border border-bottom px-3 py-2">
-                                        <div class="d-flex align-items-center justify-content-between cursor-pointer accordion-header">
+                                        <div
+                                            class="d-flex align-items-center justify-content-between cursor-pointer accordion-header">
                                             <h5 class="h5 my-0 fw-bold mb-0">{{ $faq['question'] }}</h5>
                                             <span class="text-primary d-inline-block collapse-icon">
                                                 <svg width="16" height="16" viewBox="0 0 448 512" fill="currentColor">
-                                                    <path d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z"/>
+                                                    <path
+                                                        d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z" />
                                                 </svg>
                                             </span>
                                         </div>
@@ -805,23 +788,20 @@
                                     <div class="col-12"></div>
                                     <div class="text-start col-7">
                                         <div class="text-large" id="vdp_top_price">
-
                                             <div class="text-medium mb-1">{{ $pricing['price_label'] }}</div>
 
                                             @if($pricing['is_formfill'])
                                                 <strong class="label-price mb-2 mb-md-1 text-muted"
-                                                        style="filter:blur(5px);user-select:none;">
+                                                    style="filter:blur(5px);user-select:none;">
                                                     ${{ number_format($pricing['final_price']) }}
                                                 </strong>
                                                 <div class="mt-1">
                                                     {{-- Formfill button --}}
                                                     <button type="button"
-                                                            class="btn btn-outline-secondary btn-sm w-100 btn-unlock-price"
-                                                            data-bs-toggle="offcanvas"
-                                                            data-bs-target="#unlockEPrice"
-                                                            data-vehicle-id="{{ $mainVehicleId }}"
-                                                            data-vehicle-title="{{ $mainVehicleTitle }}"
-                                                            style="font-size:12px;">
+                                                        class="btn btn-outline-secondary btn-sm w-100 btn-unlock-price"
+                                                        data-bs-toggle="offcanvas" data-bs-target="#unlockEPrice"
+                                                        data-vehicle-id="{{ $mainVehicleId }}"
+                                                        data-vehicle-title="{{ $mainVehicleTitle }}" style="font-size:12px;">
                                                         <i class="fa-solid fa-lock me-1"></i>
                                                         {{ $pricing['button_text'] ?: 'Get e-Price' }}
                                                     </button>
@@ -850,17 +830,16 @@
                                     </div>
                                     <div class="text-end d-block d-xl-none col-5"><br></div>
                                     <div class="col-12">
-                                    <div class="bg-lighter border rounded py-2 px-3 mt-2 align-items-center text-center cursor-pointer"
-                                        data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
-                                        data-vehicle-title="{{ $mainVehicleTitle }}"
-                                        data-vehicle-price="{{ $pricing['final_price'] }}"
-                                        data-vehicle-monthly="{{ $calculatedMonthly }}"
-                                        data-vehicle-rate="{{ $estimateRate }}"
-                                        data-vehicle-term="{{ $estimateTerm }}"
-                                        data-vehicle-year="{{ $vehicle->year }}"
-                                        data-vehicle-make="{{ $vehicle->make?->name }}"
-                                        data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
-                                        aria-controls="getEstimate">
+                                        <div class="bg-lighter border rounded py-2 px-3 mt-2 align-items-center text-center cursor-pointer"
+                                            data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                                            data-vehicle-title="{{ $mainVehicleTitle }}"
+                                            data-vehicle-price="{{ $pricing['final_price'] }}"
+                                            data-vehicle-monthly="{{ $calculatedMonthly }}"
+                                            data-vehicle-rate="{{ $estimateRate }}" data-vehicle-term="{{ $estimateTerm }}"
+                                            data-vehicle-year="{{ $vehicle->year }}"
+                                            data-vehicle-make="{{ $vehicle->make?->name }}"
+                                            data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
+                                            aria-controls="getEstimate">
                                             <span class="badge badge-secondary text-uppercase mb-2">Estimated Payment</span>
                                             <div class="text-large">
                                                 ${{ number_format($calculatedMonthly) }} / month
@@ -869,40 +848,71 @@
                                     </div>
                                 </div>
 
+                                {{-- cash price --}}
+                                <div class="card-body border rounded p-0 mt-2 overflow-hidden" style="font-size: 15px;">
+                                    <div class="d-flex justify-content-between align-items-center px-3 py-2 fw-bold text-dark">
+                                        <span>Cash price</span>
+                                        <span>${{ number_format($pricing['final_price']) }}</span>
+                                    </div>
+
+                                    @foreach ($applicableFees as $fees)
+                                        @php
+                                            $feeAmount = $fees?->type === 'amount'
+                                                ? '$' . number_format($fees?->value, 0) // Changed to 0 decimals to match screenshot ($599)
+                                                : number_format($fees?->value, 2) . '%';
+                                        @endphp
+
+                                        <div class="d-flex justify-content-between align-items-center bg-light border-top px-3 py-2 text-secondary">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="bi bi-question-circle text-muted" style="font-size: 14px;"></i>
+
+                                                <span>{{ $fees?->name }}</span>
+                                                @if($fees?->is_optional)
+                                                    <small class="text-muted ms-1">(optional)</small>
+                                                @endif
+                                            </div>
+                                            <span class="fw-semibold text-dark">{{ $feeAmount }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+
                                 {{-- ── On sale now! section ── --}}
-                                @if($pricing['has_discount'] && ! $pricing['is_formfill'])
+                                @if($pricing['has_discount'] && !$pricing['is_formfill'])
                                     @php
-                                        $isOffsetType    = $pricing['applied_special'] &&
-                                                           in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
+                                        $isOffsetType = $pricing['applied_special'] &&
+                                            in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
                                         $originalDisplay = $isOffsetType && $pricing['msrp'] > 0
-                                                           ? $pricing['msrp']
-                                                           : $vehicle?->list_price;
-                                        $discountAmt     = $pricing['savings'];
-                                        $isIncrease      = $pricing['applied_special'] &&
-                                                           in_array($pricing['applied_special']?->discount_type, ['increase', 'offsetincrease']);
-                                        $sign            = $isIncrease ? '+' : '-';
+                                            ? $pricing['msrp']
+                                            : $vehicle?->list_price;
+                                        $discountAmt = $pricing['savings'];
+                                        $isIncrease = $pricing['applied_special'] &&
+                                            in_array($pricing['applied_special']?->discount_type, ['increase', 'offsetincrease']);
+                                        $sign = $isIncrease ? '+' : '-';
                                     @endphp
                                     <div id="vdp-onsale-section" class="border rounded py-2 px-2 mt-3 mb-2">
                                         <div id="vdp-onsale-toggle" class="cursor-pointer d-flex">
                                             <div class="text-truncate pe-2 w-100 notranslate d-flex align-items-center">
-                                                <span class="pt-1" style="font-size:13px;font-weight:600;color:#333;">On sale now!</span>
+                                                <span class="pt-1" style="font-size:13px;font-weight:600;color:#333;">On sale
+                                                    now!</span>
                                             </div>
                                             <span id="vdp-onsale-icon" class="d-inline-block text-primary mt-1 float-end">
                                                 <i class="fa-solid fa-square-minus fa-sm"></i>
                                             </span>
                                         </div>
-                                        <div id="vdp-onsale-body" class="border-top mt-2 pt-2" style="display:block; font-size:13px;">
+                                        <div id="vdp-onsale-body" class="border-top mt-2 pt-2"
+                                            style="display:block; font-size:13px;">
                                             @php
                                                 $isOffsetType = $pricing['applied_special'] &&
-                                                                in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
+                                                    in_array($pricing['applied_special']?->discount_type, ['offsetdollar', 'offsetincrease']);
                                                 $originalDisplay = $isOffsetType && $pricing['msrp'] > 0
-                                                                   ? $pricing['msrp']
-                                                                   : $vehicle?->list_price;
+                                                    ? $pricing['msrp']
+                                                    : $vehicle?->list_price;
                                             @endphp
                                             <div class="d-flex justify-content-between py-1 border-bottom">
                                                 <span class="text-muted">Original price</span>
                                                 <span>${{ number_format($originalDisplay) }}</span>
                                             </div>
+
                                             @if($pricing['applied_special'])
                                                 <div class="d-flex justify-content-between py-1 border-bottom">
                                                     <span class="text-muted">{{ $pricing['applied_special']?->title }}</span>
@@ -922,10 +932,13 @@
                                                         ? '$' . number_format($fee?->value, 2)
                                                         : number_format($fee?->value, 2) . '%';
                                                 @endphp
-                                                <div class="d-flex justify-content-between py-1 {{ ! $loop->last ? 'border-bottom' : '' }}">
+                                                <div class="d-flex justify-content-between py-1 {{ !$loop->last ? 'border-bottom' : '' }}">
                                                     <span class="text-muted d-flex align-items-center gap-1">
                                                         <i class="fa-solid fa-circle-info" style="font-size:11px;"></i>
                                                         {{ $fee?->name }}
+                                                        @if($fee?->is_optional)
+                                                            <small class="text-muted">(optional)</small>
+                                                        @endif
                                                     </span>
                                                     <span class="text-muted">{{ $feeAmount }}</span>
                                                 </div>
@@ -962,16 +975,15 @@
                                         {{ $city }}, {{ $state }} {{ $postalcode }}
                                         <div class="g-2 mt-2 pb-1 row">
                                             <div class="col-6">
-                                                <a href="{{ $mapUrl }}"
-                                               target="_blank"
-                                               class="btn btn-primary bg-white w-100 text-start d-flex align-items-center">
-                                                <i class="fa-solid fa-location-arrow me-2 text-white"></i>
-                                                Directions
-                                            </a>
+                                                <a href="{{ $mapUrl }}" target="_blank"
+                                                    class="btn btn-primary bg-white w-100 text-start d-flex align-items-center">
+                                                    <i class="fa-solid fa-location-arrow me-2 text-white"></i>
+                                                    Directions
+                                                </a>
                                             </div>
                                             <div class="col-6">
                                                 <a href="tel:{{ $mainPhoneRaw }}"
-                                                   class="btn btn-primary bg-white w-100 text-start d-flex align-items-center">
+                                                    class="btn btn-primary bg-white w-100 text-start d-flex align-items-center">
                                                     <i class="fa-solid fa-phone me-2 text-white"></i>
                                                     Call
                                                 </a>
@@ -984,7 +996,7 @@
 
                         <div class="pt-0 pt-sm-1 pb-3 pb-sm-4 px-3 px-sm-4 bg-lighter card-footer" id="vdpctas">
                             <button type="button" data-bs-toggle="offcanvas" data-bs-target="#unlockManager"
-                                    class="text-nowrap text-start w-100 d-flex align-items-center mt-3 btn btn-primary">
+                                class="text-nowrap text-start w-100 d-flex align-items-center mt-3 btn btn-primary">
                                 <span class="d-inline-block me-2 fa-fw text-white">
                                     <i class="fa-solid fa-unlock-keyhole fa-lg"></i>
                                 </span>
@@ -992,7 +1004,7 @@
                             </button>
 
                             <button type="button" data-bs-toggle="offcanvas" data-bs-target="#getApproved"
-                                    class="text-nowrap text-start w-100 d-flex align-items-center mt-3 bg-white btn btn-default">
+                                class="text-nowrap text-start w-100 d-flex align-items-center mt-3 bg-white btn btn-default">
                                 <span class="d-inline-block me-2 fa-fw text-primary">
                                     <i class="fa-solid fa-percent fa-lg"></i>
                                 </span>
@@ -1000,7 +1012,7 @@
                             </button>
 
                             <button type="button" data-bs-toggle="offcanvas" data-bs-target="#scheduleTest"
-                                    class="text-nowrap text-start w-100 d-flex align-items-center mt-3 bg-white btn btn-default">
+                                class="text-nowrap text-start w-100 d-flex align-items-center mt-3 bg-white btn btn-default">
                                 <span class="d-inline-block me-2 fa-fw text-primary">
                                     <i class="fa-solid fa-car fa-lg"></i>
                                 </span>
@@ -1010,26 +1022,25 @@
 
                         <div class="border-top py-0 card-body" id="cta-buyersactions">
                             <div class="bg-white row-bordered mx-n4 text-center row">
-                                <div class="py-3 cursor-pointer col-4"
-                                     data-bs-toggle="modal" data-bs-target="#modalShare">
+                                <div class="py-3 cursor-pointer col-4" data-bs-toggle="modal" data-bs-target="#modalShare">
                                     <span class="d-inline-block text-muted h4 w-100 d-block text-center">
                                         <i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i>
                                     </span>
                                     Share
                                 </div>
                                 <div data-bs-toggle="offcanvas" data-bs-target="#askQuestion"
-                                     class="py-3 cursor-pointer col-4">
+                                    class="py-3 cursor-pointer col-4">
                                     <span class="d-inline-block text-muted h4 w-100 d-block text-center">
                                         <i class="fa-regular fa-message fa-lg"></i>
                                     </span>
                                     Questions?
                                 </div>
                                 <div data-cy="btn-favorite" class="py-3 cursor-pointer col-4"
-                                     data-vehicle-id="{{ $vehicle?->id }}"
-                                     data-vehicle-name="{{ $vehicle?->year }} {{ $vehicle?->make?->name }} {{ $vehicle?->makeModel?->name }}"
-                                     data-vehicle-price="{{ $vehicle?->price > 0 ? '$' . number_format($vehicle?->price) : 'Call' }}"
-                                     data-vehicle-image="{{ $mainPhoto?->url ?: asset('assets/frontend/img/no-photo.webp') }}"
-                                     data-vehicle-url="{{ route('frontend.inventory.show', $vehicle?->slug) }}">
+                                    data-vehicle-id="{{ $vehicle?->id }}"
+                                    data-vehicle-name="{{ $vehicle?->year }} {{ $vehicle?->make?->name }} {{ $vehicle?->makeModel?->name }}"
+                                    data-vehicle-price="{{ $vehicle?->price > 0 ? '$' . number_format($vehicle?->price) : 'Call' }}"
+                                    data-vehicle-image="{{ $mainPhoto?->url ?: asset('assets/frontend/img/no-photo.webp') }}"
+                                    data-vehicle-url="{{ route('frontend.inventory.show', $vehicle?->slug) }}">
                                     <span class="d-inline-block text-muted h4 w-100 d-block text-center mb-1">
                                         <i class="fa-regular fa-heart fa-lg"></i>
                                     </span>
@@ -1040,13 +1051,10 @@
                     </div>
 
                     {{-- Trade-in CTA --}}
-                    <div id="vdp-trade-cta"
-                         data-bs-toggle="offcanvas"
-                         data-bs-target="#getTrade"
-                         class="text-center cursor-pointer bg-primary rounded text-white p-4 my-4 d-flex align-items-center">
-                        <img alt="Get your trade-in value" loading="lazy"
-                             width="50" height="50" decoding="async"
-                             src="https://static.overfuel.com/images/icons/streamlinehq-car-tool-keys-transportation-white-200.PNG?w=128&q=80">
+                    <div id="vdp-trade-cta" data-bs-toggle="offcanvas" data-bs-target="#getTrade"
+                        class="text-center cursor-pointer bg-primary rounded text-white p-4 my-4 d-flex align-items-center">
+                        <img alt="Get your trade-in value" loading="lazy" width="50" height="50" decoding="async"
+                            src="https://static.overfuel.com/images/icons/streamlinehq-car-tool-keys-transportation-white-200.PNG?w=128&q=80">
                         <div class="px-3 mb-0 ms-1 text-start">
                             <div class="h4 mb-0">What's your car worth?</div>
                             Get your trade-in value
@@ -1101,7 +1109,10 @@
             <p>{!! $inventoryDisclaimer !!}</p>
         @else
             <p>
-                It is the customer's sole responsibility to verify the existence and condition of any equipment listed. Neither the dealership nor eBizAutos is responsible for misprints on prices or equipment. It is the customer's sole responsibility to verify the accuracy of the prices with the dealer, including the pricing for all added accessories. Financing Fees apply for all vehicles not purchased with cash. See Dealer for details.
+                It is the customer's sole responsibility to verify the existence and condition of any equipment listed. Neither
+                the dealership nor eBizAutos is responsible for misprints on prices or equipment. It is the customer's sole
+                responsibility to verify the accuracy of the prices with the dealer, including the pricing for all added
+                accessories. Financing Fees apply for all vehicles not purchased with cash. See Dealer for details.
             </p>
         @endif
     </div>
@@ -1123,9 +1134,9 @@
 @push('page-scripts')
     <script>
         window.tiRoutes = {
-            tradeIn:       '{{ route('frontend.forms.trade-in') }}',
+            tradeIn: '{{ route('frontend.forms.trade-in') }}',
             tradeInPhotos: '{{ route('frontend.forms.trade-in.photos') }}',
-            makeModels:    '{{ route('frontend.data.make-models', ['make' => '__make__']) }}',
+            makeModels: '{{ route('frontend.data.make-models', ['make' => '__make__']) }}',
         };
 
         window.gaRoutes = {

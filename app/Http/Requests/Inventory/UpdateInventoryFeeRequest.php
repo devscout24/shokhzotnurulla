@@ -14,7 +14,7 @@ class UpdateInventoryFeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "location_id" => ["nullable", "exists:locations,id"],
+            "location_id" => ["required", "exists:locations,id"],
             'name'        => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string', 'max:500'],
             'type'        => ['required', 'in:amount,percentage'],

@@ -199,6 +199,7 @@ class FrontendController extends Controller
     {
         $dealerId = $this->dealerResolver->resolve();
         $vehicle  = $this->vehicleDetail->loadVehicle($slug, $dealerId);
+        $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
         $sessionKey = "viewed_vehicle_{$vehicle->id}";
         if (! session()->has($sessionKey)) {
@@ -208,10 +209,9 @@ class FrontendController extends Controller
 
         $applicableFees = DealerInventoryFee::where('dealer_id', $dealerId)
             ->where('is_optional', false)
-            ->where(function ($q) use ($vehicle) {
-                // null location_id = applies to all locations; or must match vehicle's location
+            ->where(function ($q) use ($vehicle, $locationId) {
                 $q->whereNull('location_id')
-                  ->orWhere('location_id', $vehicle->location_id);
+                  ->orWhere('location_id', $locationId);
             })
             ->where(function ($q) use ($vehicle) {
                 $q->where('condition', 'any')
@@ -226,7 +226,7 @@ class FrontendController extends Controller
             })
             ->orderBy('sort_order')
             ->get();
-
+// dd($applicableFees);
         $interestRates = DealerInterestRate::where('dealer_id', $dealerId)
             ->where('min_model_year', '<=', $vehicle->year)
             ->where('max_model_year', '>=', $vehicle->year)
