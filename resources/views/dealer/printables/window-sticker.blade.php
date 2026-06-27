@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+@php
+    $dealerLogo = $vehicle->dealer->logo ?? null;
+    // $dealerLogoUrl = $dealerLogo ? asset('storage/' . $dealerLogo) : null;
+    $dealerLogoUrl    = $dealerLogo ? asset('assets/frontend/img/logos/' . $dealerLogo) : null;
+// dd($dealerLogoUrl);
+    $bbbLogoUrl       = asset('assets/Images/Logos/bbb.png');
+    $carfaxLogoUrl    = asset('assets/Images/Logos/carfax-logo.png');
+    $cargurusLogoUrl  = asset('assets/Images/Logos/car-gurus-2020.png');
+    $footerBgImg      = asset('assets/Images/Backgrounds/cars-footer.png');
+@endphp
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,17 +60,13 @@
             display: block;
         }
 
-        .ws-badge-placeholder {
+        .ws-badge {
             width: 90px;
             background: #fff;
             border: 1px solid #ccc;
             border-radius: 4px;
             padding: 8px 6px;
             text-align: center;
-            font-size: 10px;
-            font-weight: 700;
-            color: #333;
-            line-height: 1.4;
         }
 
         /* ── Main content ── */
@@ -246,6 +252,7 @@
         @media print {
             .ws-print-bar { display: none !important; }
             body { padding: 0; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
@@ -266,22 +273,16 @@
 
             {{-- ── Left Sidebar ── --}}
             <div class="ws-sidebar">
-                {{-- BBB placeholder --}}
-                <div class="ws-badge-placeholder">
-                    <div style="font-size:20px;font-weight:900;">BBB</div>
-                    <div>ACCREDITED<br>BUSINESS</div>
+                <div class="ws-badge">
+                    <img src="{{ $bbbLogoUrl }}" alt="BBB Accredited Business" class="ws-badge-img">
                 </div>
 
-                {{-- CARFAX placeholder --}}
-                <div class="ws-badge-placeholder">
-                    <div style="font-size:10px;font-weight:900;letter-spacing:1px;">CARFAX</div>
-                    <div style="font-size:9px;margin-top:3px;">ADVANTAGE<br>DEALER</div>
+                <div class="ws-badge">
+                    <img src="{{ $carfaxLogoUrl }}" alt="CARFAX Advantage Dealer" class="ws-badge-img">
                 </div>
 
-                {{-- CarGurus placeholder --}}
-                <div class="ws-badge-placeholder">
-                    <div style="font-size:9px;font-style:italic;font-weight:700;">CarGurus</div>
-                    <div style="font-size:8px;margin-top:2px;">TOP RATED<br>DEALER</div>
+                <div class="ws-badge">
+                    <img src="{{ $cargurusLogoUrl }}" alt="CarGurus Top Rated Dealer" class="ws-badge-img">
                 </div>
             </div>
 
@@ -289,7 +290,7 @@
             <div class="ws-main">
 
                 {{-- Header --}}
-                <div class="ws-header">
+                <div class="ws-header" style="background-image: url('{{ $dealerLogoUrl }}'); background-size: cover; background-position: center;">
                     <div class="ws-dealer-name">{{ $vehicle->dealer->name ?? config('app.name') }}</div>
                     @if($vehicle->dealer->tagline ?? null)
                         <div class="ws-dealer-tagline">{{ $vehicle->dealer->tagline }}</div>
@@ -398,7 +399,7 @@
         </div>{{-- end .ws-body --}}
 
         {{-- Footer ── --}}
-        <div class="ws-footer">
+        <div class="ws-footer" style="background-image: url('{{ $footerBgImg }}'); background-size: cover; background-position: center;">
             <div class="ws-footer-title">Hours of Operation</div>
             @php $dealer = $vehicle->dealer; @endphp
             <div class="ws-footer-hours">
