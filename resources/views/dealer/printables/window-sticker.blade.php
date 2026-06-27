@@ -45,7 +45,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: space-around;
             padding: 40px 10px;
             gap: 40px;
         }
@@ -85,16 +85,16 @@
             align-items: center;
             background: linear-gradient(to bottom, #e3e3e3, #b8b8b8);
             background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-.ws-header {
+            background-position: center center;
 
-    background-position: center center;
-    background-repeat: no-repeat;
-    /* background-size: auto 85%; */
-    background-size: 100% 100%;
-}
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+
+        }
+        .ws-header {
+            /* background-size: auto 85%; */
+        }
+
         .ws-dealer-name {
             font-size: 28px;
             font-weight: 900;
