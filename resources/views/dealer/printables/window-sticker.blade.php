@@ -2,9 +2,7 @@
 <html lang="en">
 @php
     $dealerLogo = $vehicle->dealer->logo ?? null;
-    // $dealerLogoUrl = $dealerLogo ? asset('storage/' . $dealerLogo) : null;
     $dealerLogoUrl    = $dealerLogo ? asset('assets/frontend/img/logos/' . $dealerLogo) : null;
-// dd($dealerLogoUrl);
     $bbbLogoUrl       = asset('assets/Images/Logos/bbb.png');
     $carfaxLogoUrl    = asset('assets/Images/Logos/carfax-logo.png');
     $cargurusLogoUrl  = asset('assets/Images/Logos/car-gurus-2020.png');
@@ -24,218 +22,225 @@
             font-size: 13px;
             color: #111;
             background: #fff;
-            padding: 12px;
+            padding: 20px;
         }
 
-        /* ── Outer wrapper ── */
+        /* ── Outer wrapper (Acts as main row flex to let sidebar go full height) ── */
         .ws-wrap {
             width: 100%;
-            border: 3px solid #888;
-            border-radius: 4px;
+            border: 8px solid #4a4a4a;
+            border-radius: 16px;
             overflow: hidden;
-        }
-
-        /* ── Two-column layout ── */
-        .ws-body {
+            background: #fff;
             display: flex;
-            min-height: 800px;
+            min-height: 950px;
         }
 
-        /* ── Left sidebar ── */
+        /* ── Left sidebar (Now covers 100% full height) ── */
         .ws-sidebar {
-            width: 130px;
-            min-width: 130px;
-            background: linear-gradient(to bottom, #e0e0e0, #c8c8c8);
-            border-right: 2px solid #999;
+            width: 160px;
+            min-width: 160px;
+            background: linear-gradient(to bottom, #f5f5f5, #cfcfcf);
+            border-right: 6px solid #4a4a4a;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 18px 10px;
-            gap: 20px;
+            justify-content: flex-start;
+            padding: 40px 10px;
+            gap: 40px;
         }
 
         .ws-badge-img {
-            width: 90px;
+            width: 120px;
             height: auto;
             display: block;
+            margin: 0 auto;
         }
 
         .ws-badge {
-            width: 90px;
+            width: 135px;
             background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 8px 6px;
+            border: 2px solid #666;
+            border-radius: 8px;
+            padding: 12px 6px;
             text-align: center;
         }
 
-        /* ── Main content ── */
-        .ws-main {
+        /* ── Right Container (Header + Body + Footer stacked) ── */
+        .ws-container-right {
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 0;
         }
 
         /* ── Header band ── */
         .ws-header {
-            background: linear-gradient(135deg, #b0b0b0, #d8d8d8);
-            border-bottom: 2px solid #999;
-            padding: 12px 18px;
+            border-bottom: 6px solid #4a4a4a;
+            padding: 20px;
             text-align: center;
+            min-height: 125px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #e3e3e3, #b8b8b8);
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .ws-dealer-name {
-            font-size: 22px;
+            font-size: 28px;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             color: #111;
+            font-family: 'Arial Black', sans-serif;
         }
 
         .ws-dealer-tagline {
-            font-size: 11px;
-            color: #444;
-            margin-top: 2px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 4px;
+            text-transform: uppercase;
         }
 
         /* ── Vehicle title block ── */
         .ws-vehicle-title {
-            padding: 14px 18px 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 20px 25px;
+            text-align: center;
+            border-bottom: 2px solid #4a4a4a;
         }
 
         .ws-vehicle-title h2 {
-            font-size: 15px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 900;
             text-transform: uppercase;
             line-height: 1.4;
-            color: #111;
+            color: #000;
+            letter-spacing: 0.5px;
         }
 
         .ws-vehicle-title h3 {
-            font-size: 13px;
-            font-weight: 600;
-            color: #333;
-            margin-top: 3px;
+            font-size: 15px;
+            font-weight: 800;
+            color: #222;
+            margin-top: 5px;
+            text-transform: uppercase;
         }
 
         /* ── Specs grid ── */
         .ws-specs {
-            padding: 10px 18px;
-            border-bottom: 1px solid #ddd;
+            padding: 15px 35px;
+            border-bottom: 4px solid #4a4a4a;
         }
 
         .ws-specs table {
             width: 100%;
-            font-size: 13px;
+            font-size: 14px;
             border-collapse: collapse;
         }
 
         .ws-specs td {
-            padding: 3px 8px 3px 0;
-            vertical-align: top;
-            color: #222;
+            padding: 6px 10px;
+            vertical-align: middle;
+            color: #111;
             width: 50%;
-        }
-
-        .ws-specs td strong {
-            font-weight: 600;
         }
 
         /* ── Features section ── */
         .ws-features {
-            padding: 10px 18px;
+            padding: 25px 35px;
             flex: 1;
+            background: #fff;
         }
 
         .ws-features-title {
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: bold;
             text-align: center;
-            margin-bottom: 8px;
-            color: #111;
-            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: #000;
             letter-spacing: 0.5px;
         }
 
         .ws-features-grid {
             columns: 2;
-            column-gap: 20px;
+            column-gap: 50px;
+            padding: 0 10px;
         }
 
         .ws-features-grid li {
-            font-size: 12px;
-            color: #333;
-            line-height: 1.7;
+            font-size: 13px;
+            color: #111;
+            line-height: 1.9;
             break-inside: avoid;
             list-style: none;
-            padding-left: 10px;
             position: relative;
-        }
-
-        .ws-features-grid li::before {
-            content: '•';
-            position: absolute;
-            left: 0;
-            color: #666;
         }
 
         /* ── Disclaimer ── */
         .ws-disclaimer {
-            padding: 8px 18px 12px;
+            padding: 15px 35px;
             font-size: 10px;
-            color: #777;
+            color: #444;
             line-height: 1.5;
-            border-top: 1px solid #eee;
+            border-top: 2px solid #e0e0e0;
+            text-align: justify;
         }
 
         /* ── Footer ── */
         .ws-footer {
-            background: linear-gradient(135deg, #b0b0b0, #d8d8d8);
-            border-top: 2px solid #999;
-            padding: 10px 18px;
+            border-top: 6px solid #4a4a4a;
+            padding: 20px;
             text-align: center;
+            background: linear-gradient(to bottom, #e3e3e3, #b8b8b8);
         }
 
         .ws-footer-title {
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: 900;
             text-transform: uppercase;
+            color: #000;
             letter-spacing: 0.5px;
         }
 
         .ws-footer-hours {
-            font-size: 12px;
-            color: #333;
-            margin-top: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #222;
+            margin-top: 6px;
             line-height: 1.6;
         }
 
         .ws-footer-phone {
-            font-size: 13px;
-            font-weight: 700;
-            margin-top: 4px;
-            color: #111;
+            font-size: 16px;
+            font-weight: 900;
+            margin-top: 6px;
+            color: #000;
+            letter-spacing: 0.5px;
         }
 
         /* ── Print button (screen only) ── */
         .ws-print-bar {
             background: #1a1a1a;
-            padding: 10px 18px;
+            padding: 12px 20px;
             text-align: right;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 15px;
+            border-radius: 6px;
         }
 
         .ws-print-bar-title {
-            color: #ccc;
-            font-size: 13px;
+            color: #fff;
+            font-size: 14px;
         }
 
         .ws-btn-print {
-            background: purple;
+            background: #7b2cbf;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -246,7 +251,7 @@
         }
 
         .ws-btn-print:hover {
-            background: #6b21a8;
+            background: #6a1b9a;
         }
 
         @media print {
@@ -269,147 +274,120 @@
     </div>
 
     <div class="ws-wrap">
-        <div class="ws-body">
 
-            {{-- ── Left Sidebar ── --}}
-            <div class="ws-sidebar">
-                <div class="ws-badge">
-                    <img src="{{ $bbbLogoUrl }}" alt="BBB Accredited Business" class="ws-badge-img">
-                </div>
-
-                <div class="ws-badge">
-                    <img src="{{ $carfaxLogoUrl }}" alt="CARFAX Advantage Dealer" class="ws-badge-img">
-                </div>
-
-                <div class="ws-badge">
-                    <img src="{{ $cargurusLogoUrl }}" alt="CarGurus Top Rated Dealer" class="ws-badge-img">
-                </div>
+        {{-- ── Left Sidebar (Runs 100% full-height of the frame) ── --}}
+        <div class="ws-sidebar">
+            <div class="ws-badge">
+                <img src="{{ $bbbLogoUrl }}" alt="BBB Accredited Business" class="ws-badge-img">
             </div>
 
-            {{-- ── Main Content ── --}}
-            <div class="ws-main">
+            <div class="ws-badge">
+                <img src="{{ $carfaxLogoUrl }}" alt="CARFAX Advantage Dealer" class="ws-badge-img">
+            </div>
 
-                {{-- Header --}}
-                <div class="ws-header" style="background-image: url('{{ $dealerLogoUrl }}'); background-size: cover; background-position: center;">
+            <div class="ws-badge">
+                <img src="{{ $cargurusLogoUrl }}" alt="CarGurus Top Rated Dealer" class="ws-badge-img">
+            </div>
+        </div>
+
+        {{-- ── Right Container ── --}}
+        <div class="ws-container-right">
+
+            {{-- Header --}}
+            <div class="ws-header" style="@if($dealerLogoUrl) background-image: url('{{ $dealerLogoUrl }}'); @endif">
+                @if(!$dealerLogoUrl)
                     <div class="ws-dealer-name">{{ $vehicle->dealer->name ?? config('app.name') }}</div>
                     @if($vehicle->dealer->tagline ?? null)
                         <div class="ws-dealer-tagline">{{ $vehicle->dealer->tagline }}</div>
                     @endif
-                </div>
+                @endif
+            </div>
 
-                {{-- Vehicle Title --}}
-                <div class="ws-vehicle-title">
-                    <h2>
-                        {{ $vehicle->year }}
-                        {{ strtoupper($vehicle->make->name) }}
-                        {{ strtoupper($vehicle->makeModel->name) }}
-                        @if($vehicle->trim)
-                            {{ strtoupper($vehicle->trim) }}
-                        @endif
-                    </h2>
-                    @if($vehicle->engine)
-                        <h3>{{ strtoupper($vehicle->engine) }}</h3>
+            {{-- Vehicle Title --}}
+            <div class="ws-vehicle-title">
+                <h2>
+                    {{ $vehicle->year }} {{ strtoupper($vehicle->make->name) }} {{ strtoupper($vehicle->makeModel->name) }}
+                    @if($vehicle->trim)
+                        {{ strtoupper($vehicle->trim) }}
                     @endif
-                </div>
+                </h2>
+                @if($vehicle->engine)
+                    <h3>{{ strtoupper($vehicle->engine) }}</h3>
+                @endif
+            </div>
 
-                {{-- Specs ── --}}
-                <div class="ws-specs">
-                    <table>
-                        <tr>
-                            @if($vehicle->mileage)
-                            <td><strong>Mileage:</strong> {{ number_format($vehicle->mileage) }}</td>
-                            @endif
-                            @if($vehicle->transmissionType)
-                            <td><strong>Transmission:</strong> {{ $vehicle->transmissionType->name }}</td>
-                            @endif
-                        </tr>
-                        <tr>
-                            @if($vehicle->exteriorColor)
-                            <td><strong>Color:</strong> {{ $vehicle->exteriorColor->name }}</td>
-                            @endif
-                            @if($vehicle->vin)
-                            <td><strong>V.I.N.:</strong> {{ $vehicle->vin }}</td>
-                            @endif
-                        </tr>
-                        <tr>
-                            @if($vehicle->stock_number)
-                            <td><strong>Stock No.:</strong> {{ $vehicle->stock_number }}</td>
-                            @endif
-                            @if($vehicle->drivetrainType)
-                            <td><strong>Drivetrain:</strong> {{ $vehicle->drivetrainType->name }}</td>
-                            @endif
-                        </tr>
-                        @if($vehicle->specs && ($vehicle->specs->max_horsepower || $vehicle->specs->cylinders))
-                        <tr>
-                            @if($vehicle->specs->cylinders)
-                            <td><strong>Cylinders:</strong> {{ $vehicle->specs->cylinders }}</td>
-                            @endif
-                            @if($vehicle->specs->max_horsepower)
-                            <td><strong>Horsepower:</strong> {{ number_format($vehicle->specs->max_horsepower) }} hp</td>
-                            @endif
-                        </tr>
-                        @endif
-                    </table>
-                </div>
+            {{-- Specs ── --}}
+            <div class="ws-specs">
+                <table>
+                    <tr>
+                        <td><strong>Mileage:</strong> {{ $vehicle->mileage ? number_format($vehicle->mileage) : '' }}</td>
+                        <td><strong>Transmission:</strong> {{ $vehicle->transmissionType->name ?? 'Automatic' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Color:</strong> {{ $vehicle->exteriorColor->name ?? '' }}</td>
+                        <td><strong>V.I.N.:</strong> {{ $vehicle->vin ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stock No.:</strong> {{ $vehicle->stock_number ?? '' }}</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
 
-                {{-- Features ── --}}
-                @php
-                    // Factory options — show labels as feature list
-                    $features = $vehicle->factoryOptions
-                        ->where('pivot.is_starred', false)
-                        ->pluck('label')
-                        ->filter()
-                        ->values();
+            {{-- Features ── --}}
+            @php
+                $features = $vehicle->factoryOptions
+                    ->where('pivot.is_starred', false)
+                    ->pluck('label')
+                    ->filter()
+                    ->values();
 
-                    $starredFeatures = $vehicle->factoryOptions
-                        ->where('pivot.is_starred', true)
-                        ->pluck('label')
-                        ->filter()
-                        ->values();
+                $starredFeatures = $vehicle->factoryOptions
+                    ->where('pivot.is_starred', true)
+                    ->pluck('label')
+                    ->filter()
+                    ->values();
 
-                    $allFeatures = $starredFeatures->merge($features);
-                @endphp
+                $allFeatures = $starredFeatures->merge($features);
+            @endphp
 
+            <div class="ws-features">
+                <div class="ws-features-title">Comfort Equipment and Accessories</div>
                 @if($allFeatures->isNotEmpty())
-                <div class="ws-features">
-                    <div class="ws-features-title">Comfort Equipment and Accessories</div>
                     <ul class="ws-features-grid">
                         @foreach($allFeatures as $feature)
                             <li>{{ $feature }}</li>
                         @endforeach
                     </ul>
-                </div>
                 @else
-                <div class="ws-features">
-                    <div class="ws-features-title">Comfort Equipment and Accessories</div>
                     <p style="font-size:12px;color:#aaa;text-align:center;padding:20px 0;">
                         No features listed. Add factory options on the VDP to populate this section.
                     </p>
-                </div>
                 @endif
-
-                {{-- Disclaimer ── --}}
-                <div class="ws-disclaimer">
-                    It is the customer's sole responsibility to verify the existence and condition of any equipment listed.
-                    The dealership is not responsible for misprints on prices or equipment. It is the customer's sole
-                    responsibility to verify the accuracy of the prices with the dealer. Pricing subject to change without notice.
-                </div>
-
-            </div>{{-- end .ws-main --}}
-        </div>{{-- end .ws-body --}}
-
-        {{-- Footer ── --}}
-        <div class="ws-footer" style="background-image: url('{{ $footerBgImg }}'); background-size: cover; background-position: center;">
-            <div class="ws-footer-title">Hours of Operation</div>
-            @php $dealer = $vehicle->dealer; @endphp
-            <div class="ws-footer-hours">
-                Monday–Saturday: 10 a.m. – 7 p.m. &nbsp;|&nbsp; Sunday: By Appointment Only.
             </div>
-            @if($dealer->phone ?? null)
-                <div class="ws-footer-phone">{{ $dealer->phone }}</div>
-            @endif
-        </div>
 
+            {{-- Disclaimer ── --}}
+            <div class="ws-disclaimer">
+                It is the customer's sole responsibility to verify the existence and condition of any equipment listed.
+                The dealership is not responsible for misprints on prices or equipment. It is the customer's sole
+                responsibility to verify the accuracy of the prices with the dealer. Pricing subject to change without notice.
+            </div>
+
+            {{-- Footer ── --}}
+            <div
+    class="ws-footer"
+    style="background-image:linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)),url('{{ $footerBgImg }}');background-size: cover;background-position: center;">
+                <div class="ws-footer-title">Hours of Operation</div>
+                <div class="ws-footer-hours">
+                    Monday–Saturday &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10 a.m. – 7 p.m.<br>
+                    Sunday &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; By Appointment Only.
+                </div>
+                @if($vehicle->dealer->phone ?? null)
+                    <div class="ws-footer-phone">{{ $vehicle->dealer->phone }}</div>
+                @endif
+            </div>
+
+        </div>{{-- end .ws-container-right --}}
     </div>{{-- end .ws-wrap --}}
 
 </body>
