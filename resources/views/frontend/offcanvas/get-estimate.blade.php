@@ -14,8 +14,6 @@
         return $termMatches && $creditMatches;
     });
 
-    // dd($matchingDefaultRate);
-
     $estimateRate = ($pricing['applied_special'] ?? null)
         && $pricing['applied_special']?->discount_type === 'special'
         && $pricing['applied_special']?->finance_rate
@@ -43,32 +41,74 @@
 @endphp
 @once
     <style>
+        /* ── Stepper (unit price & trade-in) ── */
         #getEstimate .gep-stepper .input-group-text,
         #getEstimate .gep-stepper .form-control {
             border-radius: 0 !important;
         }
-
         #getEstimate .gep-stepper-btn {
             width: 42px;
             justify-content: center;
             cursor: pointer;
             user-select: none;
         }
-
         #getEstimate .gep-stepper-btn:first-child {
             border-radius: 12px 0 0 12px !important;
         }
-
         #getEstimate .gep-stepper-btn:last-child {
             border-radius: 0 12px 12px 0 !important;
         }
-
         #getEstimate .gep-stepper-symbol {
             min-width: 38px;
             justify-content: center;
         }
+
+        /* ── Custom range slider ── */
+        #getEstimate .gep-range {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+            /* background set via JS */
+        }
+        #getEstimate .gep-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #166B87;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px #166B87;
+        }
+        #getEstimate .gep-range::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #166B87;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px #166B87;
+        }
+        #getEstimate .gep-slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+        #getEstimate .gep-slider-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
     </style>
 @endonce
+
 <div class="offcanvas offcanvas-end w-lg-50 w-100" tabindex="-1" id="getEstimate"
     aria-labelledby="getEstimateLabel"
     data-interest-rates='{{ $interestRatesJson }}'>
@@ -85,6 +125,8 @@
 
     {{-- ── Body ────────────────────────────────────────────────────────────── --}}
     <div class="offcanvas-body px-4 pt-0">
+
+        {{-- Monthly payment display --}}
         <div class="text-center">
             <small class="text-muted" data-gep-vehicle-title>{{ $estimateTitle }}</small>
             <div class="text-xlarge my-1" style="color: #166B87;">
@@ -94,152 +136,124 @@
         </div>
 
         <div class="pt-3 border-top"></div>
-        <div class="d-flex mb-2 align-items-center">
-            <b>Credit score: <span data-gep-credit-score>740</span></b>
-            <a href="#" target="_blank" rel="noopener noreferrer" class="ms-auto"
-                style="color: #166B87;" data-cy="paymentcalc-print" title="Print payment details">
-                <span class="d-inline-block me-1">
-                    <svg height="12" width="12" viewBox="0 0 24 24" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 7V3h12v4H6zm12 2h1a3 3 0 0 1 3 3v5h-4v4H6v-4H2v-5a3 3 0 0 1 3-3h1v2H5a1 1 0 0 0-1 1v3h16v-3a1 1 0 0 0-1-1h-1V9zM8 19h8v-4H8v4z" />
-                    </svg>
-                </span>
-                Print
-            </a>
-        </div>
 
+        {{-- ── Credit score slider ── --}}
         <div class="mb-3">
-            <input type="range" class="form-range" min="400" max="850" value="740"
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <b>Credit score: <span data-gep-credit-score>740</span></b>
+                <a href="#" target="_blank" rel="noopener noreferrer"
+                    style="color: #166B87;" data-cy="paymentcalc-print" title="Print payment details">
+                    <span class="d-inline-block me-1">
+                        <svg height="12" width="12" viewBox="0 0 24 24" fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 7V3h12v4H6zm12 2h1a3 3 0 0 1 3 3v5h-4v4H6v-4H2v-5a3 3 0 0 1 3-3h1v2H5a1 1 0 0 0-1 1v3h16v-3a1 1 0 0 0-1-1h-1V9zM8 19h8v-4H8v4z"/>
+                        </svg>
+                    </span>
+                    Print
+                </a>
+            </div>
+            <input type="range" class="form-range gep-range" min="400" max="850" value="740"
                 aria-label="Credit score" data-gep-credit-slider>
+            <div class="gep-slider-labels">
+                <span>400</span>
+                <span>850</span>
+            </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-4 col-12">
-                <div class="mb-3 mb-md-4">
-                    <label class="form-label">Unit price</label>
-                    <div class="input-group gep-stepper">
-                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-100">
-                            <b class="mx-auto">-</b>
-                        </button>
-                        <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">$</b></span>
-                        <input class="form-control border-radius-0" placeholder="10,000" disabled min="1000"
-                            max="1000000" required type="text" value="{{ $estimatePrice ? number_format($estimatePrice) : '' }}" name="amount"
-                            inputmode="numeric" style="font-size: inherit;">
-                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="100">
-                            <b class="mx-auto">+</b>
-                        </button>
-                    </div>
+        <div class="border-top pt-3"></div>
+
+        {{-- ── Unit price ── --}}
+        <div class="mb-4">
+            <label class="form-label">Unit price</label>
+            <div class="input-group gep-stepper">
+                <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-100">
+                    <b class="mx-auto">-</b>
+                </button>
+                <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">$</b></span>
+                <input class="form-control border-radius-0" placeholder="10,000" disabled min="1000"
+                    max="1000000" required type="text"
+                    value="{{ $estimatePrice ? number_format($estimatePrice) : '' }}"
+                    name="amount" inputmode="numeric" style="font-size: inherit;">
+                <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="100">
+                    <b class="mx-auto">+</b>
+                </button>
+            </div>
+        </div>
+
+        {{-- ── Term slider + Down slider (side by side) ── --}}
+        <div class="row mb-3">
+            {{-- Term --}}
+            <div class="col-6">
+                <div class="gep-slider-title">Term: <span data-gep-term-display>60</span> mo.</div>
+                <input type="range" class="gep-range" min="36" max="84" value="60" step="1"
+                    aria-label="Loan term in months" data-gep-term-slider
+                    data-gep-term-steps="36,48,60,72,75,84">
+                <div class="gep-slider-labels">
+                    <span>36 mo</span>
+                    <span>84 mo</span>
                 </div>
             </div>
-            <div class="col-md-4 col-6">
-                <div class="mb-3 mb-md-4">
-                    <label class="form-label">Loan months</label>
-                    <select data-cy="paymentcalc-state" name="state" class="custom-select form-select">
-                        <option value="36">36 months</option>
-                        <option value="48">48 months</option>
-                        <option value="60" {{ $estimateTerm === 60 ? 'selected' : '' }}>60 months</option>
-                        <option value="72">72 months</option>
-                        <option value="75">75 months</option>
-                        <option value="84">84 months</option>
-                    </select>
+            {{-- Down --}}
+            <div class="col-6">
+                <div class="gep-slider-title">Down: <span data-gep-down-display>$0</span></div>
+                <input type="range" class="gep-range" min="0" max="50" value="0" step="1"
+                    aria-label="Down payment percentage" data-gep-down-slider>
+                <div class="gep-slider-labels">
+                    <span>0%</span>
+                    <span>50%</span>
                 </div>
             </div>
+        </div>
 
-            <div class="col-12">
-                <div class="border-top">
-                    <div class="py-3 cursor-pointer d-flex align-items-center" role="button"
-                        data-gep-collapse-toggle data-gep-target="#gep-amount-down"
-                        aria-expanded="true" aria-controls="gep-amount-down">
-                        <span class="d-inline-block me-2 mt-n1" style="color: #166B87;">
-                            <svg height="16" width="16" fill="#166B87">
-                                <use data-gep-collapse-icon xlink:href="/regular.svg#square-minus"></use>
-                            </svg>
-                        </span>
-                        Amount Down
-                    </div>
+        {{-- Hidden inputs still used by calculateMonthly() --}}
+        <input type="hidden" name="down_pct" value="0">
+        {{-- term is read from offcanvas.dataset.term, set by the term slider --}}
 
-                    <div id="gep-amount-down" class="collapse show">
-                        <div class="row">
-                            <div class="col-md-6 col-12">
-                                <div class="mb-3 mb-md-4">
-                                    <label class="form-label">Down payment</label>
-                                    <div role="group" class="d-flex btn-group">
-                                        <button type="button" data-cy="paymentcalc-downPref"
-                                            class="w-50 py-2 btn btn-default" data-gep-down-mode="cash">Cash</button>
-                                        <button type="button" data-cy="paymentcalc-downPref"
-                                            class="w-50 py-2 btn btn-secondary active" data-gep-down-mode="percentage">Percentage</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="mb-0">
-                                    <label class="form-label">Amount Down</label>
-                                    <div class="mb-3 mb-md-4 input-group gep-stepper">
-                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-1">
-                                            <b class="mx-auto">-</b>
-                                        </button>
-                                        <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto" data-gep-down-symbol>%</b></span>
-                                        <input class="form-control border-radius-0" data-cy="paymentcalc-down" step="1"
-                                            min="0.0" max="99.9" placeholder="10" required type="text" value="0"
-                                            name="down_pct" inputmode="numeric">
-                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="1">
-                                            <b class="mx-auto">+</b>
-                                        </button>
-                                    </div>
+        {{-- ── Trade-in Value ── --}}
+        <div class="calc-tradein col-12 px-0">
+            <div class="border-top">
+                <div class="py-3 cursor-pointer d-flex align-items-center" role="button"
+                    data-gep-collapse-toggle data-gep-target="#gep-tradein"
+                    aria-expanded="true" aria-controls="gep-tradein">
+                    <span class="d-inline-block me-2 mt-n1" style="color: #166B87;">
+                        <svg height="16" width="16" fill="#166B87">
+                            <use data-gep-collapse-icon xlink:href="/regular.svg#square-minus"></use>
+                        </svg>
+                    </span>
+                    Trade-in Value
+                </div>
+
+                <div id="gep-tradein" class="collapse show">
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="mb-3">
+                                <label class="form-label">Est. Trade Value</label>
+                                <div class="input-group gep-stepper">
+                                    <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-100">
+                                        <b class="mx-auto">-</b>
+                                    </button>
+                                    <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">$</b></span>
+                                    <input class="form-control border-radius-0" placeholder="10,000" max="1000000"
+                                        required type="text" value="0" name="tradeinamount" inputmode="numeric">
+                                    <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="100">
+                                        <b class="mx-auto">+</b>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="calc-tradein col-12">
-                <div class="border-top">
-                    <div class="py-3 cursor-pointer d-flex align-items-center" role="button"
-                        data-gep-collapse-toggle data-gep-target="#gep-tradein"
-                        aria-expanded="true" aria-controls="gep-tradein">
-                        <span class="d-inline-block me-2 mt-n1" style="color: #166B87;">
-                            <svg height="16" width="16" fill="#166B87">
-                                <use data-gep-collapse-icon xlink:href="/regular.svg#square-minus"></use>
-                            </svg>
-                        </span>
-                        Trade-in Value
-                    </div>
-
-                    <div id="gep-tradein" class="collapse show">
-                        <div class="row">
-                            <div class="col-md-6 col-12">
-                                <div class="mb-0">
-                                    <label class="form-label">Est. Trade Value</label>
-                                    <div class="mb-3 mb-md-4 input-group gep-stepper">
-                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-100">
-                                            <b class="mx-auto">-</b>
-                                        </button>
-                                        <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">$</b></span>
-                                        <input class="form-control border-radius-0" placeholder="10,000" max="1000000"
-                                            required type="text" value="0" name="tradeinamount"
-                                            inputmode="numeric">
-                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="100">
-                                            <b class="mx-auto">+</b>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="mb-0">
-                                    <label class="form-label">Remaining Loan Balance</label>
-                                    <div class="mb-3 mb-md-4 input-group gep-stepper">
-                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-100">
-                                            <b class="mx-auto">-</b>
-                                        </button>
-                                        <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">$</b></span>
-                                        <input class="form-control border-radius-0" placeholder="5,000" max="1000000"
-                                            required type="text" value="0" name="tradeinremainingbalance"
-                                            inputmode="numeric">
-                                        <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="100">
-                                            <b class="mx-auto">+</b>
-                                        </button>
-                                    </div>
+                        <div class="col-md-6 col-12">
+                            <div class="mb-3">
+                                <label class="form-label">Remaining Loan Balance</label>
+                                <div class="input-group gep-stepper">
+                                    <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-100">
+                                        <b class="mx-auto">-</b>
+                                    </button>
+                                    <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">$</b></span>
+                                    <input class="form-control border-radius-0" placeholder="5,000" max="1000000"
+                                        required type="text" value="0" name="tradeinremainingbalance" inputmode="numeric">
+                                    <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="100">
+                                        <b class="mx-auto">+</b>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -248,6 +262,7 @@
             </div>
         </div>
 
+        {{-- ── Footer CTA ── --}}
         <div class="py-4 border-top text-center mt-1">
             <strong class="d-block mb-2">Save an hour at the dealership</strong>
             <p>
@@ -272,17 +287,15 @@
                 var offcanvas = document.getElementById('getEstimate');
                 if (!offcanvas) return;
 
-                // ── Parse interest rates from data attribute ──────────────────────
+                // ── Parse interest rates ───────────────────────────────────────────
                 var interestRates = [];
                 try {
                     var raw = offcanvas.dataset.interestRates;
                     if (raw) interestRates = JSON.parse(raw);
-                } catch (e) { /* ignore — fall back to empty */ }
+                } catch (e) {}
 
                 // ── Helpers ────────────────────────────────────────────────────────
-                var moneyFormatter = new Intl.NumberFormat('en-US', {
-                    maximumFractionDigits: 0
-                });
+                var moneyFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
 
                 function numberFrom(value) {
                     if (value === null || value === undefined) return 0;
@@ -291,14 +304,6 @@
 
                 function money(value) {
                     return moneyFormatter.format(Math.max(0, Math.round(numberFrom(value))));
-                }
-
-                function formatInputValue(input, value) {
-                    var next = numberFrom(value);
-                    if (input && input.name === 'down_pct' && !Number.isInteger(next)) {
-                        return next.toFixed(1);
-                    }
-                    return money(next);
                 }
 
                 function setValue(selector, value) {
@@ -313,7 +318,7 @@
                     var next = numberFrom(value);
                     if (input.hasAttribute('min')) next = Math.max(min, next);
                     if (input.hasAttribute('max')) next = Math.min(max, next);
-                    input.value = formatInputValue(input, next);
+                    input.value = money(next);
                     input.dispatchEvent(new Event('input', { bubbles: true }));
                     input.dispatchEvent(new Event('change', { bubbles: true }));
                 }
@@ -322,25 +327,36 @@
                     return numberFrom(offcanvas.querySelector(selector)?.value);
                 }
 
+                // ── Term: snap to allowed steps ────────────────────────────────────
+                var TERM_STEPS = [36, 48, 60, 72, 75, 84];
+
+                function snapTerm(raw) {
+                    return TERM_STEPS.reduce(function (prev, curr) {
+                        return Math.abs(curr - raw) < Math.abs(prev - raw) ? curr : prev;
+                    });
+                }
+
                 function currentTerm() {
-                    return Number(offcanvas.querySelector('select[name="state"]')?.value || offcanvas.dataset.term || 60);
+                    return Number(offcanvas.dataset.term || 60);
                 }
 
-                function currentDownMode() {
-                    return offcanvas.querySelector('[data-gep-down-mode].active')?.dataset.gepDownMode || 'percentage';
+                // ── Slider fill helper ─────────────────────────────────────────────
+                function updateSliderFill(slider) {
+                    var min = Number(slider.min);
+                    var max = Number(slider.max);
+                    var val = Number(slider.value);
+                    var pct = ((val - min) / (max - min)) * 100;
+                    slider.style.background =
+                        'linear-gradient(to right, #166B87 ' + pct + '%, #dee2e6 ' + pct + '%)';
                 }
 
+                // ── Rate matching ──────────────────────────────────────────────────
                 function conditionMatches(rateCondition, vehicleCondition) {
-                    if (vehicleCondition === 'New') {
-                        return rateCondition === 'new' || rateCondition === 'any';
-                    }
-                    if (vehicleCondition === 'Certified Pre-Owned') {
-                        return rateCondition === 'cpo' || rateCondition === 'used' || rateCondition === 'any';
-                    }
+                    if (vehicleCondition === 'New') return rateCondition === 'new' || rateCondition === 'any';
+                    if (vehicleCondition === 'Certified Pre-Owned') return rateCondition === 'cpo' || rateCondition === 'used' || rateCondition === 'any';
                     return rateCondition === 'used' || rateCondition === 'any';
                 }
 
-                // ── Find best matching rate ────────────────────────────────────────
                 function findMatchingRate(vehicleYear, vehicleMake, vehicleCondition, creditScore, term) {
                     var matched = interestRates.filter(function (rate) {
                         if (rate.min_model_year > vehicleYear || rate.max_model_year < vehicleYear) return false;
@@ -352,9 +368,7 @@
                         if (rate.max_term !== null && term > rate.max_term) return false;
                         return true;
                     });
-
                     if (matched.length === 0) return null;
-
                     matched.sort(function (a, b) {
                         var aMakeScore = a.make ? 0 : 1;
                         var bMakeScore = b.make ? 0 : 1;
@@ -365,51 +379,117 @@
                         if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
                         return a.id - b.id;
                     });
-
                     return matched[0];
-                }
-
-                // ── Update rate display & recalculate monthly ─────────────────────
-                function updateRateAndRecalculate() {
-                    var vehicleYear = Number(offcanvas.dataset.vehicleYear || 0);
-                    var vehicleMake = offcanvas.dataset.vehicleMake || '';
-                    var vehicleCondition = offcanvas.dataset.vehicleCondition || '';
-                    var creditScore = Number(offcanvas.querySelector('[data-gep-credit-slider]')?.value || 740);
-                    var term = currentTerm();
-
-                    var matched = findMatchingRate(vehicleYear, vehicleMake, vehicleCondition, creditScore, term);
-                    var rate = matched ? matched.rate : numberFrom(offcanvas.dataset.fallbackRate || 6.79);
-
-                    offcanvas.dataset.rate = rate;
-
-                    var creditDisplay = offcanvas.querySelector('[data-gep-credit-score]');
-                    if (creditDisplay) creditDisplay.textContent = creditScore;
-
-                    calculateMonthly();
                 }
 
                 // ── Calculate monthly payment ──────────────────────────────────────
                 function calculateMonthly() {
-                    var price = getValue('[name="amount"]');
-                    var downValue = numberFrom(offcanvas.querySelector('[name="down_pct"]')?.value);
-                    var downAmount = currentDownMode() === 'cash' ? downValue : price * downValue / 100;
-                    var tradeValue = getValue('[name="tradeinamount"]');
+                    var price     = getValue('[name="amount"]');
+                    var downPct   = numberFrom(offcanvas.querySelector('[name="down_pct"]')?.value);
+                    var downAmount = price * downPct / 100;
+                    var tradeValue   = getValue('[name="tradeinamount"]');
                     var tradeBalance = getValue('[name="tradeinremainingbalance"]');
                     var principal = Math.max(0, price - downAmount - tradeValue + tradeBalance);
-                    var rate = numberFrom(offcanvas.dataset.rate || 6.79);
-                    var term = currentTerm();
+                    var rate      = numberFrom(offcanvas.dataset.rate || 6.79);
+                    var term      = currentTerm();
                     var monthlyRate = (rate / 100) / 12;
                     var monthly = monthlyRate > 0
                         ? (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -term))
                         : principal / term;
 
-                    var amount = offcanvas.querySelector('[data-cy="paymentcalc-amount"]');
-                    var terms = offcanvas.querySelector('[data-gep-terms]');
-
-                    if (amount) amount.textContent = '$' + money(monthly);
-                    if (terms) terms.textContent = 'Est. payment for ' + term + ' months at ' + rate.toFixed(2) + '% APR';
+                    var amountEl = offcanvas.querySelector('[data-cy="paymentcalc-amount"]');
+                    var termsEl  = offcanvas.querySelector('[data-gep-terms]');
+                    if (amountEl) amountEl.textContent = '$' + money(monthly);
+                    if (termsEl)  termsEl.textContent  = 'Est. payment for ' + term + ' months at ' + rate.toFixed(2) + '% APR';
                 }
 
+                // ── Update rate then recalculate ───────────────────────────────────
+                function updateRateAndRecalculate() {
+                    var vehicleYear      = Number(offcanvas.dataset.vehicleYear || 0);
+                    var vehicleMake      = offcanvas.dataset.vehicleMake || '';
+                    var vehicleCondition = offcanvas.dataset.vehicleCondition || '';
+                    var creditScore      = Number(offcanvas.querySelector('[data-gep-credit-slider]')?.value || 740);
+                    var term             = currentTerm();
+
+                    // update credit score display
+                    var creditDisplay = offcanvas.querySelector('[data-gep-credit-score]');
+                    if (creditDisplay) creditDisplay.textContent = creditScore;
+
+                    var matched = findMatchingRate(vehicleYear, vehicleMake, vehicleCondition, creditScore, term);
+                    offcanvas.dataset.rate = matched ? matched.rate : numberFrom(offcanvas.dataset.fallbackRate || 6.79);
+
+                    calculateMonthly();
+                }
+
+                // ── Credit score slider ────────────────────────────────────────────
+                var creditSlider = offcanvas.querySelector('[data-gep-credit-slider]');
+                if (creditSlider) {
+                    creditSlider.addEventListener('input', function () {
+                        updateSliderFill(creditSlider);
+                        updateRateAndRecalculate();
+                    });
+                    updateSliderFill(creditSlider);
+                }
+
+                // ── Term slider ────────────────────────────────────────────────────
+                var termSlider  = offcanvas.querySelector('[data-gep-term-slider]');
+                var termDisplay = offcanvas.querySelector('[data-gep-term-display]');
+
+                function applyTermSlider() {
+                    var snapped = snapTerm(Number(termSlider.value));
+                    termSlider.value = snapped;
+                    offcanvas.dataset.term = snapped;
+                    if (termDisplay) termDisplay.textContent = snapped;
+                    updateSliderFill(termSlider);
+                    updateRateAndRecalculate();
+                }
+
+                if (termSlider) {
+                    termSlider.addEventListener('input', applyTermSlider);
+                    applyTermSlider();
+                }
+
+                // ── Down payment slider ────────────────────────────────────────────
+                var downSlider  = offcanvas.querySelector('[data-gep-down-slider]');
+                var downDisplay = offcanvas.querySelector('[data-gep-down-display]');
+                var downHidden  = offcanvas.querySelector('[name="down_pct"]');
+
+                function applyDownSlider() {
+                    var pct   = Number(downSlider.value);
+                    var price = getValue('[name="amount"]');
+                    var amt   = Math.round(price * pct / 100);
+                    if (downDisplay) downDisplay.textContent = '$' + money(amt);
+                    if (downHidden)  downHidden.value = pct;
+                    updateSliderFill(downSlider);
+                    calculateMonthly();
+                }
+
+                if (downSlider) {
+                    downSlider.addEventListener('input', applyDownSlider);
+                    updateSliderFill(downSlider);
+                }
+
+                // ── Trade-in inputs ────────────────────────────────────────────────
+                offcanvas.querySelectorAll('input[name="tradeinamount"], input[name="tradeinremainingbalance"]').forEach(function (field) {
+                    field.addEventListener('input', calculateMonthly);
+                    field.addEventListener('change', calculateMonthly);
+                });
+
+                // ── Stepper buttons (unit price & trade-in only) ───────────────────
+                offcanvas.querySelectorAll('.gep-stepper-btn').forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        var group = button.closest('.gep-stepper');
+                        var input = group ? group.querySelector('input') : null;
+                        if (!input) return;
+                        var delta = numberFrom(button.dataset.gepStep);
+                        setInputValue(input, getValue('[name="' + input.name + '"]') + delta);
+                        // if price changed, refresh down display too
+                        if (input.name === 'amount') applyDownSlider();
+                        calculateMonthly();
+                    });
+                });
+
+                // ── Collapse toggles ───────────────────────────────────────────────
                 function toggleCollapse(header) {
                     var target = offcanvas.querySelector(header.dataset.gepTarget || '');
                     if (!target) return;
@@ -425,113 +505,65 @@
                     }
                 }
 
-                // ── Offcanvas show handler ────────────────────────────────────────
+                offcanvas.querySelectorAll('[data-gep-collapse-toggle]').forEach(function (header) {
+                    var target = offcanvas.querySelector(header.dataset.gepTarget || '');
+                    if (target) target.style.display = target.classList.contains('show') ? 'block' : 'none';
+                    header.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleCollapse(header);
+                    });
+                });
+
+                // ── Offcanvas show handler ─────────────────────────────────────────
                 offcanvas.addEventListener('show.bs.offcanvas', function (event) {
                     var trigger = event.relatedTarget;
                     if (!trigger) return;
 
-                    var title = trigger.dataset.vehicleTitle || 'Selected vehicle';
-                    var price = numberFrom(trigger.dataset.vehiclePrice);
+                    var title   = trigger.dataset.vehicleTitle || 'Selected vehicle';
+                    var price   = numberFrom(trigger.dataset.vehiclePrice);
                     var monthly = numberFrom(trigger.dataset.vehicleMonthly);
-                    var rate = numberFrom(trigger.dataset.vehicleRate || 6.79);
-                    var term = Number(trigger.dataset.vehicleTerm || 60);
+                    var rate    = numberFrom(trigger.dataset.vehicleRate || 6.79);
+                    var term    = Number(trigger.dataset.vehicleTerm || 60);
 
-                    offcanvas.dataset.fallbackRate = rate;
-                    offcanvas.dataset.rate = rate;
-                    offcanvas.dataset.term = term;
-                    offcanvas.dataset.vehicleYear = trigger.dataset.vehicleYear || '';
-                    offcanvas.dataset.vehicleMake = trigger.dataset.vehicleMake || '';
+                    offcanvas.dataset.fallbackRate     = rate;
+                    offcanvas.dataset.rate             = rate;
+                    offcanvas.dataset.term             = term;
+                    offcanvas.dataset.vehicleYear      = trigger.dataset.vehicleYear || '';
+                    offcanvas.dataset.vehicleMake      = trigger.dataset.vehicleMake || '';
                     offcanvas.dataset.vehicleCondition = trigger.dataset.vehicleCondition || '';
 
-                    var creditSlider = offcanvas.querySelector('[data-gep-credit-slider]');
-                    if (creditSlider) creditSlider.value = '740';
+                    // reset credit slider
+                    if (creditSlider) {
+                        creditSlider.value = '740';
+                        updateSliderFill(creditSlider);
+                    }
 
-                    var titleEl = offcanvas.querySelector('[data-gep-vehicle-title]');
-                    var amount = offcanvas.querySelector('[data-cy="paymentcalc-amount"]');
-                    var termSelect = offcanvas.querySelector('select[name="state"]');
+                    // reset term slider
+                    if (termSlider) {
+                        termSlider.value = String(term);
+                        if (termDisplay) termDisplay.textContent = term;
+                        updateSliderFill(termSlider);
+                    }
 
-                    if (titleEl) titleEl.textContent = title;
-                    if (amount) amount.textContent = '$' + money(monthly);
-                    if (termSelect) termSelect.value = String(term);
+                    // reset down slider
+                    if (downSlider) {
+                        downSlider.value = '0';
+                        if (downDisplay) downDisplay.textContent = '$0';
+                        if (downHidden)  downHidden.value = '0';
+                        updateSliderFill(downSlider);
+                    }
+
+                    var titleEl  = offcanvas.querySelector('[data-gep-vehicle-title]');
+                    var amountEl = offcanvas.querySelector('[data-cy="paymentcalc-amount"]');
+                    if (titleEl)  titleEl.textContent  = title;
+                    if (amountEl) amountEl.textContent = '$' + money(monthly);
+
                     setValue('[name="amount"]', price);
                     setValue('[name="tradeinamount"]', 0);
                     setValue('[name="tradeinremainingbalance"]', 0);
-                    var downPct = offcanvas.querySelector('[name="down_pct"]');
-                    if (downPct) downPct.value = '0';
 
                     updateRateAndRecalculate();
-                });
-
-                // ── Credit score slider ────────────────────────────────────────────
-                var creditSlider = offcanvas.querySelector('[data-gep-credit-slider]');
-                if (creditSlider) {
-                    creditSlider.addEventListener('input', updateRateAndRecalculate);
-                }
-
-                // ── Inputs that trigger full rate + monthly recalculation ──────────
-                offcanvas.querySelectorAll('select[name="state"]').forEach(function (field) {
-                    field.addEventListener('change', updateRateAndRecalculate);
-                });
-
-                // ── Inputs that only recalculate monthly (rate stays) ──────────────
-                offcanvas.querySelectorAll('input[name="down_pct"], input[name="tradeinamount"], input[name="tradeinremainingbalance"]').forEach(function (field) {
-                    field.addEventListener('input', calculateMonthly);
-                    field.addEventListener('change', calculateMonthly);
-                });
-
-                // ── Stepper buttons ────────────────────────────────────────────────
-                offcanvas.querySelectorAll('.gep-stepper-btn').forEach(function (button) {
-                    button.addEventListener('click', function () {
-                        var group = button.closest('.gep-stepper');
-                        var input = group ? group.querySelector('input') : null;
-                        if (!input) return;
-                        var delta = numberFrom(button.dataset.gepStep);
-                        if (input.name === 'down_pct' && currentDownMode() === 'cash') {
-                            delta = delta * 100;
-                        }
-                        setInputValue(input, getValue('[name="' + input.name + '"]') + delta);
-                        if (input.name === 'down_pct') {
-                            updateRateAndRecalculate();
-                        } else {
-                            calculateMonthly();
-                        }
-                    });
-                });
-
-                // ── Down payment mode toggle ───────────────────────────────────────
-                offcanvas.querySelectorAll('[data-gep-down-mode]').forEach(function (button) {
-                    button.addEventListener('click', function () {
-                        var mode = button.dataset.gepDownMode || 'percentage';
-                        var input = offcanvas.querySelector('[name="down_pct"]');
-                        var symbol = offcanvas.querySelector('[data-gep-down-symbol]');
-
-                        offcanvas.querySelectorAll('[data-gep-down-mode]').forEach(function (btn) {
-                            btn.classList.toggle('active', btn === button);
-                            btn.classList.toggle('btn-secondary', btn === button);
-                            btn.classList.toggle('btn-default', btn !== button);
-                        });
-
-                        if (symbol) symbol.textContent = mode === 'cash' ? '$' : '%';
-                        if (input) {
-                            input.max = mode === 'cash' ? '1000000' : '99.9';
-                            input.placeholder = mode === 'cash' ? '1,000' : '10';
-                            setInputValue(input, 0);
-                        }
-                        calculateMonthly();
-                    });
-                });
-
-                // ── Collapse toggles ───────────────────────────────────────────────
-                offcanvas.querySelectorAll('[data-gep-collapse-toggle]').forEach(function (header) {
-                    var target = offcanvas.querySelector(header.dataset.gepTarget || '');
-                    if (target) {
-                        target.style.display = target.classList.contains('show') ? 'block' : 'none';
-                    }
-                    header.addEventListener('click', function (event) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        toggleCollapse(header);
-                    });
                 });
             })();
         </script>
