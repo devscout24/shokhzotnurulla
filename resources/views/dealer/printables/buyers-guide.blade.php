@@ -31,9 +31,10 @@
         }
         .sub-title {
             text-align: center;
-            font-size: 18px;
+            font-size: 14px;
             margin-bottom: 20px;
             text-transform: uppercase;
+            line-height: 1.4;
         }
         .warranty-section {
             border: 2px solid #000;
@@ -52,6 +53,14 @@
             display: flex;
             align-items: flex-start;
         }
+        .warranty-option:last-child {
+            border-bottom: none;
+        }
+        .warranty-sub-option {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 10px;
+        }
         .checkbox {
             width: 30px;
             height: 30px;
@@ -63,6 +72,13 @@
             justify-content: center;
             font-size: 24px;
             font-weight: 900;
+        }
+        .checkbox.small {
+            width: 22px;
+            height: 22px;
+            font-size: 16px;
+            margin-right: 10px;
+            border-width: 2px;
         }
         .option-text {
             flex: 1;
@@ -88,7 +104,7 @@
             font-size: 16px;
         }
         .dealer-info {
-            margin-top: 30px;
+            margin-top: 20px;
             border: 2px solid #000;
             padding: 15px;
         }
@@ -96,10 +112,49 @@
             font-weight: 900;
             margin-bottom: 5px;
         }
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 5px;
+        }
         .complaints-box {
-            margin-top: 20px;
+            margin-top: 15px;
             font-size: 11px;
             line-height: 1.3;
+        }
+        .service-contract-container {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 15px;
+        }
+        .signature-section {
+            margin-top: 30px;
+            padding-top: 10px;
+        }
+        .signature-title {
+            font-size: 12px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+        .signature-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .sig-block {
+            width: 45%;
+        }
+        .line {
+            border-bottom: 2px solid #000;
+            height: 30px;
+            margin-bottom: 5px;
+        }
+        .labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 900;
         }
         .print-btn {
             position: fixed;
@@ -111,6 +166,7 @@
             border: none;
             cursor: pointer;
             font-weight: 900;
+            z-index: 9999;
         }
         @media print {
             .print-btn { display: none; }
@@ -132,9 +188,10 @@
             <div>VIN: {{ $vehicle->vin }}</div>
         </div>
 
+        <!-- DEALER WARRANTIES SECTION -->
         <div class="warranty-section">
             <div class="warranty-header">WARRANTIES FOR THIS VEHICLE:</div>
-            
+
             <div class="warranty-option">
                 <div class="checkbox">X</div>
                 <div class="option-text">
@@ -147,9 +204,17 @@
                 <div class="checkbox"></div>
                 <div class="option-text">
                     <div class="option-title">DEALER WARRANTY</div>
-                    <div style="margin-top: 5px;">
-                        [ ] FULL WARRANTY<br>
-                        [ ] LIMITED WARRANTY. The dealer will pay ____% of the labor and ____% of the parts for the covered systems that fail during the warranty period. Ask the dealer for a copy of the warranty document and for an explanation of warranty coverage, exclusions, and the dealer's repair obligations.
+
+                    <div class="warranty-sub-option">
+                        <div class="checkbox small"></div>
+                        <div><strong>FULL WARRANTY</strong></div>
+                    </div>
+
+                    <div class="warranty-sub-option">
+                        <div class="checkbox small"></div>
+                        <div>
+                            <strong>LIMITED WARRANTY.</strong> The dealer will pay ____% of the labor and ____% of the parts for the covered systems that fail during the warranty period. Ask the dealer for a copy of the warranty document and for an explanation of warranty coverage, exclusions, and the dealer's repair obligations.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -163,26 +228,84 @@
             ____________________________________________________________________________________________________
         </div>
 
+        <!-- NON-DEALER WARRANTIES SECTION -->
         <div class="warranty-section" style="margin-top: 20px;">
             <div class="warranty-header">NON-DEALER WARRANTIES FOR THIS VEHICLE:</div>
-            <div style="padding: 10px; font-size: 13px;">
-                [ ] MANUFACTURER'S WARRANTY STILL APPLIES. The manufacturer's original warranty has not expired on some components of the vehicle.<br>
-                [ ] OTHER USED VEHICLE WARRANTY APPLIES.
+            <div style="padding: 10px;">
+                <div class="warranty-sub-option" style="margin-top: 5px;">
+                    <div class="checkbox small"></div>
+                    <div><strong>MANUFACTURER'S WARRANTY STILL APPLIES.</strong> The manufacturer's original warranty has not expired on some components of the vehicle.</div>
+                </div>
+                <div class="warranty-sub-option">
+                    <div class="checkbox small"></div>
+                    <div><strong>MANUFACTURER'S USED VEHICLE WARRANTY APPLIES.</strong></div>
+                </div>
+                <div class="warranty-sub-option">
+                    <div class="checkbox small"></div>
+                    <div><strong>OTHER USED VEHICLE WARRANTY APPLIES.</strong></div>
+                </div>
             </div>
         </div>
 
-        <div class="complaints-box">
-            SERVICE CONTRACT. A service contract is available at an extra charge on this vehicle. Ask for details as to coverage, deductible, price, and exclusions. If you buy a service contract within 90 days of your purchase of this vehicle, implied warranties under your state's laws may give you additional rights.
+        <!-- SERVICE CONTRACT SECTION WITH REAL CHECKBOX -->
+        <div class="service-contract-container">
+            <div class="checkbox small" style="margin-top: 3px;"></div>
+            <div class="complaints-box" style="margin-top: 0; font-size: 13px;">
+                <strong>SERVICE CONTRACT.</strong> A service contract is available at an extra charge on this vehicle.
+                Ask for details as to coverage, deductible, price,
+                and exclusions. If you buy a service contract within 90 days of your purchase of this vehicle,
+                implied warranties under your state's laws may give you additional rights.
+            </div>
         </div>
 
-        <div class="dealer-info">
-            <div class="dealer-title">DEALER: {{ $vehicle->dealer->name ?? config('app.name') }}</div>
-            <div>ADDRESS: {{ $vehicle->dealer->address ?? '________________________________________' }}</div>
-            <div style="margin-top: 10px;">FOR COMPLAINTS OR AFTER SALE SERVICE, CONTACT:</div>
-            <div>________________________________________________________________________</div>
+       <div class="dealer-info">
+    <div class="dealer-title">DEALER: {{ $vehicle->dealer->name ?? config('app.name') }}</div>
+
+    <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+        <span>ADDRESS:</span>
+        <span style="flex: 1; border-bottom: 1px solid #000; padding-bottom: 2px;">{{ $vehicle->dealer->address ?? '' }}</span>
+    </div>
+
+    <div class="two-col-grid" style="margin-bottom: 15px;">
+        <div style="display: flex; gap: 5px;">
+            <span>TELEPHONE:</span>
+            <span style="flex: 1; border-bottom: 1px solid #000; padding-bottom: 2px;">{{ $vehicle->dealer->phone ?? '' }}</span>
+        </div>
+        <div style="display: flex; gap: 5px;">
+            <span>EMAIL:</span>
+            <span style="flex: 1; border-bottom: 1px solid #000; padding-bottom: 2px;"></span>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        FOR COMPLAINTS OR AFTER SALE SERVICE, CONTACT:
+        <div style="border-bottom: 1px solid #000; height: 30px; margin-top: 5px;"></div>
+    </div>
+</div>
+
+        <!-- ACKNOWLEDGEMENT AND SIGNATURE BLOCKS -->
+        <div class="signature-section">
+            <div class="signature-title"><strong>I hereby acknowledge receipt of the Buyers Guide at the closing of this sale.</strong></div>
+
+            <div class="signature-row">
+                <div class="sig-block">
+                    <div class="line"></div>
+                    <div class="labels">
+                        <span>BUYER SIGNATURE</span>
+                        <span>DATE</span>
+                    </div>
+                </div>
+                <div class="sig-block">
+                    <div class="line"></div>
+                    <div class="labels">
+                        <span>CO-BUYER SIGNATURE</span>
+                        <span>DATE</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="complaints-box" style="margin-top: 30px; text-align: center; font-size: 10px;">
+        <div class="complaints-box" style="margin-top: 20px; text-align: center; font-size: 10px;">
             SEE THE BACK OF THIS FORM for important additional information, including a list of some major defects that may occur in used motor vehicles.
         </div>
     </div>
