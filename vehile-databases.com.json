@@ -1,0 +1,338 @@
+{
+    "status": "success",
+    "data": {
+        "SEL 4dr Front-wheel Drive Sedan Automatic": {
+            "intro": {
+                "vin": "1FAHP2E82GG139935"
+            },
+            "basic": {
+                "vehicle_name": "Ford Taurus",
+                "make": "Ford",
+                "model": "Taurus",
+                "model_group": "Taurus",
+                "year": 2016,
+                "trims": [
+                    "SEL 4dr Front-wheel Drive Sedan Automatic"
+                ],
+                "trim": {
+                    "Style": "4dr Front-wheel Drive Sedan Automatic",
+                    "Trim": "SEL",
+                    "MSRP / Invoice": "$29,650.00 / $28,020.00"
+                },
+                "body_type": "Sedan",
+                "vehicle_type": "",
+                "doors": "4",
+                "vehicle_size": "Large Cars",
+                "vehicle_segment": ""
+            },
+            "engine": {
+                "engine_order_code": "",
+                "alternator_capacity": "",
+                "engine_number_of_cylinders": "V-6",
+                "engine_displacement_units": "3.5",
+                "displacement_(l_ci)": "3500",
+                "engine_block_type": "",
+                "engine_model": "Regular Unleaded V-6",
+                "engine_valves": "24",
+                "engine_camshaft": "",
+                "emission_standard": "",
+                "net_torque": "270 @ 3000",
+                "sae_net_torque_rpm": "270 @ 3000",
+                "horsepower": "288 @ 6500",
+                "sae_net_horsepower_rpm": "288 @ 6500",
+                "compression": "9.3"
+            },
+            "manufacturer": {
+                "manufacturer": "Ford Motor Company",
+                "country": "United States (USA)"
+            },
+            "transmission": {
+                "transmission_style": "6 speed automatic",
+                "transmission_type": "automatic",
+                "transmission_order_code": "",
+                "first_gear_ratio": "4.48",
+                "second_gear_ratio": "2.87",
+                "third_gear_ratio": "1.84",
+                "fourth_gear_ratio": "1.41",
+                "fifth_gear_ratio": "1",
+                "sixth_gear_ratio": "0.74",
+                "seventh_gear_ratio": "",
+                "eighth_gear_ratio": "",
+                "reverse_ratio": "2.88",
+                "transfer_case_power_takeoff": ""
+            },
+            "dimensions": {
+                "dead_weight_hitch_max_trailer_wt": "1000",
+                "dead_weight_hitch_max_tongue_wt": "100",
+                "trunk_volume": "",
+                "width": "76.18 in",
+                "length": "202.91 in",
+                "height": "60.71 in",
+                "track_width_front": "65.3 in",
+                "track_width_rear": "65.5 in",
+                "min_ground_clearance": "undefined in",
+                "wheelbase": "112.91 in",
+                "rear_hip_room": "",
+                "front_hip_room": "",
+                "rear_shoulder_room": "56.9 in",
+                "front_shoulder_room": "57.9 in",
+                "turning_diameter": "39.5 ft",
+                "rear_legroom": "38.1 in",
+                "front_legroom": "41.9 in",
+                "rear_headroom": "37.8 in",
+                "front_headroom": "39 in",
+                "passenger_volume": "102.2 ft³",
+                "liftover_height": ""
+            },
+            "drivetrain": {
+                "drive_type": "FWD",
+                "final_drive_axle_ratio": "2.77"
+            },
+            "braking": {
+                "rear_brake_type": "4-Wheel Disc",
+                "front_brake_type": "4-Wheel Disc",
+                "disc_front": "Yes",
+                "disc_rear": "Yes",
+                "front_brake_rotor_diam_and_thickness": "13.9",
+                "rear_brake_rotor_diam_and_thickness": "13.6"
+            },
+            "suspension": {
+                "steering_type": "Rack-Pinion",
+                "steering_ratio_overall": "",
+                "lock_to_lock_turns_steering": "",
+                "rear_suspension": "Multi-Link",
+                "front_suspension": "Strut",
+                "suspension_type_rear_cont": "Multi-Link",
+                "suspension_type_front_cont": "Strut",
+                "stabilizer_bar_diameter_rear": "",
+                "stabilizer_bar_diameter_front": ""
+            },
+            "colors": {
+                "interior": [
+                    {
+                        "Hex": "#aca595",
+                        "Generic Name": "",
+                        "Code": "MD",
+                        "Color": "Dune w/Unique Cloth Bucket Seats"
+                    },
+                    {
+                        "Hex": "#0a0a09",
+                        "Generic Name": "charcoal",
+                        "Code": "MW",
+                        "Color": "Charcoal Black w/Unique Cloth Bucket Seats"
+                    },
+                    {
+                        "Hex": "#aca595",
+                        "Generic Name": "",
+                        "Code": "JD",
+                        "Color": "Dune w/Heated Leather Front Bucket Seats"
+                    },
+                    {
+                        "Hex": "#0a0a09",
+                        "Generic Name": "charcoal",
+                        "Code": "JW",
+                        "Color": "Charcoal Black w/Heated Leather Front Bucket Seats"
+                    }
+                ],
+                "exterior": [
+                    {
+                        "Hex": "#0a0a0c",
+                        "Generic Name": "black",
+                        "Code": "G1",
+                        "Color": "Shadow Black"
+                    },
+                    {
+                        "Hex": "#323a3c",
+                        "Generic Name": "",
+                        "Code": "HN",
+                        "Color": "Guard"
+                    },
+                    {
+                        "Hex": "#443c30",
+                        "Generic Name": "",
+                        "Code": "H5",
+                        "Color": "Caribou Metallic"
+                    },
+                    {
+                        "Hex": "#454744",
+                        "Generic Name": "",
+                        "Code": "J7",
+                        "Color": "Magnetic Metallic"
+                    },
+                    {
+                        "Hex": "#0c2c45",
+                        "Generic Name": "blue",
+                        "Code": "N1",
+                        "Color": "Blue Jeans"
+                    },
+                    {
+                        "Hex": "#a1a1a1",
+                        "Generic Name": "silver",
+                        "Code": "UX",
+                        "Color": "Ingot Silver Metallic"
+                    },
+                    {
+                        "Hex": "#f7f7f5",
+                        "Generic Name": "white",
+                        "Code": "YZ",
+                        "Color": "Oxford White"
+                    },
+                    {
+                        "Hex": "#4b1a1f",
+                        "Generic Name": "bronze",
+                        "Code": "H9",
+                        "Color": "Bronze Fire Metallic Tinted Clearcoat"
+                    },
+                    {
+                        "Hex": "#8f1c29",
+                        "Generic Name": "red",
+                        "Code": "RR",
+                        "Color": "Ruby Red Metallic Tinted Clearcoat"
+                    },
+                    {
+                        "Hex": "#f2f2f0",
+                        "Generic Name": "white",
+                        "Code": "UG",
+                        "Color": "White Platinum Metallic Tri-Coat"
+                    }
+                ]
+            },
+            "seating": {
+                "standard_seating": "5"
+            },
+            "weight": {
+                "curb_weight": "3969 lbs"
+            },
+            "wheels_and_tires": {
+                "front_tire_size": "P235/55HR18",
+                "rear_tire_size": "P235/55HR18",
+                "spare_tire_size": "Compact",
+                "rear_tire_order_code": "",
+                "front_tire_order_code": "",
+                "wheel_size_front_(inches)": "18 X 7.5 in",
+                "wheel_size_rear_(inches)": "18 X 7.5  in",
+                "spare_wheel_size": "Compact ",
+                "front_wheel_material": "Aluminum",
+                "rear_wheel_material": "Aluminum",
+                "spare_wheel_material": "Aluminum",
+                "steering_type": "Rack-Pinion",
+                "anti_lock_brakes": "4-Wheel"
+            },
+            "market_value": {
+                "msrp": "$29,650.00",
+                "destination_charge": "$875.00",
+                "invoice_price": "$28,020.00"
+            },
+            "fuel": {
+                "fuel_economy": "18 City / 27 Highway MPG",
+                "highway_mileage": "27 MPG",
+                "city_mileage": "18 MPG",
+                "fuel_economy_est_combined": "21 MPG",
+                "epa_greenhouse_gas_score": "",
+                "fuel_type": "gasoline",
+                "fuel_capacity": "19 gal",
+                "fuel_injection_type": ""
+            },
+            "feature": {
+                "mechanical_and_powertrain": [
+                    "Strut Front Suspension w/Coil Springs",
+                    "Electric Power-Assist Speed-Sensing Steering",
+                    "Multi-Link Rear Suspension w/Coil Springs",
+                    "Engine: 3.5/ V-6",
+                    "Brake Actuated Limited Slip Differential",
+                    "72-Amp/Hr 650CCA Maintenance-Free Battery w/Run Down Protection",
+                    "Front And Rear Anti-Roll Bars",
+                    "Quasi-Dual Stainless Steel Exhaust w/Chrome Tailpipe Finisher",
+                    "Transmission: 6-Speed SelectShift Automatic",
+                    "19.0gal. Fuel Tank",
+                    "Front-Wheel"
+                ],
+                "safety": [
+                    "AdvanceTrac with Curve Control Electronic Stability Control (ESC)",
+                    "ABS And Driveline Traction Control",
+                    "Dual Stage Driver And Passenger Seat-Mounted Side Airbags",
+                    "Rear Parking Sensors",
+                    "Low Tire Pressure Warning",
+                    "Dual Stage Driver And Passenger Front Airbags",
+                    "Safety Canopy System Curtain 1st And 2nd Row Airbags",
+                    "Airbag Occupancy Sensor",
+                    "Mykey System -inc: Top Speed Limiter, Audio Volume Limiter, Early Low Fuel Warning, Programmable Sound Chimes and Beltminder w/Audio Mute",
+                    "Rear Child Safety Locks",
+                    "Outboard Front Lap And Shoulder Safety Belts -inc: Rear Center 3 Point, Height Adjusters and Pretensioners",
+                    "Back-Up Camera"
+                ],
+                "interior": [
+                    "60-40 Folding Bench Front Facing Fold Forward Seatback Rear Seat",
+                    "Unique Cloth Bucket Seats -inc: 6-way power driver and passenger seat (fore/aft, up/down, tilt) w/manual lumbar and recline",
+                    "Manual w/Tilt Front Head Restraints and Fixed Rear Head Restraints",
+                    "HVAC -inc: Underseat Ducts and Console Ducts",
+                    "Seats w/Cloth Back Material",
+                    "Manual Tilt/Telescoping Steering Column",
+                    "Leather/Metal-Look Steering Wheel",
+                    "Cruise Control w/Steering Wheel Controls",
+                    "Interior Trim -inc: Metal-Look Instrument Panel Insert, Metal-Look Door Panel Insert and Chrome Interior Accents",
+                    "Gauges -inc: Speedometer, Odometer, Engine Coolant Temp, Tachometer, Trip Odometer and Trip Computer",
+                    "Compass",
+                    "Outside Temp Gauge",
+                    "Full Floor Console w/Covered Storage, Mini Overhead Console w/Storage and 3 12V DC Power Outlets",
+                    "Driver / Passenger And Rear Door Bins",
+                    "2 Seatback Storage Pockets",
+                    "Carpet Floor Trim and Carpet Trunk Lid/Rear Cargo Door Trim",
+                    "Front Center Armrest and Rear Center Armrest",
+                    "Full Carpet Floor Covering -inc: Carpet Front And Rear Floor Mats",
+                    "FOB Controls -inc: Cargo Access and Remote Engine Start",
+                    "Remote Releases -Inc: Power Cargo Access",
+                    "Cargo Space Lights",
+                    "Cloth Door Trim Insert",
+                    "Driver And Passenger Visor Vanity Mirrors w/Driver And Passenger Illumination",
+                    "Driver Foot Rest",
+                    "Leather/Chrome Gear Shifter Material",
+                    "Illuminated Locking Glove Box",
+                    "Day-Night Auto-Dimming Rearview Mirror",
+                    "Front Cupholder",
+                    "Rear Cupholder",
+                    "Full Cloth Headliner",
+                    "Power 1st Row Windows w/Driver 1-Touch Up/Down",
+                    "Power Rear Windows",
+                    "Fade-To-Off Interior Lighting",
+                    "Front And Rear Map Lights",
+                    "Perimeter Alarm",
+                    "Power Door Locks w/Autolock Feature",
+                    "3 12V DC Power Outlets",
+                    "Remote Keyless Entry w/Integrated Key Transmitter, Illuminated Entry and Panic Button",
+                    "Securilock Anti-Theft Ignition (pats) Engine Immobilizer",
+                    "Dual Zone Front Automatic Air Conditioning",
+                    "Selective Service Internet Access",
+                    "Keypad",
+                    "Trip Computer"
+                ],
+                "exterior": [
+                    "Aluminum Spare Wheel",
+                    "Body-Colored Rear Bumper w/Black Rub Strip/Fascia Accent",
+                    "Body-Colored Door Handles",
+                    "Body-Colored Power Heated Side Mirrors w/Convex Spotter and Manual Folding",
+                    "Fixed Rear Window w/Defroster",
+                    "Wheels: 18\" Painted Aluminum",
+                    "Chrome Grille",
+                    "Front Windshield -inc: Sun Visor Strip",
+                    "Body-Colored Front Bumper",
+                    "Perimeter/Approach Lights",
+                    "Unique Cloth Bucket Seats",
+                    "Light Tinted Glass",
+                    "Laminated Glass",
+                    "Fully Galvanized Steel Panels",
+                    "Compact Spare Tire Mounted Inside Under Cargo",
+                    "Chrome Side Windows Trim and Black Front Windshield Trim",
+                    "Fully Automatic Projector Beam Halogen Headlamps w/Delay-Off",
+                    "Trunk Rear Cargo Access",
+                    "LED Brakelights",
+                    "Speed Sensitive Variable Intermittent Wipers",
+                    "245/45VR20.0"
+                ]
+            },
+            "comfort": {
+                "total_cooling_system_capacity": ""
+            }
+        }
+    }
+}
