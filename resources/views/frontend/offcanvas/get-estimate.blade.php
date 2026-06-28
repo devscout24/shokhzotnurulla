@@ -82,23 +82,39 @@ ID prefix: gep- (get estimate payment)
         #getEstimate .gep-range::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #166B87;
-            cursor: pointer;
-            border: 2px solid #fff;
-            box-shadow: 0 0 0 1px #166B87;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            background-color: #ffffff;
+            cursor: grab;
+            border: 1px solid #eeeeee;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            /* grip bar via SVG background */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='12'%3E%3Crect width='5' height='12' rx='2' fill='%23cccccc'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+
+        #getEstimate .gep-range::-webkit-slider-thumb:active {
+            cursor: grabbing;
         }
 
         #getEstimate .gep-range::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #166B87;
-            cursor: pointer;
-            border: 2px solid #fff;
-            box-shadow: 0 0 0 1px #166B87;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            background-color: #ffffff;
+            cursor: grab;
+            border: 1px solid #eeeeee;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='12'%3E%3Crect width='5' height='12' rx='2' fill='%23cccccc'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        #getEstimate .gep-range::-moz-range-thumb:active {
+            cursor: grabbing;
         }
 
         #getEstimate .gep-slider-labels {
@@ -173,19 +189,21 @@ ID prefix: gep- (get estimate payment)
         <div class="border-top pt-3"></div>
 
         {{-- ── Unit price ── --}}
-        <div class="mb-4">
-            <label class="form-label">Unit price</label>
-            <div class="input-group gep-stepper">
-                <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-100">
-                    <b class="mx-auto">-</b>
-                </button>
-                <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">$</b></span>
-                <input class="form-control border-radius-0" placeholder="10,000" disabled min="1000" max="1000000"
-                    required type="text" value="{{ $estimatePrice ? number_format($estimatePrice) : '' }}" name="amount"
-                    inputmode="numeric" style="font-size: inherit;">
-                <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="100">
-                    <b class="mx-auto">+</b>
-                </button>
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label class="form-label">Unit price</label>
+                <div class="input-group gep-stepper">
+                    <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="-100">
+                        <b class="mx-auto">-</b>
+                    </button>
+                    <span class="bg-lighter input-group-text gep-stepper-symbol"><b class="mx-auto">$</b></span>
+                    <input class="form-control border-radius-0" placeholder="10,000" disabled min="1000" max="1000000"
+                        required type="text" value="{{ $estimatePrice ? number_format($estimatePrice) : '' }}"
+                        name="amount" inputmode="numeric" style="font-size: inherit;">
+                    <button type="button" class="bg-lighter input-group-text gep-stepper-btn" data-gep-step="100">
+                        <b class="mx-auto">+</b>
+                    </button>
+                </div>
             </div>
         </div>
 
