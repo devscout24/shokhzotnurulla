@@ -4,30 +4,30 @@
 @endpush
 
 @php
-    $loc          = $locationMenuData[0] ?? null;
+    $loc = $locationMenuData[0] ?? null;
 
-    $salesHours   = $loc['hours_by_department']['sales']   ?? [];
+    $salesHours = $loc['hours_by_department']['sales'] ?? [];
     $serviceHours = $loc['hours_by_department']['service'] ?? [];
-    $phones       = $loc['phones'] ?? [];
+    $phones = $loc['phones'] ?? [];
 
-    $salesPhone   = collect($phones)->firstWhere('type', 'sales')
-                 ?? collect($phones)->firstWhere('type', 'main')
-                 ?? collect($phones)->first();
+    $salesPhone = collect($phones)->firstWhere('type', 'sales')
+        ?? collect($phones)->firstWhere('type', 'main')
+        ?? collect($phones)->first();
     $servicePhone = collect($phones)->firstWhere('type', 'service')
-                 ?? $salesPhone;
+        ?? $salesPhone;
 
-    $street1    = $loc['street1']    ?? '1339 South Lowry Street';
-    $street2    = $loc['street2']    ?? '';
-    $city       = $loc['city']       ?? 'Smyrna';
-    $state      = $loc['state']      ?? 'TN';
+    $street1 = $loc['street1'] ?? '1339 South Lowry Street';
+    $street2 = $loc['street2'] ?? '';
+    $city = $loc['city'] ?? 'Smyrna';
+    $state = $loc['state'] ?? 'TN';
     $postalcode = $loc['postalcode'] ?? '37167';
 
     $fullAddress = implode(', ', array_filter([$street1, $city, $state, $postalcode]));
 
-    $salesPhoneNumber   = $salesPhone   ? $salesPhone['number']   : '(615) 267-0590';
+    $salesPhoneNumber = $salesPhone ? $salesPhone['number'] : '(615) 267-0590';
     $servicePhoneNumber = $servicePhone ? $servicePhone['number'] : '(615) 267-0590';
 
-    $salesPhoneRaw   = preg_replace('/\D/', '', $salesPhoneNumber);
+    $salesPhoneRaw = preg_replace('/\D/', '', $salesPhoneNumber);
     $servicePhoneRaw = preg_replace('/\D/', '', $servicePhoneNumber);
 
     $cityLine = implode(', ', array_filter([
@@ -38,33 +38,33 @@
     $mapUrl = !empty($loc['map_override'])
         ? $loc['map_override']
         : 'https://www.google.com/maps/embed/v1/place?q='
-            . urlencode(implode(',', array_filter([$street1, $city, $state, $postalcode])))
-            . '&key=AIzaSyDNCy5KjYVZKZspyeNmAJ3E4rldiH28XfM';
+        . urlencode(implode(',', array_filter([$street1, $city, $state, $postalcode])))
+        . '&key=AIzaSyDNCy5KjYVZKZspyeNmAJ3E4rldiH28XfM';
 
     $dealerTitle = $dealerName ?: config('app.name');
 
     // Fallback hours (used when dynamic data is empty)
     $fallbackSalesHours = [
-        ['day_name' => 'Monday',    'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM',  'close_time' => '6:00 PM'],
-        ['day_name' => 'Tuesday',   'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM',  'close_time' => '6:00 PM'],
-        ['day_name' => 'Wednesday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM',  'close_time' => '6:00 PM'],
-        ['day_name' => 'Thursday',  'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM',  'close_time' => '6:00 PM'],
-        ['day_name' => 'Friday',    'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM',  'close_time' => '6:00 PM'],
-        ['day_name' => 'Saturday',  'is_closed' => false, 'appointment_only' => false, 'open_time' => '10:00 AM', 'close_time' => '6:00 PM'],
-        ['day_name' => 'Sunday',    'is_closed' => true,  'appointment_only' => false, 'open_time' => '',         'close_time' => ''],
+        ['day_name' => 'Monday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM', 'close_time' => '6:00 PM'],
+        ['day_name' => 'Tuesday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM', 'close_time' => '6:00 PM'],
+        ['day_name' => 'Wednesday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM', 'close_time' => '6:00 PM'],
+        ['day_name' => 'Thursday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM', 'close_time' => '6:00 PM'],
+        ['day_name' => 'Friday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM', 'close_time' => '6:00 PM'],
+        ['day_name' => 'Saturday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '10:00 AM', 'close_time' => '6:00 PM'],
+        ['day_name' => 'Sunday', 'is_closed' => true, 'appointment_only' => false, 'open_time' => '', 'close_time' => ''],
     ];
 
     $fallbackServiceHours = [
-        ['day_name' => 'Monday',    'is_closed' => false, 'appointment_only' => false, 'open_time' => '8:00 AM', 'close_time' => '5:00 PM'],
-        ['day_name' => 'Tuesday',   'is_closed' => false, 'appointment_only' => false, 'open_time' => '8:00 AM', 'close_time' => '5:00 PM'],
+        ['day_name' => 'Monday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '8:00 AM', 'close_time' => '5:00 PM'],
+        ['day_name' => 'Tuesday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '8:00 AM', 'close_time' => '5:00 PM'],
         ['day_name' => 'Wednesday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '8:00 AM', 'close_time' => '5:00 PM'],
-        ['day_name' => 'Thursday',  'is_closed' => false, 'appointment_only' => false, 'open_time' => '8:00 AM', 'close_time' => '5:00 PM'],
-        ['day_name' => 'Friday',    'is_closed' => false, 'appointment_only' => false, 'open_time' => '8:00 AM', 'close_time' => '5:00 PM'],
-        ['day_name' => 'Saturday',  'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM', 'close_time' => '2:00 PM'],
-        ['day_name' => 'Sunday',    'is_closed' => true,  'appointment_only' => false, 'open_time' => '',        'close_time' => ''],
+        ['day_name' => 'Thursday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '8:00 AM', 'close_time' => '5:00 PM'],
+        ['day_name' => 'Friday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '8:00 AM', 'close_time' => '5:00 PM'],
+        ['day_name' => 'Saturday', 'is_closed' => false, 'appointment_only' => false, 'open_time' => '9:00 AM', 'close_time' => '2:00 PM'],
+        ['day_name' => 'Sunday', 'is_closed' => true, 'appointment_only' => false, 'open_time' => '', 'close_time' => ''],
     ];
 
-    $resolvedSalesHours   = !empty($salesHours)   ? $salesHours   : $fallbackSalesHours;
+    $resolvedSalesHours = !empty($salesHours) ? $salesHours : $fallbackSalesHours;
     $resolvedServiceHours = !empty($serviceHours) ? $serviceHours : $fallbackServiceHours;
 @endphp
 
@@ -72,7 +72,8 @@
     <section class="bg-light border-top" id="location-maps">
         <div class="container">
             <h3 class="text-center mb-5">
-                Visit our used car dealership conveniently located in {{ $city }}, {{ $state }}: Near Murfreesboro, Nashville,
+                Visit our used car dealership conveniently located in {{ $city }}, {{ $state }}: Near Murfreesboro,
+                Nashville,
                 Mount Juliet, Clarksville, and Cookeville.
             </h3>
             <div class="bg-white no-gutters rounded border row">
@@ -163,11 +164,7 @@
                 </div>
 
                 <div class="col-sm-6">
-                    {{-- <iframe
-                        src="{{ $mapUrl }}"
-                        width="100%"
-                        title="Get directions to our store"
-                        loading="lazy"
+                    {{-- <iframe src="{{ $mapUrl }}" width="100%" title="Get directions to our store" loading="lazy"
                         class="border full-height-grayscale">
                     </iframe> --}}
                     <div id="map" style="width:100%; height:100%;" class="border full-height-grayscale"></div>
@@ -183,8 +180,8 @@
 
             let address = @json($fullAddress);
 
-            let defaultLat = 31.4504;
-            let defaultLng = 73.1350;
+            let defaultLat = 35.9459826;
+            let defaultLng = -86.4857961;
 
             fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
                 .then(res => res.json())
@@ -208,5 +205,5 @@
                         .openPopup();
                 });
         });
-        </script>
+    </script>
 @endpush

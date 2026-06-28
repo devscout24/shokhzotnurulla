@@ -263,6 +263,8 @@
                                         data-vehicle-year="{{ $vehicle->year }}"
                                         data-vehicle-make="{{ $vehicle->make?->name }}"
                                         data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
+                                        data-vehicle-stock="{{ $vehicle->stock_number }}"
+                                        data-vehicle-vin="{{ $vehicle->vin }}"
                                         aria-controls="getEstimate">
                                         <span class="badge badge-secondary text-uppercase me-2 float-start">
                                             Estimated Payment
@@ -839,6 +841,8 @@
                                             data-vehicle-year="{{ $vehicle->year }}"
                                             data-vehicle-make="{{ $vehicle->make?->name }}"
                                             data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
+                                            data-vehicle-stock="{{ $vehicle->stock_number }}"
+                                            data-vehicle-vin="{{ $vehicle->vin }}"
                                             aria-controls="getEstimate">
                                             <span class="badge badge-secondary text-uppercase mb-2">Estimated Payment</span>
                                             <div class="text-large">

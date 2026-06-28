@@ -200,6 +200,8 @@
                                             data-vehicle-year="{{ $vehicle->year }}"
                                             data-vehicle-make="{{ $vehicle->make?->name }}"
                                             data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
+                                            data-vehicle-stock="{{ $vehicle->stock_number }}"
+                                            data-vehicle-vin="{{ $vehicle->vin }}"
                                             aria-controls="getEstimate">
                                             <small class="opacity-75">Est. Payment</small><br>
                                             <span class="fw-bold">${{ number_format($monthly) }}/mo</span>
@@ -228,6 +230,8 @@
                     data-vehicle-year="{{ $vehicle->year }}"
                     data-vehicle-make="{{ $vehicle->make?->name }}"
                     data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
+                    data-vehicle-stock="{{ $vehicle->stock_number }}"
+                    data-vehicle-vin="{{ $vehicle->vin }}"
                     aria-controls="getEstimate">
                     Estimate payment
                     <div style="font-size: 10px; font-weight: normal; opacity: 0.9;">No impact to your credit score</div>

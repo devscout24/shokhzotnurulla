@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charSet="utf-8" data-next-head="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" class="" data-next-head="" />
+    <meta property="og:url" content="https://undefined/print-deal" class="" data-next-head="" />
+    <meta property="og:site_name" class="" data-next-head="" />
+    <meta property="og:type" content="website" class="" data-next-head="" />
+    <meta property="og:image" class="" data-next-head="" />
+    <meta name="format-detection" content="telephone=no,address=no" class="" data-next-head="" />
+    <meta name="generator" content="Overfuel" class="" data-next-head="" />
+    <style id="__">
+        @font-face {
+            font-display: s block;
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 400;
+            src: url("/font/roboto-v48-latin-regular.woff2")format("woff2")
+        }
+
+        @font-face {
+            font-display: block;
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 600;
+            src: url("/font/roboto-v48-latin-600.woff2")format("woff2")
+        }
+
+        @font-face {
+            font-display: block;
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 900;
+            src: url("/font/roboto-v48-latin-900.woff2")format("woff2")
+        }
+
+        body {
+            font-family: "Roboto", system-ui, Arial, sans-serif !important
+        }
+    </style>
+    <style id="__">
+        :root {
+            --color-primary: undefined;
+            --color-secondary: #323232;
+            --color-highlight: #4e5155;
+            --persistent-banner-background-color: undefined;
+            --persistent-banner-text-color: #212529;
+            --srp-height: 75%;
+            --cookie-consent-bg: #343a40;
+            --cookie-consent-text: #fff;
+            --cookie-consent-link: #fff
+        }
+
+        body {
+            letter-spacing: 0;
+            background: #f5f5f5;
+            font-size: .95rem;
+            top: 0px !important
+        }
+
+        #mobile-nav {
+            background: #fff
+        }
+
+        #header-nav ul li {
+            position: relative;
+            color: inherit;
+            display: inline-block;
+            padding: 1.5rem 1rem;
+            text-transform: none;
+            font-size: 16px
+        }
+
+        #header-nav a.noChildren {
+            color: inherit
+        }
+
+        .text-primary,
+        svg.text-primary,
+        .blog-article a:not(.btn),
+        .blog-article a:not(.btn):visited {
+            color: var(--color-primary) !important;
+            fill: var(--color-primary)
+        }
+
+        .blog-article a:not(.btn) svg,
+        .blog-article a:not(.btn):visited svg {
+            fill: var(--color-primary) !important
+        }
+
+        .bg-preheader {
+            background: undefined;
+            color: undefined
+        }
+
+        .text-preheader {
+            color: undefined !important
+        }
+
+        .bg-preheader i,
+        .bg-preheader svg,
+        .bg-preheader .dropdown-toggle::after {
+            color: undefined !important;
+            fill: undefined !important
+        }
+
+        .bg-header {
+            background: undefined
+        }
+
+        .bg-footer {
+            background: undefined
+        }
+
+        .bg-heroSearch {
+            background: black;
+            padding: 6rem 0;
+            position: relative;
+            overflow-x: clip;
+            -webkit-background-size: cover !important;
+            -moz-background-size: cover !important;
+            -o-background-size: cover !important;
+            background-size: cover !important;
+            background-position: center center;
+            background-repeat: no-repeat
+        }
+
+        .bg-heroSearch #hero-img {
+            left: 0;
+            bottom: 0
+        }
+
+        .text-highlight {
+            color: #4e5155 !important
+        }
+
+        .btn-outline-primary,
+        .btn-outline-primary:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary)
+        }
+
+        .btn-outline-primary svg,
+        .btn-outline-primary:hover svg,
+        .btn-link svg {
+            fill: var(--color-primary)
+        }
+
+        #top-banner svg {
+            fill: #fff !important
+        }
+
+        .btn-outline-primary:focus {
+            color: inherit
+        }
+
+        .btn-default:active {
+            color: white !important
+        }
+
+        .btn-default:active svg {
+            fill: white
+        }
+
+        .btn-link.show svg {
+            fill: white !important
+        }
+
+        .btn-link.show::after {
+            color: #fff !important
+        }
+
+        .cElement a,
+        .cElement a:hover {
+            color: var(--color-primary)
+        }
+
+        .cElement a.btn:not(.btn-outline-primary):not(.btn-primary) {
+            color: #fff
+        }
+
+        .split-boxes {
+            background-image: linear-gradient(90deg, var(--color-secondary), var(--color-secondary)50%, var(--color-primary)0, var(--color-primary))
+        }
+
+        .img-srp-container:before {
+            display: block;
+            content: "";
+            width: 100%;
+            padding-top: 75%
+        }
+
+        .btn-outline-primary:disabled {
+            color: var(--color-primary) !important;
+            border-color: var(--color-primary) !important
+        }
+
+        .aiBg {
+            position: relative;
+            background: linear-gradient(90deg, var(--color-primary), #ccc);
+            border-radius: 14px;
+            padding: 2px
+        }
+
+        .aiBg input {
+            border: 0 !important;
+            z-index: 5
+        }
+
+        .react-datepicker__day--selected,
+        .react-datepicker__day--in-selecting-range,
+        .react-datepicker__day--in-range,
+        .react-datepicker__month-text--selected,
+        .react-datepicker__month-text--in-selecting-range,
+        .react-datepicker__month-text--in-range,
+        .react-datepicker__quarter-text--selected,
+        .react-datepicker__quarter-text--in-selecting-range,
+        .react-datepicker__quarter-text--in-range,
+        .react-datepicker__year-text--selected,
+        .react-datepicker__year-text--in-selecting-range,
+        .react-datepicker__year-text--in-range,
+        .react-datepicker__day--keyboard-selected:hover,
+        .react-datepicker__month-text--keyboard-selected:hover,
+        .react-datepicker__quarter-text--keyboard-selected:hover,
+        .react-datepicker__year-text--keyboard-selected:hover {
+            background-color: var(--color-primary);
+            color: white
+        }
+
+        .text-secondary {
+            color: var(--color-secondary) !important
+        }
+
+        .ribbon span {
+            background-color: var(--color-primary) !important
+        }
+
+        .border-primary,
+        html:not([dir=rtl]) .border-primary,
+        html[dir=rtl] .border-primary {
+            border-color: var(--color-primary) !important
+        }
+
+        .drag-active {
+            border: 1px dashed var(--color-primary) !important
+        }
+
+        .progress-bar,
+        .bg-primary,
+        .badge-primary,
+        .btn-primary,
+        .nav-pills .nav-link.active,
+        .nav-pills .nav-link.active:hover,
+        .nav-pills .nav-link.active:focus,
+        .btn-check:checked+.btn,
+        .btn.active,
+        .btn.show,
+        .btn:first-child:active,
+        :not(.btn-check)+.btn:active {
+            background-color: var(--color-primary) !important
+        }
+
+        .btn-primary,
+        .btn-check:checked+.btn,
+        .btn.active,
+        .btn.show,
+        .btn:first-child:active,
+        :not(.btn-check)+.btn:active {
+            border-color: var(--color-primary) !important
+        }
+
+        .btn-secondary {
+            background-color: var(--color-secondary) !important;
+            border-color: var(--color-secondary) !important
+        }
+
+        .btn-secondary:focus,
+        .btn-secondary.focus {
+            border-color: var(--color-secondary) !important
+        }
+
+        .btn-primary:focus,
+        .btn-primary.focus {
+            border-color: var(--color-primary) !important
+        }
+
+        .btn-primary.disabled,
+        .btn-primary:disabled {
+            border-color: var(--color-primary) !important;
+            background: var(--color-primary) !important
+        }
+
+        .border-theme,
+        .btn-group .btn-primary,
+        .input-group-prepend .btn-primary,
+        .input-group-append .btn-primary {
+            border-color: var(--color-primary) !important
+        }
+
+        .rdp-button:focus:not([disabled]),
+        .rdp-button:active:not([disabled]) {
+            background-color: #f5f5f5 !important;
+            border-color: var(--color-primary) !important
+        }
+
+        .rdp-day_selected:not([disabled]),
+        .rdp-day_selected:focus:not([disabled]),
+        .rdp-day_selected:active:not([disabled]),
+        .rdp-day_selected:hover:not([disabled]) {
+            background-color: var(--color-primary) !important
+        }
+
+        .btn-group .active svg {
+            color: var(--color-primary) !important
+        }
+
+        #header-nav ul li::after {
+            border-color: var(--color-primary) !important
+        }
+
+        .bg-secondary,
+        .badge-secondary {
+            background-color: var(--color-secondary) !important;
+            color: white !important
+        }
+
+        #languagedropdown {
+            color: undefined;
+            text-decoration: none;
+            margin-top: -3px
+        }
+
+        .goog-te-combo {
+            width: 100%;
+            background: undefined !important;
+            color: undefined !important;
+            border: none;
+            font-size: .9rem !important;
+            font-family: inherit !important;
+            margin: 1px 0 !important;
+        }
+
+        #persistent_banner_desktop,
+        #persistent_banner_mobile,
+        #persistent_banner_desktop a,
+        #persistent_banner_mobile a {
+            background-color: undefined;
+            z-index: 5;
+            color: #212529 !important
+        }
+
+        .gg-app {
+            z-index: 1 !important
+        }
+
+        @media (max-width: 575px) {}
+
+        .bg-heroSearch #hero-img-mobile {
+            object-fit: cover;
+            width: 100% !important;
+            height: 100% !important;
+            top: 0
+        }
+
+        @media(min-width:576px) {
+            .bg-heroSearch {
+                padding: 7rem 0;
+                position: relative;
+                background-image: url("undefined");
+                -webkit-background-size: cover !important;
+                -moz-background-size: cover !important;
+                -o-background-size: cover !important;
+                background-size: cover !important;
+                background-position: top center;
+                background-repeat: no-repeat
+            }
+
+            .srpCardLocation {
+                cursor: default !important
+            }
+
+            .srpCardLocation .fa-phone {
+                display: none !important
+            }
+        }
+    </style>
+    <style id="__">
+        .container-fluid {
+            max-width: 2548px !important
+        }
+
+        #desktop-search {
+            width: 100%
+        }
+
+        #header-nav ul li,
+        #search_desktop {
+            font-weight: 600
+        }
+
+        #header-nav ul li ul {
+            top: 3.5rem;
+            border-radius: 12px
+        }
+
+        #header-nav ul>li:last-of-type {
+            padding-right: 0 !important
+        }
+
+        #header-nav ul li ul li {
+            font-weight: normal !important
+        }
+
+        .searchInventory {
+            border-color: #E8E8E8 !important;
+            padding: 1.5rem 1rem
+        }
+
+        .searchInventory svg {
+            fill: undefined
+        }
+
+        #googletranslate {
+            padding-top: .6rem
+        }
+
+        .route-home #persistent-search {
+            display: none
+        }
+
+        .card {
+            overflow: hidden;
+            border: 1px solid transparent !important;
+            box-shadow: 0 0 0 !important;
+            border: 1px solid#e1e1e1 !important;
+            border-radius: 12px !important
+        }
+
+        .card-header {
+            border-radius: 12px 12px 0 0 !important
+        }
+
+        .card-footer:last-child {
+            border-radius: 0 0 12px 12px !important
+        }
+
+        .rounded,
+        .btn,
+        input,
+        .form-control,
+        #home-search-wrapper,
+        .custom-select {
+            border-radius: 12px !important
+        }
+
+        .rounded_bottom {
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px
+        }
+
+        .btn-group .btn:first-child {
+            border-radius: 12px 0 0 12px !important
+        }
+
+        .btn-group .btn:last-child {
+            border-radius: 0 12px 12px 0 !important
+        }
+
+        .btn-group .btn {
+            border-radius: 0 !important
+        }
+
+        .btn-group .btn.active {
+            border-color: undefined !important
+        }
+
+        .input-group>.form-control:not(.border-radius-0):not(:first-child),
+        .input-group>.custom-select:not(.border-radius-0):not(:first-child) {
+            border-radius: 0 12px 12px 0 !important
+        }
+
+        .input-group>.input-group-text.prepend:first-of-type {
+            border-radius: 12px 0 0 12px !important
+        }
+
+        .input-group>.input-group-text.append:last-of-type {
+            border-radius: 0 12px 12px 0 !important
+        }
+
+        .border-radius-0 {
+            border-radius: 0 0 0 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 0 !important;
+            border-top-left-radius: 0 !important
+        }
+
+        .accordion-item:first-of-type {
+            border-radius: 12px 12px 0 0 !important
+        }
+
+        .accordion-item:last-of-type {
+            border-radius: 0 0 12px 12px !important
+        }
+    </style>
+    <style id="__">
+        .print-container {
+            padding: 2rem;
+            font-family: sans-serif;
+            color: #000;
+            max-width: 800px;
+            margin: auto
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+            margin-bottom: 2rem
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem
+        }
+
+        td {
+            padding: .5rem;
+            border-bottom: 1px solid#ccc
+        }
+
+        .disclaimer {
+            font-size: .85rem;
+            color: #555;
+            text-align: center
+        }
+
+        @media print {
+            body {
+                margin: 0
+            }
+
+            .print-container {
+                box-shadow: none;
+                padding: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="__next">
+        <script type="application/ld+json" class=""></script>
+        <div translate="no" class=" notranslate">
+            <div id="google_translate_element" style="display:none" class=""></div>
+        </div>
+        <div class="mode-undefined route-page"><a class="skip-link" href="#main-content">Skip to main content</a>
+            <main id="main-content" tabindex="-1">
+                <div class=" print-container">
+                    <h1 style="font-size:24px" class="">Print Your Deal</h1>
+                    <p style="text-align:center" class=""><b class=""></b><br class="" />
+                        Date: <!-- -->6/26/2026<br class="" />N/A<br class="" />Stock #: <!-- -->N/A<br class="" />VIN:
+                    </p>
+                    <table class="">
+                        <tbody class="">
+                            <tr class="">
+                                <td class=""><strong class="">Credit
+                                        Score:</strong></td>
+                                <td class=""></td>
+                            </tr>
+                            <tr class="">
+                                <td class=""><strong class="">Unit
+                                        Price:</strong></td>
+                                <td class="">-</td>
+                            </tr>
+                            <tr class="">
+                                <td class=""><strong class="">Loan
+                                        Term:</strong></td>
+                                <td class=""> months</td>
+                            </tr>
+                            <tr class="">
+                                <td class=""><strong class="">APR:</strong></td>
+                                <td class="">%</td>
+                            </tr>
+                            <tr class="">
+                                <td class=""><strong class="">Cash
+                                        Down:</strong></td>
+                                <td class="">-</td>
+                            </tr>
+                            <tr class="">
+                                <td class=""><strong class="">Trade-In
+                                        Value:</strong></td>
+                                <td class="">-</td>
+                            </tr>
+                            <tr class="">
+                                <td class=""><strong class="">Loan Balance on
+                                        Trade:</strong></td>
+                                <td class="">-</td>
+                            </tr>
+                            <tr class="">
+                                <td class=""><strong class="">Tax
+                                        salestaxpostalcode Code:</strong></td>
+                                <td class=""></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class=" disclaimer">This is an estimate. Final terms are subject to dealer
+                        and lender approval and do not include title, tax, or licensing fees.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+</html>

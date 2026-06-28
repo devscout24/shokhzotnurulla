@@ -166,8 +166,8 @@ ID prefix: gep- (get estimate payment)
         <div class="mb-3">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <b>Credit score: <span data-gep-credit-score>740</span></b>
-                <a href="#" target="_blank" rel="noopener noreferrer" style="color: #166B87;"
-                    data-cy="paymentcalc-print" title="Print payment details">
+                <a href="/print-deal" target="_blank" rel="noopener noreferrer" style="color: #166B87;"
+                    data-cy="paymentcalc-print" data-gep-print-link title="Print payment details">
                     <span class="d-inline-block me-1">
                         <svg height="12" width="12" viewBox="0 0 24 24" fill="currentColor"
                             xmlns="http://www.w3.org/2000/svg">
@@ -382,6 +382,24 @@ ID prefix: gep- (get estimate payment)
                         'linear-gradient(to right, #dee2e6 ' + pct + '%, #166B87 ' + pct + '%)';
                 }
 
+                // ── Print link ─────────────────────────────────────────────────────
+                function updatePrintLink() {
+                    var printLink = offcanvas.querySelector('[data-gep-print-link]');
+                    if (!printLink) return;
+                    var params = new URLSearchParams();
+                    params.set('credit', offcanvas.querySelector('[data-gep-credit-slider]')?.value || '740');
+                    params.set('price', getValue('[name="amount"]'));
+                    params.set('term', currentTerm());
+                    params.set('rate', numberFrom(offcanvas.dataset.rate || 6.79));
+                    params.set('down', getValue('[name="down_pct"]'));
+                    params.set('tradein', getValue('[name="tradeinamount"]'));
+                    params.set('balance', getValue('[name="tradeinremainingbalance"]'));
+                    params.set('title', offcanvas.querySelector('[data-gep-vehicle-title]')?.textContent || 'Selected vehicle');
+                    params.set('stock', offcanvas.dataset.vehicleStock || '');
+                    params.set('vin', offcanvas.dataset.vehicleVin || '');
+                    printLink.href = '/print-deal?' + params.toString();
+                }
+
                 // ── Rate matching ──────────────────────────────────────────────────
                 function conditionMatches(rateCondition, vehicleCondition) {
                     if (vehicleCondition === 'New') return rateCondition === 'new' || rateCondition === 'any';
@@ -451,6 +469,7 @@ ID prefix: gep- (get estimate payment)
                     offcanvas.dataset.rate = matched ? matched.rate : numberFrom(offcanvas.dataset.fallbackRate || 6.79);
 
                     calculateMonthly();
+                    updatePrintLink();
                 }
 
                 // ── Credit score slider ────────────────────────────────────────────
@@ -564,6 +583,8 @@ ID prefix: gep- (get estimate payment)
                     offcanvas.dataset.vehicleYear = trigger.dataset.vehicleYear || '';
                     offcanvas.dataset.vehicleMake = trigger.dataset.vehicleMake || '';
                     offcanvas.dataset.vehicleCondition = trigger.dataset.vehicleCondition || '';
+                    offcanvas.dataset.vehicleStock = trigger.dataset.vehicleStock || '';
+                    offcanvas.dataset.vehicleVin = trigger.dataset.vehicleVin || '';
 
                     // reset credit slider
                     if (creditSlider) {
@@ -596,6 +617,7 @@ ID prefix: gep- (get estimate payment)
                     setValue('[name="tradeinremainingbalance"]', 0);
 
                     updateRateAndRecalculate();
+                    updatePrintLink();
                 });
             })();
         </script>

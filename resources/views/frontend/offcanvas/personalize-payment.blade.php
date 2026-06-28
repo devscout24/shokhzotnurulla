@@ -1,6 +1,6 @@
 {{-- Personal Payment --}}
 <div class="offcanvas offcanvas-end  w-lg-50 w-100" tabindex="-1" id="offcanvasRight"
-        aria-labelledby="offcanvasRightLabel">
+    aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-header w-100">
         <h3
             class="border-bottom h5  ms-1 mb-4 float-start border-theme border-thick d-flex justify-content-between align-items-center w-100 ">
@@ -68,10 +68,10 @@
                                         <input class="form-control border-radius-0" placeholder="10,000" min="1000"
                                             max="1000000" required type="text" value="19,900" name="amount"
                                             inputmode="numeric" id="unitPrice">
-                                        <span class="bg-lighter append input-group-text" role="button"
-                                            id="decrease"><b class="mx-auto">-</b></span>
-                                        <span class="bg-lighter append input-group-text" role="button"
-                                            id="increase"><b class="mx-auto">+</b></span>
+                                        <span class="bg-lighter append input-group-text" role="button" id="decrease"><b
+                                                class="mx-auto">-</b></span>
+                                        <span class="bg-lighter append input-group-text" role="button" id="increase"><b
+                                                class="mx-auto">+</b></span>
                                     </div>
                                 </div>
                             </div>
@@ -97,8 +97,7 @@
                             </div>
                             <div class="col-12">
                                 <div class="border-top">
-                                    <div id="toggleAmountDown"
-                                        class="py-3 cursor-pointer d-flex align-items-center">
+                                    <div id="toggleAmountDown" class="py-3 cursor-pointer d-flex align-items-center">
                                         <span id="amountIcon"
                                             class="d-inline-block faIcon ofa-regular ofa-square-minus me-2 mt-n1 text-primary float-left">
                                             <i class="fa-solid fa-sm fa-square-plus"></i>
@@ -113,8 +112,8 @@
                                                     <div role="group" class="d-flex btn-group">
                                                         <button type="button" data-cy="paymentcalc-downPref"
                                                             class="w-50 py-2 active btn btn-default"
-                                                            fdprocessedid="zswem5">Cash</button><button
-                                                            type="button" data-cy="paymentcalc-downPref"
+                                                            fdprocessedid="zswem5">Cash</button><button type="button"
+                                                            data-cy="paymentcalc-downPref"
                                                             class="w-50 py-2  btn btn-default"
                                                             fdprocessedid="hrqt4l">Percentage</button>
                                                     </div>
@@ -126,14 +125,14 @@
                                                     <div class="mb-3 mb-md-4 input-group"><span
                                                             class="bg-lighter prepend input-group-text"><b
                                                                 class="mx-auto">$</b></span><input
-                                                            class="form-control border-radius-0"
-                                                            placeholder="10,000" max="1000000" required=""
-                                                            type="text" value="1,990" name="down_amount"
-                                                            inputmode="numeric" fdprocessedid="85h68"><span
+                                                            class="form-control border-radius-0" placeholder="10,000"
+                                                            max="1000000" required="" type="text" value="1,990"
+                                                            name="down_amount" inputmode="numeric"
+                                                            fdprocessedid="85h68"><span
                                                             class="bg-lighter append   input-group-text"
                                                             role="button"><b class="mx-auto">-</b></span><span
-                                                            class="bg-lighter append  input-group-text"
-                                                            role="button"><b class="mx-auto">+</b></span></div>
+                                                            class="bg-lighter append  input-group-text" role="button"><b
+                                                                class="mx-auto">+</b></span></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -158,16 +157,14 @@
                                                     <div class="mb-3 mb-md-4 input-group">
                                                         <span class="bg-lighter prepend input-group-text"><b
                                                                 class="mx-auto">$</b></span>
-                                                        <input class="form-control border-radius-0"
-                                                            placeholder="10,000" max="1000000" min="0" required
-                                                            type="text" value="3,000" name="tradeinamount"
-                                                            inputmode="numeric" id="tradeValueInput">
-                                                        <span class="bg-lighter append input-group-text"
-                                                            role="button" id="decrement"><b
-                                                                class="mx-auto">-</b></span>
-                                                        <span class="bg-lighter append input-group-text"
-                                                            role="button" id="increment"><b
-                                                                class="mx-auto">+</b></span>
+                                                        <input class="form-control border-radius-0" placeholder="10,000"
+                                                            max="1000000" min="0" required type="text" value="3,000"
+                                                            name="tradeinamount" inputmode="numeric"
+                                                            id="tradeValueInput">
+                                                        <span class="bg-lighter append input-group-text" role="button"
+                                                            id="decrement"><b class="mx-auto">-</b></span>
+                                                        <span class="bg-lighter append input-group-text" role="button"
+                                                            id="increment"><b class="mx-auto">+</b></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -177,16 +174,14 @@
                                                     <div class="mb-3 mb-md-4 input-group">
                                                         <span class="bg-lighter prepend input-group-text"><b
                                                                 class="mx-auto">$</b></span>
-                                                        <input class="form-control border-radius-0"
-                                                            placeholder="5,000" max="1000000" min="0" required
-                                                            type="text" value="5,000" name="tradeinremainingbalance"
-                                                            inputmode="numeric" id="loanBalanceInput">
-                                                        <span class="bg-lighter append input-group-text"
-                                                            role="button" id="loanDecrement"><b
-                                                                class="mx-auto">-</b></span>
-                                                        <span class="bg-lighter append input-group-text"
-                                                            role="button" id="loanIncrement"><b
-                                                                class="mx-auto">+</b></span>
+                                                        <input class="form-control border-radius-0" placeholder="5,000"
+                                                            max="1000000" min="0" required type="text" value="5,000"
+                                                            name="tradeinremainingbalance" inputmode="numeric"
+                                                            id="loanBalanceInput">
+                                                        <span class="bg-lighter append input-group-text" role="button"
+                                                            id="loanDecrement"><b class="mx-auto">-</b></span>
+                                                        <span class="bg-lighter append input-group-text" role="button"
+                                                            id="loanIncrement"><b class="mx-auto">+</b></span>
                                                     </div>
                                                 </div>
 
