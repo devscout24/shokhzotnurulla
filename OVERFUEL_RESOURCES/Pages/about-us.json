@@ -1,0 +1,2061 @@
+{
+  "ROOT": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 0,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 1,
+      "bgStyle": "transparent",
+      "bgPrimary": "#d9534f",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": "",
+      "bgGradientStyle": "split",
+      "border": "",
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": "",
+      "linkElement": "",
+      "linkTo": "",
+      "linkNewWindow": "",
+      "cssClasses": "",
+      "stickToTop": 0,
+      "padding": 5,
+      "data-cy": "root-container"
+    },
+    "displayName": "Container",
+    "custom": {},
+    "hidden": false,
+    "nodes": [
+      "XhgOqx6rDT",
+      "06G9nEu3N9",
+      "9Rs2wk019k",
+      "HTkD5WUc9s",
+      "vjbmKsJJ9e",
+      "mQawm761xB",
+      "atOM8yw8Jp"
+    ],
+    "linkedNodes": []
+  },
+  "atOM8yw8Jp": {
+    "type": "div",
+    "isCanvas": false,
+    "props": {},
+    "displayName": "div",
+    "custom": [],
+    "parent": "ROOT",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "zQJVBQyyh0": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "Discover your next drive with Angel Motors Inc",
+      "headingType": "h2",
+      "textAlign": "left",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": ""
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "C8pGaVmc5a",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "ZVVeFTn1-g": {
+    "type": {
+      "resolvedName": "ColumnLayout"
+    },
+    "isCanvas": false,
+    "props": {
+      "bordered": "",
+      "noGutters": "",
+      "mobileDisplay": "stack",
+      "valign": "top",
+      "splitRatio": "6|6"
+    },
+    "displayName": "Column Layout",
+    "custom": {},
+    "parent": "apLtRopuiE",
+    "hidden": false,
+    "nodes": [
+      "C8pGaVmc5a",
+      "qL3946CUFl"
+    ],
+    "linkedNodes": []
+  },
+  "C8pGaVmc5a": {
+    "type": {
+      "resolvedName": "Column"
+    },
+    "isCanvas": true,
+    "props": {
+      "columnWidth": 50,
+      "columnOrder": 2,
+      "colNum": 2,
+      "data-cy": "root-container"
+    },
+    "displayName": "Column",
+    "custom": {},
+    "parent": "ZVVeFTn1-g",
+    "hidden": false,
+    "nodes": [
+      "zQJVBQyyh0",
+      "3C4XJMTRRP",
+      "JfEXgf-dEy",
+      "7uxL4zGO4b",
+      "r6oibcgDYw"
+    ],
+    "linkedNodes": []
+  },
+  "qL3946CUFl": {
+    "type": {
+      "resolvedName": "Column"
+    },
+    "isCanvas": true,
+    "props": {
+      "columnWidth": 50,
+      "columnOrder": 1,
+      "colNum": 2,
+      "data-cy": "root-container"
+    },
+    "displayName": "Column",
+    "custom": {},
+    "parent": "ZVVeFTn1-g",
+    "hidden": false,
+    "nodes": [
+      "ZFf-q_C8wh"
+    ],
+    "linkedNodes": []
+  },
+  "apLtRopuiE": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "",
+      "paddingX": 1,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": "",
+      "bgStyle": "transparent",
+      "bgPrimary": "#d9534f",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": "",
+      "bgGradientStyle": "split",
+      "border": "",
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": "",
+      "linkElement": "",
+      "linkTo": "",
+      "linkNewWindow": "",
+      "cssClasses": "",
+      "stickToTop": 0,
+      "padding": 20
+    },
+    "displayName": "Container",
+    "custom": {},
+    "parent": "06G9nEu3N9",
+    "hidden": false,
+    "nodes": [
+      "lS4b_F2LD7",
+      "ZVVeFTn1-g"
+    ],
+    "linkedNodes": []
+  },
+  "JfEXgf-dEy": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>Angel Motors Inc has proudly served the Smyrna community for years as a family-focused dealership built on trust, value, and genuine care. Conveniently located in Smyrna, TN, we welcome drivers from Murfreesboro, La Vergne, Nashville, and the surrounding Middle Tennessee area who want straightforward car shopping without the runaround.</p><p>Our lot features a thoughtfully curated selection of <a href=\"/used-cars-in-smyrna-tn\">pre-owned models and quality used cars, trucks, and SUVs</a>. Every vehicle is carefully inspected, detailed, and prepared so you can feel confident the moment you take the keys.</p><p>We support you long after the sale with expert maintenance, <a href=\"/get-approved\">flexible financing</a> through a wide network of lenders, and a parts department stocked with the parts for the vehicles we sell. At Angel Motors Inc, our mission is simple: treat every customer like a neighbor and deliver an ownership experience that keeps you smiling mile after mile.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "C8pGaVmc5a",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "mQawm761xB": {
+    "type": {
+      "resolvedName": "MultiLocation"
+    },
+    "isCanvas": false,
+    "props": {
+      "cssClasses": "",
+      "onlyOneLocation": "no",
+      "h3override": ""
+    },
+    "displayName": "Map & Locations",
+    "custom": {},
+    "parent": "ROOT",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "HTkD5WUc9s": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 1,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 0,
+      "bgStyle": "transparent",
+      "bgPrimary": "#d9534f",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": 0,
+      "bgGradientStyle": "split",
+      "border": 0,
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": 0,
+      "linkElement": 0,
+      "linkTo": "",
+      "linkNewWindow": 0,
+      "cssClasses": "",
+      "stickToTop": 0,
+      "padding": 20
+    },
+    "displayName": "Container",
+    "custom": {},
+    "parent": "ROOT",
+    "hidden": false,
+    "nodes": [
+      "2V7TW_M4oD",
+      "Ll2vCaD-xE",
+      "3S8Fr-eAui",
+      "fV0Ohg80Bg"
+    ],
+    "linkedNodes": []
+  },
+  "2V7TW_M4oD": {
+    "type": {
+      "resolvedName": "ColumnLayout"
+    },
+    "isCanvas": false,
+    "props": {
+      "bordered": "",
+      "noGutters": "",
+      "mobileDisplay": "stack",
+      "valign": "middle"
+    },
+    "displayName": "Column Layout",
+    "custom": {},
+    "parent": "HTkD5WUc9s",
+    "hidden": false,
+    "nodes": [
+      "sVWsgLjbLB",
+      "_yjdc2kRIO"
+    ],
+    "linkedNodes": []
+  },
+  "sVWsgLjbLB": {
+    "type": {
+      "resolvedName": "Column"
+    },
+    "isCanvas": true,
+    "props": {
+      "columnWidth": 75,
+      "columnOrder": 1,
+      "colNum": 2,
+      "data-cy": "root-container"
+    },
+    "displayName": "Column",
+    "custom": {},
+    "parent": "2V7TW_M4oD",
+    "hidden": false,
+    "nodes": [
+      "Q-e0dsaZfZ"
+    ],
+    "linkedNodes": []
+  },
+  "_yjdc2kRIO": {
+    "type": {
+      "resolvedName": "Column"
+    },
+    "isCanvas": true,
+    "props": {
+      "columnWidth": 25,
+      "columnOrder": 2,
+      "colNum": 2,
+      "data-cy": "root-container"
+    },
+    "displayName": "Column",
+    "custom": {},
+    "parent": "2V7TW_M4oD",
+    "hidden": false,
+    "nodes": [
+      "3yIMts0ceI",
+      "4fP2H5TP_b",
+      "68MllA8cno",
+      "Rr3EqEEkoS",
+      "3hcJL1ATnt",
+      "eRNgmKJO8X"
+    ],
+    "linkedNodes": []
+  },
+  "RX3WyNIJ56": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "Why choose Angel Motors Inc?",
+      "headingType": "h2",
+      "textAlign": "left",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": ""
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "Q-e0dsaZfZ",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "3S8Fr-eAui": {
+    "type": {
+      "resolvedName": "ColumnLayout"
+    },
+    "isCanvas": false,
+    "props": {
+      "bordered": "",
+      "noGutters": "",
+      "mobileDisplay": "stack",
+      "valign": "top"
+    },
+    "displayName": "Column Layout",
+    "custom": {},
+    "parent": "HTkD5WUc9s",
+    "hidden": false,
+    "nodes": [
+      "0PZGGR5uyA",
+      "_J0lYcE9iy",
+      "fdVCDvB1Xu"
+    ],
+    "linkedNodes": []
+  },
+  "0PZGGR5uyA": {
+    "type": {
+      "resolvedName": "Column"
+    },
+    "isCanvas": true,
+    "props": {
+      "columnWidth": 50,
+      "columnOrder": 1,
+      "colNum": 3
+    },
+    "displayName": "Column",
+    "custom": {},
+    "parent": "3S8Fr-eAui",
+    "hidden": false,
+    "nodes": [
+      "B1xOd3cosw"
+    ],
+    "linkedNodes": []
+  },
+  "_J0lYcE9iy": {
+    "type": {
+      "resolvedName": "Column"
+    },
+    "isCanvas": true,
+    "props": {
+      "columnWidth": 50,
+      "columnOrder": 1,
+      "colNum": 3
+    },
+    "displayName": "Column",
+    "custom": {},
+    "parent": "3S8Fr-eAui",
+    "hidden": false,
+    "nodes": [
+      "IaCgFptUsg"
+    ],
+    "linkedNodes": []
+  },
+  "fdVCDvB1Xu": {
+    "type": {
+      "resolvedName": "Column"
+    },
+    "isCanvas": true,
+    "props": {
+      "columnWidth": 50,
+      "columnOrder": 1,
+      "colNum": 3
+    },
+    "displayName": "Column",
+    "custom": {},
+    "parent": "3S8Fr-eAui",
+    "hidden": false,
+    "nodes": [
+      "DIexgCq2XL"
+    ],
+    "linkedNodes": []
+  },
+  "fgBc-HKkRK": {
+    "type": {
+      "resolvedName": "Image"
+    },
+    "isCanvas": false,
+    "props": {
+      "src": "https://static.overfuel.com/dealers/angel-motors-inc/image/Car_inventory_(7).svg",
+      "borderRadius": 0,
+      "altText": "",
+      "external": 1,
+      "link": "",
+      "width": 70,
+      "fullWidth": "",
+      "textAlign": "left",
+      "cssClasses": "",
+      "opacity": 100,
+      "fetchPriority": "",
+      "height": 70
+    },
+    "displayName": "Image",
+    "custom": {},
+    "parent": "B1xOd3cosw",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "Vx83vtL36q": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>Our Smyrna lot offers a wide range from fuel-sipping sedans and versatile crossovers to strong trucks and <a href=\"/suvs\">roomy SUVs</a>. We update our selection regularly to match commuting needs, weekend trips, and family adventures across Middle Tennessee. Every vehicle receives a full inspection, professional detailing, and our promise of satisfaction.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "B1xOd3cosw",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "7k9GPnnvCj": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "Vehicles for every Tennessee road",
+      "headingType": "h3",
+      "textAlign": "left",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": "text-medium"
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "B1xOd3cosw",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "r8Hz8gCefv": {
+    "type": {
+      "resolvedName": "Image"
+    },
+    "isCanvas": false,
+    "props": {
+      "src": "https://static.overfuel.com/dealers/angel-motors-inc/image/Credit-Card-Hand.svg",
+      "borderRadius": 0,
+      "altText": "",
+      "external": 1,
+      "link": "",
+      "width": 70,
+      "fullWidth": "",
+      "textAlign": "left",
+      "cssClasses": "",
+      "opacity": 100,
+      "fetchPriority": "",
+      "height": 70
+    },
+    "displayName": "Image",
+    "custom": {},
+    "parent": "IaCgFptUsg",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "VPNqi86fc0": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>Our finance professionals partner with numerous lenders to secure competitive rates and terms tailored to your situation. We help first-time buyers, those with past credit challenges, and everyone in between with honest, easy-to-understand options. Fast decisions and <a href=\"/get-approved\">flexible plans</a> mean you can focus on enjoying your new ride.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "IaCgFptUsg",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "E5i6OMSmRW": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "Financing that works for you",
+      "headingType": "h3",
+      "textAlign": "left",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": "text-medium"
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "IaCgFptUsg",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "b50BH-1Gc1": {
+    "type": {
+      "resolvedName": "Image"
+    },
+    "isCanvas": false,
+    "props": {
+      "src": "https://static.overfuel.com/dealers/angel-motors-inc/image/Community_(5).svg",
+      "borderRadius": 0,
+      "altText": "",
+      "external": 1,
+      "link": "",
+      "width": 70,
+      "fullWidth": "",
+      "textAlign": "left",
+      "cssClasses": "",
+      "opacity": 100,
+      "fetchPriority": "",
+      "height": 70
+    },
+    "displayName": "Image",
+    "custom": {},
+    "parent": "DIexgCq2XL",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "YQjGn7PqXx": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "Rooted in the community",
+      "headingType": "h3",
+      "textAlign": "left",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": "text-medium"
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "DIexgCq2XL",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "xYK-HVUPHT": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>Our skilled technicians understand Tennessee driving conditions and use quality parts along with modern tools for everything from oil changes and tire service to major repairs. We keep you informed every step of the way. Convenient scheduling, clear explanations, and attention to detail keep your vehicle dependable and your schedule uninterrupted.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "DIexgCq2XL",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "fV0Ohg80Bg": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 100,
+      "mobileHeight": 50,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "HTkD5WUc9s",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "J2wgZaPm5a": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 1,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 0,
+      "bgStyle": "transparent",
+      "bgPrimary": "#d9534f",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": 0,
+      "bgGradientStyle": "split",
+      "border": 0,
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": 0,
+      "linkElement": 0,
+      "linkTo": "",
+      "linkNewWindow": 0,
+      "cssClasses": "",
+      "stickToTop": 0,
+      "padding": 20
+    },
+    "displayName": "Container",
+    "custom": {},
+    "parent": "jE4C0N8ed3",
+    "hidden": false,
+    "nodes": [
+      "1AHa6L2jJr"
+    ],
+    "linkedNodes": []
+  },
+  "J7yxJBFM90": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 60,
+      "mobileHeight": 30,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "vjbmKsJJ9e",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "9Rs2wk019k": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 100,
+      "mobileHeight": 50,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "ROOT",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "lS4b_F2LD7": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 80,
+      "mobileHeight": 40,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "apLtRopuiE",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "gMuMi83ako": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "B1xOd3cosw",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "z3J4X-w37N": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "IaCgFptUsg",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "jvYu0tz4hS": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "B1xOd3cosw",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "28JdCHPRsi": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "IaCgFptUsg",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "cQRkhE4LVp": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "DIexgCq2XL",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "gIcpVbs0HY": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "DIexgCq2XL",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "Ll2vCaD-xE": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 100,
+      "mobileHeight": 50,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "HTkD5WUc9s",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "fYyddghirh": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "Explore our inventory",
+      "headingType": "h2",
+      "textAlign": "center",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": ""
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "jE4C0N8ed3",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "jE4C0N8ed3": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 0,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 0,
+      "bgStyle": "transparent",
+      "bgPrimary": "#d9534f",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": 0,
+      "bgGradientStyle": "split",
+      "border": 0,
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": 0,
+      "linkElement": 0,
+      "linkTo": "",
+      "linkNewWindow": 0,
+      "cssClasses": "",
+      "stickToTop": 0,
+      "padding": 20
+    },
+    "displayName": "Container",
+    "custom": {},
+    "parent": "vjbmKsJJ9e",
+    "hidden": false,
+    "nodes": [
+      "Yp4VRaPoLP",
+      "fYyddghirh",
+      "MayEnUBASR",
+      "J2wgZaPm5a"
+    ],
+    "linkedNodes": []
+  },
+  "MayEnUBASR": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 40,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "jE4C0N8ed3",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "06G9nEu3N9": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 0,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 1,
+      "bgStyle": "transparent",
+      "bgPrimary": "#000",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": 0,
+      "bgGradientStyle": "split",
+      "border": 0,
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": 0,
+      "linkElement": 0,
+      "linkTo": "",
+      "linkNewWindow": 0,
+      "cssClasses": "",
+      "stickToTop": 0,
+      "padding": 20
+    },
+    "displayName": "Container",
+    "custom": {},
+    "parent": "ROOT",
+    "hidden": false,
+    "nodes": [
+      "apLtRopuiE"
+    ],
+    "linkedNodes": []
+  },
+  "3C4XJMTRRP": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 10,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "C8pGaVmc5a",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "iJfm-hbOU5": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "B1xOd3cosw",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "YhN9q0J0Oo": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "IaCgFptUsg",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "bxLpHIbCPn": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "DIexgCq2XL",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "r6oibcgDYw": {
+    "type": {
+      "resolvedName": "Button"
+    },
+    "isCanvas": false,
+    "props": {
+      "size": "md",
+      "variant": "primary",
+      "purpose": "link",
+      "module": "PaymentCalculator",
+      "url": "/contact-us",
+      "external": 0,
+      "fullWidth": 0,
+      "text": "Contact us",
+      "TextAlign": "left",
+      "theme": "light",
+      "targetModalId": "",
+      "version": 1.1,
+      "newVariant": "primary",
+      "newSolidOrOutline": "solid",
+      "customIcon": "",
+      "customIconAlign": "right",
+      "customIconStyle": "regular",
+      "customIconColor": "",
+      "textAlign": "left"
+    },
+    "displayName": "Button",
+    "custom": {},
+    "parent": "C8pGaVmc5a",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "7uxL4zGO4b": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 10,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "C8pGaVmc5a",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "B1xOd3cosw": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 0,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 0,
+      "bgStyle": "transparent",
+      "bgPrimary": "#d9534f",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": 0,
+      "bgGradientStyle": "split",
+      "border": 0,
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": 0,
+      "linkElement": 1,
+      "linkTo": "/inventory",
+      "linkNewWindow": 0,
+      "cssClasses": "card3",
+      "stickToTop": 0,
+      "padding": 20
+    },
+    "displayName": "Container",
+    "custom": {},
+    "parent": "0PZGGR5uyA",
+    "hidden": false,
+    "nodes": [
+      "gMuMi83ako",
+      "fgBc-HKkRK",
+      "iJfm-hbOU5",
+      "7k9GPnnvCj",
+      "Vx83vtL36q",
+      "jvYu0tz4hS"
+    ],
+    "linkedNodes": []
+  },
+  "IaCgFptUsg": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 0,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 0,
+      "bgStyle": "transparent",
+      "bgPrimary": "#d9534f",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": 0,
+      "bgGradientStyle": "split",
+      "border": 0,
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": 0,
+      "linkElement": 0,
+      "linkTo": "",
+      "linkNewWindow": 0,
+      "cssClasses": "card3",
+      "stickToTop": 0,
+      "padding": 20
+    },
+    "displayName": "Container",
+    "custom": {},
+    "parent": "_J0lYcE9iy",
+    "hidden": false,
+    "nodes": [
+      "z3J4X-w37N",
+      "r8Hz8gCefv",
+      "YhN9q0J0Oo",
+      "E5i6OMSmRW",
+      "VPNqi86fc0",
+      "28JdCHPRsi"
+    ],
+    "linkedNodes": []
+  },
+  "DIexgCq2XL": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 0,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 0,
+      "bgStyle": "transparent",
+      "bgPrimary": "#d9534f",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": 0,
+      "bgGradientStyle": "split",
+      "border": 0,
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": 0,
+      "linkElement": 0,
+      "linkTo": "",
+      "linkNewWindow": 0,
+      "cssClasses": "card3",
+      "stickToTop": 0,
+      "padding": 20
+    },
+    "displayName": "Container",
+    "custom": {},
+    "parent": "fdVCDvB1Xu",
+    "hidden": false,
+    "nodes": [
+      "gIcpVbs0HY",
+      "b50BH-1Gc1",
+      "bxLpHIbCPn",
+      "YQjGn7PqXx",
+      "xYK-HVUPHT",
+      "cQRkhE4LVp"
+    ],
+    "linkedNodes": []
+  },
+  "XhgOqx6rDT": {
+    "type": {
+      "resolvedName": "CustomCSS"
+    },
+    "isCanvas": false,
+    "props": {
+      "customCSS": ".card3 {\n    background-color: #f9f9f9;\n    border-radius: 1rem;\n    padding: 10%;\n    margin-bottom: 10px;\n    min-height: 450px;\n}\n"
+    },
+    "displayName": "Custom CSS",
+    "custom": {},
+    "parent": "ROOT",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "ZFf-q_C8wh": {
+    "type": {
+      "resolvedName": "Image"
+    },
+    "isCanvas": false,
+    "props": {
+      "src": "https://static.overfuel.com/dealers/angel-motors-inc/image/Angel_Motors_Inc.webp",
+      "borderRadius": 20,
+      "altText": "",
+      "external": 1,
+      "link": "",
+      "width": 600,
+      "fullWidth": "",
+      "textAlign": "left",
+      "cssClasses": "",
+      "opacity": 100,
+      "fetchPriority": "",
+      "height": 400
+    },
+    "displayName": "Image",
+    "custom": {},
+    "parent": "qL3946CUFl",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "Yp4VRaPoLP": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 60,
+      "mobileHeight": 30,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "jE4C0N8ed3",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "vjbmKsJJ9e": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 0,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 1,
+      "bgStyle": "color",
+      "bgPrimary": "#f9f9f9",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": 0,
+      "bgGradientStyle": "split",
+      "border": 0,
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": 0,
+      "linkElement": 0,
+      "linkTo": "",
+      "linkNewWindow": 0,
+      "cssClasses": "",
+      "stickToTop": 0,
+      "padding": 20
+    },
+    "displayName": "Container",
+    "custom": {},
+    "parent": "ROOT",
+    "hidden": false,
+    "nodes": [
+      "jE4C0N8ed3",
+      "J7yxJBFM90"
+    ],
+    "linkedNodes": []
+  },
+  "eRNgmKJO8X": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "_yjdc2kRIO",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "3hcJL1ATnt": {
+    "type": {
+      "resolvedName": "Button"
+    },
+    "isCanvas": false,
+    "props": {
+      "size": "md",
+      "variant": "primary",
+      "purpose": "link",
+      "module": "PaymentCalculator",
+      "url": "/get-approved",
+      "external": "",
+      "fullWidth": 0,
+      "text": "Get approved",
+      "TextAlign": "left",
+      "theme": "light",
+      "targetModalId": "",
+      "version": 1.1,
+      "newVariant": "primary",
+      "newSolidOrOutline": "solid",
+      "customIcon": "",
+      "customIconAlign": "right",
+      "customIconStyle": "regular",
+      "customIconColor": "",
+      "textAlign": "center"
+    },
+    "displayName": "Button",
+    "custom": {},
+    "parent": "_yjdc2kRIO",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "1AHa6L2jJr": {
+    "type": {
+      "resolvedName": "Inventory"
+    },
+    "isCanvas": false,
+    "props": {
+      "minPrice": 0,
+      "maxPrice": 0,
+      "mileage": 0,
+      "limit": 4,
+      "colCount": 4,
+      "make": [],
+      "model": [],
+      "locationId": {
+        "1881": 1
+      },
+      "requirePhotos": 0,
+      "minPhotos": 0,
+      "allowPagination": "",
+      "featured": 0,
+      "bodyStyle": [],
+      "fuelType": [],
+      "condition": "",
+      "searchTag": "",
+      "searchKeyword": "",
+      "additionalDetailsQuery": "",
+      "buttonTextOverride": "",
+      "linkUrlOverride": ""
+    },
+    "displayName": "Inventory",
+    "custom": {},
+    "parent": "J2wgZaPm5a",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "96mO3vcz71": {
+    "type": {
+      "resolvedName": "Check"
+    },
+    "isCanvas": false,
+    "props": {
+      "iconClass": "check",
+      "rotate": 0,
+      "color": "#166B87",
+      "theme": "fas",
+      "cssClasses": "",
+      "textAlign": "center",
+      "size": 24,
+      "vAlign": "arrow-up-to-line"
+    },
+    "displayName": "Check",
+    "custom": {},
+    "parent": "Q-e0dsaZfZ",
+    "hidden": false,
+    "nodes": [
+      "0Q7Ir9Z_w3"
+    ],
+    "linkedNodes": []
+  },
+  "0Q7Ir9Z_w3": {
+    "type": "div",
+    "isCanvas": false,
+    "props": {
+      "className": "w-100"
+    },
+    "displayName": "div",
+    "custom": [],
+    "parent": "96mO3vcz71",
+    "hidden": false,
+    "nodes": [
+      "QrNkap2mCI",
+      "SwmyKvnaY3"
+    ],
+    "linkedNodes": []
+  },
+  "SwmyKvnaY3": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>We have proudly operated as a reputable dealership in Middle Tennessee for over a decade, earning the confidence of drivers across the region through consistent honesty, fair pricing, and outstanding service.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "0Q7Ir9Z_w3",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "fupxuM1ag1": {
+    "type": {
+      "resolvedName": "Check"
+    },
+    "isCanvas": false,
+    "props": {
+      "iconClass": "check",
+      "rotate": 0,
+      "color": "#166B87",
+      "theme": "fas",
+      "cssClasses": "",
+      "textAlign": "center",
+      "size": 24,
+      "vAlign": "arrow-up-to-line"
+    },
+    "displayName": "Check",
+    "custom": {},
+    "parent": "Q-e0dsaZfZ",
+    "hidden": false,
+    "nodes": [
+      "FkFhfcx4wY"
+    ],
+    "linkedNodes": []
+  },
+  "FkFhfcx4wY": {
+    "type": "div",
+    "isCanvas": false,
+    "props": {
+      "className": "w-100"
+    },
+    "displayName": "div",
+    "custom": [],
+    "parent": "fupxuM1ag1",
+    "hidden": false,
+    "nodes": [
+      "eJU76QLE5r",
+      "ULRDnwT-i4"
+    ],
+    "linkedNodes": []
+  },
+  "ULRDnwT-i4": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>Before any car reaches our lot, it undergoes a thorough inspection. We verify there are no mechanical issues with the engine or transmission, ensure all fluids are at proper levels, confirm tires have good tread depth, and finish with a professional detail so it looks and feels showroom fresh.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "FkFhfcx4wY",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "l_xmPBtaQn": {
+    "type": {
+      "resolvedName": "Check"
+    },
+    "isCanvas": false,
+    "props": {
+      "iconClass": "check",
+      "rotate": 0,
+      "color": "#166B87",
+      "theme": "far",
+      "cssClasses": "",
+      "textAlign": "center",
+      "size": 24,
+      "vAlign": "arrow-up-to-line"
+    },
+    "displayName": "Check",
+    "custom": {},
+    "parent": "Q-e0dsaZfZ",
+    "hidden": false,
+    "nodes": [
+      "fAmYOjsCsb"
+    ],
+    "linkedNodes": []
+  },
+  "fAmYOjsCsb": {
+    "type": "div",
+    "isCanvas": false,
+    "props": {
+      "className": "w-100"
+    },
+    "displayName": "div",
+    "custom": [],
+    "parent": "l_xmPBtaQn",
+    "hidden": false,
+    "nodes": [
+      "_Ax9BaVDIm",
+      "bfIpw24Axv"
+    ],
+    "linkedNodes": []
+  },
+  "bfIpw24Axv": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>We arrange financing through trusted lenders to secure the best approval and terms that match your needs and budget. We also offer delivery: free within 30 miles of Smyrna, or just $2 per mile beyond that, making it easy to get your new vehicle home.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "fAmYOjsCsb",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "w8FDDZSIA5": {
+    "type": {
+      "resolvedName": "Check"
+    },
+    "isCanvas": false,
+    "props": {
+      "iconClass": "check",
+      "rotate": 0,
+      "color": "#166B87",
+      "theme": "far",
+      "cssClasses": "",
+      "textAlign": "center",
+      "size": 24,
+      "vAlign": "arrow-up-to-line"
+    },
+    "displayName": "Check",
+    "custom": {},
+    "parent": "Q-e0dsaZfZ",
+    "hidden": false,
+    "nodes": [
+      "whFf1MM8c_"
+    ],
+    "linkedNodes": []
+  },
+  "whFf1MM8c_": {
+    "type": "div",
+    "isCanvas": false,
+    "props": {
+      "className": "w-100"
+    },
+    "displayName": "div",
+    "custom": [],
+    "parent": "w8FDDZSIA5",
+    "hidden": false,
+    "nodes": [
+      "QlHx3I52c6",
+      "vnIVpP3ftW"
+    ],
+    "linkedNodes": []
+  },
+  "vnIVpP3ftW": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>Transparency matters to us. As a Certified CARFAX Dealer, we provide a free, full CARFAX vehicle history report with every car so you can buy with complete confidence and peace of mind.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "whFf1MM8c_",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "QlHx3I52c6": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "Certified CARFAX Advantage Dealer",
+      "headingType": "h3",
+      "textAlign": "left",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": "text-large"
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "whFf1MM8c_",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "_Ax9BaVDIm": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "Flexible financing and convenient delivery",
+      "headingType": "h3",
+      "textAlign": "left",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": "text-large"
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "fAmYOjsCsb",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "eJU76QLE5r": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "Every vehicle carefully prepared",
+      "headingType": "h3",
+      "textAlign": "left",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": "text-large"
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "FkFhfcx4wY",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "QrNkap2mCI": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "Established and trusted since 2015",
+      "headingType": "h3",
+      "textAlign": "left",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": "text-large"
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "0Q7Ir9Z_w3",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "0DS7zIXUUR": {
+    "type": {
+      "resolvedName": "Check"
+    },
+    "isCanvas": false,
+    "props": {
+      "iconClass": "check",
+      "rotate": 0,
+      "color": "#166B87",
+      "theme": "fas",
+      "cssClasses": "",
+      "textAlign": "center",
+      "size": 24,
+      "vAlign": "arrow-up-to-line"
+    },
+    "displayName": "Check",
+    "custom": {},
+    "parent": "Q-e0dsaZfZ",
+    "hidden": false,
+    "nodes": [
+      "Z8VixJV3Ur"
+    ],
+    "linkedNodes": []
+  },
+  "Z8VixJV3Ur": {
+    "type": "div",
+    "isCanvas": false,
+    "props": {
+      "className": "w-100"
+    },
+    "displayName": "div",
+    "custom": [],
+    "parent": "0DS7zIXUUR",
+    "hidden": false,
+    "nodes": [
+      "ugDyabMiA6",
+      "kHMcchEVuq"
+    ],
+    "linkedNodes": []
+  },
+  "ugDyabMiA6": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "Friendly, knowledgeable, no-pressure staff",
+      "headingType": "h3",
+      "textAlign": "left",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": "text-large"
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "Z8VixJV3Ur",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "kHMcchEVuq": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>Our team is approachable, experienced, and focused on helping you find the right vehicle without any high-pressure tactics. We listen to your needs, answer your questions clearly, and guide you toward the perfect match at your own pace.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "Z8VixJV3Ur",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "7SO1H83mFT": {
+    "type": {
+      "resolvedName": "Check"
+    },
+    "isCanvas": false,
+    "props": {
+      "iconClass": "check",
+      "rotate": 0,
+      "color": "#166B87",
+      "theme": "fas",
+      "cssClasses": "",
+      "textAlign": "center",
+      "size": 24,
+      "vAlign": "arrow-up-to-line"
+    },
+    "displayName": "Check",
+    "custom": {},
+    "parent": "Q-e0dsaZfZ",
+    "hidden": false,
+    "nodes": [
+      "BbtERJpaJS"
+    ],
+    "linkedNodes": []
+  },
+  "BbtERJpaJS": {
+    "type": "div",
+    "isCanvas": false,
+    "props": {
+      "className": "w-100"
+    },
+    "displayName": "div",
+    "custom": [],
+    "parent": "7SO1H83mFT",
+    "hidden": false,
+    "nodes": [
+      "O-pHglNCOt",
+      "e8ytJqqp16"
+    ],
+    "linkedNodes": []
+  },
+  "O-pHglNCOt": {
+    "type": {
+      "resolvedName": "Heading"
+    },
+    "isCanvas": false,
+    "props": {
+      "text": "$100 referral bonus for you",
+      "headingType": "h3",
+      "textAlign": "left",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "cssClasses": "text-large"
+    },
+    "displayName": "Heading",
+    "custom": {},
+    "parent": "BbtERJpaJS",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "e8ytJqqp16": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>Love your experience? Recommend us to friends and family. If they purchase a vehicle from us and mention your name at the time of sale, you’ll receive a $100 referral bonus as our way of saying thank you for spreading the word.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "BbtERJpaJS",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "cpLGxa1BXa": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>Since 2015, Angel Motors Inc has built a strong reputation as one of the most reliable dealerships in Middle Tennessee and the surrounding areas. We are proud to serve Smyrna, Murfreesboro, La Vergne, Nashville, and beyond with honest deals, quality vehicles, and genuine care for every customer.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "Q-e0dsaZfZ",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "4fP2H5TP_b": {
+    "type": {
+      "resolvedName": "Image"
+    },
+    "isCanvas": false,
+    "props": {
+      "src": "https://static.overfuel.com/dealers/angel-motors-inc/image/Car-Check-Service_(2).svg",
+      "borderRadius": 0,
+      "altText": "",
+      "external": 0,
+      "link": "",
+      "width": 200,
+      "fullWidth": 1,
+      "textAlign": "center",
+      "cssClasses": "",
+      "opacity": 100,
+      "fetchPriority": "",
+      "height": 200
+    },
+    "displayName": "Image",
+    "custom": {},
+    "parent": "_yjdc2kRIO",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "Q-e0dsaZfZ": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 0,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 0,
+      "bgStyle": "transparent",
+      "bgPrimary": "#d9534f",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": 0,
+      "bgGradientStyle": "split",
+      "border": 0,
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": 0,
+      "linkElement": 0,
+      "linkTo": "",
+      "linkNewWindow": 0,
+      "cssClasses": "",
+      "stickToTop": 0,
+      "padding": 20
+    },
+    "displayName": "Container",
+    "custom": {},
+    "parent": "sVWsgLjbLB",
+    "hidden": false,
+    "nodes": [
+      "RX3WyNIJ56",
+      "cpLGxa1BXa",
+      "96mO3vcz71",
+      "fupxuM1ag1",
+      "l_xmPBtaQn",
+      "w8FDDZSIA5",
+      "0DS7zIXUUR",
+      "7SO1H83mFT"
+    ],
+    "linkedNodes": []
+  },
+  "Rr3EqEEkoS": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p class=\"ql-align-center\">At Angel Motors Inc, we believe great cars deserve great relationships. Come visit us in Smyrna and experience the difference for yourself.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "_yjdc2kRIO",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "68MllA8cno": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "_yjdc2kRIO",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "3yIMts0ceI": {
+    "type": {
+      "resolvedName": "Spacer"
+    },
+    "isCanvas": false,
+    "props": {
+      "height": 20,
+      "mobileHeight": 20,
+      "visibleDesktop": 1,
+      "visibleMobile": 1
+    },
+    "displayName": "Spacer",
+    "custom": {},
+    "parent": "_yjdc2kRIO",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  }
+}

@@ -1,0 +1,56 @@
+# Primary Vehicle Photo Branding Feature Plan
+
+We will implement a feature where marking a vehicle photo as "primary" automatically applies branding (top and bottom banners) to a copy of the photo, updates the public path to point to the branded copy, and backs up the raw original path to `original_path`. When a photo is unmarked as primary, it is reverted back to its raw original image, and the branded copy is deleted to save disk space.
+
+## User Review Required
+
+> [!IMPORTANT]
+> - **Composer Packages**: We will install `intervention/image` and `intervention/image-laravel` to support Intervention Image v3 with Laravel facades.
+> - **Testing Compatibility**: We noticed that test runs fail on SQLite because of MySQL-specific `FULLTEXT` query index creation in an existing migration `2026_03_04_232514_create_vehicle_notes_table.php`. We propose guarding this DB statement so it only executes when using the `mysql` driver. This will fix the test environment.
+
+## Proposed Changes
+
+---
+
+### Dependency & Database Schema
+
+#### [MODIFY] [composer.json](file:///c:/Users/raihan/Herd/shokh/composer.json)
+- Add `intervention/image-laravel` and `intervention/image` to package requirements.
+
+#### [NEW] [Migration file](file:///c:/Users/raihan/Herd/shokh/database/migrations/)
+- Create and run migration `add_original_path_to_vehicle_photos_table` to add the `original_path` column (nullable) to the `vehicle_photos` table.
+
+#### [MODIFY] [2026_03_04_232514_create_vehicle_notes_table.php](file:///c:/Users/raihan/Herd/shokh/database/migrations/2026_03_04_232514_create_vehicle_notes_table.php)
+- Guard MySQL-specific `FULLTEXT` index creation statements to only execute when the DB driver is `mysql`, preventing SQLite test suite failures.
+
+---
+
+### Core Logic Updates
+
+#### [MODIFY] [SetPrimaryPhotoAction.php](file:///c:/Users/raihan/Herd/shokh/app/Actions/Inventory/SetPrimaryPhotoAction.php)
+- Implement database transaction.
+- Check and revert the old primary photo of the vehicle: restore its path/URL to `original_path`, delete its branded file, and nullify `original_path`.
+- Apply branding (top and bottom banners) to the new primary photo using Intervention Image v3 (`Image` facade).
+- Store the branded image as `<original_name>_branded.<extension>` in the same folder.
+- Update database record for the new primary photo: set `is_primary` to `true`, store the backup raw path in `original_path`, and save the branded path and url in `path` and `url`.
+
+#### [MODIFY] [UploadPhotosAction.php](file:///c:/Users/raihan/Herd/shokh/app/Actions/Inventory/UploadPhotosAction.php)
+- Add branding logic for auto-assigned primary photos. When the first uploaded photo is marked as primary, run `SetPrimaryPhotoAction` on it immediately, then refresh the model.
+
+---
+
+### Test Suite
+
+#### [NEW] [SetPrimaryPhotoActionTest.php](file:///c:/Users/raihan/Herd/shokh/tests/Feature/SetPrimaryPhotoActionTest.php)
+- Write Pest feature tests to verify:
+  1. Setting a primary photo successfully creates the branded copy, preserves the original photo, and updates DB fields.
+  2. Changing the primary photo reverts the previous primary photo to its original state and deletes the old branded file.
+- Fake public storage disk (`Storage::fake('public')`) and generate mock banner files under `public/assets/banners/` for test isolation.
+
+---
+
+## Verification Plan
+
+### Automated Tests
+- Run `composer test` to ensure all tests pass (including our new branding test).
+- Run specifically: `php artisan test --filter=SetPrimaryPhotoActionTest`

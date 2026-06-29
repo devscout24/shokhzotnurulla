@@ -48,8 +48,10 @@ return new class extends Migration
         });
 
         // MySQL FULLTEXT indexes
-        DB::statement('ALTER TABLE vehicle_notes ADD FULLTEXT dealer_notes_fulltext (dealer_notes)');
-        DB::statement('ALTER TABLE vehicle_notes ADD FULLTEXT ai_description_fulltext (ai_description)');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('ALTER TABLE vehicle_notes ADD FULLTEXT dealer_notes_fulltext (dealer_notes)');
+            DB::statement('ALTER TABLE vehicle_notes ADD FULLTEXT ai_description_fulltext (ai_description)');
+        }
     }
 
     public function down(): void

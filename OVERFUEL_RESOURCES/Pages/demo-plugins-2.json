@@ -1,0 +1,339 @@
+{
+  "ROOT": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 0,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 0,
+      "bgStyle": "transparent",
+      "bgPrimary": "#d9534f",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": 0,
+      "bgGradientStyle": "split",
+      "border": 0,
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": 0,
+      "linkElement": 0,
+      "linkTo": "",
+      "linkNewWindow": 0,
+      "cssClasses": "",
+      "stickToTop": 0,
+      "padding": 5,
+      "data-cy": "root-container"
+    },
+    "displayName": "Container",
+    "custom": {},
+    "hidden": false,
+    "nodes": [
+      "xJXDzsnafS",
+      "XXLo24zFmY",
+      "atOM8yw8Jp"
+    ],
+    "linkedNodes": []
+  },
+  "atOM8yw8Jp": {
+    "type": "div",
+    "isCanvas": false,
+    "props": {},
+    "displayName": "div",
+    "custom": [],
+    "parent": "ROOT",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "xJXDzsnafS": {
+    "type": {
+      "resolvedName": "Container"
+    },
+    "isCanvas": true,
+    "props": {
+      "background": "#ffffff",
+      "fontColor": "#4e5155",
+      "paddingX": 0,
+      "paddingY": 0,
+      "responsive": "both",
+      "visibleMobile": 1,
+      "visibleDesktop": 1,
+      "fullWidth": 0,
+      "bgStyle": "transparent",
+      "bgPrimary": "#d9534f",
+      "bgSecondary": "#181c21",
+      "bgImage": "",
+      "bgSize": "",
+      "bgRepeat": 0,
+      "bgGradientStyle": "split",
+      "border": 0,
+      "borderColor": "#eee",
+      "borderSize": 1,
+      "rounded": 0,
+      "linkElement": 0,
+      "linkTo": "",
+      "linkNewWindow": 0,
+      "cssClasses": "",
+      "stickToTop": 0,
+      "padding": 20
+    },
+    "displayName": "Container",
+    "custom": {},
+    "parent": "ROOT",
+    "hidden": false,
+    "nodes": [
+      "5e-ta5emdj",
+      "D56N1bT6pf",
+      "3xA9rUGwbn",
+      "x2sFDBVGlN"
+    ],
+    "linkedNodes": []
+  },
+  "5e-ta5emdj": {
+    "type": {
+      "resolvedName": "Text"
+    },
+    "isCanvas": false,
+    "props": {
+      "html": "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>",
+      "colorStyle": "default",
+      "fontColor": "#4e5155",
+      "fontSize": "",
+      "cssClasses": ""
+    },
+    "displayName": "Text",
+    "custom": {},
+    "parent": "xJXDzsnafS",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "D56N1bT6pf": {
+    "type": {
+      "resolvedName": "Divider"
+    },
+    "isCanvas": false,
+    "props": {
+      "cssClasses": ""
+    },
+    "displayName": "Divider",
+    "custom": {},
+    "parent": "xJXDzsnafS",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "3xA9rUGwbn": {
+    "type": {
+      "resolvedName": "ColumnLayout"
+    },
+    "isCanvas": false,
+    "props": {
+      "bordered": "",
+      "noGutters": "",
+      "mobileDisplay": "stack",
+      "valign": "middle"
+    },
+    "displayName": "Column Layout",
+    "custom": {},
+    "parent": "xJXDzsnafS",
+    "hidden": false,
+    "nodes": [
+      "s7SzypgOA6",
+      "eVseBwGNzy"
+    ],
+    "linkedNodes": []
+  },
+  "s7SzypgOA6": {
+    "type": {
+      "resolvedName": "Column"
+    },
+    "isCanvas": true,
+    "props": {
+      "columnWidth": 50,
+      "columnOrder": 1,
+      "colNum": 2,
+      "data-cy": "root-container"
+    },
+    "displayName": "Column",
+    "custom": {},
+    "parent": "3xA9rUGwbn",
+    "hidden": false,
+    "nodes": [
+      "_AyI6UBHXu"
+    ],
+    "linkedNodes": []
+  },
+  "eVseBwGNzy": {
+    "type": {
+      "resolvedName": "Column"
+    },
+    "isCanvas": true,
+    "props": {
+      "columnWidth": 50,
+      "columnOrder": 1,
+      "colNum": 2,
+      "data-cy": "root-container"
+    },
+    "displayName": "Column",
+    "custom": {},
+    "parent": "3xA9rUGwbn",
+    "hidden": false,
+    "nodes": [
+      "c3MCpVB6dc"
+    ],
+    "linkedNodes": []
+  },
+  "LQDlWO5yjn": {
+    "type": {
+      "resolvedName": "Plugin"
+    },
+    "isCanvas": false,
+    "props": {
+      "selectedPlugin": "ThirdPartyCarfax",
+      "edmundsDealerId": 0,
+      "nameOverride": "dn marka form"
+    },
+    "displayName": "Plugin",
+    "custom": {},
+    "parent": "s0XtAoYYmj",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "c3MCpVB6dc": {
+    "type": {
+      "resolvedName": "Forms"
+    },
+    "isCanvas": false,
+    "props": {
+      "selectedForm": "Unlock e-Price",
+      "selectedFormId": 16194,
+      "nameOverride": ""
+    },
+    "displayName": "Form",
+    "custom": {},
+    "parent": "eVseBwGNzy",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "XXLo24zFmY": {
+    "type": {
+      "resolvedName": "ColumnLayout"
+    },
+    "isCanvas": false,
+    "props": {
+      "bordered": "",
+      "noGutters": "",
+      "mobileDisplay": "stack",
+      "valign": "middle"
+    },
+    "displayName": "Column Layout",
+    "custom": {},
+    "parent": "ROOT",
+    "hidden": false,
+    "nodes": [
+      "s0XtAoYYmj",
+      "YnGuh5nvaH"
+    ],
+    "linkedNodes": []
+  },
+  "s0XtAoYYmj": {
+    "type": {
+      "resolvedName": "Column"
+    },
+    "isCanvas": true,
+    "props": {
+      "columnWidth": 50,
+      "columnOrder": 1,
+      "colNum": 2,
+      "data-cy": "root-container"
+    },
+    "displayName": "Column",
+    "custom": {},
+    "parent": "XXLo24zFmY",
+    "hidden": false,
+    "nodes": [
+      "LQDlWO5yjn"
+    ],
+    "linkedNodes": []
+  },
+  "YnGuh5nvaH": {
+    "type": {
+      "resolvedName": "Column"
+    },
+    "isCanvas": true,
+    "props": {
+      "columnWidth": 50,
+      "columnOrder": 1,
+      "colNum": 2,
+      "data-cy": "root-container"
+    },
+    "displayName": "Column",
+    "custom": {},
+    "parent": "XXLo24zFmY",
+    "hidden": false,
+    "nodes": [
+      "zRbV1QaAJO"
+    ],
+    "linkedNodes": []
+  },
+  "zRbV1QaAJO": {
+    "type": {
+      "resolvedName": "Plugin"
+    },
+    "isCanvas": false,
+    "props": {
+      "selectedPlugin": "AskQuestion",
+      "edmundsDealerId": 0,
+      "nameOverride": ""
+    },
+    "displayName": "Plugin",
+    "custom": {},
+    "parent": "YnGuh5nvaH",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "_AyI6UBHXu": {
+    "type": {
+      "resolvedName": "Plugin"
+    },
+    "isCanvas": false,
+    "props": {
+      "selectedPlugin": "TestDrive",
+      "edmundsDealerId": 0,
+      "nameOverride": ""
+    },
+    "displayName": "Plugin",
+    "custom": {},
+    "parent": "s7SzypgOA6",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": []
+  },
+  "x2sFDBVGlN": {
+    "type": {
+      "resolvedName": "Divider"
+    },
+    "isCanvas": false,
+    "props": {
+      "cssClasses": ""
+    },
+    "displayName": "Divider",
+    "custom": {},
+    "parent": "xJXDzsnafS",
+    "hidden": false,
+    "nodes": [],
+    "linkedNodes": {}
+  }
+}

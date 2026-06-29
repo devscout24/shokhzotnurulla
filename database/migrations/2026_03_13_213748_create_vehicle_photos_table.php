@@ -11,10 +11,7 @@ return new class extends Migration
         Schema::create('vehicle_photos', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('vehicle_id')
-                  ->constrained()
-                  ->cascadeOnDelete()
-                  ->cascadeOnUpdate();
+            $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
 
             $table->string('path', 500);         // storage path
             $table->string('disk', 30)->default('public');
