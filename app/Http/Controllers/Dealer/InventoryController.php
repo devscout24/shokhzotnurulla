@@ -365,6 +365,12 @@ class InventoryController extends Controller
             $modelId = DB::table('make_models')->where('slug', $slug)->value('id');
             $validated['make_model_id'] = $modelId;
         }
+        else if($request->has('make_model_name') && DB::table('make_models')->where('name', $request->make_model_name)->exists()){
+            $validated['make_model_id'] = DB::table('make_models')->where('name', $request->make_model_name)->value('id');
+        }
+        else{
+            $validated['make_model_id'] = null;
+        }
         ($this->updateDetails)($vehicle, $validated);
 
         AuditLogger::info($request, 'Vehicle details updated', ['vehicle_id' => $vehicle->id]);

@@ -51,6 +51,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'isAdmin'       => IsAdmin::class,
             'isDealer'      => IsDealer::class,
             'check.admin.restricted.site' => CheckAdminRestrictedSite::class,
+            'http-cache'    => \App\Http\Middleware\HttpCache::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -36,12 +36,21 @@ class FrontendController extends Controller
 
     // ── Home ──────────────────────────────────────────────────────────────────
 
-    public function home(): View
+    public function home(Request $request): View|Response
     {
         $dealerId   = $this->dealerResolver->resolve();
         $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
-        // dd($dealerId, $locationId, auth()->user()->current_dealer_id);
+        $latestUpdate = Vehicle::forDealer($dealerId)
+            ->active()
+            ->when($locationId, fn($q) => $q->where('location_id', $locationId))
+            ->max('updated_at');
+
+        $etag = md5("home:{$dealerId}:{$locationId}:{$latestUpdate}");
+
+        if ($request->header('If-None-Match') === $etag) {
+            return response(null, 304)->header('ETag', $etag);
+        }
 
         $newArrivals = Vehicle::forDealer($dealerId)
             ->active()
@@ -85,7 +94,7 @@ class FrontendController extends Controller
             $homeAboutCardCtaFallback
         );
 
-        return view('frontend.pages.home', [
+        return response(view('frontend.pages.home', [
             'newArrivals'              => $newArrivals,
             'interestRates'            => $interestRates,
             'homeAboutCardCtaContent'  => $homeAboutCardCtaContent,
@@ -95,7 +104,7 @@ class FrontendController extends Controller
                 'description' => 'Angel Motors Inc in Smyrna, TN offers quality pre-owned vehicles at competitive prices.',
                 'keywords'    => 'angel motors inc, used cars smyrna tn',
             ],
-        ]);
+        ]))->header('ETag', $etag);
     }
 
     // ── All Inventory ─────────────────────────────────────────────────────────
@@ -195,9 +204,27 @@ class FrontendController extends Controller
     }
 
     // ── Inventory Detail ──────────────────────────────────────────────────────
-    public function inventoryDetail(Request $request, string $slug): View
+    public function inventoryDetail(Request $request, string $slug): View|Response
     {
         $dealerId = $this->dealerResolver->resolve();
+
+        // Lightweight ETag check before expensive loadVehicle
+        preg_match('/([a-z0-9]{17})-in-/i', $slug, $m);
+
+        abort_if(empty($m[1]), 404);
+
+        $vin = strtoupper($m[1]);
+        $vehicleRow = Vehicle::forDealer($dealerId)
+            ->whereRaw('UPPER(vin) = ?', [$vin])
+            ->select(['id', 'updated_at'])
+            ->firstOrFail();
+
+        $etag = md5("vehicle-detail:{$vehicleRow->id}:{$vehicleRow->updated_at->timestamp}");
+
+        if ($request->header('If-None-Match') === $etag) {
+            return response(null, 304)->header('ETag', $etag);
+        }
+
         $vehicle  = $this->vehicleDetail->loadVehicle($slug, $dealerId);
         $locationId = app(\App\Services\Location\LocationContext::class)->getResolvedLocationId($dealerId);
 
@@ -293,11 +320,11 @@ class FrontendController extends Controller
 
         $windowSticker = $vehicle->printables->firstWhere('name', 'Window Sticker');
 
-        return view('frontend.pages.vehicle-detail', compact(
+        return response(view('frontend.pages.vehicle-detail', compact(
             'vehicle', 'spec', 'allPhotos', 'mainPhoto', 'thumbnails',
             'pricing', 'allSpecials', 'applicableFees', 'groupedOptions', 'faqs', 'related', 'vehicleTitle', 'seo', 'windowSticker',
             'interestRates'
-        ));
+        )))->header('ETag', $etag);
     }
 
     public function aboutUs(): View
