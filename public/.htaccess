@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    # Allow up to 100 file uploads per request
+    php_value max_file_uploads 100
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

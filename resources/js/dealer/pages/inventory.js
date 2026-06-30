@@ -25,22 +25,33 @@
         el.addEventListener('change', applyFilters);
     });
 
+    var searchInput = document.querySelector('.inv-filter-cb[data-filter="search"]');
+    if (searchInput) {
+        searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+    }
+
     function applyFilters() {
         var params = new URLSearchParams(window.location.search);
         var knownKeys = [
             'condition', 'make_id', 'year_min', 'year_max',
             'body_type_id', 'exterior_color_id', 'interior_color_id',
             'fuel_type_id', 'transmission_type_id', 'drivetrain_type_id',
-            'seating_capacity', 'location',
+            'seating_capacity', 'location', 'search',
         ];
         knownKeys.forEach(function (k) { params.delete(k); });
         params.delete('page');
 
         document.querySelectorAll('.inv-filter-cb').forEach(function (el) {
             var filter = el.dataset.filter;
-            if (!filter || !el.value) return;
+            if (!filter) return;
             if (el.tagName === 'SELECT') {
                 if (el.value) params.set(filter, el.value);
+            } else if (el.type === 'text') {
+                if (el.value.trim()) params.set(filter, el.value.trim());
             } else if (el.checked) {
                 params.append(filter, el.value);
             }

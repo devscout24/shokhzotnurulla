@@ -39,7 +39,7 @@
         </a>
     </div>
     <div class="top-search">
-        <input type="text" placeholder="Search by make, model, feature">
+        <input type="text" class="inv-filter-cb" data-filter="search" placeholder="Search by make, model, feature" value="{{ request('search') }}">
         <i class="bi bi-search search-icon"></i>
     </div>
 </div>
