@@ -103,10 +103,16 @@
         $todayDisplay = 'Open 9:00 AM to 6:00 PM';
     }
 
-    $favicon = app('currentDealer') ? asset('assets/frontend/img/favicons/' . app('currentDealer')->favicon) : null;
-    $mimeType = $favicon
-        ? mime_content_type(public_path(parse_url($favicon, PHP_URL_PATH)))
-        : null;
+    $faviconUrl = null;
+    $mimeType = null;
+    $dealerForFavicon = app('currentDealer');
+    if ($dealerForFavicon && $dealerForFavicon->favicon) {
+        $faviconPath = public_path('assets/frontend/img/favicons/' . $dealerForFavicon->favicon);
+        if (file_exists($faviconPath)) {
+            $faviconUrl = asset('assets/frontend/img/favicons/' . $dealerForFavicon->favicon);
+            $mimeType = mime_content_type($faviconPath);
+        }
+    }
 
 @endphp
 <!-- header desktop  -->
@@ -456,7 +462,7 @@
 @endphp
 
 @push('base-assets')
-    @if($favicon)
-        <link rel="icon" href="{{ $favicon }}" @if($mimeType) type="{{ $mimeType }}" @endif>
+    @if($faviconUrl)
+        <link rel="icon" href="{{ $faviconUrl }}" @if($mimeType) type="{{ $mimeType }}" @endif>
     @endif
 @endpush

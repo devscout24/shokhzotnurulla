@@ -28,7 +28,7 @@ Route::post('setup-account', [\App\Http\Controllers\Auth\DealerSetupController::
 require __DIR__ . '/dealer.php';
 require __DIR__ . '/admin.php';
 
-Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class])->name('frontend.')->group(function () {
+Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class, 'http-cache'])->name('frontend.')->group(function () {
 
     // Pages
     Route::get('/', [FrontendController::class, 'home'])->name('home');
