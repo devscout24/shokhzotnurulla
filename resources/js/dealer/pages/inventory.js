@@ -31,7 +31,7 @@
             'condition', 'make_id', 'year_min', 'year_max',
             'body_type_id', 'exterior_color_id', 'interior_color_id',
             'fuel_type_id', 'transmission_type_id', 'drivetrain_type_id',
-            'seating_capacity', 'location',
+            'seating_capacity', 'location', 'search',
         ];
         knownKeys.forEach(function (k) { params.delete(k); });
         params.delete('page');
@@ -46,7 +46,29 @@
             }
         });
 
+        var searchInput = document.querySelector('[data-filter="search"]');
+        if (searchInput && searchInput.value.trim()) {
+            params.set('search', searchInput.value.trim());
+        }
+
         window.location.href = window.location.pathname + '?' + params.toString();
+    }
+
+    /* ══════════════════════════════════════════
+       2b. SEARCH INPUT
+    ══════════════════════════════════════════ */
+    var searchInput = document.querySelector('[data-filter="search"]');
+    if (searchInput) {
+        searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+
+        var searchVal = new URLSearchParams(window.location.search).get('search');
+        if (searchVal) {
+            searchInput.value = searchVal;
+        }
     }
 
     /* ══════════════════════════════════════════

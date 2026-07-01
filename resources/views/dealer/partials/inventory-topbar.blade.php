@@ -39,7 +39,7 @@
         </a>
     </div>
     <div class="top-search">
-        <input type="text" placeholder="Search by make, model, feature">
+        <input type="text" placeholder="Search by make, model, feature" data-filter="search">
         <i class="bi bi-search search-icon"></i>
     </div>
 </div>
