@@ -32,7 +32,8 @@ class StoreVehicleRequest extends FormRequest
             'mileage'           => ['required', 'integer', 'min:0', 'max:999999'],
             'year'              => ['required', 'integer', 'min:1900', 'max:' . (date('Y') + 2)],
             'make_id'           => ['required', 'integer', 'exists:makes,id'],
-            'make_model_id'     => ['required', 'integer', 'exists:make_models,id'],
+            'make_model_id'     => ['nullable', 'integer', 'exists:make_models,id'],
+            'make_model_name'   => ['nullable', 'string', 'max:255'],
             'trim'              => ['nullable', 'string', 'max:255'],
 
             // ── Body ───────────────────────────────────────────────────────────

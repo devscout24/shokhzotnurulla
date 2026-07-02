@@ -14,7 +14,7 @@
                 <div class="row g-2">
                     @forelse($photos as $idx => $photo)
                         <div class="col-12 col-sm-6 col-md-4 mb-2">
-                            <img src="{{ $photo->url }}"
+                            <img src="{{ $photo->url }}" loading="lazy"
                                 alt="{{ $vehicleTitle ?? 'Vehicle' }} (photo {{ $idx }})" class="img-fluid w-100">
                         </div>
                     @empty

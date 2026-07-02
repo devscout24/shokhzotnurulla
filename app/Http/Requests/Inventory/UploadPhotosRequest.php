@@ -14,7 +14,7 @@ class UploadPhotosRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'photos'   => ['required', 'array', 'min:1', 'max:50'],
+            'photos'   => ['required', 'array', 'min:1', 'max:100'],
             'photos.*' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:10240'], // 10MB max
         ];
     }

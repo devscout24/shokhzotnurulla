@@ -277,7 +277,27 @@ class InventoryController extends Controller
 
     public function store(StoreVehicleRequest $request): RedirectResponse
     {
-        $vehicle = ($this->createVehicle)($request->user()->currentDealer, $request->validated());
+        $validated = $request->validated();
+
+        if ($request->has('make_model_name')) {
+            if (DB::table('make_models')->where('name', $request->make_model_name)->exists()) {
+                $validated['make_model_id'] = DB::table('make_models')->where('name', $request->make_model_name)->value('id');
+            } else {
+                $make = Make::where('id', $request->make_id)->first();
+                $slug = Str::slug($make->slug . '-' . $request->input('make_model_name'));
+                DB::table('make_models')->insertOrIgnore([
+                    'make_id'    => $make->id,
+                    'name'       => $request->input('make_model_name'),
+                    'slug'       => $slug,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                $validated['make_model_id'] = DB::table('make_models')->where('slug', $slug)->value('id');
+            }
+        }
+
+        $vehicle = ($this->createVehicle)($request->user()->currentDealer, $validated);
 
         AuditLogger::info($request, 'Vehicle created', [
             'vehicle_id'   => $vehicle->id,
@@ -351,19 +371,22 @@ class InventoryController extends Controller
     {
         $this->authorizeVehicle($request, $vehicle);
         $validated = $request->validated();
-        if($request->has('make_model_name') && !DB::table('make_models')->where('name', $request->make_model_name)->exists()){
-            $make = Make::where('id', $request->make_id)->first();
-            $slug = Str::slug($make->slug . '-' . $request->input('make_model_name'));
-            DB::table('make_models')->insertOrIgnore([
-                'make_id'    => $make->id,
-                'name'       => $request->input('make_model_name'),
-                'slug'       => $slug,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        if ($request->has('make_model_name')) {
+            if (DB::table('make_models')->where('name', $request->make_model_name)->exists()) {
+                $validated['make_model_id'] = DB::table('make_models')->where('name', $request->make_model_name)->value('id');
+            } else {
+                $make = Make::where('id', $request->make_id)->first();
+                $slug = Str::slug($make->slug . '-' . $request->input('make_model_name'));
+                DB::table('make_models')->insertOrIgnore([
+                    'make_id'    => $make->id,
+                    'name'       => $request->input('make_model_name'),
+                    'slug'       => $slug,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
 
-            $modelId = DB::table('make_models')->where('slug', $slug)->value('id');
-            $validated['make_model_id'] = $modelId;
+                $validated['make_model_id'] = DB::table('make_models')->where('slug', $slug)->value('id');
+            }
         }
         else if($request->has('make_model_name') && DB::table('make_models')->where('name', $request->make_model_name)->exists()){
             $validated['make_model_id'] = DB::table('make_models')->where('name', $request->make_model_name)->value('id');
