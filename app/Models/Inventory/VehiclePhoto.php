@@ -19,6 +19,7 @@ class VehiclePhoto extends Model
         'status',
         'width',
         'height',
+        'original_path',
     ];
 
     protected $casts = [

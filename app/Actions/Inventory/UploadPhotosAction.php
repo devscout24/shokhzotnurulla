@@ -35,15 +35,16 @@ class UploadPhotosAction
 
             // ── VehiclePhoto record ───────────────────────────────────────
             $photo = VehiclePhoto::create([
-                'vehicle_id' => $vehicle->id,
-                'path'       => $path,
-                'disk'       => 'public',
-                'url'        => Storage::disk('public')->url($path),
-                'sort_order' => $nextOrder++,
-                'is_primary' => ! $hasPrimary,
-                'status'     => 'draft',
-                'width'      => $width,
-                'height'     => $height,
+                'vehicle_id'    => $vehicle->id,
+                'path'          => $path,
+                'disk'          => 'public',
+                'url'           => Storage::disk('public')->url($path),
+                'sort_order'    => $nextOrder++,
+                'is_primary'    => ! $hasPrimary,
+                'status'        => 'draft',
+                'width'         => $width,
+                'height'        => $height,
+                'original_path' => $file->getRealPath(),
             ]);
 
             $hasPrimary = true;
