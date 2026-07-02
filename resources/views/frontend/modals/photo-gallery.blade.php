@@ -1,6 +1,6 @@
 {{-- Photo Gallery Grid --}}
 <div class="modal fade" id="modalGallery" tabindex="-1" aria-labelledby="modalSearchLabel" aria-hidden="true"
-     data-photos='{{ $photos->map(fn($p) => $p->url)->toJson() }}'>
+    data-photos='{{ $photos->map(fn($p) => $p->url)->toJson() }}'>
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
             <h3 class="photo-gallery-header border-bottom bg-white w-100 h5 ps-4 pe-0 py-2 mb-0 float-start border-theme border-thick d-inline-block sticky-top"

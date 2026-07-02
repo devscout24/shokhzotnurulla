@@ -127,10 +127,10 @@
     <div class="d-block d-xl-none h-63" id="mobile-nav-spacer"></div>
 
     <main class="mt-3 mb-3 mb-sm-5 vdp_pre-owned
-            make_{{ Str::slug($vehicle?->make?->name ?? '') }}
-            {{ $vehicle?->bodyType?->name ? 'body_' . Str::slug($vehicle?->bodyType?->name) : '' }}
-            {{ ($vehicle?->original_price && $vehicle?->list_price < $vehicle?->original_price) ? 'has-discount' : 'no-discount' }}
-            container">
+                                make_{{ Str::slug($vehicle?->make?->name ?? '') }}
+                                {{ $vehicle?->bodyType?->name ? 'body_' . Str::slug($vehicle?->bodyType?->name) : '' }}
+                                {{ ($vehicle?->original_price && $vehicle?->list_price < $vehicle?->original_price) ? 'has-discount' : 'no-discount' }}
+                                container">
         <div class="row">
 
             {{-- ══════ LEFT COLUMN ══════ --}}
@@ -141,7 +141,8 @@
                             <div class="sc-5176998-0 jHXOJF {{ $photosCount > 0 ? 'hasPhotos' : '' }} noVideo">
 
                                 {{-- Main Photo --}}
-                                <div class="position-relative cursor-pointer" data-bs-toggle="modal" data-bs-target="#modalGallery" id="vdp_photo_main" data-gallery-idx="0">
+                                <div class="position-relative cursor-pointer" data-bs-toggle="modal"
+                                    data-bs-target="#modalGallery" id="vdp_photo_main" data-gallery-idx="0">
                                     @if($mainPhoto)
                                         <img id="vdpMainPhoto" alt="{{ $vehicleTitle }} for sale in Smyrna, TN"
                                             fetchpriority="high" loading="eager" width="926" height="694" decoding="async"
@@ -166,7 +167,8 @@
                                     @endforelse
 
                                     @if($extraCount > 0)
-                                        <div class="has-more-photos gallery-thumb-d" data-bs-toggle="modal" data-bs-target="#modalGallery" style="cursor:pointer;" data-gallery-idx="0">
+                                        <div class="has-more-photos gallery-thumb-d" data-bs-toggle="modal"
+                                            data-bs-target="#modalGallery" style="cursor:pointer;" data-gallery-idx="0">
                                             <div class="more-photos-overlay cursor-pointer">
                                                 +{{ $extraCount }} more
                                             </div>
@@ -262,8 +264,7 @@
                                         data-vehicle-make="{{ $vehicle->make?->name }}"
                                         data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
                                         data-vehicle-stock="{{ $vehicle->stock_number }}"
-                                        data-vehicle-vin="{{ $vehicle->vin }}"
-                                        aria-controls="getEstimate">
+                                        data-vehicle-vin="{{ $vehicle->vin }}" aria-controls="getEstimate">
                                         <span class="badge badge-secondary text-uppercase me-2 float-start">
                                             Estimated Payment
                                         </span>
@@ -331,7 +332,8 @@
                                                     : number_format($fee->value, 2) . '%';
                                             @endphp
 
-                                            <div class="d-flex justify-content-between py-1 {{ !$loop->last ? 'border-bottom' : '' }}">
+                                            <div
+                                                class="d-flex justify-content-between py-1 {{ !$loop->last ? 'border-bottom' : '' }}">
                                                 <span class="text-muted d-flex align-items-center gap-1">
                                                     <i class="fa-solid fa-circle-info" style="font-size:11px;"></i>
                                                     {{ $fee->name }}
@@ -840,8 +842,7 @@
                                             data-vehicle-make="{{ $vehicle->make?->name }}"
                                             data-vehicle-condition="{{ $vehicle->vehicle_condition }}"
                                             data-vehicle-stock="{{ $vehicle->stock_number }}"
-                                            data-vehicle-vin="{{ $vehicle->vin }}"
-                                            aria-controls="getEstimate">
+                                            data-vehicle-vin="{{ $vehicle->vin }}" aria-controls="getEstimate">
                                             <span class="badge badge-secondary text-uppercase mb-2">Estimated Payment</span>
                                             <div class="text-large">
                                                 ${{ number_format($calculatedMonthly) }} / month
@@ -852,7 +853,8 @@
 
                                 {{-- cash price --}}
                                 <div class="card-body border rounded p-0 mt-2 overflow-hidden" style="font-size: 15px;">
-                                    <div class="d-flex justify-content-between align-items-center px-3 py-2 fw-bold text-dark">
+                                    <div
+                                        class="d-flex justify-content-between align-items-center px-3 py-2 fw-bold text-dark">
                                         <span>Cash price</span>
                                         <span>${{ number_format($pricing['final_price']) }}</span>
                                     </div>
@@ -864,7 +866,8 @@
                                                 : number_format($fees?->value, 2) . '%';
                                         @endphp
 
-                                        <div class="d-flex justify-content-between align-items-center bg-light border-top px-3 py-2 text-secondary">
+                                        <div
+                                            class="d-flex justify-content-between align-items-center bg-light border-top px-3 py-2 text-secondary">
                                             <div class="d-flex align-items-center gap-2">
                                                 <i class="bi bi-question-circle text-muted" style="font-size: 14px;"></i>
 
@@ -934,7 +937,8 @@
                                                         ? '$' . number_format($fee?->value, 2)
                                                         : number_format($fee?->value, 2) . '%';
                                                 @endphp
-                                                <div class="d-flex justify-content-between py-1 {{ !$loop->last ? 'border-bottom' : '' }}">
+                                                <div
+                                                    class="d-flex justify-content-between py-1 {{ !$loop->last ? 'border-bottom' : '' }}">
                                                     <span class="text-muted d-flex align-items-center gap-1">
                                                         <i class="fa-solid fa-circle-info" style="font-size:11px;"></i>
                                                         {{ $fee?->name }}

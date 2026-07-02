@@ -46,6 +46,19 @@ Multi-tenant dealership management platform. Laravel 12 (`^8.2` / Node 26 in `.n
 - **`main` branch**: FTP deploy (legacy, `.github/workflows/main.yml`).
 - Excluded from deploy per `.deployignore`: `.git/`, `.github/`, `.env`, `node_modules/`, `vendor/`, `storage/*.key`, `public/uploads/`.
 
+## Vehicle Photos
+
+- **Primary photo storage**: `storage/app/public/dealers/{dealer_id}/media/primary/{vehicle_slug}/{uuid}.{ext}`. Path built in `ApplyPhotoOverlay` job; old primary file destroyed in `SetPrimaryPhotoAction`.
+- **Gallery modal flow**: Two separate Bootstrap modals — grid (`#modalGallery`) and carousel (`#modalCarousel`). Grid opens via `data-bs-toggle` on main photo. Clicking a grid image (identified by `[data-gallery-idx]`) opens the carousel at that index via JS. Photos JSON is stored in `#modalGallery`'s `data-photos` attribute, parsed at runtime by the carousel IIFE in `vehicle-detail.js:1234+`.
+- **VDP thumbnail sync**: `vehicle-detail.js:1209+` IIFE handles `.vdp-thumb` click → swap `#vdpMainPhoto` src.
+
+## Known JS quirks
+
+- `vehicle-detail.js` is a large monolithic file (1336+ lines) combining code for schedule-test, trade-in, get-approved, payment-calc, dual-range slider, star rating, and photo gallery. Many blocks target offcanvas elements that may not be present on the page — **all top-level DOM queries and `.addEventListener()` calls must be null-guarded** to prevent the module from crashing before reaching the carousel code.
+- **Fixed (2026-07-02)**: Two crashes that silently swallowed the carousel IIFE: (1) `#increase`/`#decrease`/`#unitPrice` block called `.addEventListener()` without null-checking those elements; (2) `handleMin`/`handleMax`/`track` slider code ran at top level outside the `if (loanInput || handleMin)` guard. Both are now null-checked. The slider code was also renamed to `handleMin2`/`handleMax2`/`SMIN`/`SMAX` to avoid redeclaration conflicts.
+- Schedule-test IDs in Blade use `std-` prefix (`std-select-date`, `std-step-1`, `std-wizard-step` etc.). The JS originally used bare names — external code may need similar prefix alignment.
+- When adding new top-level JS code, wrap it in an IIFE with null-checks to avoid being blocked by pre-existing errors.
+
 ## Style
 
 - EditorConfig: 4-space indent, LF, UTF-8, final newline, trim trailing whitespace (except `.md`).

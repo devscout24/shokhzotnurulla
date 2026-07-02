@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* On sale now! */
     var onsaleToggleBtn = document.getElementById('vdp-onsale-toggle');
-    var onsaleBodyDiv   = document.getElementById('vdp-onsale-body');
-    var onsaleIconSpan  = document.getElementById('vdp-onsale-icon');
-    var onsaleIconEl    = onsaleIconSpan ? onsaleIconSpan.querySelector('i') : null;
+    var onsaleBodyDiv = document.getElementById('vdp-onsale-body');
+    var onsaleIconSpan = document.getElementById('vdp-onsale-icon');
+    var onsaleIconEl = onsaleIconSpan ? onsaleIconSpan.querySelector('i') : null;
 
     if (onsaleToggleBtn || onsaleBodyDiv) {
         onsaleToggleBtn.addEventListener('click', function () {
@@ -27,13 +27,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* Desktop Location */
     var locToggle = document.getElementById('toggleLocation');
-    var locBox    = document.getElementById('locationbox');
+    var locBox = document.getElementById('locationbox');
 
     if (locToggle && locBox) {
         locToggle.addEventListener('click', function () {
             var currentIcon = document.getElementById('toggleIcon')
-                              ? document.getElementById('toggleIcon').querySelector('i')
-                              : null;
+                ? document.getElementById('toggleIcon').querySelector('i')
+                : null;
             if (locBox.style.display === 'none') {
                 locBox.style.display = 'block';
                 if (currentIcon) {
@@ -56,8 +56,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* On sale now! — mobile */
     var onsaleToggleMobile = document.getElementById('vdp-onsale-toggle-mobile');
-    var onsaleBodyMobile   = document.getElementById('vdp-onsale-body-mobile');
-    var onsaleIconMobile   = document.getElementById('vdp-onsale-icon-mobile');
+    var onsaleBodyMobile = document.getElementById('vdp-onsale-body-mobile');
+    var onsaleIconMobile = document.getElementById('vdp-onsale-icon-mobile');
     var onsaleIconElMobile = onsaleIconMobile ? onsaleIconMobile.querySelector('i') : null;
 
     if (onsaleToggleMobile && onsaleBodyMobile) {
@@ -80,13 +80,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* Location — mobile */
     var locToggleMobile = document.getElementById('toggleLocationMobile');
-    var locBoxMobile    = document.getElementById('locationboxMobile');
+    var locBoxMobile = document.getElementById('locationboxMobile');
 
     if (locToggleMobile && locBoxMobile) {
         locToggleMobile.addEventListener('click', function () {
             var currentIcon = document.getElementById('toggleIconMobile')
-                              ? document.getElementById('toggleIconMobile').querySelector('i')
-                              : null;
+                ? document.getElementById('toggleIconMobile').querySelector('i')
+                : null;
             if (locBoxMobile.style.display === 'none') {
                 locBoxMobile.style.display = 'block';
                 if (currentIcon) {
@@ -196,8 +196,8 @@ accordionHeaders.forEach(header => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-
     const choiceSection = document.getElementById("choiceSection");
+    if (!choiceSection) return;
     const mySelfForm = document.getElementById("my-self");
     const coBorrowerForm = document.getElementById("co-borrower");
 
@@ -311,7 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // CHOICE BUTTONS
     btnMyself.addEventListener("click", () => {
-
+        console.log('btn myself')
         choiceSection.style.display = "none";
         mySelfForm.style.display = "block";
 
@@ -426,174 +426,176 @@ const stepHeaders = document.querySelectorAll(".wizardstep, .std-wizard-step");
 // (referenced by the bare IDs or std- prefixed IDs)
 if (dateContainer) {
 
-// ----- INITIAL VISIBILITY -----
-step1Div.classList.add("d-block");
-step1Div.classList.remove("d-none");
+    // ----- INITIAL VISIBILITY -----
+    step1Div.classList.add("d-block");
+    step1Div.classList.remove("d-none");
 
-step2Div.classList.add("d-none");
-step2Div.classList.remove("d-block");
+    step2Div.classList.add("d-none");
+    step2Div.classList.remove("d-block");
 
-successDiv.classList.add("d-none");
-successDiv.classList.remove("d-block");
+    successDiv.classList.add("d-none");
+    successDiv.classList.remove("d-block");
 
-dateContainer.classList.add("d-block");
-dateContainer.classList.remove("d-none");
+    dateContainer.classList.add("d-block");
+    dateContainer.classList.remove("d-none");
 
-timeContainer.classList.add("d-none");
-timeContainer.classList.remove("d-block");
+    timeContainer.classList.add("d-none");
+    timeContainer.classList.remove("d-block");
 
-// ----- WEEK DATES -----
-let currentStartDate = new Date();
-currentStartDate.setHours(0, 0, 0, 0);
+    // ----- WEEK DATES -----
+    let currentStartDate = new Date();
+    currentStartDate.setHours(0, 0, 0, 0);
 
-function getWeekDates(startDate) {
-    const dates = [];
-    let date = new Date(startDate);
-    for (let i = 0; i < 6; i++) {
-        dates.push(new Date(date));
-        date.setDate(date.getDate() + 1);
+    function getWeekDates(startDate) {
+        const dates = [];
+        let date = new Date(startDate);
+        for (let i = 0; i < 6; i++) {
+            dates.push(new Date(date));
+            date.setDate(date.getDate() + 1);
+        }
+        return dates;
     }
-    return dates;
-}
 
-// ----- RENDER DAYS -----
-function renderDays() {
-    daysContainer.innerHTML = "";
-    const dates = getWeekDates(currentStartDate);
+    // ----- RENDER DAYS -----
+    function renderDays() {
+        daysContainer.innerHTML = "";
+        const dates = getWeekDates(currentStartDate);
 
-    dates.forEach(date => {
-        const dayDiv = document.createElement("div");
-        dayDiv.className = "p-3 hover-light font-weight-bold border-bottom border-theme border-thick text-center  allowed col-sm-2 col-4";
-        dayDiv.innerHTML = `
+        dates.forEach(date => {
+            const dayDiv = document.createElement("div");
+            dayDiv.className = "p-3 hover-light font-weight-bold border-bottom border-theme border-thick text-center  allowed col-sm-2 col-4";
+            dayDiv.innerHTML = `
             <div class="day-name">${date.toLocaleDateString('en-US', { weekday: 'long' })}</div>
             <div class="h1 my-2 day-number">${date.getDate()}</div>
             <div class="month">${date.toLocaleDateString('en-US', { month: 'long' })}</div>
         `;
 
-        dayDiv.addEventListener("click", () => {
-            document.querySelectorAll(".day-card").forEach(d => {
-                d.classList.remove("selected");
-                d.querySelector(".day-number").classList.remove("selected");
-                const oldSvg = d.querySelector(".check-icon");
-                if (oldSvg) oldSvg.remove();
-                d.querySelector(".month").style.display = "block";
-            });
+            dayDiv.addEventListener("click", () => {
+                document.querySelectorAll(".day-card").forEach(d => {
+                    d.classList.remove("selected");
+                    d.querySelector(".day-number").classList.remove("selected");
+                    const oldSvg = d.querySelector(".check-icon");
+                    if (oldSvg) oldSvg.remove();
+                    d.querySelector(".month").style.display = "block";
+                });
 
-            dayDiv.classList.add("selected");
-            dayDiv.querySelector(".day-number").classList.add("selected");
-            dayDiv.querySelector(".month").style.display = "none";
+                dayDiv.classList.add("selected");
+                dayDiv.querySelector(".day-number").classList.add("selected");
+                dayDiv.querySelector(".month").style.display = "none";
 
-            const svgSpan = document.createElement("span");
-            svgSpan.className = "d-inline-block check-icon text-primary";
-            svgSpan.innerHTML = `
+                const svgSpan = document.createElement("span");
+                svgSpan.className = "d-inline-block check-icon text-primary";
+                svgSpan.innerHTML = `
                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#166B87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                      <circle cx="12" cy="12" r="10"/>
                      <path d="M9 12l2 2 4-4"/>
                  </svg>`;
-            dayDiv.insertBefore(svgSpan, dayDiv.querySelector(".month"));
+                dayDiv.insertBefore(svgSpan, dayDiv.querySelector(".month"));
 
-            // Show time selection
-            dateContainer.classList.remove("d-block");
-            dateContainer.classList.add("d-none");
-            timeContainer.classList.remove("d-none");
-            timeContainer.classList.add("d-block");
+                // Show time selection
+                dateContainer.classList.remove("d-block");
+                dateContainer.classList.add("d-none");
+                timeContainer.classList.remove("d-none");
+                timeContainer.classList.add("d-block");
+            });
+
+            daysContainer.appendChild(dayDiv);
         });
 
-        daysContainer.appendChild(dayDiv);
-    });
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    prevWeekBtn.disabled = currentStartDate <= today;
-}
-
-// ----- WEEK NAVIGATION -----
-nextWeekBtn.addEventListener("click", () => {
-    currentStartDate.setDate(currentStartDate.getDate() + 6);
-    renderDays();
-});
-
-prevWeekBtn.addEventListener("click", () => {
-    currentStartDate.setDate(currentStartDate.getDate() - 6);
-    renderDays();
-});
-
-// ----- BACK BUTTON STEP 1 -----
-selectDifferentDayBtn.addEventListener("click", () => {
-    timeContainer.classList.remove("d-block");
-    timeContainer.classList.add("d-none");
-
-    dateContainer.classList.remove("d-none");
-    dateContainer.classList.add("d-block");
-});
-
-// ----- CONTINUE STEP 1 -----
-continueBtnStep1.addEventListener("click", () => {
-    if (!timeSelect.value) {
-        alert("Please select a time");
-        return;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        prevWeekBtn.disabled = currentStartDate <= today;
     }
 
-    step1Div.classList.add("d-none");
-    step1Div.classList.remove("d-block");
+    // ----- WEEK NAVIGATION -----
+    nextWeekBtn.addEventListener("click", () => {
+        currentStartDate.setDate(currentStartDate.getDate() + 6);
+        renderDays();
+    });
 
-    step2Div.classList.remove("d-none");
-    step2Div.classList.add("d-block");
+    prevWeekBtn.addEventListener("click", () => {
+        currentStartDate.setDate(currentStartDate.getDate() - 6);
+        renderDays();
+    });
 
-   // Update wizard header styles
-stepHeaders[0].querySelector("b").classList.remove("text-primary");
-stepHeaders[0].querySelector("b").classList.add("text-muted");
+    // ----- BACK BUTTON STEP 1 -----
+    selectDifferentDayBtn.addEventListener("click", () => {
+        timeContainer.classList.remove("d-block");
+        timeContainer.classList.add("d-none");
 
-stepHeaders[1].classList.add("wizardstep-active");
-stepHeaders[1].querySelector("b").classList.remove("text-muted");
-stepHeaders[1].querySelector("b").classList.add("text-primary");
+        dateContainer.classList.remove("d-none");
+        dateContainer.classList.add("d-block");
+    });
 
-// Replace 1/2 with Edit button
-const indicator = stepHeaders[0].querySelector(".wizardstep-indicator");
+    // ----- CONTINUE STEP 1 -----
+    continueBtnStep1.addEventListener("click", () => {
+        if (!timeSelect.value) {
+            alert("Please select a time");
+            return;
+        }
 
-indicator.innerHTML = `<button class="btn text-muted btn-sm btn-link edit-step">Edit</button>`;
-});
+        step1Div.classList.add("d-none");
+        step1Div.classList.remove("d-block");
 
-// ----- EDIT STEP -----
-document.addEventListener("click", function(e){
+        step2Div.classList.remove("d-none");
+        step2Div.classList.add("d-block");
 
-    if(e.target.classList.contains("edit-step")){
+        // Update wizard header styles
+        stepHeaders[0].querySelector("b").classList.remove("text-primary");
+        stepHeaders[0].querySelector("b").classList.add("text-muted");
 
-        // show step 1 again
-        step2Div.classList.add("d-none");
-        step1Div.classList.remove("d-none");
-        step1Div.classList.add("d-block");
+        stepHeaders[1].classList.add("wizardstep-active");
+        stepHeaders[1].querySelector("b").classList.remove("text-muted");
+        stepHeaders[1].querySelector("b").classList.add("text-primary");
 
-        // restore wizard header styles
-        stepHeaders[0].querySelector("b").classList.remove("text-muted");
-        stepHeaders[0].querySelector("b").classList.add("text-primary");
+        // Replace 1/2 with Edit button
+        const indicator = stepHeaders[0].querySelector(".wizardstep-indicator");
 
-        stepHeaders[1].querySelector("b").classList.remove("text-primary");
-        stepHeaders[1].querySelector("b").classList.add("text-muted");
+        indicator.innerHTML = `<button class="btn text-muted btn-sm btn-link edit-step">Edit</button>`;
+    });
 
+    // ----- EDIT STEP -----
+    document.addEventListener("click", function (e) {
+
+        if (e.target.classList.contains("edit-step")) {
+
+            // show step 1 again
+            step2Div.classList.add("d-none");
+            step1Div.classList.remove("d-none");
+            step1Div.classList.add("d-block");
+
+            // restore wizard header styles
+            stepHeaders[0].querySelector("b").classList.remove("text-muted");
+            stepHeaders[0].querySelector("b").classList.add("text-primary");
+
+            stepHeaders[1].querySelector("b").classList.remove("text-primary");
+            stepHeaders[1].querySelector("b").classList.add("text-muted");
+
+        }
+
+    });
+
+    if (continueBtnStep2) {
+        // ----- CONTINUE STEP 2 -----
+        continueBtnStep2.addEventListener("click", () => {
+            // Hide both steps
+            step1Div.classList.add("d-none");
+            step2Div.classList.add("d-none");
+
+            // Show success div
+            successDiv.classList.remove("d-none");
+            successDiv.classList.add("d-block");
+
+            // Keep wizard numbers (1 / 2) as-is but deactivate styling
+            stepHeaders.forEach(header => {
+                header.querySelector("b").classList.remove("text-primary");
+                header.querySelector("b").classList.add("text-muted");
+            });
+        });
     }
 
-});
-
-// ----- CONTINUE STEP 2 -----
-continueBtnStep2.addEventListener("click", () => {
-    // Hide both steps
-    step1Div.classList.add("d-none");
-    step2Div.classList.add("d-none");
-
-    // Show success div
-    successDiv.classList.remove("d-none");
-    successDiv.classList.add("d-block");
-
-    // Keep wizard numbers (1 / 2) as-is but deactivate styling
-    stepHeaders.forEach(header => {
-        header.querySelector("b").classList.remove("text-primary");
-        header.querySelector("b").classList.add("text-muted");
-    });
-});
-
-// ----- INITIAL RENDER -----
-renderDays();
+    // ----- INITIAL RENDER -----
+    renderDays();
 
 } // end guard: dateContainer
 
@@ -649,21 +651,23 @@ const loanLeaseButtons = document.querySelectorAll("#info-2 [role='group'] .btn"
 // --------------------
 // INITIAL STATE
 // --------------------
-modelSelect.disabled = true;
-trimSelect.disabled = true;
-trimDiv.style.display = "none";
+if (modelSelect) modelSelect.disabled = true;
+if (trimSelect) trimSelect.disabled = true;
+if (trimDiv) trimDiv.style.display = "none";
 
-info2.style.display = "none";
-step2Content.style.display = "none";
-step3Content.style.display = "none";
-step4Content.style.display = "none";
+if (info2) info2.style.display = "none";
+if (step2Content) step2Content.style.display = "none";
+if (step3Content) step3Content.style.display = "none";
+if (step4Content) step4Content.style.display = "none";
 
-continueBtn.style.display = "none";
-continueBtn.disabled = true;
+if (continueBtn) {
+    continueBtn.style.display = "none";
+    continueBtn.disabled = true;
+}
 
-startOverBtn.style.display = "none";
+if (startOverBtn) startOverBtn.style.display = "none";
 
-loanLeaseDiv.style.display = "none";
+if (loanLeaseDiv) loanLeaseDiv.style.display = "none";
 
 // --------------------
 // DATA
@@ -760,10 +764,10 @@ function checkAllFilled() {
     // --------------------
     // STEP SWITCH
     // --------------------
-if (activeTabId === "ymm") {  // only toggle info1/info2 for the first tab
-    info1.style.display = allFilled ? "none" : "block";
-    info2.style.display = allFilled ? "block" : "none";
-}
+    if (activeTabId === "ymm") {  // only toggle info1/info2 for the first tab
+        info1.style.display = allFilled ? "none" : "block";
+        info2.style.display = allFilled ? "block" : "none";
+    }
 }
 
 // --------------------
@@ -799,93 +803,108 @@ function addEditButton(stepIndex) {
     }
 }
 
-// --------------------
-// EVENT LISTENERS
-// --------------------
-yearSelect.addEventListener("change", checkAllFilled);
+// Guard: trade-in wizard elements
+if (yearSelect) {
 
-makeSelect.addEventListener("change", () => {
-    populateModels(makeSelect.value);
-    checkAllFilled();
-});
+    // --------------------
+    // EVENT LISTENERS
+    // --------------------
+    yearSelect.addEventListener("change", checkAllFilled);
 
-modelSelect.addEventListener("change", () => {
-    populateTrims(modelSelect.value);
-    checkAllFilled();
-});
-
-trimSelect.addEventListener("change", checkAllFilled);
-
-// --------------------
-// CONTINUE BUTTONS
-// --------------------
-
-// Step 1 -> Step 2
-continueBtn.addEventListener("click", () => {
-    addEditButton(0);
-    activateStep(1);
-});
-
-// Step 2 -> Step 3
-continueBtn2.addEventListener("click", () => {
-    addEditButton(1);
-    activateStep(2);
-});
-
-// Step 3 -> Step 4
-[photoConti, skipPhoto].forEach(button => {
-    button.addEventListener("click", () => {
-        addEditButton(2);
-        activateStep(3);
+    makeSelect.addEventListener("change", () => {
+        populateModels(makeSelect.value);
+        checkAllFilled();
     });
-});
 
-// --------------------
-// EDIT CLICK
-// --------------------
-document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("edit-step")) {
-        const step = parseInt(e.target.dataset.step);
-        activateStep(step);
+    modelSelect.addEventListener("change", () => {
+        populateTrims(modelSelect.value);
+        checkAllFilled();
+    });
+
+    trimSelect?.addEventListener("change", checkAllFilled);
+
+    // --------------------
+    // CONTINUE BUTTONS
+    // --------------------
+
+    // Step 1 -> Step 2
+    if (continueBtn) {
+        continueBtn.addEventListener("click", () => {
+            addEditButton(0);
+            activateStep(1);
+        });
     }
-});
 
-// --------------------
-// START OVER
-// --------------------
-startOverBtn.addEventListener("click", () => {
-    yearSelect.value = "";
-    makeSelect.value = "";
-    modelSelect.value = "";
-    trimSelect.value = "";
+    // Step 2 -> Step 3
+    if (continueBtn2) {
+        continueBtn2.addEventListener("click", () => {
+            addEditButton(1);
+            activateStep(2);
+        });
+    }
 
-    modelSelect.disabled = true;
-    trimSelect.disabled = true;
-    trimDiv.style.display = "none";
+    // Step 3 -> Step 4
+    if (photoConti && skipPhoto) {
+        [photoConti, skipPhoto].forEach(button => {
+            button.addEventListener("click", () => {
+                addEditButton(2);
+                activateStep(3);
+            });
+        });
+    }
 
-    info1.style.display = "block";
-    info2.style.display = "none";
+    // --------------------
+    // EDIT CLICK
+    // --------------------
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("edit-step")) {
+            const step = parseInt(e.target.dataset.step);
+            activateStep(step);
+        }
+    });
 
-    continueBtn.style.display = "none";
-    startOverBtn.style.display = "none";
+    // --------------------
+    // START OVER
+    // --------------------
+    if (startOverBtn) {
+        startOverBtn.addEventListener("click", () => {
+            yearSelect.value = "";
+            makeSelect.value = "";
+            modelSelect.value = "";
+            trimSelect.value = "";
 
-    activateStep(0);
-});
+            modelSelect.disabled = true;
+            trimSelect.disabled = true;
+            trimDiv.style.display = "none";
+
+            info1.style.display = "block";
+            info2.style.display = "none";
+
+            continueBtn.style.display = "none";
+            startOverBtn.style.display = "none";
+
+            activateStep(0);
+        });
+    }
+
+} // end guard: yearSelect
 
 // --------------------
 // LOAN / LEASE
 // --------------------
-loanLeaseButtons.forEach(button => {
-    button.addEventListener("click", () => {
-        const value = button.textContent.trim().toLowerCase();
+if (loanLeaseButtons && loanLeaseButtons.length) {
+    loanLeaseButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const value = button.textContent.trim().toLowerCase();
 
-        loanLeaseDiv.style.display =
-            (value === "loan" || value === "lease") ? "block" : "none";
+            loanLeaseDiv.style.display =
+                (value === "loan" || value === "lease") ? "block" : "none";
 
-        loanLeaseButtons.forEach(btn => btn.classList.remove("active"));
-        button.classList.add("active");
+            loanLeaseButtons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
+        });
     });
-});
+}
 
 // --------------------
 // FINISH (LAST STEP)
@@ -917,263 +936,278 @@ function finishWizard() {
 // --------------------
 // FINAL STEP BUTTON
 // --------------------
-continueBtn4.addEventListener("click", finishWizard);
-
-
-document.getElementById("toggleLocationMobile").addEventListener("click", function () {
-
-    const box = document.getElementById("locationboxMobile");
-    const icon = document.getElementById("toggleIcon").querySelector("i");
-
-    if (box.style.display === "none" || box.style.display === "") {
-        box.style.display = "block";
-        icon.classList.remove("fa-square-plus");
-        icon.classList.add("fa-square-minus");
-    } else {
-        box.style.display = "none";
-        icon.classList.remove("fa-square-minus");
-        icon.classList.add("fa-square-plus");
-    }
-
-});
-
-
-
-document.getElementById("toggleAmountDown").addEventListener("click", function () {
-
-    const content = document.getElementById("amountDownContent");
-    const icon = document.querySelector("#amountIcon i");
-
-    // toggle visibility
-    content.classList.toggle("d-block");
-
-    // toggle icon
-    if (content.classList.contains("d-block")) {
-        icon.classList.remove("fa-square-plus");
-        icon.classList.add("fa-square-minus");
-    } else {
-        icon.classList.remove("fa-square-minus");
-        icon.classList.add("fa-square-plus");
-    }
-
-});
-
-document.getElementById("toggleTrade").addEventListener("click", function () {
-
-    const content = document.getElementById("tradeContent");
-    const icon = document.querySelector("#tradeIcon i");
-
-    // toggle visibility
-    content.classList.toggle("d-block");
-
-    // toggle icon
-    if (content.classList.contains("d-block")) {
-        icon.classList.remove("fa-square-plus");
-        icon.classList.add("fa-square-minus");
-    } else {
-        icon.classList.remove("fa-square-minus");
-        icon.classList.add("fa-square-plus");
-    }
-
-});
-
-
-// input plus  minus
-
- const loanInput = document.getElementById('loanBalanceInput');
-  const loanIncrementBtn = document.getElementById('loanIncrement');
-  const loanDecrementBtn = document.getElementById('loanDecrement');
-  const loanStep = 500; // change value by 500 each click
-  const loanMax = parseInt(loanInput.max) || 1000000;
-  const loanMin = parseInt(loanInput.min) || 0;
-
-  function getLoanValue() {
-    return parseInt(loanInput.value.replace(/,/g, '')) || 0;
-  }
-
-  function setLoanValue(val) {
-    loanInput.value = val.toLocaleString();
-  }
-
-  loanIncrementBtn.addEventListener('click', () => {
-    let val = getLoanValue();
-    val += loanStep;
-    if (val > loanMax) val = loanMax;
-    setLoanValue(val);
-  });
-
-  loanDecrementBtn.addEventListener('click', () => {
-    let val = getLoanValue();
-    val -= loanStep;
-    if (val < loanMin) val = loanMin;
-    setLoanValue(val);
-  });
-
-  // Format manually typed numbers with commas
-  loanInput.addEventListener('input', () => {
-    let val = getLoanValue();
-    if (val > loanMax) val = loanMax;
-    if (val < loanMin) val = loanMin;
-    loanInput.value = val.toLocaleString();
-  });
-
-
-  const input2 = document.getElementById('tradeValueInput');
-  const incrementBtn = document.getElementById('increment');
-  const decrementBtn = document.getElementById('decrement');
-  const step2 = 1000; // change value by 1,000 each click
-  const max = parseInt(input2.max) || 1000000;
-  const min = parseInt(input2.min) || 0;
-
-  // Convert input2 value to number safely
-  function getValue() {
-    let val = parseInt(input2.value.replace(/,/g, '')) || 0;
-    return val;
-  }
-
-  function setValue(val) {
-    input2.value = val.toLocaleString(); // format with commas
-  }
-
-  incrementBtn.addEventListener('click', () => {
-    let val = getValue();
-    val += step2;
-    if (val > max) val = max;
-    setValue(val);
-  });
-
-  decrementBtn.addEventListener('click', () => {
-    let val = getValue();
-    val -= step2;
-    if (val < min) val = min;
-    setValue(val);
-  });
-
-  // Optional: Format manually typed numbers with commas
-  input2.addEventListener('input2', () => {
-    let val = getValue();
-    if (val > max) val = max;
-    if (val < min) val = min;
-    input2.value = val.toLocaleString();
-  });
-
-
-
-
-
-  const input = document.getElementById('unitPrice');
-  const increaseBtn = document.getElementById('increase');
-  const decreaseBtn = document.getElementById('decrease');
-
-  // Set step value
-  const step = 1000;
-
-  increaseBtn.addEventListener('click', () => {
-    let current = parseInt(input.value.replace(/,/g, ''), 10);
-    let max = parseInt(input.max, 10);
-    current += step;
-    if (current > max) current = max;
-    input.value = current.toLocaleString();
-  });
-
-  decreaseBtn.addEventListener('click', () => {
-    let current = parseInt(input.value.replace(/,/g, ''), 10);
-    let min = parseInt(input.min, 10);
-    current -= step;
-    if (current < min) current = min;
-    input.value = current.toLocaleString();
-  });
-
-
-
-const track = document.querySelector(".slider-track");
-const handleMin = document.getElementById("handle-min");
-const handleMax = document.getElementById("handle-max");
-
-const minValueDisplay = document.querySelector(".text-start");
-const maxValueDisplay = document.querySelector(".text-end");
-
-const MIN = 5000;
-const MAX = 32000;
-
-let minVal = MIN;
-let maxVal = MAX;
-
-let activeHandle = null;
-
-// --------------------
-// UPDATE UI
-// --------------------
-function updateUI() {
-
-    const percentMin = ((minVal - MIN) / (MAX - MIN)) * 100;
-    const percentMax = ((maxVal - MIN) / (MAX - MIN)) * 100;
-
-    handleMin.style.left = percentMin + "%";
-    handleMax.style.left = percentMax + "%";
-
-    track.style.background = `
-        linear-gradient(to right,
-            #ccc ${percentMin}%,
-            #166B87 ${percentMin}%,
-            #166B87 ${percentMax}%,
-            #ccc ${percentMax}%
-        )
-    `;
-
-    minValueDisplay.textContent = minVal;
-    maxValueDisplay.textContent = maxVal;
+if (continueBtn4) {
+    continueBtn4.addEventListener("click", finishWizard);
 }
 
-// --------------------
-// START DRAG
-// --------------------
-handleMin.addEventListener("mousedown", () => {
-    activeHandle = "min";
-});
+const toggleLocationMobile = document.getElementById("toggleLocationMobile");
+if (toggleLocationMobile) {
+    toggleLocationMobile.addEventListener("click", function () {
 
-handleMax.addEventListener("mousedown", () => {
-    activeHandle = "max";
-});
+        const box = document.getElementById("locationboxMobile");
+        const icon = document.getElementById("toggleIcon");
+        if (box && icon) {
+            const iconI = icon.querySelector("i");
+            if (box.style.display === "none" || box.style.display === "") {
+                box.style.display = "block";
+                iconI.classList.remove("fa-square-plus");
+                iconI.classList.add("fa-square-minus");
+            } else {
+                box.style.display = "none";
+                iconI.classList.remove("fa-square-minus");
+                iconI.classList.add("fa-square-plus");
+            }
+        }
 
-// --------------------
-// STOP DRAG
-// --------------------
-document.addEventListener("mouseup", () => {
-    activeHandle = null;
-});
+    });
+}
 
-// --------------------
-// DRAGGING
-// --------------------
-document.addEventListener("mousemove", (e) => {
+const toggleAmountDown = document.getElementById("toggleAmountDown");
+if (toggleAmountDown) {
+    toggleAmountDown.addEventListener("click", function () {
 
-    if (!activeHandle) return;
+        const content = document.getElementById("amountDownContent");
+        const icon = document.querySelector("#amountIcon i");
 
-    const rect = track.getBoundingClientRect();
-    let percent = (e.clientX - rect.left) / rect.width;
+        if (content && icon) {
+            content.classList.toggle("d-block");
 
-    percent = Math.max(0, Math.min(1, percent));
+            if (content.classList.contains("d-block")) {
+                icon.classList.remove("fa-square-plus");
+                icon.classList.add("fa-square-minus");
+            } else {
+                icon.classList.remove("fa-square-minus");
+                icon.classList.add("fa-square-plus");
+            }
+        }
 
-    let value = Math.round(MIN + percent * (MAX - MIN));
+    });
+}
 
-    if (activeHandle === "min") {
-        if (value >= maxVal) value = maxVal - 100;
-        minVal = value;
+const toggleTrade = document.getElementById("toggleTrade");
+if (toggleTrade) {
+    toggleTrade.addEventListener("click", function () {
+
+        const content = document.getElementById("tradeContent");
+        const icon = document.querySelector("#tradeIcon i");
+
+        if (content && icon) {
+            content.classList.toggle("d-block");
+
+            if (content.classList.contains("d-block")) {
+                icon.classList.remove("fa-square-plus");
+                icon.classList.add("fa-square-minus");
+            } else {
+                icon.classList.remove("fa-square-minus");
+                icon.classList.add("fa-square-plus");
+            }
+        }
+
+    });
+}
+
+
+// Guard: payment-calc elements
+const loanInput = document.getElementById('loanBalanceInput');
+const handleMin = document.getElementById("handle-min");
+if (loanInput || handleMin) {
+    const loanIncrementBtn = document.getElementById('loanIncrement');
+    const loanDecrementBtn = document.getElementById('loanDecrement');
+    const loanStep = 500; // change value by 500 each click
+    const loanMax = parseInt(loanInput.max) || 1000000;
+    const loanMin = parseInt(loanInput.min) || 0;
+
+    function getLoanValue() {
+        return parseInt(loanInput.value.replace(/,/g, '')) || 0;
     }
 
-    if (activeHandle === "max") {
-        if (value <= minVal) value = minVal + 100;
-        maxVal = value;
+    function setLoanValue(val) {
+        loanInput.value = val.toLocaleString();
     }
 
-    updateUI();
-});
+    loanIncrementBtn.addEventListener('click', () => {
+        let val = getLoanValue();
+        val += loanStep;
+        if (val > loanMax) val = loanMax;
+        setLoanValue(val);
+    });
 
-// --------------------
-// INIT
-// --------------------
-updateUI();
+    loanDecrementBtn.addEventListener('click', () => {
+        let val = getLoanValue();
+        val -= loanStep;
+        if (val < loanMin) val = loanMin;
+        setLoanValue(val);
+    });
+
+    // Format manually typed numbers with commas
+    loanInput.addEventListener('input', () => {
+        let val = getLoanValue();
+        if (val > loanMax) val = loanMax;
+        if (val < loanMin) val = loanMin;
+        loanInput.value = val.toLocaleString();
+    });
+
+
+    const input2 = document.getElementById('tradeValueInput');
+    const incrementBtn = document.getElementById('increment');
+    const decrementBtn = document.getElementById('decrement');
+    const step2 = 1000; // change value by 1,000 each click
+    const max = parseInt(input2.max) || 1000000;
+    const min = parseInt(input2.min) || 0;
+
+    // Convert input2 value to number safely
+    function getValue() {
+        let val = parseInt(input2.value.replace(/,/g, '')) || 0;
+        return val;
+    }
+
+    function setValue(val) {
+        input2.value = val.toLocaleString(); // format with commas
+    }
+
+    incrementBtn.addEventListener('click', () => {
+        let val = getValue();
+        val += step2;
+        if (val > max) val = max;
+        setValue(val);
+    });
+
+    decrementBtn.addEventListener('click', () => {
+        let val = getValue();
+        val -= step2;
+        if (val < min) val = min;
+        setValue(val);
+    });
+
+    // Optional: Format manually typed numbers with commas
+    input2.addEventListener('input2', () => {
+        let val = getValue();
+        if (val > max) val = max;
+        if (val < min) val = min;
+        input2.value = val.toLocaleString();
+    });
+
+
+
+
+
+    const input = document.getElementById('unitPrice');
+    const increaseBtn = document.getElementById('increase');
+    const decreaseBtn = document.getElementById('decrease');
+
+    if (input && increaseBtn && decreaseBtn) {
+        // Set step value
+        const step = 1000;
+
+        increaseBtn.addEventListener('click', () => {
+            let current = parseInt(input.value.replace(/,/g, ''), 10);
+            let max = parseInt(input.max, 10);
+            current += step;
+            if (current > max) current = max;
+            input.value = current.toLocaleString();
+        });
+
+        decreaseBtn.addEventListener('click', () => {
+            let current = parseInt(input.value.replace(/,/g, ''), 10);
+            let min = parseInt(input.min, 10);
+            current -= step;
+            if (current < min) current = min;
+            input.value = current.toLocaleString();
+        });
+    }
+
+
+
+    const track = document.querySelector(".slider-track");
+    const handleMin2 = document.getElementById("handle-min");
+    const handleMax2 = document.getElementById("handle-max");
+
+    if (track && handleMin2 && handleMax2) {
+        const minValueDisplay = document.querySelector(".text-start");
+        const maxValueDisplay = document.querySelector(".text-end");
+
+        const SMIN = 5000;
+        const SMAX = 32000;
+
+        let minVal = SMIN;
+        let maxVal = SMAX;
+
+        let activeHandle = null;
+
+        // --------------------
+        // UPDATE UI
+        // --------------------
+        function updateUI() {
+            const percentMin = ((minVal - SMIN) / (SMAX - SMIN)) * 100;
+            const percentMax = ((maxVal - SMIN) / (SMAX - SMIN)) * 100;
+
+            handleMin2.style.left = percentMin + "%";
+            handleMax2.style.left = percentMax + "%";
+
+            track.style.background = `
+            linear-gradient(to right,
+                #ccc ${percentMin}%,
+                #166B87 ${percentMin}%,
+                #166B87 ${percentMax}%,
+                #ccc ${percentMax}%
+            )
+        `;
+
+            if (minValueDisplay) minValueDisplay.textContent = minVal;
+            if (maxValueDisplay) maxValueDisplay.textContent = maxVal;
+        }
+
+        // --------------------
+        // START DRAG
+        // --------------------
+        handleMin2.addEventListener("mousedown", () => {
+            activeHandle = "min";
+        });
+
+        handleMax2.addEventListener("mousedown", () => {
+            activeHandle = "max";
+        });
+
+        // --------------------
+        // STOP DRAG
+        // --------------------
+        document.addEventListener("mouseup", () => {
+            activeHandle = null;
+        });
+
+        // --------------------
+        // DRAGGING
+        // --------------------
+        document.addEventListener("mousemove", (e) => {
+            if (!activeHandle) return;
+
+            const rect = track.getBoundingClientRect();
+            let percent = (e.clientX - rect.left) / rect.width;
+
+            percent = Math.max(0, Math.min(1, percent));
+
+            let value = Math.round(SMIN + percent * (SMAX - SMIN));
+
+            if (activeHandle === "min") {
+                if (value >= maxVal) value = maxVal - 100;
+                minVal = value;
+            }
+
+            if (activeHandle === "max") {
+                if (value <= minVal) value = minVal + 100;
+                maxVal = value;
+            }
+
+            updateUI();
+        });
+
+        // --------------------
+        // INIT
+        // --------------------
+        updateUI();
+    } // end guard: track && handleMin2 && handleMax2
+
+} // end guard: loanInput || handleMin
 
 
 // ─── VDP Thumbnail → Main Photo Sync ─────────────────────────────────────────
@@ -1205,26 +1239,43 @@ updateUI();
 (function () {
     'use strict';
 
+    console.log('[Carousel] IIFE running');
+
     var gridModal = document.getElementById('modalGallery');
-    if (!gridModal) return;
+    console.log('[Carousel] #modalGallery:', gridModal);
+    if (!gridModal) { console.warn('[Carousel] grid modal not found'); return; }
+
+    var raw = gridModal.dataset.photos;
+    console.log('[Carousel] raw data-photos:', raw);
 
     var photos = (function () {
         try {
-            return JSON.parse(gridModal.dataset.photos || '[]');
-        } catch (_) { return []; }
+            return JSON.parse(raw || '[]');
+        } catch (e) {
+            console.error('[Carousel] JSON parse error:', e);
+            return [];
+        }
     })();
+    console.log('[Carousel] parsed photos count:', photos.length);
 
-    if (photos.length === 0) return;
+    if (photos.length === 0) { console.warn('[Carousel] no photos'); return; }
 
     var carouselModal = document.getElementById('modalCarousel');
-    if (!carouselModal) return;
+    console.log('[Carousel] #modalCarousel:', carouselModal);
+    if (!carouselModal) { console.warn('[Carousel] carousel modal not found'); return; }
 
     var carouselImage = document.getElementById('carouselImage');
     var carouselCounter = document.getElementById('carouselCounter');
     var btnPrev = document.getElementById('carouselPrev');
     var btnNext = document.getElementById('carouselNext');
+    console.log('[Carousel] elements:', { image: !!carouselImage, counter: !!carouselCounter, prev: !!btnPrev, next: !!btnNext });
+
     var currentIndex = 0;
-    var bsCarousel = new bootstrap.Modal(carouselModal);
+
+    // Use getOrCreateInstance so we never double-instantiate
+    var bsGrid = bootstrap.Modal.getOrCreateInstance(gridModal);
+    var bsCarousel = bootstrap.Modal.getOrCreateInstance(carouselModal);
+    console.log('[Carousel] Bootstrap.Modal instances created');
 
     function showPhoto(index) {
         if (photos.length === 0) return;
@@ -1232,26 +1283,45 @@ updateUI();
         if (index >= photos.length) index = 0;
         currentIndex = index;
 
-        carouselImage.src = photos[currentIndex];
-        carouselCounter.textContent = (currentIndex + 1) + ' / ' + photos.length;
+        if (carouselImage) carouselImage.src = photos[currentIndex];
+        if (carouselCounter) carouselCounter.textContent = (currentIndex + 1) + ' / ' + photos.length;
 
         if (btnPrev) btnPrev.classList.toggle('d-none', photos.length <= 1);
         if (btnNext) btnNext.classList.toggle('d-none', photos.length <= 1);
+        console.log('[Carousel] showPhoto:', currentIndex, photos[currentIndex]);
     }
 
     function openCarousel(index) {
+        console.log('[Carousel] openCarousel called with index:', index);
         showPhoto(index);
-        bsCarousel.show();
+
+        // Bootstrap refuses to open a second modal while another is shown.
+        // Hide the grid first; show the carousel once the grid is fully hidden.
+        bsGrid.hide();
+
+        gridModal.addEventListener('hidden.bs.modal', function onGridHidden() {
+            gridModal.removeEventListener('hidden.bs.modal', onGridHidden);
+            console.log('[Carousel] grid hidden, showing carousel');
+            bsCarousel.show();
+        });
     }
+
+    // When the carousel is closed, re-open the grid so the user can keep browsing
+    carouselModal.addEventListener('hidden.bs.modal', function () {
+        console.log('[Carousel] carousel closed, re-opening grid');
+        bsGrid.show();
+    });
 
     if (btnPrev) {
         btnPrev.addEventListener('click', function () {
+            console.log('[Carousel] prev click');
             showPhoto(currentIndex - 1);
         });
     }
 
     if (btnNext) {
         btnNext.addEventListener('click', function () {
+            console.log('[Carousel] next click');
             showPhoto(currentIndex + 1);
         });
     }
@@ -1260,20 +1330,26 @@ updateUI();
     carouselModal.addEventListener('keydown', function (e) {
         if (e.key === 'ArrowLeft') {
             e.preventDefault();
+            console.log('[Carousel] arrow left');
             showPhoto(currentIndex - 1);
         } else if (e.key === 'ArrowRight') {
             e.preventDefault();
+            console.log('[Carousel] arrow right');
             showPhoto(currentIndex + 1);
         }
     });
 
     // Click on images in the grid modal → open carousel at that index
     gridModal.addEventListener('click', function (e) {
+        console.log('[Carousel] gridModal clicked', e.target);
         var col = e.target.closest('[data-gallery-idx]');
+        console.log('[Carousel] closest data-gallery-idx:', col);
         if (!col) return;
         var idx = parseInt(col.dataset.galleryIdx, 10);
+        console.log('[Carousel] parsed idx:', idx);
         if (!isNaN(idx)) openCarousel(idx);
     });
 
-})();
+    console.log('[Carousel] IIFE complete');
 
+})();
