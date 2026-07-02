@@ -6,6 +6,7 @@ use App\Jobs\ApplyPhotoOverlay;
 use App\Models\Inventory\Vehicle;
 use App\Models\Inventory\VehiclePhoto;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class SetPrimaryPhotoAction
 {
@@ -21,6 +22,11 @@ class SetPrimaryPhotoAction
                 ->first();
 
             if ($previousPrimary && $previousPrimary->original_path) {
+                // Destroy the old overlaid primary image (only if it differs from original)
+                if ($previousPrimary->path !== $previousPrimary->original_path) {
+                    Storage::disk($previousPrimary->disk)->delete($previousPrimary->path);
+                }
+
                 $previousPrimary->update([
                     'path' => $previousPrimary->original_path,
                 ]);

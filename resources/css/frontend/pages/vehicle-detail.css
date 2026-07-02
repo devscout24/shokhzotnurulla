@@ -815,3 +815,32 @@ input[type="checkbox"] {
     top: 10px;
     z-index: 1;
 }
+
+/* ─── Photo Carousel ───────────────────────────────────────────────────── */
+
+#modalCarousel .modal-dialog.modal-fullscreen {
+    max-width: 100%;
+    margin: 0;
+    height: 100%;
+}
+
+#modalCarousel .modal-content {
+    min-height: 100vh;
+}
+
+#modalCarousel .modal-body {
+    min-height: 100vh;
+}
+
+#carouselPrev:hover,
+#carouselNext:hover {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+#carouselImage {
+    transition: opacity 0.2s ease;
+}
+
+#modalCarousel .btn-close {
+    filter: invert(1);
+}

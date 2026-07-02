@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
         stepHeader4
     ];
 
-    const indicators = stepHeaders.map(step => step.querySelector(".wizardstep-indicator"));
+    const indicators = stepHeaders.filter(Boolean).map(step => step.querySelector(".wizardstep-indicator"));
 
     const btnMyself = document.getElementById("btn-myself");
     const btnCoBorrower = document.getElementById("btn-coborrower-main");
@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ACTIVE STEP TITLE
     const setActiveStep = (stepNumber) => {
 
-        stepHeaders.forEach((step, index) => {
+        stepHeaders.filter(Boolean).forEach((step, index) => {
 
             const title = step.querySelector("b");
 
@@ -403,24 +403,28 @@ stars.forEach((star, idx) => {
 
 
 // ----- ELEMENTS -----
-const daysContainer = document.getElementById("daysContainer");
-const prevWeekBtn = document.getElementById("prevWeekBtn");
-const nextWeekBtn = document.getElementById("nextWeekBtn");
+const daysContainer = document.getElementById("daysContainer") || document.getElementById("std-days-container");
+const prevWeekBtn = document.getElementById("prevWeekBtn") || document.getElementById("std-prev-week");
+const nextWeekBtn = document.getElementById("nextWeekBtn") || document.getElementById("std-next-week");
 
-const step1Div = document.getElementById("step-1");
-const step2Div = document.getElementById("step-2");
-const successDiv = document.getElementById("successDiv"); // create this in your HTML
+const step1Div = document.getElementById("step-1") || document.getElementById("std-step-1");
+const step2Div = document.getElementById("step-2") || document.getElementById("std-step-2");
+const successDiv = document.getElementById("successDiv") || document.getElementById("std-success");
 
-const dateContainer = document.getElementById("select-date");
-const timeContainer = document.getElementById("select-time");
-const selectDifferentDayBtn = timeContainer.querySelector("button");
+const dateContainer = document.getElementById("select-date") || document.getElementById("std-select-date");
+const timeContainer = document.getElementById("select-time") || document.getElementById("std-select-time");
 
-const continueBtnStep1 = document.getElementById("continueBtn3");
-const timeSelect = timeContainer.querySelector("select");
-
+const continueBtnStep1 = document.getElementById("continueBtn3") || document.getElementById("std-continue-step1");
 const continueBtnStep2 = document.getElementById("continueBtn4");
 
-const stepHeaders = document.querySelectorAll(".wizardstep");
+const timeSelect = timeContainer ? timeContainer.querySelector("select") || document.getElementById("std-time-select") : document.getElementById("std-time-select");
+const selectDifferentDayBtn = timeContainer ? timeContainer.querySelector("button") : document.getElementById("std-back-to-date");
+
+const stepHeaders = document.querySelectorAll(".wizardstep, .std-wizard-step");
+
+// Guard: if schedule-test offcanvas elements don't exist, skip this block
+// (referenced by the bare IDs or std- prefixed IDs)
+if (dateContainer) {
 
 // ----- INITIAL VISIBILITY -----
 step1Div.classList.add("d-block");
@@ -591,6 +595,8 @@ continueBtnStep2.addEventListener("click", () => {
 // ----- INITIAL RENDER -----
 renderDays();
 
+} // end guard: dateContainer
+
 
 
 
@@ -601,7 +607,7 @@ const yearSelect = document.querySelector("select[name='year']");
 const makeSelect = document.querySelector("select[name='make']");
 const modelSelect = document.querySelector("select[name='model']");
 const trimSelect = document.querySelector("select[name='trim']");
-const trimDiv = trimSelect.closest(".mb-4");
+const trimDiv = trimSelect ? trimSelect.closest(".mb-4") : null;
 
 const continueBtn = document.getElementById("continuee");
 const continueBtn2 = document.getElementById("continuee2");
@@ -619,7 +625,9 @@ const step2Content = document.getElementById("stepp2");
 const step3Content = document.getElementById("stepp3");
 const step4Content = document.getElementById("stepp4");
 const vinInput = document.querySelector("input[name='vin']");
-vinInput.addEventListener("input", checkAllFilled);
+if (vinInput) {
+    vinInput.addEventListener("input", checkAllFilled);
+}
 
 // --------------------
 // STEP HEADERS
@@ -1189,6 +1197,82 @@ updateUI();
             t.style.opacity = '0.7';
         });
         thumb.style.opacity = '1';
+    });
+
+})();
+
+// ─── Photo Gallery → Carousel ────────────────────────────────────────────────
+(function () {
+    'use strict';
+
+    var gridModal = document.getElementById('modalGallery');
+    if (!gridModal) return;
+
+    var photos = (function () {
+        try {
+            return JSON.parse(gridModal.dataset.photos || '[]');
+        } catch (_) { return []; }
+    })();
+
+    if (photos.length === 0) return;
+
+    var carouselModal = document.getElementById('modalCarousel');
+    if (!carouselModal) return;
+
+    var carouselImage = document.getElementById('carouselImage');
+    var carouselCounter = document.getElementById('carouselCounter');
+    var btnPrev = document.getElementById('carouselPrev');
+    var btnNext = document.getElementById('carouselNext');
+    var currentIndex = 0;
+    var bsCarousel = new bootstrap.Modal(carouselModal);
+
+    function showPhoto(index) {
+        if (photos.length === 0) return;
+        if (index < 0) index = photos.length - 1;
+        if (index >= photos.length) index = 0;
+        currentIndex = index;
+
+        carouselImage.src = photos[currentIndex];
+        carouselCounter.textContent = (currentIndex + 1) + ' / ' + photos.length;
+
+        if (btnPrev) btnPrev.classList.toggle('d-none', photos.length <= 1);
+        if (btnNext) btnNext.classList.toggle('d-none', photos.length <= 1);
+    }
+
+    function openCarousel(index) {
+        showPhoto(index);
+        bsCarousel.show();
+    }
+
+    if (btnPrev) {
+        btnPrev.addEventListener('click', function () {
+            showPhoto(currentIndex - 1);
+        });
+    }
+
+    if (btnNext) {
+        btnNext.addEventListener('click', function () {
+            showPhoto(currentIndex + 1);
+        });
+    }
+
+    // Keyboard navigation
+    carouselModal.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            showPhoto(currentIndex - 1);
+        } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            showPhoto(currentIndex + 1);
+        }
+    });
+
+    // Click on images in the grid modal → open carousel at that index
+    gridModal.addEventListener('click', function (e) {
+        var col = e.target.closest('[data-gallery-idx]');
+        if (!col) return;
+        var idx = parseInt(col.dataset.galleryIdx, 10);
+        if (!isNaN(idx)) openCarousel(idx);
     });
 
 })();

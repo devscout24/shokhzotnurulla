@@ -141,8 +141,7 @@
                             <div class="sc-5176998-0 jHXOJF {{ $photosCount > 0 ? 'hasPhotos' : '' }} noVideo">
 
                                 {{-- Main Photo --}}
-                                <div class="position-relative cursor-pointer" data-bs-toggle="modal"
-                                    data-bs-target="#modalGallery" id="vdp_photo_main">
+                                <div class="position-relative cursor-pointer" data-bs-toggle="modal" data-bs-target="#modalGallery" id="vdp_photo_main" data-gallery-idx="0">
                                     @if($mainPhoto)
                                         <img id="vdpMainPhoto" alt="{{ $vehicleTitle }} for sale in Smyrna, TN"
                                             fetchpriority="high" loading="eager" width="926" height="694" decoding="async"
@@ -167,8 +166,7 @@
                                     @endforelse
 
                                     @if($extraCount > 0)
-                                        <div class="has-more-photos gallery-thumb-d" data-bs-toggle="modal"
-                                            data-bs-target="#modalGallery" style="cursor:pointer;">
+                                        <div class="has-more-photos gallery-thumb-d" data-bs-toggle="modal" data-bs-target="#modalGallery" style="cursor:pointer;" data-gallery-idx="0">
                                             <div class="more-photos-overlay cursor-pointer">
                                                 +{{ $extraCount }} more
                                             </div>
@@ -1132,6 +1130,7 @@
     @include('frontend.offcanvas.get-approved')
     @include('frontend.offcanvas.unlock-eprice')
     @include('frontend.modals.photo-gallery', ['photos' => $allPhotos])
+    @include('frontend.modals.photo-carousel')
     @include('frontend.modals.share')
 @endpush
 
