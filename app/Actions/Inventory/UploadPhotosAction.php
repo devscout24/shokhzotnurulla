@@ -44,7 +44,7 @@ class UploadPhotosAction
                 'status'        => 'draft',
                 'width'         => $width,
                 'height'        => $height,
-                'original_path' => $file->getRealPath(),
+                'original_path' => $path,
             ]);
 
             $hasPrimary = true;
