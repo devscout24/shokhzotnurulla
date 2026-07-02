@@ -10,7 +10,7 @@
 
             <div class="modal-body d-flex align-items-center justify-content-center p-0 position-relative overflow-hidden">
                 <button type="button" id="carouselPrev"
-                    class="btn btn-dark bg-dark bg-opacity-50 border-0 rounded-0 position-absolute start-0 top-50 translate-middle-y ms-2 z-3 px-3 py-4 d-none">
+                    class="btn btn-dark bg-dark bg-opacity-50 border-0 rounded-0 position-absolute top-50 translate-middle-y z-3 px-3 py-4 d-none" style="left: 8%;">
                     <span class="fs-3 lh-1 d-block">&lsaquo;</span>
                 </button>
 
@@ -18,7 +18,7 @@
                     style="max-height: 90vh; max-width: 100%; object-fit: contain;">
 
                 <button type="button" id="carouselNext"
-                    class="btn btn-dark bg-dark bg-opacity-50 border-0 rounded-0 position-absolute end-0 top-50 translate-middle-y me-2 z-3 px-3 py-4 d-none">
+                    class="btn btn-dark bg-dark bg-opacity-50 border-0 rounded-0 position-absolute top-50 translate-middle-y z-3 px-3 py-4 d-none" style="right: 8%;">
                     <span class="fs-3 lh-1 d-block">&rsaquo;</span>
                 </button>
             </div>
