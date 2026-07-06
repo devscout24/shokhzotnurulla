@@ -129,28 +129,37 @@ return [
 
         // Dealer Panel
         'audit-dealer' => [
-            'driver'               => 'daily',
-            'path'                 => storage_path('logs/dealer/audit.log'),
-            'level'                => 'info',
-            'days'                 => env('LOG_AUDIT_DAYS', 7),
+            'driver' => 'daily',
+            'path' => storage_path('logs/dealer/audit.log'),
+            'level' => 'info',
+            'days' => env('LOG_AUDIT_DAYS', 7),
             'replace_placeholders' => true,
         ],
 
         // Admin Panel
         'audit-admin' => [
-            'driver'               => 'daily',
-            'path'                 => storage_path('logs/admin/audit.log'),
-            'level'                => 'info',
-            'days'                 => env('LOG_AUDIT_DAYS', 7),
+            'driver' => 'daily',
+            'path' => storage_path('logs/admin/audit.log'),
+            'level' => 'info',
+            'days' => env('LOG_AUDIT_DAYS', 7),
+            'replace_placeholders' => true,
+        ],
+
+        // VIN Decode
+        'vin-decode' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/vin-decode.log'),
+            'level' => 'debug',
+            'days' => 7,
             'replace_placeholders' => true,
         ],
 
         // Frontend
         'audit-frontend' => [
-            'driver'               => 'daily',
-            'path'                 => storage_path('logs/frontend/audit.log'),
-            'level'                => 'info',
-            'days'                 => env('LOG_AUDIT_DAYS', 7),
+            'driver' => 'daily',
+            'path' => storage_path('logs/frontend/audit.log'),
+            'level' => 'info',
+            'days' => env('LOG_AUDIT_DAYS', 7),
             'replace_placeholders' => true,
         ],
 
