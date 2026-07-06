@@ -36,4 +36,8 @@ return [
         ],
     ],
 
+    'vehicle_databases' => [
+        'api_key' => env('VEHICLE_DATABASES_API_KEY'),
+    ],
+
 ];
