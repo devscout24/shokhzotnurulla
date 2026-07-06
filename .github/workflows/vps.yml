@@ -37,7 +37,7 @@ jobs:
             --no-perms --no-owner --no-group
             --exclude-from='.deployignore'
             --partial --partial-dir=.rsync-partial
-            --timeout=120 --contimeout=30
+            --timeout=120
             -e "ssh -p 22 -o ServerAliveInterval=30 -o ServerAliveCountMax=6 -o TCPKeepAlive=yes -o StrictHostKeyChecking=no"
           path: ./
           remote_path: /home/webgurus365-dealers/htdocs/dealers.webgurus365.com/
