@@ -15,30 +15,27 @@ jobs:
       - name: 🟢 Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4' 
+          php-version: '8.4'
           extensions: mbstring, xml, bcmath, curl
 
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' 
+          node-version: '20'
 
       - name: 🔨 Install Dependencies & Build Assets
         run: |
-          composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-          npm ci
-          npm run build
+          # Install PHP dependencies
+          composer install --no-dev --optimize-autoloader
+
+          # install node packages
 
       - name: 📂 Rsync Deployment
         uses: Burnett01/rsync-deployments@7.0.0
         with:
-          switches: >-
-            -azr --delete
-            --no-perms --no-owner --no-group
-            --exclude-from='.deployignore'
-            --partial --partial-dir=.rsync-partial
-            --timeout=120
-            -e "ssh -p 22 -o ServerAliveInterval=30 -o ServerAliveCountMax=6 -o TCPKeepAlive=yes -o StrictHostKeyChecking=no"
+          # -avzr: archive, verbose, compress, recurse
+          # --no-perms/owner/group: Let CloudPanel's Site User handle permissions on arrival
+          switches: -avzr --delete --no-perms --no-owner --no-group --exclude-from='.deployignore'
           path: ./
           remote_path: /home/webgurus365-dealers/htdocs/dealers.webgurus365.com/
           remote_host: dealers.webgurus365.com
@@ -52,12 +49,12 @@ jobs:
           chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key webgurus365-dealers@dealers.webgurus365.com << 'EOF'
             cd /home/webgurus365-dealers/htdocs/dealers.webgurus365.com
-            
+
             # Run Laravel optimizations
             # Note: We don't run 'npm install' here because we built assets in the CI step above
             umask 002
             php artisan optimize:clear
-            
+
             chmod -R 775 storage bootstrap/cache
             chown -R webgurus365-dealers:webgurus365-dealers storage bootstrap/cache
           EOF
