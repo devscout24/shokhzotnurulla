@@ -59,6 +59,17 @@ Multi-tenant dealership management platform. Laravel 12 (`^8.2` / Node 26 in `.n
 - Schedule-test IDs in Blade use `std-` prefix (`std-select-date`, `std-step-1`, `std-wizard-step` etc.). The JS originally used bare names — external code may need similar prefix alignment.
 - When adding new top-level JS code, wrap it in an IIFE with null-checks to avoid being blocked by pre-existing errors.
 
+## VIN Decode (V2)
+
+- **Service**: `app/Services/Inventory/VinDecodeServiceV2.php` — uses `vehicle-databases.com` API (`https://api.vehicledatabases.com/advanced-vin-decode/{vin}`) via `x-Authkey` header. Falls back to `VEHICLE_DATABASES_API_KEY` env / `config('services.vehicle_databases.api_key')`.
+- **Log channel**: `vin-decode` — writes to `storage/logs/vin-decode.log` (daily, 7-day retention). Always logs requests/responses/errors at `debug` level.
+- **DevLog helper** (`App\Helpers\DevLog`):
+  - `DevLog::debug()` / `DevLog::info()` — only writes when `APP_DEBUG=true`, suppressed in production automatically
+  - `DevLog::error()` / `DevLog::warning()` — always writes regardless of environment
+  - `DevLog::channel('vin-decode', ...)` — writes to the vin-decode channel with the same debug guard
+- **Actions V2**: `CreateVehicleActionV2`, `UpdateDetailsActionV2` — persist enriched spec/pricing/notes data from the decode payload.
+- **Requests V2**: `StoreVehicleRequestV2`, `UpdateDetailsRequestV2` — validate both V1 and V2 field naming conventions (e.g. both `cylinders` and `engine_cylinders`).
+
 ## Style
 
 - EditorConfig: 4-space indent, LF, UTF-8, final newline, trim trailing whitespace (except `.md`).

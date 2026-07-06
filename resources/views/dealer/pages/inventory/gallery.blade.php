@@ -153,8 +153,7 @@
 
                         @forelse($photos as $photo)
                             @php
-                                // $photoUrl         = Storage::disk($photo->disk)->url($photo->path);
-                                $photoUrl         = asset('storage/' . $photo->path);
+                                $photoUrl         = $photo->url;
                                 $urlStatus        = route('dealer.inventory.vdp.gallery.photo.status',  [$vehicle, $photo]);
                                 $urlPhotoDestroy  = route('dealer.inventory.vdp.gallery.photo.destroy', [$vehicle, $photo]);
                                 $urlPhotoPrimary = route('dealer.inventory.vdp.gallery.photo.primary', [$vehicle, $photo]);
@@ -224,7 +223,7 @@
                     <div class="ph-preview-img-wrap" id="previewImgWrap">
                         @if($photos->isNotEmpty())
                             <img class="ph-preview-img" id="previewImg"
-                                 src="{{ Storage::disk($photos->first()->disk)->url($photos->first()->path) }}"
+                                 src="{{ $photos->first()->url }}"
                                  alt="Preview">
                             <div class="ph-preview-empty" id="previewEmpty" style="display:none;">
                                 <i class="bi bi-images"></i>

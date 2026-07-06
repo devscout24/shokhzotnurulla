@@ -563,7 +563,7 @@
                                         data-url="{{ route('dealer.inventory.vdp.show', $vehicle) }}">
                                         @if ($vehicle->primaryPhoto)
                                             <img class="inv-grid-img"
-                                                src="{{ Storage::url($vehicle->primaryPhoto->path) }}"
+                                                src="{{ $vehicle->primaryPhoto->url }}"
                                                 alt="{{ $vehicle->display_title }}">
                                         @else
                                             <img class="inv-grid-img"

@@ -12,18 +12,21 @@ class UploadPhotosAction
 {
     public function __invoke(Vehicle $vehicle, array $files): array
     {
-        $uploaded   = [];
-        $nextOrder  = VehiclePhoto::where('vehicle_id', $vehicle->id)->max('sort_order') + 1;
+        $uploaded = [];
+        $nextOrder = VehiclePhoto::where('vehicle_id', $vehicle->id)->max('sort_order') + 1;
         $hasPrimary = VehiclePhoto::where('vehicle_id', $vehicle->id)->exists();
+
+        $dealer = $vehicle->dealer;
+        $dealerDomain = $dealer?->domain ?? $dealer?->staging_domain;
 
         foreach ($files as $file) {
 
             // ── Path — media folder structure follow karo ─────────────────
-            $year   = now()->format('Y');
-            $month  = now()->format('m');
-            $ext    = $file->getClientOriginalExtension();
-            $unique = Str::uuid() . '.' . $ext;
-            $path   = "dealers/{$vehicle->dealer_id}/media/images/{$year}/{$month}/{$unique}";
+            $year = now()->format('Y');
+            $month = now()->format('m');
+            $ext = $file->getClientOriginalExtension();
+            $unique = Str::uuid().'.'.$ext;
+            $path = "dealers/{$vehicle->dealer_id}/media/images/{$year}/{$month}/{$unique}";
 
             Storage::disk('public')->putFileAs(
                 "dealers/{$vehicle->dealer_id}/media/images/{$year}/{$month}",
@@ -33,17 +36,21 @@ class UploadPhotosAction
 
             [$width, $height] = getimagesize($file->getRealPath());
 
+            $url = $dealerDomain
+                ? 'https://'.$dealerDomain.'/storage/'.$path
+                : Storage::disk('public')->url($path);
+
             // ── VehiclePhoto record ───────────────────────────────────────
             $photo = VehiclePhoto::create([
-                'vehicle_id'    => $vehicle->id,
-                'path'          => $path,
-                'disk'          => 'public',
-                'url'           => Storage::disk('public')->url($path),
-                'sort_order'    => $nextOrder++,
-                'is_primary'    => ! $hasPrimary,
-                'status'        => 'draft',
-                'width'         => $width,
-                'height'        => $height,
+                'vehicle_id' => $vehicle->id,
+                'path' => $path,
+                'disk' => 'public',
+                'url' => $url,
+                'sort_order' => $nextOrder++,
+                'is_primary' => ! $hasPrimary,
+                'status' => 'draft',
+                'width' => $width,
+                'height' => $height,
                 'original_path' => $path,
             ]);
 
@@ -51,19 +58,19 @@ class UploadPhotosAction
 
             // ── Media record — same file, same path ─────────────────
             Media::create([
-                'dealer_id'     => $vehicle->dealer_id,
-                'user_id'       => auth()->id(),
+                'dealer_id' => $vehicle->dealer_id,
+                'user_id' => auth()->id(),
                 'original_name' => $file->getClientOriginalName(),
-                'name'          => $unique,
-                'path'          => $path,
-                'disk'          => 'public',
-                'url'           => Storage::disk('public')->url($path),
-                'type'          => 'image',
-                'mime_type'     => $file->getMimeType(),
-                'size'          => $file->getSize(),
-                'width'         => $width,
-                'height'        => $height,
-                'title'         => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+                'name' => $unique,
+                'path' => $path,
+                'disk' => 'public',
+                'url' => $url,
+                'type' => 'image',
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize(),
+                'width' => $width,
+                'height' => $height,
+                'title' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
             ]);
 
             $uploaded[] = $photo;

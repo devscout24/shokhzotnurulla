@@ -55,10 +55,16 @@ class ApplyPhotoOverlay implements ShouldQueue
 
         $image->save($outputPath);
 
-        // Update photo record to point to the new primary path
+        // Build URL with dealer domain so frontend images don't use APP_URL
+        $dealer = $vehicle->dealer;
+        $dealerDomain = $dealer?->domain ?? $dealer?->staging_domain;
+        $url = $dealerDomain
+            ? 'https://'.$dealerDomain.'/storage/'.$primaryPath
+            : $disk->url($primaryPath);
+
         $this->photo->update([
             'path' => $primaryPath,
-            'url' => $disk->url($primaryPath),
+            'url' => $url,
         ]);
     }
 }
