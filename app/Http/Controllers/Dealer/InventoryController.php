@@ -46,7 +46,8 @@ use App\Models\Inventory\VehiclePremiumOption;
 use App\Models\Inventory\VehiclePriceHistory;
 use App\Services\Analytics\Ga4ReportingService;
 use App\Services\Inventory\VdpFormDataService;
-use App\Services\Inventory\VinDecodeService;
+// use App\Services\Inventory\VinDecodeService;         // V1 — replaced by V2
+use App\Services\Inventory\VinDecodeServiceV2;
 use App\Services\Location\LocationContext;
 use App\Support\AuditLogger;
 use Carbon\Carbon;
@@ -64,7 +65,7 @@ use ZipArchive;
 class InventoryController extends Controller
 {
     public function __construct(
-        private readonly VinDecodeService $vinDecoder,
+        private readonly VinDecodeServiceV2 $vinDecoder,
         private readonly VdpFormDataService $vdpFormData,
         private readonly CreateVehicleAction $createVehicle,
         private readonly UpdatePricingAction $updatePricing,

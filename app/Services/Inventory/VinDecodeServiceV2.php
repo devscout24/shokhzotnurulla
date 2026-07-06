@@ -9,6 +9,7 @@ use App\Models\Catalog\FuelType;
 use App\Models\Catalog\Make;
 use App\Models\Catalog\MakeModel;
 use App\Models\Catalog\TransmissionType;
+use App\Models\Vin\VehicleVinData;
 use Exception;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
@@ -91,6 +92,11 @@ class VinDecodeServiceV2
                 return $this->errorResponse('No data returned from Vehicle Databases. Please verify the VIN and try again.');
             }
 
+            VehicleVinData::updateOrCreate(
+                ['vin' => $vin],
+                ['vehicle_databases' => $body]
+            );
+
             return $this->normalizeResponse($records);
 
         } catch (ConnectionException) {
@@ -131,7 +137,7 @@ class VinDecodeServiceV2
         );
         $transmissionStd      = $this->parseTransmissionStandard($trans['transmission_style'] ?? '');
         $drivetrainStd        = $this->parseDrivetrainStandard($drive['drive_type'] ?? '');
-        $gvwrParsed           = $this->parseGvwr($weight['curb_weight'] ?? '');
+        $gvwrParsed           = null;
 
         $trim      = trim($basic['trim']['Trim'] ?? '');
         $bodyClass = $basic['body_type'] ?? '';
@@ -207,7 +213,14 @@ class VinDecodeServiceV2
             return [null, null];
         }
 
-        if (preg_match('/^([A-Za-z])-(\d+)$/', $raw, $m)) {
+        $normalized = strtolower(trim($raw));
+
+        if ($normalized === 'rotary') {
+            return ['Rotary', null];
+        }
+
+        // "V-6", "V6", "V 6", "I-4", "I4" ...
+        if (preg_match('/^([a-z])\s*-?\s*(\d+)$/', $normalized, $m)) {
             $shortCode = strtoupper($m[1]);
             $shortCode = isset(array_flip(self::ENGINE_CONFIG_MAP)[$shortCode])
                 ? $shortCode
@@ -216,7 +229,8 @@ class VinDecodeServiceV2
             return [$shortCode, (int) $m[2]];
         }
 
-        if (preg_match('/^(\d+)$/', $raw, $m)) {
+        // "6" — plain number, cylinders only
+        if (preg_match('/^(\d+)$/', $normalized, $m)) {
             return [null, (int) $m[1]];
         }
 

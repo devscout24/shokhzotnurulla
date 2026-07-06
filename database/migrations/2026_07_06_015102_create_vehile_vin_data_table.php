@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vehile_vin_data', function (Blueprint $table) {
+        Schema::create('vehicle_vin_data', function (Blueprint $table) {
             $table->id();
             $table->string('vin')->unique();
             $table->json('default')->nullable();
-            $table->json('vehile_databases')->nullable();
+            $table->json('vehicle_databases')->nullable();
             $table->json('data_one')->nullable();
             $table->json('custom')->nullable();
             $table->timestamps();

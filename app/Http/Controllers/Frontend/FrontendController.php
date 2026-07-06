@@ -14,7 +14,8 @@ use App\Models\Website\Page;
 use App\Services\Inventory\InventoryListingService;
 use App\Services\Inventory\PricingCalculatorService;
 use App\Services\Inventory\VehicleDetailService;
-use App\Services\Inventory\VinDecodeService;
+// use App\Services\Inventory\VinDecodeService;         // V1 — replaced by V2
+use App\Services\Inventory\VinDecodeServiceV2;
 use App\Services\Website\DealerResolverService;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\JsonResponse;
@@ -31,7 +32,7 @@ class FrontendController extends Controller
         private readonly InventoryListingService $inventoryListing,
         private readonly VehicleDetailService $vehicleDetail,
         private readonly PricingCalculatorService $pricingCalculator,
-        private readonly VinDecodeService $vinDecoder,
+        private readonly VinDecodeServiceV2 $vinDecoder,
     ) {}
 
     // ── Home ──────────────────────────────────────────────────────────────────
