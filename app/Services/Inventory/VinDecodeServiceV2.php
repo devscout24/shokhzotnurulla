@@ -4,6 +4,7 @@ namespace App\Services\Inventory;
 
 use App\Models\Catalog\BodyStyle;
 use App\Models\Catalog\BodyType;
+use App\Models\Catalog\Color;
 use App\Models\Catalog\DrivetrainType;
 use App\Models\Catalog\FuelType;
 use App\Models\Catalog\Make;
@@ -119,6 +120,12 @@ class VinDecodeServiceV2
         $drive   = $r['drivetrain']   ?? [];
         $fuel    = $r['fuel']         ?? [];
         $weight  = $r['weight']       ?? [];
+        $dims    = $r['dimensions']   ?? [];
+        $seat    = $r['seating']      ?? [];
+        $colors  = $r['colors']       ?? [];
+        $wheels  = $r['wheels_and_tires'] ?? [];
+        $market  = $r['market_value'] ?? [];
+        $feat    = $r['feature']      ?? [];
 
         $makeId         = $this->resolveMakeId($basic['make'] ?? '');
         $makeModelId    = $this->resolveMakeModelId($basic['model'] ?? '', $makeId);
@@ -128,19 +135,22 @@ class VinDecodeServiceV2
         $fuelTypeId     = $this->resolveFuelTypeId($fuel['fuel_type'] ?? '');
         $transmissionId = $this->resolveTransmissionTypeId($trans['transmission_style'] ?? '');
 
-        [$hpValue, $hpRpm]    = $this->parseHorsepower($engine['horsepower'] ?? '');
-        [$blockType, $cyl]    = $this->parseCylinderConfig($engine['engine_number_of_cylinders'] ?? '');
-        $displacementL        = $this->parseDisplacement($engine);
-        $engineConfig         = $this->mapBlockTypeToConfig($blockType);
-        $engineString         = $this->buildEngineString(
+        [$hpValue, $hpRpm]       = $this->parseHorsepower($engine['horsepower'] ?? '');
+        [$torque, $torqueRpm]    = $this->parseTorque($engine['net_torque'] ?? '');
+        [$blockType, $cyl]       = $this->parseCylinderConfig($engine['engine_number_of_cylinders'] ?? '');
+        $displacementL           = $this->parseDisplacement($engine);
+        $engineConfig            = $this->mapBlockTypeToConfig($blockType);
+        $engineString            = $this->buildEngineString(
             $blockType, $cyl, $displacementL, $fuel['fuel_type'] ?? ''
         );
-        $transmissionStd      = $this->parseTransmissionStandard($trans['transmission_style'] ?? '');
-        $drivetrainStd        = $this->parseDrivetrainStandard($drive['drive_type'] ?? '');
-        $gvwrParsed           = null;
+        $transmissionStd         = $this->parseTransmissionStandard($trans['transmission_style'] ?? '');
+        $drivetrainStd           = $this->parseDrivetrainStandard($drive['drive_type'] ?? '');
 
-        $trim      = trim($basic['trim']['Trim'] ?? '');
-        $bodyClass = $basic['body_type'] ?? '';
+        $trim        = trim($basic['trim']['Trim'] ?? '');
+        $bodyClass   = $basic['body_type'] ?? '';
+        $exteriorCol = $this->resolveFirstColor($colors['exterior'] ?? []);
+        $interiorCol = $this->resolveFirstColor($colors['interior'] ?? []);
+        $mergedFeat  = $this->mergeFeatures($feat);
 
         $warnings = $this->buildWarnings($basic, $makeId, $makeModelId, $bodyTypeId);
 
@@ -150,6 +160,7 @@ class VinDecodeServiceV2
             'message'  => null,
             'warnings' => $warnings,
             'data'     => [
+                // ── Core identity ──────────────────────────────────────────────
                 'year'                   => $basic['year']              ?: null,
                 'make'                   => $basic['make']              ?: null,
                 'make_id'                => $makeId,
@@ -157,35 +168,92 @@ class VinDecodeServiceV2
                 'make_model_id'          => $makeModelId,
                 'trim'                   => $trim                       ?: null,
 
+                // ── Body ──────────────────────────────────────────────────────
                 'body_class'             => $bodyClass                  ?: null,
                 'body_type_id'           => $bodyTypeId,
                 'body_style_id'          => $bodyStyleId,
                 'doors'                  => $basic['doors']             ?: null,
+                'body_style'             => $basic['body_type']         ?: null,
 
+                // ── Drivetrain ─────────────────────────────────────────────────
                 'drive_type'             => $drive['drive_type']        ?: null,
                 'drivetrain_type_id'     => $drivetrainId,
                 'drivetrain_standard'    => $drivetrainStd,
 
+                // ── Fuel ───────────────────────────────────────────────────────
                 'fuel_type_primary'      => $fuel['fuel_type']          ?: null,
                 'fuel_type_id'           => $fuelTypeId,
 
+                // ── Transmission ───────────────────────────────────────────────
                 'transmission_style'     => $trans['transmission_style'] ?: null,
                 'transmission_type_id'   => $transmissionId,
                 'transmission_standard'  => $transmissionStd,
 
+                // ── Engine string ──────────────────────────────────────────────
                 'engine_string'          => $engineString,
 
+                // ── Engine specs (→ vehicles + vehicle_specs) ──────────────────
                 'engine_hp'              => $hpValue,
+                'engine_hp_rpm'          => $hpRpm,
                 'engine_cylinders'       => $cyl,
                 'engine_displacement_l'  => $displacementL,
                 'engine_config'          => $engineConfig,
                 'block_type'             => $blockType,
-                'gvwr'                   => $gvwrParsed,
+                'torque'                 => $torque,
+                'torque_rpm'             => $torqueRpm,
+                'engine_valves'          => $engine['engine_valves']    ?: null,
+                'compression'            => $engine['compression']      ?: null,
+                'engine_model'           => $engine['engine_model']     ?: null,
 
+                // ── Weight / GVWR ──────────────────────────────────────────────
+                'gvwr'                   => null,
+                'empty_weight'           => $this->extractInt($weight['curb_weight'] ?? ''),
+
+                // ── Fuel economy (→ vehicle_specs) ─────────────────────────────
+                'fuel_tank'              => $this->extractDecimal($fuel['fuel_capacity'] ?? ''),
+                'mpg_city'               => $this->extractDecimal($fuel['city_mileage'] ?? ''),
+                'mpg_highway'            => $this->extractDecimal($fuel['highway_mileage'] ?? ''),
+                'mpg_combined'           => $this->extractDecimal($fuel['fuel_economy_est_combined'] ?? ''),
+                'fuel_injection_type'    => $fuel['fuel_injection_type'] ?: null,
+
+                // ── Dimensions (→ vehicle_specs) ───────────────────────────────
+                'dimension_width'        => $this->extractDecimal($dims['width'] ?? ''),
+                'dimension_length'       => $this->extractDecimal($dims['length'] ?? ''),
+                'dimension_height'       => $this->extractDecimal($dims['height'] ?? ''),
+                'wheelbase'              => $this->extractDecimal($dims['wheelbase'] ?? ''),
+
+                // ── Drivetrain specs (→ vehicle_specs) ─────────────────────────
+                'axle_ratio'             => $this->extractDecimal($drive['final_drive_axle_ratio'] ?? ''),
+
+                // ── Wheels & tires (→ vehicle_specs) ───────────────────────────
+                'front_tire'             => $wheels['front_tire_size']        ?: null,
+                'rear_tire'              => $wheels['rear_tire_size']         ?: null,
+                'front_wheel'            => $wheels['front_wheel_material']   ?: null,
+                'rear_wheel'             => $wheels['rear_wheel_material']    ?: null,
+
+                // ── Seating (→ vehicles) ───────────────────────────────────────
+                'seating_capacity'       => $this->extractInt($seat['standard_seating'] ?? ''),
+
+                // ── Pricing (→ vehicle_prices) ─────────────────────────────────
+                'msrp'                   => $this->extractDecimal($market['msrp'] ?? ''),
+                'dealer_cost'            => $this->extractDecimal($market['invoice_price'] ?? ''),
+                'destination_charge'     => $this->extractDecimal($market['destination_charge'] ?? ''),
+
+                // ── Colors ─────────────────────────────────────────────────────
+                'exterior_color_id'      => $exteriorCol,
+                'interior_color_id'      => $interiorCol,
+                'exterior_colors'        => $colors['exterior'] ?? [],
+                'interior_colors'        => $colors['interior'] ?? [],
+
+                // ── Features (→ vehicle_notes.key_highlights) ──────────────────
+                'features'               => $mergedFeat,
+
+                // ── Metadata ───────────────────────────────────────────────────
                 'manufacturer'           => $manu['manufacturer']       ?: null,
                 'plant_city'             => null,
                 'plant_country'          => $manu['country']            ?: null,
                 'vehicle_type'           => $basic['vehicle_type']      ?: null,
+                'vehicle_size'           => $basic['vehicle_size']      ?: null,
             ],
         ];
     }
@@ -256,6 +324,46 @@ class VinDecodeServiceV2
         }
 
         return null;
+    }
+
+    private function parseTorque(string $raw): array
+    {
+        if (empty($raw)) {
+            return [null, null];
+        }
+
+        if (preg_match('/^(\d+)\s*@\s*(\d+)/', $raw, $m)) {
+            return [(int) $m[1], (int) $m[2]];
+        }
+
+        if (preg_match('/^(\d+)/', $raw, $m)) {
+            return [(int) $m[1], null];
+        }
+
+        return [null, null];
+    }
+
+    private function extractInt(string $raw): ?int
+    {
+        $cleaned = preg_replace('/[^0-9-]/', '', $raw);
+
+        return $cleaned !== '' ? (int) $cleaned : null;
+    }
+
+    private function extractDecimal(string $raw): ?float
+    {
+        if (empty($raw)) {
+            return null;
+        }
+
+        // Remove $ and commas, keep digits, decimal point, minus
+        $cleaned = preg_replace('/[^0-9.\-]/', '', $raw);
+
+        if ($cleaned === '' || $cleaned === '-' || $cleaned === '.') {
+            return null;
+        }
+
+        return (float) $cleaned;
     }
 
     private function mapBlockTypeToConfig(?string $blockType): ?string
@@ -513,6 +621,60 @@ class VinDecodeServiceV2
             ->values();
 
         return $reasonable->isEmpty() ? null : $reasonable->max();
+    }
+
+    private function resolveFirstColor(array $apiColors): ?int
+    {
+        if (empty($apiColors)) {
+            return null;
+        }
+
+        $first = $apiColors[0] ?? [];
+
+        $candidates = array_filter([
+            $first['Generic Name'] ?? null,
+            $first['Color']        ?? null,
+        ]);
+
+        foreach ($candidates as $name) {
+            $name = trim($name);
+
+            if (empty($name)) {
+                continue;
+            }
+
+            $id = Color::whereRaw('LOWER(name) = ?', [strtolower($name)])
+                ->orWhereRaw('LOWER(standard_name) = ?', [strtolower($name)])
+                ->value('id');
+
+            if ($id) {
+                return $id;
+            }
+        }
+
+        return null;
+    }
+
+    private function mergeFeatures(array $feature): array
+    {
+        $sections = [
+            'mechanical_and_powertrain',
+            'safety',
+            'interior',
+            'exterior',
+        ];
+
+        $merged = [];
+
+        foreach ($sections as $section) {
+            $items = $feature[$section] ?? [];
+
+            if (is_array($items)) {
+                array_push($merged, ...$items);
+            }
+        }
+
+        return $merged;
     }
 
     private function buildWarnings(

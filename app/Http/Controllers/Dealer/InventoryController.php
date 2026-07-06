@@ -2,13 +2,15 @@
 namespace App\Http\Controllers\Dealer;
 
 use App\Actions\Inventory\BulkDeletePhotosAction;
-use App\Actions\Inventory\CreateVehicleAction;
+// use App\Actions\Inventory\CreateVehicleAction;      // V1 — replaced by V2
+use App\Actions\Inventory\CreateVehicleActionV2;
 use App\Actions\Inventory\DeletePhotoAction;
 use App\Actions\Inventory\DeleteVehicleAction;
 use App\Actions\Inventory\ReorderPhotosAction;
 use App\Actions\Inventory\SetPrimaryPhotoAction;
 use App\Actions\Inventory\StorePremiumOptionAction;
-use App\Actions\Inventory\UpdateDetailsAction;
+// use App\Actions\Inventory\UpdateDetailsAction;       // V1 — replaced by V2
+use App\Actions\Inventory\UpdateDetailsActionV2;
 use App\Actions\Inventory\UpdateFactoryOptionsAction;
 use App\Actions\Inventory\UpdateNotesAction;
 use App\Actions\Inventory\UpdatePhotoStatusAction;
@@ -20,8 +22,9 @@ use App\Actions\Inventory\UploadPhotosAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Inventory\ReorderPhotosRequest;
 use App\Http\Requests\Inventory\StorePremiumOptionRequest;
-use App\Http\Requests\Inventory\StoreVehicleRequest;
-use App\Http\Requests\Inventory\UpdateDetailsRequest;
+// use App\Http\Requests\Inventory\StoreVehicleRequest;  // V1 — replaced by V2
+// use App\Http\Requests\Inventory\UpdateDetailsRequest; // V1 — replaced by V2
+use App\Http\Requests\Inventory\UpdateDetailsRequestV2;
 use App\Http\Requests\Inventory\UpdateFactoryOptionsRequest;
 use App\Http\Requests\Inventory\UpdateNotesRequest;
 use App\Http\Requests\Inventory\UpdatePhotoStatusRequest;
@@ -46,6 +49,7 @@ use App\Models\Inventory\VehiclePremiumOption;
 use App\Models\Inventory\VehiclePriceHistory;
 use App\Services\Analytics\Ga4ReportingService;
 use App\Services\Inventory\VdpFormDataService;
+use App\Http\Requests\Inventory\StoreVehicleRequestV2;
 // use App\Services\Inventory\VinDecodeService;         // V1 — replaced by V2
 use App\Services\Inventory\VinDecodeServiceV2;
 use App\Services\Location\LocationContext;
@@ -67,9 +71,11 @@ class InventoryController extends Controller
     public function __construct(
         private readonly VinDecodeServiceV2 $vinDecoder,
         private readonly VdpFormDataService $vdpFormData,
-        private readonly CreateVehicleAction $createVehicle,
+        // private readonly CreateVehicleAction $createVehicle,
+        private readonly CreateVehicleActionV2 $createVehicle,
         private readonly UpdatePricingAction $updatePricing,
-        private readonly UpdateDetailsAction $updateDetails,
+        // private readonly UpdateDetailsAction $updateDetails,
+        private readonly UpdateDetailsActionV2 $updateDetails,
         private readonly UpdateTagsAction $updateTags,
         private readonly UpdateNotesAction $updateNotes,
         private readonly UpdateVehicleStatusAction $updateVehicleStatus,
@@ -276,7 +282,8 @@ class InventoryController extends Controller
 
     // ─── Store (Create from VIN modal) ───────────────────────────────────────
 
-    public function store(StoreVehicleRequest $request): RedirectResponse
+    // public function store(StoreVehicleRequest $request): RedirectResponse
+    public function store(StoreVehicleRequestV2 $request): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -368,7 +375,7 @@ class InventoryController extends Controller
 
     // ─── Update Details Tab ───────────────────────────────────────────────────
 
-    public function updateDetails(UpdateDetailsRequest $request, Vehicle $vehicle): JsonResponse | RedirectResponse
+    public function updateDetails(UpdateDetailsRequestV2 $request, Vehicle $vehicle): JsonResponse | RedirectResponse
     {
         $this->authorizeVehicle($request, $vehicle);
         $validated = $request->validated();
