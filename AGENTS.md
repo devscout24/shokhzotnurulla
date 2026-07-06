@@ -52,6 +52,14 @@ Multi-tenant dealership management platform. Laravel 12 (`^8.2` / Node 26 in `.n
 - **Gallery modal flow**: Two separate Bootstrap modals — grid (`#modalGallery`) and carousel (`#modalCarousel`). Grid opens via `data-bs-toggle` on main photo. Clicking a grid image (identified by `[data-gallery-idx]`) opens the carousel at that index via JS. Photos JSON is stored in `#modalGallery`'s `data-photos` attribute, parsed at runtime by the carousel IIFE in `vehicle-detail.js:1234+`.
 - **VDP thumbnail sync**: `vehicle-detail.js:1209+` IIFE handles `.vdp-thumb` click → swap `#vdpMainPhoto` src.
 
+## Vehicle Photos
+
+- **Primary photo storage**: `storage/app/public/dealers/{dealer_id}/media/primary/{vehicle_slug}/{uuid}.{ext}`. Path built in `ApplyPhotoOverlay` job; old primary file destroyed in `SetPrimaryPhotoAction`.
+- **URL domain**: Photo URLs are stored with the dealer's domain (`https://{dealer.domain}/storage/{path}`) instead of `APP_URL`. Set in `UploadPhotosAction` and `ApplyPhotoOverlay`. Existing APP_URL-based URLs can be fixed with `php artisan photos:fix-urls`.
+- **Gallery modal flow**: Two separate Bootstrap modals — grid (`#modalGallery`) and carousel (`#modalCarousel`). Grid opens via `data-bs-toggle` on main photo. Clicking a grid image (identified by `[data-gallery-idx]`) opens the carousel at that index via JS. Photos JSON is stored in `#modalGallery`'s `data-photos` attribute, parsed at runtime by the carousel IIFE in `vehicle-detail.js:1234+`.
+- **VDP thumbnail sync**: `vehicle-detail.js:1209+` IIFE handles `.vdp-thumb` click → swap `#vdpMainPhoto` src.
+- **View URL usage**: All views now use `$photo->url` (stored DB value) consistently — no `Storage::url()` or `asset('storage/...')` in dealer inventory views.
+
 ## Known JS quirks
 
 - `vehicle-detail.js` is a large monolithic file (1336+ lines) combining code for schedule-test, trade-in, get-approved, payment-calc, dual-range slider, star rating, and photo gallery. Many blocks target offcanvas elements that may not be present on the page — **all top-level DOM queries and `.addEventListener()` calls must be null-guarded** to prevent the module from crashing before reaching the carousel code.
@@ -67,7 +75,7 @@ Multi-tenant dealership management platform. Laravel 12 (`^8.2` / Node 26 in `.n
   - `DevLog::debug()` / `DevLog::info()` — only writes when `APP_DEBUG=true`, suppressed in production automatically
   - `DevLog::error()` / `DevLog::warning()` — always writes regardless of environment
   - `DevLog::channel('vin-decode', ...)` — writes to the vin-decode channel with the same debug guard
-- **Actions V2**: `CreateVehicleActionV2`, `UpdateDetailsActionV2` — persist enriched spec/pricing/notes data from the decode payload.
+- **Actions V2**: `CreateVehicleActionV2`, `UpdateDetailsActionV2` — persist enriched spec/pricing/notes data from the decode payload. `UpdateDetailsActionV2` also handles both V1 (`cylinders`, `max_horsepower`) and V2 (`engine_cylinders`, `engine_hp`) naming conventions via `resolveSpecField()`.
 - **Requests V2**: `StoreVehicleRequestV2`, `UpdateDetailsRequestV2` — validate both V1 and V2 field naming conventions (e.g. both `cylinders` and `engine_cylinders`).
 
 ## Style

@@ -25,17 +25,20 @@ jobs:
 
       - name: 🔨 Install Dependencies & Build Assets
         run: |
-          # Install PHP dependencies
-          composer install --no-dev --optimize-autoloader
-
-          # install node packages
+          composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+          npm ci
+          npm run build
 
       - name: 📂 Rsync Deployment
         uses: Burnett01/rsync-deployments@7.0.0
         with:
-          # -avzr: archive, verbose, compress, recurse
-          # --no-perms/owner/group: Let CloudPanel's Site User handle permissions on arrival
-          switches: -avzr --delete --no-perms --no-owner --no-group --exclude-from='.deployignore'
+          switches: >-
+            -azr --delete
+            --no-perms --no-owner --no-group
+            --exclude-from='.deployignore'
+            --partial --partial-dir=.rsync-partial
+            --timeout=120 --contimeout=30
+            -e "ssh -p 22 -o ServerAliveInterval=30 -o ServerAliveCountMax=6 -o TCPKeepAlive=yes -o StrictHostKeyChecking=no"
           path: ./
           remote_path: /home/webgurus365-dealers/htdocs/dealers.webgurus365.com/
           remote_host: dealers.webgurus365.com
