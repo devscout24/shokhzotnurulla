@@ -68,6 +68,28 @@
                 <input type="hidden" id="invDrivetrainStd" name="drivetrain_standard">
                 <input type="hidden" id="invGvwr" name="gvwr">
 
+                {{-- ── V2-extended hidden fields (added 2026-07-07) ──────────── --}}
+                <input type="hidden" id="invMsrp" name="msrp">
+                <input type="hidden" id="invDealerCost" name="dealer_cost">
+                <input type="hidden" id="invMaxTorque" name="max_torque">
+                <input type="hidden" id="invMaxTorqueAt" name="max_torque_at">
+                <input type="hidden" id="invMaxHorsepowerAt" name="max_horsepower_at">
+                <input type="hidden" id="invSeatingCapacity" name="seating_capacity">
+                <input type="hidden" id="invFuelTank" name="fuel_tank">
+                <input type="hidden" id="invMpgCity" name="mpg_city">
+                <input type="hidden" id="invMpgHighway" name="mpg_highway">
+                <input type="hidden" id="invDimensionWidth" name="dimension_width">
+                <input type="hidden" id="invDimensionLength" name="dimension_length">
+                <input type="hidden" id="invDimensionHeight" name="dimension_height">
+                <input type="hidden" id="invWheelbase" name="wheelbase">
+                <input type="hidden" id="invAxleRatio" name="axle_ratio">
+                <input type="hidden" id="invFrontTire" name="front_tire">
+                <input type="hidden" id="invRearTire" name="rear_tire">
+                <input type="hidden" id="invFrontWheel" name="front_wheel">
+                <input type="hidden" id="invRearWheel" name="rear_wheel">
+                <input type="hidden" id="invEmptyWeight" name="empty_weight">
+                <input type="hidden" id="invFeatures" name="features">
+
                 <div class="inv-step2-body">
 
                     <div class="inv-modal-notice green">

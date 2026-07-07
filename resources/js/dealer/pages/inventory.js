@@ -391,6 +391,12 @@
                 'invDoors', 'invEngine', 'invCylinders', 'invDisplacement',
                 'invMaxHorsepower', 'invBlockType', 'invTransmissionStd',
                 'invDrivetrainStd', 'invGvwr',
+                'invMsrp', 'invDealerCost', 'invMaxTorque', 'invMaxTorqueAt',
+                'invMaxHorsepowerAt', 'invSeatingCapacity', 'invFuelTank',
+                'invMpgCity', 'invMpgHighway', 'invDimensionWidth',
+                'invDimensionLength', 'invDimensionHeight', 'invWheelbase',
+                'invAxleRatio', 'invFrontTire', 'invRearTire', 'invFrontWheel',
+                'invRearWheel', 'invEmptyWeight', 'invFeatures',
             ];
             hiddenIds.forEach(function (id) {
                 var el = document.getElementById(id);
@@ -600,6 +606,32 @@
             setHiddenField('invTransmissionStd', data.transmission_standard);
             setHiddenField('invDrivetrainStd',   data.drivetrain_standard);
             setHiddenField('invGvwr',            data.gvwr);
+
+            // ── V2-extended fields ───────────────────────────────────────────
+            setHiddenField('invMsrp',              data.msrp);
+            setHiddenField('invDealerCost',        data.dealer_cost);
+            setHiddenField('invMaxTorque',         data.torque);
+            setHiddenField('invMaxTorqueAt',       data.torque_rpm);
+            setHiddenField('invMaxHorsepowerAt',   data.engine_hp_rpm);
+            setHiddenField('invSeatingCapacity',   data.seating_capacity);
+            setHiddenField('invFuelTank',          data.fuel_tank);
+            setHiddenField('invMpgCity',           data.mpg_city);
+            setHiddenField('invMpgHighway',        data.mpg_highway);
+            setHiddenField('invDimensionWidth',    data.dimension_width);
+            setHiddenField('invDimensionLength',   data.dimension_length);
+            setHiddenField('invDimensionHeight',   data.dimension_height);
+            setHiddenField('invWheelbase',         data.wheelbase);
+            setHiddenField('invAxleRatio',         data.axle_ratio);
+            setHiddenField('invFrontTire',         data.front_tire);
+            setHiddenField('invRearTire',          data.rear_tire);
+            setHiddenField('invFrontWheel',        data.front_wheel);
+            setHiddenField('invRearWheel',         data.rear_wheel);
+            setHiddenField('invEmptyWeight',       data.empty_weight);
+
+            // Features array → JSON string for hidden input
+            if (data.features && Array.isArray(data.features) && data.features.length > 0) {
+                setHiddenField('invFeatures', JSON.stringify(data.features));
+            }
         }
 
         function setHiddenField(id, value) {

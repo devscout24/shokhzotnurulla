@@ -19,6 +19,7 @@ class UpdateDetailsActionV2
         'drivetrain_type_id', 'engine', 'mileage', 'exterior_color_id',
         'interior_color_id', 'doors', 'seating_capacity', 'inventory_date',
         'location_id', 'expire_time', 'listed_at',
+        'list_price', 'original_price',
     ];
 
     public function __invoke(Vehicle $vehicle, array $data): void
@@ -63,9 +64,15 @@ class UpdateDetailsActionV2
             }
 
             if (isset($data['features'])) {
+                $features = $data['features'];
+                if (is_string($features)) {
+                    $decoded = json_decode($features, true);
+                    $features = is_array($decoded) ? $decoded : [];
+                }
+
                 VehicleNote::updateOrCreate(
                     ['vehicle_id' => $vehicle->id],
-                    ['key_highlights' => $data['features']]
+                    ['key_highlights' => $features]
                 );
             }
         });
