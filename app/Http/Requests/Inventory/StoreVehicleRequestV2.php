@@ -65,13 +65,19 @@ class StoreVehicleRequestV2 extends FormRequest
             'msrp' => ['nullable', 'numeric', 'min:0'],
             'dealer_cost' => ['nullable', 'numeric', 'min:0'],
 
-            // ── Engine specs ──────────────────────────────────────────────────
+            // ── Engine specs (V1 form names + V2 VIN decode names) ────────────
             'block_type' => ['nullable', 'string', 'max:10'],
+            'cylinders' => ['nullable', 'integer', 'min:1', 'max:16'],
             'engine_cylinders' => ['nullable', 'integer', 'min:1', 'max:16'],
+            'displacement' => ['nullable', 'numeric', 'min:0', 'max:9999'],
             'engine_displacement_l' => ['nullable', 'numeric', 'min:0', 'max:9999'],
+            'max_horsepower' => ['nullable', 'integer', 'min:0', 'max:2000'],
             'engine_hp' => ['nullable', 'integer', 'min:0', 'max:2000'],
+            'max_horsepower_at' => ['nullable', 'integer', 'min:0', 'max:20000'],
             'engine_hp_rpm' => ['nullable', 'integer', 'min:0', 'max:20000'],
+            'max_torque' => ['nullable', 'integer', 'min:0', 'max:9999'],
             'torque' => ['nullable', 'integer', 'min:0', 'max:9999'],
+            'max_torque_at' => ['nullable', 'integer', 'min:0', 'max:20000'],
             'torque_rpm' => ['nullable', 'integer', 'min:0', 'max:20000'],
             'compression' => ['nullable', 'numeric', 'min:0', 'max:99'],
             'engine_valves' => ['nullable', 'integer', 'min:0', 'max:99'],
