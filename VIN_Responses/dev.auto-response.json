@@ -1,0 +1,90 @@
+{
+  "api": {
+    "name": "api.auto.dev",
+    "description": "🗂️ Vehicle VIN Decode",
+    "url": "https://api.auto.dev/vin",
+    "account": "https://api.auto.dev/account",
+    "docs": "https://docs.auto.dev/v2/products/vin-decode",
+    "type": "data",
+    "from": "https://auto.dev"
+  },
+  "links": {
+    "home": "https://api.auto.dev",
+    "self": "https://api.auto.dev/vin/1FAHP2E82GG139935",
+    "prev": "https://api.auto.dev/vin"
+  },
+  "vin": "1FAHP2E82GG139935",
+  "vinValid": true,
+  "wmi": "1FA",
+  "origin": "United States",
+  "squishVin": "1FAHP2E8GG",
+  "checkDigit": "2",
+  "checksum": true,
+  "type": "Passenger Car",
+  "years": [
+    2016
+  ],
+  "year": 2016,
+  "ambiguous": false,
+  "make": "Ford",
+  "model": "Taurus",
+  "trim": "SEL",
+  "style": "4dr Sedan",
+  "body": "Sedan",
+  "engine": "6VNAF3.5",
+  "drive": "front wheel drive",
+  "transmission": "AUTOMATIC",
+  "vehicle": {
+    "vin": "1FAHP2E82GG139935",
+    "year": 2016,
+    "make": "Ford",
+    "model": "Taurus",
+    "manufacturer": "Ford Motor Company"
+  },
+  "examples": {
+    "2022 Chevrolet Silverado 1500 ZR2": "https://api.auto.dev/vin/3GCUDHEL3NG668790",
+    "2020 Hyundai Santa Fe Limited 2.0T": "https://api.auto.dev/vin/5NMS53AA4LH156436",
+    "2022 Chevrolet Express Cargo 2500": "https://api.auto.dev/vin/1GCWGAFPXN1154362"
+  },
+  "discover": {
+    "📋 Specifications": "https://api.auto.dev/specs/1FAHP2E82GG139935",
+    "🏗️ OEM Build Data": "https://api.auto.dev/build/1FAHP2E82GG139935",
+    "🚘 Vehicle Listings": "https://api.auto.dev/listings/1FAHP2E82GG139935",
+    "📷 Vehicle Photos": "https://api.auto.dev/photos/1FAHP2E82GG139935",
+    "📈 Current Interest Rates": "https://api.auto.dev/apr/1FAHP2E82GG139935",
+    "💳 Vehicle Payments": "https://api.auto.dev/payments/1FAHP2E82GG139935",
+    "⚠️ Vehicle Recalls": "https://api.auto.dev/recalls/1FAHP2E82GG139935",
+    "🔓 Open Vehicle Recalls": "https://api.auto.dev/openrecalls/1FAHP2E82GG139935",
+    "🧾 Vehicle Taxes & Fees": "https://api.auto.dev/taxes/1FAHP2E82GG139935",
+    "💸 Total Cost of Ownership": "https://api.auto.dev/tco/1FAHP2E82GG139935"
+  },
+  "actions": {
+    "Toggle Link Domains": "https://api.auto.dev/vin/1FAHP2E82GG139935?domains=true"
+  },
+  "user": {
+    "name": "Raihan Rony",
+    "email": "raihanrony015@gmail.com",
+    "image": "",
+    "authenticated": true,
+    "plan": "Starter",
+    "userAgent": "PostmanRuntime/7.54.0",
+    "ip": "137.59.180.97",
+    "isp": "INFOCOM LIMITED",
+    "flag": "🇧🇩",
+    "zipcode": "1000",
+    "city": "Dhaka",
+    "region": "Dhaka Division",
+    "country": "Bangladesh",
+    "continent": "Asia",
+    "requestId": "a17501246ef07718-DAC",
+    "localTime": "7/7/2026, 1:06:04 PM",
+    "timezone": "Asia/Dhaka",
+    "edgeLocation": "Dhaka",
+    "edgeDistanceKilometers": 15,
+    "latencyMilliseconds": 47,
+    "recentInteractions": 0,
+    "trustScore": 99,
+    "accessState": "active",
+    "serviceLatency": 2516
+  }
+}

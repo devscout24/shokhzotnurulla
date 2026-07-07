@@ -73,3 +73,8 @@ $row = [
                                         $dealer->domain ? "https://{$dealer->domain}/vehicles/{$vehicle->slug}" : '', // url
                                         $images,                                       // image_urls (pipe-separated)
                                     ];
+
+
+curl -X GET "https://api.auto.dev/vin/WP0AF2A99KS165242" \
+  -H "Authorization: Bearer sk_ad_Dbqb8owcuSIVA0kq_I5Gr5Ww" \
+  -H "Content-Type: application/json"

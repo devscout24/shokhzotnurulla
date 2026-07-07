@@ -1,12 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 @php
+    use App\Helpers\TimeHelper;
+
     $dealerLogo = $vehicle->dealer->printable_logo ?? null;
     $dealerLogoUrl    = $dealerLogo ? asset('assets/frontend/img/printable-logos/' . $dealerLogo) : null;
     $bbbLogoUrl       = asset('assets/Images/Logos/bbb.png');
     $carfaxLogoUrl    = asset('assets/Images/Logos/carfax-logo.png');
     $cargurusLogoUrl  = asset('assets/Images/Logos/car-gurus-2020.png');
     $footerBgImg      = asset('assets/Images/Backgrounds/cars-footer.png');
+
+    $serviceHoursLines = [];
+    $location = $vehicle->dealer->locations->first();
+    if ($location) {
+        $svcHours = $location->hours
+            ->where('department', 'service')
+            ->sortBy('day_of_week');
+
+        if ($svcHours->isNotEmpty()) {
+            $dayNames = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            $groups = [];
+            foreach ($svcHours as $h) {
+                $key = $h->is_closed ? 'closed' : ($h->appointment_only ? 'apt' : $h->open_time . '|' . $h->close_time);
+                $groups[$key][] = (int) $h->day_of_week;
+            }
+            foreach ($groups as $key => $days) {
+                $dayLabel = count($days) === 1
+                    ? $dayNames[$days[0]]
+                    : $dayNames[$days[0]] . '–' . $dayNames[end($days)];
+
+                if ($key === 'closed') {
+                    $hoursLabel = 'Closed';
+                } elseif ($key === 'apt') {
+                    $hoursLabel = 'By Appointment Only.';
+                } else {
+                    [$open, $close] = explode('|', $key);
+                    $openFmt  = strtolower(TimeHelper::fromDatabase($open) ?? '');
+                    $closeFmt = strtolower(TimeHelper::fromDatabase($close) ?? '');
+                    $hoursLabel = $openFmt . ' – ' . $closeFmt;
+                }
+                $serviceHoursLines[] = [$dayLabel, $hoursLabel];
+            }
+        }
+    }
+    if (empty($serviceHoursLines)) {
+        $serviceHoursLines = [
+            ['Monday–Saturday', '10 a.m. – 7 p.m.'],
+            ['Sunday', 'By Appointment Only.'],
+        ];
+    }
+
+    $displayPhone = $vehicle->dealer->phone;
+    $locationContext = app(\App\Services\Location\LocationContext::class);
+    $activeLocation = $locationContext->getActiveLocation();
+    if ($activeLocation && $activeLocation->relationLoaded('phones')) {
+        $displayPhone = $activeLocation->getPhoneByType('service')
+                     ?? $activeLocation->getPhoneByType('main')
+                     ?? $activeLocation->phones->first()?->number
+                     ?? $displayPhone;
+    } elseif ($location && $location->relationLoaded('phones')) {
+        $displayPhone = $location->getPhoneByType('service')
+                     ?? $location->getPhoneByType('main')
+                     ?? $location->phones->first()?->number
+                     ?? $displayPhone;
+    }
 @endphp
 <head>
     <meta charset="UTF-8">
@@ -411,11 +468,13 @@
     style="background-image:linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)),url('{{ $footerBgImg }}');background-size: cover;background-position: center;">
                 <div class="ws-footer-title">Hours of Operation</div>
                 <div class="ws-footer-hours">
-                    Monday–Saturday &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10 a.m. – 7 p.m.<br>
-                    Sunday &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; By Appointment Only.
+                    @foreach($serviceHoursLines as $line)
+                        <span style="display:inline-block;width:180px">{{ $line[0] }}</span>
+                        {{ $line[1] }}<br>
+                    @endforeach
                 </div>
-                @if($vehicle->dealer->phone ?? null)
-                    <div class="ws-footer-phone">{{ $vehicle->dealer->phone }}</div>
+                @if($displayPhone)
+                    <div class="ws-footer-phone">{{ $displayPhone }}</div>
                 @endif
             </div>
 

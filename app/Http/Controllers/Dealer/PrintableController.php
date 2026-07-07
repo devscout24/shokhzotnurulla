@@ -126,7 +126,7 @@ class PrintableController extends Controller
         $this->authorizePrintable($vehicle, $printable);
 
         $vehicle->loadMissing([
-            'make', 'makeModel', 'dealer',
+            'make', 'makeModel', 'dealer.locations.hours', 'dealer.locations.phones',
             'exteriorColor', 'interiorColor',
             'fuelType', 'transmissionType', 'drivetrainType',
             'specs', 'prices', 'primaryPhoto',

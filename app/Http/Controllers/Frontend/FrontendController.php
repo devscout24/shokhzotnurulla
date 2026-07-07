@@ -523,7 +523,7 @@ class FrontendController extends Controller
     public function printable(Request $request, Vehicle $vehicle, VehiclePrintable $printable): View | Response
     {
         $vehicle->loadMissing([
-            'make', 'makeModel', 'dealer',
+            'make', 'makeModel', 'dealer.locations.hours', 'dealer.locations.phones',
             'exteriorColor', 'interiorColor',
             'fuelType', 'transmissionType', 'drivetrainType',
             'specs', 'prices', 'primaryPhoto',
