@@ -386,6 +386,10 @@ Route::prefix('dealer')->name('dealer.')
                 // VDP Analytics Page
                 Route::get('/analytics', [InventoryController::class, 'analytics'])->name('analytics');
 
+                // VIN Inspector — raw VIN data viewer
+                Route::get('/vin-inspector', [InventoryController::class, 'vinInspector'])->name('vin-inspector');
+                Route::post('/vin-inspector', [InventoryController::class, 'vinInspectorSave'])->name('vin-inspector.save');
+
                 // Tab updates
                 Route::patch('/pricing', [InventoryController::class, 'updatePricing'])->name('pricing');
                 Route::patch('/details', [InventoryController::class, 'updateDetails'])->name('details');

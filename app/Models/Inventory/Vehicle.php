@@ -23,6 +23,7 @@ use App\Models\Catalog\Color;
 use App\Models\Catalog\Feature;
 use App\Models\Catalog\FactoryOption;
 use App\Models\Inventory\VehiclePrintable;
+use App\Models\Vin\VehicleVinData;
 
 // Dealership models
 use App\Models\Dealership\Dealer;
@@ -211,6 +212,11 @@ class Vehicle extends Model
     public function dailyStats(): HasMany
     {
         return $this->hasMany(VehicleDailyStat::class);
+    }
+
+    public function vinData(): HasOne
+    {
+        return $this->hasOne(VehicleVinData::class, 'vin', 'vin');
     }
 
     // ─── Accessors ────────────────────────────────────────────────────────────

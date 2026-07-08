@@ -376,6 +376,103 @@ class InventoryController extends Controller
         );
     }
 
+    // ─── VIN Inspector ───────────────────────────────────────────────────────
+
+    public function vinInspector(Request $request, Vehicle $vehicle): View
+    {
+        $this->authorizeVehicle($request, $vehicle);
+
+        $vehicle->load([
+            'make', 'makeModel', 'bodyType', 'bodyStyle',
+            'fuelType', 'transmissionType', 'drivetrainType',
+            'exteriorColor', 'interiorColor',
+            'prices', 'specs', 'notes', 'video',
+            'photos', 'tags', 'factoryOptions', 'vinData',
+        ]);
+
+        return view('dealer.pages.inventory.vin-inspector', compact('vehicle'));
+    }
+
+    public function vinInspectorSave(Request $request, Vehicle $vehicle): RedirectResponse
+    {
+        $this->authorizeVehicle($request, $vehicle);
+
+        $data = $request->all();
+
+        DB::transaction(function () use ($vehicle, $data) {
+
+            $vehicleFields = [
+                'stock_number', 'vin', 'model_number', 'year', 'make_model_id',
+                'trim', 'body_type_id', 'body_style_id',
+                'vehicle_condition', 'is_certified', 'is_commercial',
+                'location_status', 'fuel_type_id', 'transmission_type_id',
+                'drivetrain_type_id', 'engine', 'mileage', 'exterior_color_id',
+                'interior_color_id', 'doors', 'seating_capacity', 'location_id',
+                'list_price', 'original_price', 'status',
+            ];
+
+            $update = [];
+            foreach ($vehicleFields as $f) {
+                if (array_key_exists($f, $data)) {
+                    $update[$f] = $data[$f];
+                }
+            }
+            if (!empty($update)) {
+                $vehicle->update($update);
+            }
+
+            $priceFields = [
+                'msrp', 'dealer_cost', 'internet_price', 'special_price',
+                'addon_price', 'sold_price', 'asking_price', 'pricing_disclaimer',
+                'special_price_label', 'addon_price_label', 'addon_price_description',
+                'adjustment_label', 'sold_to', 'sold_date',
+            ];
+            $priceUpdate = [];
+            foreach ($priceFields as $f) {
+                if (array_key_exists($f, $data)) {
+                    $priceUpdate[$f] = $data[$f] !== '' ? $data[$f] : null;
+                }
+            }
+            if (!empty($priceUpdate)) {
+                $vehicle->prices()->updateOrCreate(
+                    ['vehicle_id' => $vehicle->id],
+                    $priceUpdate
+                );
+            }
+
+            $specFields = [
+                'block_type', 'cylinders', 'displacement', 'max_horsepower',
+                'max_horsepower_at', 'max_torque', 'max_torque_at',
+                'transmission_standard', 'drivetrain_standard',
+                'gvwr', 'empty_weight', 'fuel_tank', 'mpg_city', 'mpg_highway',
+                'dimension_width', 'dimension_length', 'dimension_height',
+                'wheelbase', 'axle_ratio', 'front_tire', 'rear_tire',
+                'front_wheel', 'rear_wheel', 'aspiration', 'power_cycle',
+                'towing_capacity', 'payload_capacity', 'load_capacity',
+                'ev_range', 'ev_battery_capacity', 'ev_charger_rating',
+                'bed_length', 'axle', 'rear_door_gate', 'compression',
+                'engine_valves', 'engine_model',
+            ];
+            $specUpdate = [];
+            foreach ($specFields as $f) {
+                if (array_key_exists($f, $data)) {
+                    $specUpdate[$f] = $data[$f] !== '' ? $data[$f] : null;
+                }
+            }
+            if (!empty($specUpdate)) {
+                $vehicle->specs()->updateOrCreate(
+                    ['vehicle_id' => $vehicle->id],
+                    $specUpdate
+                );
+            }
+        });
+
+        AuditLogger::info($request, 'Vehicle updated via VIN Inspector', ['vehicle_id' => $vehicle->id]);
+        session()->flash('success', 'Vehicle fields updated successfully.');
+
+        return redirect()->route('dealer.inventory.vdp.vin-inspector', $vehicle);
+    }
+
     // ─── Update Pricing Tab ───────────────────────────────────────────────────
 
     public function updatePricing(UpdatePricingRequest $request, Vehicle $vehicle): JsonResponse|RedirectResponse

@@ -58,6 +58,9 @@
                     <button type="button" id="view-listing-btn" class="vd-btn-view-listing" data-listing-url="{{ route('frontend.inventory.show', $vehicle->slug) }}">
                         <i class="bi bi-box-arrow-up-right"></i> View Listing
                     </button>
+                    <a href="{{ route('dealer.inventory.vdp.vin-inspector', $vehicle) }}" class="vd-btn-view-listing" style="text-decoration:none;">
+                        <i class="bi bi-search"></i> VIN Inspector
+                    </a>
                     <button type="button" class="vd-btn-remove-listing" id="btnRemoveListing">
                         <i class="bi bi-trash3"></i> Remove Listing
                     </button>
