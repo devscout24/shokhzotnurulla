@@ -49,16 +49,10 @@ Multi-tenant dealership management platform. Laravel 12 (`^8.2` / Node 26 in `.n
 ## Vehicle Photos
 
 - **Primary photo storage**: `storage/app/public/dealers/{dealer_id}/media/primary/{vehicle_slug}/{uuid}.{ext}`. Path built in `ApplyPhotoOverlay` job; old primary file destroyed in `SetPrimaryPhotoAction`.
-- **Gallery modal flow**: Two separate Bootstrap modals — grid (`#modalGallery`) and carousel (`#modalCarousel`). Grid opens via `data-bs-toggle` on main photo. Clicking a grid image (identified by `[data-gallery-idx]`) opens the carousel at that index via JS. Photos JSON is stored in `#modalGallery`'s `data-photos` attribute, parsed at runtime by the carousel IIFE in `vehicle-detail.js:1234+`.
-- **VDP thumbnail sync**: `vehicle-detail.js:1209+` IIFE handles `.vdp-thumb` click → swap `#vdpMainPhoto` src.
-
-## Vehicle Photos
-
-- **Primary photo storage**: `storage/app/public/dealers/{dealer_id}/media/primary/{vehicle_slug}/{uuid}.{ext}`. Path built in `ApplyPhotoOverlay` job; old primary file destroyed in `SetPrimaryPhotoAction`.
 - **URL domain**: Photo URLs are stored with the dealer's domain (`https://{dealer.domain}/storage/{path}`) instead of `APP_URL`. Set in `UploadPhotosAction` and `ApplyPhotoOverlay`. Existing APP_URL-based URLs can be fixed with `php artisan photos:fix-urls`.
 - **Gallery modal flow**: Two separate Bootstrap modals — grid (`#modalGallery`) and carousel (`#modalCarousel`). Grid opens via `data-bs-toggle` on main photo. Clicking a grid image (identified by `[data-gallery-idx]`) opens the carousel at that index via JS. Photos JSON is stored in `#modalGallery`'s `data-photos` attribute, parsed at runtime by the carousel IIFE in `vehicle-detail.js:1234+`.
 - **VDP thumbnail sync**: `vehicle-detail.js:1209+` IIFE handles `.vdp-thumb` click → swap `#vdpMainPhoto` src.
-- **View URL usage**: All views now use `$photo->url` (stored DB value) consistently — no `Storage::url()` or `asset('storage/...')` in dealer inventory views.
+- **View URL usage**: All views use `$photo->url` (stored DB value) — no `Storage::url()` or `asset('storage/...')` in dealer inventory views.
 
 ## Known JS quirks
 
@@ -69,7 +63,7 @@ Multi-tenant dealership management platform. Laravel 12 (`^8.2` / Node 26 in `.n
 
 ## VIN Decode (V2)
 
-- **Service**: `app/Services/Inventory/VinDecodeServiceV2.php` — uses `vehicle-databases.com` API (`https://api.vehicledatabases.com/advanced-vin-decode/{vin}`) via `x-Authkey` header. Falls back to `VEHICLE_DATABASES_API_KEY` env / `config('services.vehicle_databases.api_key')`.
+- **Service**: `app/Services/Inventory/VinDecodeServiceV2.php` — uses `vehicle-databases.com` API (`https://api.vehicledatabases.com/advanced-vin-decode/{vin}`) via `x-Authkey` header. Falls back to `VEHICLE_DATABASES_API_KEY` env / `config('services.vehicle_databases.api_key')`. `normalizeResponse()` returns `features_categorized` (4 sections) alongside merged `features`.
 - **Log channel**: `vin-decode` — writes to `storage/logs/vin-decode.log` (daily, 7-day retention). Always logs requests/responses/errors at `debug` level.
 - **DevLog helper** (`App\Helpers\DevLog`):
   - `DevLog::debug()` / `DevLog::info()` — only writes when `APP_DEBUG=true`, suppressed in production automatically

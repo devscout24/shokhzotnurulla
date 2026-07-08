@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class SetPrimaryPhotoAction
 {
-    private const OVERLAY_PATH = 'assets/Images/overlay/motors-logo-top-dealer-logo.webp';
+    private const OVERLAY_PATH = 'assets/Images/overlay/1781076736_angel-motors-logo-top-dealer-logo.jpg';
 
     public function __invoke(Vehicle $vehicle, VehiclePhoto $photo): void
     {

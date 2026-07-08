@@ -1,0 +1,344 @@
+{
+    "make": {
+        "id": 200005143,
+        "name": "Ford",
+        "niceName": "ford"
+    },
+    "model": {
+        "id": "Ford_Taurus",
+        "name": "Taurus",
+        "niceName": "taurus"
+    },
+    "engine": {
+        "id": "401597075",
+        "name": "3.5l V6",
+        "equipmentType": "ENGINE",
+        "availability": "STANDARD",
+        "compressionRatio": 10.3,
+        "cylinder": 6,
+        "size": 3.5,
+        "displacement": 3497,
+        "configuration": "V",
+        "fuelType": "flex-fuel (unleaded/E85)",
+        "horsepower": 288,
+        "torque": 254,
+        "totalValves": 24,
+        "manufacturerEngineCode": "998",
+        "type": "flex-fuel (FFV)",
+        "code": "6VNAF3.5",
+        "compressorType": "NA",
+        "rpm": {
+            "horsepower": 6500,
+            "torque": 4000
+        },
+        "valve": {
+            "timing": "variable valve timing",
+            "gear": "double overhead camshaft"
+        }
+    },
+    "transmission": {
+        "id": "401597076",
+        "name": "6A",
+        "equipmentType": "TRANSMISSION",
+        "availability": "STANDARD",
+        "automaticType": "Shiftable automatic",
+        "transmissionType": "AUTOMATIC",
+        "numberOfSpeeds": "6"
+    },
+    "drivenWheels": "front wheel drive",
+    "numOfDoors": "4",
+    "options": [
+        {
+            "category": "Interior",
+            "options": [
+                {
+                    "id": "401597308",
+                    "name": "Voice-Activated Navigation System",
+                    "description": "Voice-activated navigation system with integrated SiriusXM Traffic and SiriusXM Travel Link (with complimentary 5-year trial subscription); Note: SiriusXM Traffic and Travel Link NA in Alaska and Hawaii",
+                    "equipmentType": "OPTION",
+                    "availability": "SEL/Limited/SHO"
+                },
+                {
+                    "id": "401597318",
+                    "name": "Smoker's Pack",
+                    "description": "Ash/coin cup",
+                    "equipmentType": "OPTION",
+                    "availability": "All"
+                },
+                {
+                    "id": "401597319",
+                    "name": "All Weather Floor Mats",
+                    "description": "Set of four black rubber floor mats",
+                    "equipmentType": "OPTION",
+                    "availability": "All"
+                },
+                {
+                    "id": "401597321",
+                    "name": "Leather Trim",
+                    "description": "Leather seating surfaces; Multi-level heated front seats; 6-way power front passenger seat",
+                    "equipmentType": "OPTION",
+                    "availability": "SEL"
+                },
+                {
+                    "id": "401597320",
+                    "name": "Cargo Organizer",
+                    "equipmentType": "OPTION",
+                    "availability": "All"
+                }
+            ]
+        },
+        {
+            "category": "Exterior",
+            "options": [
+                {
+                    "id": "401597313",
+                    "name": "Front License Plate Bracket",
+                    "equipmentType": "OPTION",
+                    "availability": "All"
+                },
+                {
+                    "id": "401597310",
+                    "name": "Rear Spoiler",
+                    "equipmentType": "OPTION",
+                    "availability": "SEL/Limited"
+                },
+                {
+                    "id": "401597309",
+                    "name": "Power Moonroof",
+                    "description": "Power tilt and slide moonroof with sunshade; Mini overhead console; Moonroof controls; Sunglass storage; Map lights",
+                    "equipmentType": "OPTION",
+                    "availability": "SEL/Limited/SHO"
+                },
+                {
+                    "id": "401597306",
+                    "name": "20\" Machined Finish/Low Gloss Ebony 10 Spoke Wheels",
+                    "description": "20\" machined finish/low gloss Ebony 10 spoke wheels; P245/45R20 all-season black side wall tires",
+                    "equipmentType": "OPTION",
+                    "availability": "SEL/Limited/SHO"
+                },
+                {
+                    "id": "401597316",
+                    "name": "Daytime Running Lamps (Fleet)",
+                    "equipmentType": "OPTION",
+                    "availability": "SE/SEL/Limited"
+                }
+            ]
+        },
+        {
+            "category": "Mechanical",
+            "options": [
+                {
+                    "id": "401597314",
+                    "name": "Engine Block Heater",
+                    "description": "Standard and only available in AK, MN, ND, SD, MT, WI and WY states. Other states available via FSCD.",
+                    "equipmentType": "OPTION",
+                    "availability": "All"
+                },
+                {
+                    "id": "401597305",
+                    "name": "2.0L EcoBoost I-4",
+                    "description": "2.0L EcoBoost turbocharged inline-4 engine with an estimated 240 hp @ 5,500 rpm and 270 lb-ft of torque @ 3,000 rpm; 6F35 mid 6-speed SelectShift automatic transmission; 3.07 axle ratio",
+                    "equipmentType": "OPTION",
+                    "availability": "SE/SEL FWD/Limited FWD"
+                },
+                {
+                    "id": "401597315",
+                    "name": "Engine Block Heater (Fleet)",
+                    "description": "Optional in all states with valid FIN code.",
+                    "equipmentType": "OPTION",
+                    "availability": "All"
+                }
+            ]
+        },
+        {
+            "category": "Additional Fees",
+            "options": [
+                {
+                    "id": "401597323",
+                    "name": "Federal Emissions State Dealer Order For California Emissions States Registration",
+                    "description": "Federal Emissions State dealers ordering a California Emissions System (Code 422) are also required to use Code 93N to attest that the vehicle is to be registered in a California Emissions State. Note: It is a violation of Federal law for a Federal Emissions State dealer to sell a vehicle with a California Emissions System for registration in a Federal Emissions State, unless the vehicle also meets EPA standards (i.e., 50-state emissions). Not available for stock orders.",
+                    "equipmentType": "OPTION",
+                    "availability": "All"
+                },
+                {
+                    "id": "401597159",
+                    "name": "California Emissions System",
+                    "description": "Available on 3.5L Ti-VCT V6 gasoline only engine (non FFV) and 3.5L GTDI engine; Required code for units sold in California Emissions States - CA, CT, DE, MA, MD, ME, NJ, NY, OR, PA ,RI, VT and WA. Optional in Cross Border States - AZ, DC, ID, NH, NV, OH, VA and WV",
+                    "equipmentType": "OPTION",
+                    "availability": "All"
+                },
+                {
+                    "id": "401597160",
+                    "name": "California Emissions System Not Required",
+                    "description": "Dealers ordering a vehicle without a California Emissions System and which is being shipped to a California Emissions State dealer are also required to use Code 423 to attest that either the vehicle is not being registered in a California Emissions State or Code 936 is applicable. Note: In Maine, Rhode Island and Vermont, dealers cannot use Code 423 for customers outside the California Emissions State locations (except Public Service/Emergency Vehicles - Code 936)",
+                    "equipmentType": "OPTION",
+                    "availability": "All"
+                },
+                {
+                    "id": "401597322",
+                    "name": "California Emissions Exemption For Public Service/Emergency Vehicles (Fleet)",
+                    "description": "This exemption may only apply in certain California Emissions states. Ordering dealer is responsible to contact the proper state authorities for clarification on qualifying exempted vehicles for registration. Only available on vehicles sold for authorized public service or emergency service use. Must also use Code 423 when ordering.",
+                    "equipmentType": "OPTION",
+                    "availability": "All"
+                }
+            ]
+        },
+        {
+            "category": "Package",
+            "options": [
+                {
+                    "id": "401594194",
+                    "name": "Equipment Group 200A",
+                    "description": "Vehicle with standard equipment",
+                    "equipmentType": "OPTION",
+                    "availability": "SEL"
+                },
+                {
+                    "id": "401597158",
+                    "name": "Equipment Group 201A",
+                    "description": "Additional instrument panel center channel speaker; SYNC 3 with 8\" LCD center-stack touch screen, 2 color 4.2\" LCD cluster screens, AppLink and 911 Assist; Intelligent Access with Push-Button Start; Power-adjustable pedals",
+                    "equipmentType": "OPTION",
+                    "availability": "SEL"
+                }
+            ]
+        }
+    ],
+    "colors": [
+        {
+            "category": "Interior",
+            "options": [
+                {
+                    "id": "401597092",
+                    "name": "Dune",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597090",
+                    "name": "Dune",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597094",
+                    "name": "Charcoal Black",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597091",
+                    "name": "Charcoal Black",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                }
+            ]
+        },
+        {
+            "category": "Exterior",
+            "options": [
+                {
+                    "id": "401597104",
+                    "name": "Bronze Fire Metallic Tinted Clearcoat",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597101",
+                    "name": "Oxford White",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597106",
+                    "name": "Guard Metallic",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597105",
+                    "name": "White Platinum Metallic Tri-Coat",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597108",
+                    "name": "Blue Jeans Metallic",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597107",
+                    "name": "Shadow Black",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597103",
+                    "name": "Caribou Metallic",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597099",
+                    "name": "Magnetic Metallic",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597102",
+                    "name": "Ruby Red Metallic Tinted Clearcoat",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                },
+                {
+                    "id": "401597100",
+                    "name": "Ingot Silver Metallic",
+                    "equipmentType": "COLOR",
+                    "availability": "USED"
+                }
+            ]
+        }
+    ],
+    "manufacturerCode": "P2E",
+    "price": {
+        "baseMsrp": 29540,
+        "baseInvoice": 27398,
+        "deliveryCharges": 875,
+        "usedTmvRetail": 12476,
+        "usedPrivateParty": 10754,
+        "usedTradeIn": 8889,
+        "estimateTmv": false
+    },
+    "categories": {
+        "primaryBodyType": "Car",
+        "market": "Flex Fuel,Performance",
+        "epaClass": "Large Cars",
+        "vehicleSize": "Large",
+        "vehicleType": "Car",
+        "vehicleStyle": "Sedan"
+    },
+    "squishVin": "1FAHP2E8GG",
+    "years": [
+        {
+            "id": 200700837,
+            "year": 2016,
+            "styles": [
+                {
+                    "id": 401594159,
+                    "name": "SEL 4dr Sedan (3.5L 6cyl 6A)",
+                    "submodel": {
+                        "body": "Sedan",
+                        "modelName": "Taurus Sedan",
+                        "niceName": "sedan"
+                    },
+                    "trim": "SEL"
+                }
+            ]
+        }
+    ],
+    "matchingType": "SQUISHVIN",
+    "mpg": {
+        "highway": "27",
+        "city": "18"
+    }
+}
