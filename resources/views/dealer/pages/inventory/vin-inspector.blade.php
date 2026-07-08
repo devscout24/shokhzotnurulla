@@ -430,9 +430,14 @@
     function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s)); return d.innerHTML; }
     function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+    var rawCache = {};
+
     function getRawJson(col) {
+        if (rawCache[col]) return rawCache[col];
         var pre = document.getElementById('viPre' + col);
-        return pre ? pre.textContent : '';
+        if (!pre) return '';
+        rawCache[col] = pre.textContent;
+        return rawCache[col];
     }
 
     // ── Tab switching ─────────────────────────────────────────────────────────
