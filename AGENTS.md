@@ -76,7 +76,17 @@ Multi-tenant dealership management platform. Laravel 12 (`^8.2` / Node 26 in `.n
   - `DevLog::error()` / `DevLog::warning()` — always writes regardless of environment
   - `DevLog::channel('vin-decode', ...)` — writes to the vin-decode channel with the same debug guard
 - **Actions V2**: `CreateVehicleActionV2`, `UpdateDetailsActionV2` — persist enriched spec/pricing/notes data from the decode payload. `UpdateDetailsActionV2` also handles both V1 (`cylinders`, `max_horsepower`) and V2 (`engine_cylinders`, `engine_hp`) naming conventions via `resolveSpecField()`.
+- **Premium options auto-extraction**: `ExtractPremiumOptionsAction` reads `VehicleVinData.vehicle_databases` (persisted raw API response) after vehicle create/update, extracts `feature` sections (`mechanical_and_powertrain`, `safety`, `interior`, `exterior`), and creates `VehiclePremiumOption` records. Skips if vehicle already has premium options (preserves manual curation). `factory_code` is a slug of the feature text (or md5 fallback). Called from `CreateVehicleActionV2` and `UpdateDetailsActionV2` after their DB transactions.
 - **Requests V2**: `StoreVehicleRequestV2`, `UpdateDetailsRequestV2` — validate both V1 and V2 field naming conventions (e.g. both `cylinders` and `engine_cylinders`).
+
+## VIN Inspector
+
+- **Route**: `GET|POST /dealer/inventory/vdp/{vehicle}/vin-inspector` named `dealer.inventory.vdp.vin-inspector` / `.vin-inspector.save`. Controller: `InventoryController::vinInspector()` / `vinInspectorSave()`.
+- **View**: `resources/views/dealer/pages/inventory/vin-inspector.blade.php` — left panel has editable vehicle/price/spec fields, right panel has tabbed JSON viewer with syntax highlighting.
+- **JSON rendering**: Server-rendered in `<pre>` tags via Blade `json_encode()` (no JS dependency for basic display). JS layers syntax highlighting, tab switching, search, click-to-fill on top.
+- **`rawCache`**: On first call, `getRawJson(col)` reads `pre.textContent` and caches it. Subsequent re-renders (search typing, tab switch) use the cached original to avoid line-number accumulation from reading highlighted DOM textContent.
+- **Regex note**: JSON string matching uses `"(?:[^"\\]|\\.)*"` instead of `"[^"]*"` to handle escaped quotes like `\"`. `syntaxLine` null-guards `JSON.parse` so a bad match doesn't crash the whole render.
+- **Click-to-fill**: Clicking a JSON value runs `fillBestMatch(val)` which fuzzy-matches field names (e.g. `engine_hp` → `max_horsepower`). Matches with score ≥ 0.5 fill the input and scroll to it.
 
 ## Style
 

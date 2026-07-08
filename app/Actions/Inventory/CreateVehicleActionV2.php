@@ -12,9 +12,13 @@ use Illuminate\Support\Str;
 
 class CreateVehicleActionV2
 {
+    public function __construct(
+        private readonly ExtractPremiumOptionsAction $extractPremiumOptions,
+    ) {}
+
     public function __invoke(Dealer $dealer, array $data): Vehicle
     {
-        return DB::transaction(function () use ($dealer, $data) {
+        $vehicle = DB::transaction(function () use ($dealer, $data) {
 
             $vehicle = Vehicle::create([
                 'dealer_id' => $dealer->id,
@@ -96,5 +100,9 @@ class CreateVehicleActionV2
 
             return $vehicle;
         });
+
+        ($this->extractPremiumOptions)($vehicle);
+
+        return $vehicle;
     }
 }

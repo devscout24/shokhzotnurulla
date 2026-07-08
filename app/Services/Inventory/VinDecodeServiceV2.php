@@ -330,8 +330,9 @@ class VinDecodeServiceV2
                 'exterior_colors' => $colors['exterior'] ?? [],
                 'interior_colors' => $colors['interior'] ?? [],
 
-                // ── Features (→ vehicle_notes.key_highlights) ──────────────────
+                // ── Features (→ vehicle_notes.key_highlights + premium options) ─
                 'features' => $mergedFeat,
+                'features_categorized' => $feat,
 
                 // ── Metadata ───────────────────────────────────────────────────
                 'manufacturer' => $manu['manufacturer'] ?: null,

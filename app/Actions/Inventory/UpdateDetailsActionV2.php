@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class UpdateDetailsActionV2
 {
+    public function __construct(
+        private readonly ExtractPremiumOptionsAction $extractPremiumOptions,
+    ) {}
+
     private const VEHICLE_FIELDS = [
         'stock_number', 'vin', 'model_number', 'year', 'make_id',
         'make_model_id',
@@ -76,6 +80,8 @@ class UpdateDetailsActionV2
                 );
             }
         });
+
+        ($this->extractPremiumOptions)($vehicle);
     }
 
     private function resolveSpecField(array $data, string $v1Key, string $v2Key): array
