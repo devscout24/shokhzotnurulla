@@ -29,13 +29,6 @@ class ApplyPhotoOverlay implements ShouldQueue
         'assets/Images/overlay/arialbd.ttf';
 
 
-
-    private const HEADER_HEIGHT = 95;
-    private const CONTACT_HEIGHT = 55;
-    private const GUARANTEE_HEIGHT = 30;
-
-
-
     public function __construct(
         public VehiclePhoto $photo,
         public string $overlayPath,
@@ -155,26 +148,37 @@ class ApplyPhotoOverlay implements ShouldQueue
 
 
 
-        $imgW =
-            $image->width();
+        $imgW = $image->width();
+        $imgH = $image->height();
 
-
-
-        $imgH =
-            $image->height();
+        // Ensure high-resolution overlay by upscaling if the image is below 1600px width
+        $targetWidth = 1600;
+        if ($imgW < $targetWidth) {
+            $aspectRatio = $imgH / $imgW;
+            $targetHeight = (int)($targetWidth * $aspectRatio);
+            $image->resize($targetWidth, $targetHeight);
+            $imgW = $targetWidth;
+            $imgH = $targetHeight;
+        }
 
 
 
 
         /*
         |--------------------------------------------------------------------------
-        | SCALING FACTOR (Based on standard 800px baseline width)
+        | SCALING FACTOR (Based on cqw - 1% of image width)
         |--------------------------------------------------------------------------
         */
-        $scale = $imgW / 800.0;
-        $headerH = (int)(self::HEADER_HEIGHT * $scale);
-        $contactH = (int)(self::CONTACT_HEIGHT * $scale);
-        $guaranteeH = (int)(self::GUARANTEE_HEIGHT * $scale);
+        $cqw = $imgW * 0.01;
+        $topBarH = 13.5 * $cqw;
+        $topLeftW = 56 * $cqw;
+        $blueBannerH = 9.0 * $cqw;
+        $blackSubBannerH = 4.5 * $cqw;
+        $topRightH = 10 * $cqw;
+
+        $footerH = 4.8 * $cqw;
+        $bottomBarH = 8.5 * $cqw;
+        $contactY = $imgH - $footerH - $bottomBarH;
 
         /*
         |--------------------------------------------------------------------------
@@ -182,43 +186,36 @@ class ApplyPhotoOverlay implements ShouldQueue
         |--------------------------------------------------------------------------
         */
 
-        // 1. Draw full white header background first
-        $image->drawRectangle(function($rect) use ($imgW, $headerH) {
+        // 1. Draw full white header background first (top-right fallback + panel)
+        $image->drawRectangle(function($rect) use ($imgW, $topRightH) {
             $rect->at(0, 0);
-            $rect->size($imgW, $headerH);
+            $rect->size($imgW, (int)$topRightH);
             $rect->background('ffffff');
         });
 
         // 2. Draw Top Left Blue Banner (pointing end shape)
-        $blueBannerW = (int)($imgW * 0.53);
-        $blueBannerH = (int)(63 * $scale);
-        $arrowTipWidth = (int)(35 * $scale);
-
-        $image->drawPolygon(function($polygon) use ($blueBannerW, $blueBannerH, $arrowTipWidth) {
+        $image->drawPolygon(function($polygon) use ($topLeftW, $blueBannerH, $cqw) {
             $polygon->point(0, 0);
-            $polygon->point($blueBannerW, 0);
-            $polygon->point($blueBannerW + $arrowTipWidth, (int)($blueBannerH / 2));
-            $polygon->point($blueBannerW, $blueBannerH);
-            $polygon->point(0, $blueBannerH);
+            $polygon->point((int)$topLeftW, 0);
+            $polygon->point((int)($topLeftW - 4.5 * $cqw), (int)$blueBannerH);
+            $polygon->point(0, (int)$blueBannerH);
             $polygon->background('3b698a');
         });
 
         // 3. Draw Top Left Black Sub-Banner (slanted end shape)
-        $blackBannerH = $headerH - $blueBannerH;
-
-        $image->drawPolygon(function($polygon) use ($blueBannerW, $blueBannerH, $headerH, $scale) {
-            $polygon->point(0, $blueBannerH);
-            $polygon->point($blueBannerW - (int)(10 * $scale), $blueBannerH);
-            $polygon->point($blueBannerW - (int)(45 * $scale), $headerH);
-            $polygon->point(0, $headerH);
+        $image->drawPolygon(function($polygon) use ($topLeftW, $blueBannerH, $topBarH, $cqw) {
+            $polygon->point(0, (int)$blueBannerH);
+            $polygon->point((int)($topLeftW - 6.5 * $cqw), (int)$blueBannerH);
+            $polygon->point((int)($topLeftW - 8.5 * $cqw), (int)$topBarH);
+            $polygon->point(0, (int)$topBarH);
             $polygon->background('000000');
         });
 
         // 4. Render Dealer Name (white text on blue banner)
-        $dealerNameSize = (int)(26 * $scale);
+        $dealerNameSize = 3.5 * $cqw;
         $image->text(
             $dealerName,
-            (int)(35 * $scale),
+            (int)(3.5 * $cqw),
             (int)(($blueBannerH / 2) + ($dealerNameSize * 0.35)),
             function($font) use ($fontBold, $dealerNameSize) {
                 $font->file($fontBold);
@@ -229,11 +226,11 @@ class ApplyPhotoOverlay implements ShouldQueue
         );
 
         // 5. Render Spanish Sub-Text (white text on black banner)
-        $subBannerSize = (int)(11 * $scale);
+        $subBannerSize = 1.4 * $cqw;
         $image->text(
             'HABLAMOS ESPAÑOL',
-            (int)(35 * $scale),
-            $blueBannerH + (int)(($blackBannerH / 2) + ($subBannerSize * 0.35)),
+            (int)(3.5 * $cqw),
+            (int)($blueBannerH + ($blackSubBannerH / 2) + ($subBannerSize * 0.35)),
             function($font) use ($fontBold, $subBannerSize) {
                 $font->file($fontBold);
                 $font->size($subBannerSize);
@@ -247,63 +244,54 @@ class ApplyPhotoOverlay implements ShouldQueue
             $logoManager = new ImageManager(new Driver());
             $logo = $logoManager->decode($logoPath);
 
-            $maxWidth = (int)(220 * $scale);
-            $maxHeight = $headerH - (int)(20 * $scale);
+            $logoTargetH = (int)(7.5 * $cqw);
+            $logoScale = $logoTargetH / $logo->height();
+            $logoW = (int)($logo->width() * $logoScale);
 
-            $scaleLogo = min(
-                $maxWidth / $logo->width(),
-                $maxHeight / $logo->height()
-            );
-
-            $logo->resize(
-                (int)($logo->width() * $scaleLogo),
-                (int)($logo->height() * $scaleLogo)
-            );
+            $logo->resize($logoW, $logoTargetH);
 
             $image->insert(
                 $logo,
-                $imgW - $logo->width() - (int)(20 * $scale),
-                (int)(($headerH - $logo->height()) / 2),
+                (int)($imgW - $logoW - 3.5 * $cqw),
+                (int)(($topRightH - $logoTargetH) / 2),
                 'top-left'
             );
         }
 
         /*
         |--------------------------------------------------------------------------
-        | CONTACT BAR
+        | CONTACT BAR (BOTTOM)
         |--------------------------------------------------------------------------
         */
 
-        $contactY = $imgH - $guaranteeH - $contactH;
-
         // 1. Draw black background for the bottom bar first
-        $image->drawRectangle(function($rect) use ($imgW, $contactY, $contactH) {
-            $rect->at(0, $contactY);
-            $rect->size($imgW, $contactH);
+        $image->drawRectangle(function($rect) use ($imgW, $contactY, $bottomBarH) {
+            $rect->at(0, (int)$contactY);
+            $rect->size($imgW, (int)$bottomBarH);
             $rect->background('000000');
         });
 
         // 2. Draw white polygon on the left (slanting down-right)
-        $bottomLeftW = (int)($imgW * 0.48);
-        $slant = (int)(36 * $scale);
+        $bottomLeftW = 48 * $cqw;
+        $bottomLeftSlant = 4.5 * $cqw;
 
-        $image->drawPolygon(function($polygon) use ($bottomLeftW, $contactY, $contactH, $slant) {
-            $polygon->point(0, $contactY);
-            $polygon->point($bottomLeftW, $contactY);
-            $polygon->point($bottomLeftW - $slant, $contactY + $contactH);
-            $polygon->point(0, $contactY + $contactH);
+        $image->drawPolygon(function($polygon) use ($bottomLeftW, $contactY, $bottomBarH, $bottomLeftSlant) {
+            $polygon->point(0, (int)$contactY);
+            $polygon->point((int)$bottomLeftW, (int)$contactY);
+            $polygon->point((int)($bottomLeftW - $bottomLeftSlant), (int)($contactY + $bottomBarH));
+            $polygon->point(0, (int)($contactY + $bottomBarH));
             $polygon->background('ffffff');
         });
 
         // 3. Render CALL/TEXT stacked label in white section
-        $lblSize = (int)(11 * $scale);
-        $image->text('CALL', (int)(45 * $scale), $contactY + (int)(21 * $scale), function($font) use ($fontBold, $lblSize) {
+        $lblSize = 1.3 * $cqw;
+        $image->text('CALL', (int)(4.5 * $cqw), (int)($contactY + 2.8 * $cqw), function($font) use ($fontBold, $lblSize) {
             $font->file($fontBold);
             $font->size($lblSize);
             $font->color('0f1932');
             $font->align('center');
         });
-        $image->text('TEXT', (int)(45 * $scale), $contactY + (int)(36 * $scale), function($font) use ($fontBold, $lblSize) {
+        $image->text('TEXT', (int)(4.5 * $cqw), (int)($contactY + 5.3 * $cqw), function($font) use ($fontBold, $lblSize) {
             $font->file($fontBold);
             $font->size($lblSize);
             $font->color('0f1932');
@@ -311,11 +299,11 @@ class ApplyPhotoOverlay implements ShouldQueue
         });
 
         // 4. Render Phone Number in white section
-        $phoneSize = (int)(30 * $scale);
+        $phoneSize = 4.0 * $cqw;
         $image->text(
             $dealerPhone,
-            (int)(90 * $scale),
-            $contactY + (int)(($contactH / 2) + ($phoneSize * 0.32)),
+            (int)(9.5 * $cqw),
+            (int)($contactY + ($bottomBarH / 2) + ($phoneSize * 0.32)),
             function($font) use ($fontBold, $phoneSize) {
                 $font->file($fontBold);
                 $font->size($phoneSize);
@@ -327,35 +315,35 @@ class ApplyPhotoOverlay implements ShouldQueue
         // 5. Render Domain in black section
         if ($displayDomain) {
             $displayDomain = strtoupper($displayDomain);
-            $domainSize = (int)(18 * $scale);
-            $rightX = $imgW - (int)(30 * $scale);
-            $centerY = $contactY + (int)(($contactH / 2) + ($domainSize * 0.32));
+            $domainSize = 2.2 * $cqw;
+            $rightX = $imgW - (int)(3.5 * $cqw);
+            $centerY = $contactY + ($bottomBarH / 2) + ($domainSize * 0.32);
 
             if (str_starts_with($displayDomain, 'WWW.')) {
                 $prefix = 'WWW.';
                 $mainDomain = substr($displayDomain, 4);
 
                 // Right-align the main domain in white
-                $image->text($mainDomain, $rightX, $centerY, function($font) use ($fontBold, $domainSize) {
+                $image->text($mainDomain, $rightX, (int)$centerY, function($font) use ($fontBold, $domainSize) {
                     $font->file($fontBold);
                     $font->size($domainSize);
                     $font->color('ffffff');
                     $font->align('right');
                 });
 
-                // Calculate width of main domain to place WWW. in blue (chars width approx 0.65 of size)
+                // Calculate width of main domain to place WWW. in blue (chars width approx 0.60 of size)
                 $charWidth = $domainSize * 0.60;
                 $mainDomainLength = strlen($mainDomain);
                 $prefixX = $rightX - (int)($mainDomainLength * $charWidth);
 
-                $image->text($prefix, $prefixX, $centerY, function($font) use ($fontBold, $domainSize) {
+                $image->text($prefix, $prefixX, (int)$centerY, function($font) use ($fontBold, $domainSize) {
                     $font->file($fontBold);
                     $font->size($domainSize);
                     $font->color('3b698a');
                     $font->align('right');
                 });
             } else {
-                $image->text($displayDomain, $rightX, $centerY, function($font) use ($fontBold, $domainSize) {
+                $image->text($displayDomain, $rightX, (int)$centerY, function($font) use ($fontBold, $domainSize) {
                     $font->file($fontBold);
                     $font->size($domainSize);
                     $font->color('ffffff');
@@ -370,21 +358,21 @@ class ApplyPhotoOverlay implements ShouldQueue
         |--------------------------------------------------------------------------
         */
 
-        $guaranteeY = $imgH - $guaranteeH;
+        $guaranteeY = $imgH - $footerH;
 
         // 1. Draw blue background for the footer
-        $image->drawRectangle(function($rect) use ($imgW, $guaranteeY, $guaranteeH) {
-            $rect->at(0, $guaranteeY);
-            $rect->size($imgW, $guaranteeH);
+        $image->drawRectangle(function($rect) use ($imgW, $guaranteeY, $footerH) {
+            $rect->at(0, (int)$guaranteeY);
+            $rect->size($imgW, (int)$footerH);
             $rect->background('3b698a');
         });
 
         // 2. Render footer text
-        $footerSize = (int)(14 * $scale);
+        $footerSize = 1.9 * $cqw;
         $image->text(
             'GUARANTEED APPROVAL & 3-MONTH/3000-MILE WARRANTY',
             (int)($imgW / 2),
-            $guaranteeY + (int)(($guaranteeH / 2) + ($footerSize * 0.32)),
+            (int)($guaranteeY + ($footerH / 2) + ($footerSize * 0.32)),
             function($font) use ($fontBold, $footerSize) {
                 $font->file($fontBold);
                 $font->size($footerSize);
@@ -392,14 +380,14 @@ class ApplyPhotoOverlay implements ShouldQueue
                 $font->align('center');
             }
         );
-                /*
+
+        /*
         |--------------------------------------------------------------------------
         | SAVE IMAGE
         |--------------------------------------------------------------------------
         */
 
-
-        $image->save($outputPath, quality: 95);
+        $image->save($outputPath, quality: 95);;
 
 
 
