@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angel Motors - Photo Overlay Design Preview</title>
+    <!-- Google Fonts: Inter and Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0a0f1d;
+            --bg-card: #151b2d;
+            --border-color: #262f4c;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-blue: #3b698a;
+            --accent-blue-hover: #4a7fa6;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Header style */
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #3b698a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .header-title p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        /* Layout structure */
+        .app-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 75px);
+        }
+
+        /* Sidebar settings */
+        .sidebar {
+            width: 380px;
+            background-color: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .control-group input[type="text"],
+        .control-group select {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .control-group input[type="text"]:focus,
+        .control-group select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 105, 138, 0.25);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            accent-color: var(--accent-blue);
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .slider-val {
+            font-family: monospace;
+            font-size: 0.9rem;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        /* Preview Canvas */
+        .preview-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background-image: radial-gradient(circle at 50% 50%, #1a233a 0%, #0a0f1d 100%);
+            position: relative;
+            overflow: auto;
+        }
+
+        /* Aspect ratio container */
+        .canvas-container {
+            width: 100%;
+            max-width: 800px; /* default */
+            background-color: #000;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: width 0.1s ease;
+        }
+
+        /* Responsive Overlay Container */
+        .overlay-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            container-type: inline-size;
+            container-name: overlay;
+            overflow: hidden;
+        }
+
+        /* Dynamic background vehicle image */
+        .bg-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* -------------------------------------------------------------
+           RESPONSIVE OVERLAY GRAPHICS (USES Container Query Units)
+           ------------------------------------------------------------- */
+        
+        /* Top Bar */
+        .top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 13.5cqw;
+            z-index: 10;
+            display: flex;
+        }
+
+        .top-left {
+            position: relative;
+            width: 56%;
+            height: 100%;
+            z-index: 12;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Blue banner with pointing end */
+        .blue-banner {
+            background-color: #3b698a;
+            height: 9cqw;
+            display: flex;
+            align-items: center;
+            padding-left: 3.5cqw;
+            clip-path: polygon(0 0, 100% 0, calc(100% - 4.5cqw) 100%, 0 100%);
+        }
+
+        .company-name-italics {
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 3.5cqw;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+
+        /* Black sub-banner */
+        .black-sub-banner {
+            background-color: #000000;
+            height: 4.5cqw;
+            display: flex;
+            align-items: center;
+            padding-left: 3.5cqw;
+            margin-top: -0.1cqw; /* pixel gap defense */
+            clip-path: polygon(0 0, calc(100% - 6.5cqw) 0, calc(100% - 8.5cqw) 100%, 0 100%);
+        }
+
+        .sub-text {
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.4cqw;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Top Right Logo Panel */
+        .top-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%; /* Overlap behind the top-left */
+            height: 10cqw;
+            background-color: #ffffff;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 3.5cqw;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1cqw;
+        }
+
+        .wings-logo {
+            width: 14cqw;
+            height: auto;
+        }
+
+        .logo-text {
+            color: #3b698a;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2cqw;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+        }
+
+        /* Bottom Bar */
+        .bottom-bar {
+            position: absolute;
+            bottom: 4.8cqw; /* Height of the footer */
+            left: 0;
+            width: 100%;
+            height: 8.5cqw;
+            z-index: 10;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        /* Bottom Left: White phone section */
+        .bottom-left {
+            position: relative;
+            background-color: #ffffff;
+            height: 100%;
+            width: 48%;
+            display: flex;
+            align-items: center;
+            padding-left: 3.5cqw;
+            gap: 1.5cqw;
+            z-index: 12;
+            clip-path: polygon(0 0, 100% 0, calc(100% - 4.5cqw) 100%, 0 100%);
+        }
+
+        .call-text-label {
+            display: flex;
+            flex-direction: column;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.3cqw;
+            font-weight: 900;
+            color: #0f1932;
+            line-height: 1.1;
+            letter-spacing: 0.5px;
+        }
+
+        .phone-number {
+            color: #3b698a;
+            font-family: 'Outfit', sans-serif;
+            font-size: 4cqw;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.5px;
+        }
+
+        /* Bottom Right: Black domain section */
+        .bottom-right {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 58%; /* Overlap behind bottom-left */
+            height: 100%;
+            background-color: #000000;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 3.5cqw;
+        }
+
+        .domain-prefix {
+            color: #3b698a;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.9cqw;
+            font-weight: 700;
+        }
+
+        .domain-main {
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 2.2cqw;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        /* Footer */
+        .footer-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4.8cqw;
+            background-color: #3b698a;
+            z-index: 12;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.9cqw;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        /* Action Buttons */
+        .actions-panel {
+            display: flex;
+            gap: 1rem;
+            margin-top: auto;
+        }
+
+        .btn {
+            flex: 1;
+            background-color: var(--accent-blue);
+            color: #fff;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-blue-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">
+            <h1>Angel Motors Inc</h1>
+            <p>Responsive Vehicle Photo Overlay Generator & Preview</p>
+        </div>
+        <div style="font-size: 0.85rem; padding: 0.4rem 0.8rem; border-radius: 20px; background-color: rgba(16, 185, 129, 0.1); color: var(--success); font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.2);">
+            Container Query Scaled
+        </div>
+    </header>
+
+    <div class="app-container">
+        
+        <!-- Sidebar controls -->
+        <div class="sidebar">
+            
+            <div class="control-section">
+                <div class="section-title">Canvas Size</div>
+                
+                <div class="control-group" style="margin-bottom: 1rem;">
+                    <label>Width slider</label>
+                    <div class="slider-container">
+                        <input type="range" id="widthSlider" min="400" max="1000" value="800">
+                        <span class="slider-val" id="widthVal">800px</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="aspectRatio">Aspect Ratio</label>
+                    <select id="aspectRatio">
+                        <option value="4/3">Standard (4:3)</option>
+                        <option value="16/9">Widescreen (16:9)</option>
+                        <option value="1/1">Square (1:1)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <div class="section-title">Content Settings</div>
+                
+                <div class="control-group" style="margin-bottom: 1rem;">
+                    <label for="dealerNameInput">Dealer Name</label>
+                    <input type="text" id="dealerNameInput" value="ANGEL MOTORS INC">
+                </div>
+
+                <div class="control-group" style="margin-bottom: 1rem;">
+                    <label for="subBannerInput">Sub-Banner Text</label>
+                    <input type="text" id="subBannerInput" value="HABLAMOS ESPAÑOL">
+                </div>
+
+                <div class="control-group" style="margin-bottom: 1rem;">
+                    <label for="phoneInput">Phone Number</label>
+                    <input type="text" id="phoneInput" value="(615) 267-0590">
+                </div>
+
+                <div class="control-group" style="margin-bottom: 1rem;">
+                    <label for="domainInput">Website Domain</label>
+                    <input type="text" id="domainInput" value="www.ANGELMOTORSINC.com">
+                </div>
+
+                <div class="control-group">
+                    <label for="footerInput">Footer Text</label>
+                    <input type="text" id="footerInput" value="GUARANTEED APPROVAL & 3-MONTH/3000-MILE WARRANTY">
+                </div>
+            </div>
+
+            <div class="control-section">
+                <div class="section-title">Background Vehicle</div>
+                <div class="control-group">
+                    <select id="bgSelect">
+                        <option value="porsche">Porsche 911 (Dark Blue)</option>
+                        <option value="suv">Family SUV (White)</option>
+                        <option value="mustang">Sports Coupe (Red)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="actions-panel">
+                <button class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                <a href="/" class="btn">Back to App</a>
+            </div>
+
+        </div>
+
+        <!-- Preview canvas -->
+        <div class="preview-area">
+            
+            <div class="canvas-container" id="canvas">
+                <div class="overlay-wrapper" id="overlayWrapper">
+                    
+                    <!-- Dynamic Vehicle Photo (Background) -->
+                    <img id="vehicleBg" src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80" class="bg-image" alt="Vehicle Background">
+
+                    <!-- Top Bar Overlay -->
+                    <div class="top-bar">
+                        <div class="top-left">
+                            <div class="blue-banner">
+                                <span class="company-name-italics" id="dealerNameText">ANGEL MOTORS INC</span>
+                            </div>
+                            <div class="black-sub-banner">
+                                <span class="sub-text" id="subBannerText">HABLAMOS ESPAÑOL</span>
+                            </div>
+                        </div>
+                        <div class="top-right">
+                            <div class="logo-wrapper">
+                                <!-- Detailed Vector Wings Logo from Screenshot -->
+                                <svg class="wings-logo" viewBox="0 0 200 70" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Left wing -->
+                                    <path d="M 90,35 C 75,32 50,22 15,30 C 35,36 50,42 70,44 C 50,45 30,44 10,48 C 30,52 50,53 75,50 C 60,54 40,58 20,63 C 45,63 70,58 85,52" fill="none" stroke="#3b698a" stroke-width="2.5" stroke-linecap="round"/>
+                                    <!-- Right wing -->
+                                    <path d="M 110,35 C 125,32 150,22 185,30 C 165,36 150,42 130,44 C 150,45 170,44 190,48 C 170,52 150,53 125,50 C 140,54 160,58 180,63 C 155,63 130,58 115,52" fill="none" stroke="#3b698a" stroke-width="2.5" stroke-linecap="round"/>
+                                    <!-- Car outline in center -->
+                                    <path d="M 82,47 Q 82,37 92,36 Q 100,32 108,36 Q 118,37 118,47 L 119,53 Q 119,56 114,56 L 86,56 Q 81,56 81,53 Z" fill="none" stroke="#3b698a" stroke-width="2" stroke-linejoin="round"/>
+                                    <!-- Headlights and wheels detail -->
+                                    <circle cx="87" cy="51" r="2" fill="#3b698a"/>
+                                    <circle cx="113" cy="51" r="2" fill="#3b698a"/>
+                                    <path d="M 88,56 Q 90,49 100,49 Q 110,49 112,56" fill="none" stroke="#3b698a" stroke-width="1.5"/>
+                                </svg>
+                                <span class="logo-text" id="logoNameText">ANGEL MOTORS INC</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Bar Overlay -->
+                    <div class="bottom-bar">
+                        <div class="bottom-left">
+                            <div class="call-text-label">
+                                <span>CALL</span>
+                                <span>TEXT</span>
+                            </div>
+                            <div class="phone-number" id="phoneText">(615) 267-0590</div>
+                        </div>
+                        <div class="bottom-right">
+                            <span class="domain-prefix" id="domainPrefix">www.</span>
+                            <span class="domain-main" id="domainText">ANGELMOTORSINC.com</span>
+                        </div>
+                    </div>
+
+                    <!-- Footer Overlay -->
+                    <div class="footer-bar" id="footerText">
+                        GUARANTEED APPROVAL & 3-MONTH/3000-MILE WARRANTY
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // DOM Elements
+        const widthSlider = document.getElementById('widthSlider');
+        const widthVal = document.getElementById('widthVal');
+        const canvas = document.getElementById('canvas');
+        const overlayWrapper = document.getElementById('overlayWrapper');
+        const aspectRatioSelect = document.getElementById('aspectRatio');
+        
+        const dealerNameInput = document.getElementById('dealerNameInput');
+        const subBannerInput = document.getElementById('subBannerInput');
+        const phoneInput = document.getElementById('phoneInput');
+        const domainInput = document.getElementById('domainInput');
+        const footerInput = document.getElementById('footerInput');
+        
+        const dealerNameText = document.getElementById('dealerNameText');
+        const logoNameText = document.getElementById('logoNameText');
+        const subBannerText = document.getElementById('subBannerText');
+        const phoneText = document.getElementById('phoneText');
+        const domainPrefixText = document.getElementById('domainPrefix');
+        const domainText = document.getElementById('domainText');
+        const footerText = document.getElementById('footerText');
+        
+        const bgSelect = document.getElementById('bgSelect');
+        const vehicleBg = document.getElementById('vehicleBg');
+
+        // Vehicle images mapping (Premium unsplash photos)
+        const bgImages = {
+            porsche: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80',
+            suv: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=80',
+            mustang: 'https://images.unsplash.com/photo-1611245801314-e0a5dbf200c8?auto=format&fit=crop&w=1200&q=80'
+        };
+
+        // Real-time canvas resizing
+        widthSlider.addEventListener('input', (e) => {
+            const w = e.target.value;
+            canvas.style.maxWidth = `${w}px`;
+            widthVal.textContent = `${w}px`;
+        });
+
+        // Real-time Aspect Ratio changes
+        aspectRatioSelect.addEventListener('change', (e) => {
+            overlayWrapper.style.aspectRatio = e.target.value;
+        });
+
+        // Live text bindings
+        dealerNameInput.addEventListener('input', (e) => {
+            const val = e.target.value.toUpperCase();
+            dealerNameText.textContent = val;
+            logoNameText.textContent = val;
+        });
+
+        subBannerInput.addEventListener('input', (e) => {
+            subBannerText.textContent = e.target.value.toUpperCase();
+        });
+
+        phoneInput.addEventListener('input', (e) => {
+            phoneText.textContent = e.target.value;
+        });
+
+        domainInput.addEventListener('input', (e) => {
+            const fullDomain = e.target.value;
+            if (fullDomain.toLowerCase().startsWith('www.')) {
+                domainPrefixText.textContent = 'www.';
+                domainText.textContent = fullDomain.substring(4).toUpperCase();
+            } else {
+                domainPrefixText.textContent = '';
+                domainText.textContent = fullDomain.toUpperCase();
+            }
+        });
+
+        footerInput.addEventListener('input', (e) => {
+            footerText.textContent = e.target.value.toUpperCase();
+        });
+
+        // Change background vehicle
+        bgSelect.addEventListener('change', (e) => {
+            vehicleBg.src = bgImages[e.target.value];
+        });
+
+        // Reset to initial values
+        function resetForm() {
+            dealerNameInput.value = 'ANGEL MOTORS INC';
+            subBannerInput.value = 'HABLAMOS ESPAÑOL';
+            phoneInput.value = '(615) 267-0590';
+            domainInput.value = 'www.ANGELMOTORSINC.com';
+            footerInput.value = 'GUARANTEED APPROVAL & 3-MONTH/3000-MILE WARRANTY';
+            
+            // Trigger events
+            dealerNameInput.dispatchEvent(new Event('input'));
+            subBannerInput.dispatchEvent(new Event('input'));
+            phoneInput.dispatchEvent(new Event('input'));
+            domainInput.dispatchEvent(new Event('input'));
+            footerInput.dispatchEvent(new Event('input'));
+            
+            widthSlider.value = 800;
+            widthSlider.dispatchEvent(new Event('input'));
+            
+            aspectRatioSelect.value = '4/3';
+            aspectRatioSelect.dispatchEvent(new Event('change'));
+            
+            bgSelect.value = 'porsche';
+            bgSelect.dispatchEvent(new Event('change'));
+        }
+    </script>
+</body>
+</html>
