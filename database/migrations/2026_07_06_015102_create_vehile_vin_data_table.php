@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('vin')->unique();
             $table->json('default')->nullable();
             $table->json('vehicle_databases')->nullable();
+            $table->json('premium_vehicle_databases')->nullable();
+
             $table->json('data_one')->nullable();
             $table->json('custom')->nullable();
             $table->timestamps();

@@ -67,6 +67,24 @@
 
         /* ── line numbers ── */
         .vi-line-num { display:inline-block; width:32px; color:#48484f; text-align:right; margin-right:14px; user-select:none; }
+
+        /* ── factory options ── */
+        .vi-fo-category { margin:6px 0; border:1px solid #2d2d3a; border-radius:4px; overflow:hidden; }
+        .vi-fo-category[open] { background:#12121e; }
+        .vi-fo-cat-title { padding:6px 10px; font-size:12px; font-weight:600; color:#8a8a9a; cursor:pointer; display:flex; justify-content:space-between; align-items:center; background:#1a1a27; user-select:none; }
+        .vi-fo-cat-title:hover { color:#e0e0e0; }
+        .vi-fo-category[open] .vi-fo-cat-title { color:#6b9aff; border-bottom:1px solid #2d2d3a; }
+        .vi-fo-count { font-size:10px; color:#5a5a6a; font-weight:400; }
+        .vi-fo-group { padding:4px 10px 6px; }
+        .vi-fo-group + .vi-fo-group { border-top:1px dashed #1e1e2e; }
+        .vi-fo-group-title { font-size:11px; font-weight:500; color:#6b9aff; margin:4px 0 2px; }
+        .vi-fo-item { display:flex; align-items:center; gap:4px; padding:2px 0; font-size:12px; color:#c0c0d0; }
+        .vi-fo-item:hover { color:#e0e0e0; }
+        .vi-fo-item-label { display:flex; align-items:center; gap:6px; flex:1; cursor:pointer; min-width:0; }
+        .vi-fo-item-label input[type="checkbox"] { accent-color:#4f8cff; width:13px; height:13px; cursor:pointer; flex-shrink:0; }
+        .vi-fo-item-label span { line-height:1.3; }
+        .vi-fo-search-btn { background:none; border:none; color:#4a4a5a; cursor:pointer; padding:2px 4px; font-size:11px; border-radius:3px; flex-shrink:0; line-height:1; }
+        .vi-fo-search-btn:hover { color:#6b9aff; background:#1a1a2e; }
     </style>
 @endpush
 
@@ -312,6 +330,41 @@
                         <div class="vi-input"><input type="number" step="0.01" name="axle_ratio" value="{{ $sv('axle_ratio') }}" data-field="axle_ratio"></div>
                     </div>
                     @endif
+
+                    {{-- ── Factory Options ── --}}
+                    <div class="vi-section-title" style="margin-top:20px;">Factory Options</div>
+
+                    @foreach($factoryOptionCategories as $category)
+                        <details class="vi-fo-category" {{ $loop->first ? 'open' : '' }}>
+                            <summary class="vi-fo-cat-title">
+                                <span>{{ $category->name }}</span>
+                                <span class="vi-fo-count">{{ $category->groups->sum(fn($g) => $g->options->count()) }}</span>
+                            </summary>
+                            @foreach($category->groups as $group)
+                                <div class="vi-fo-group">
+                                    <div class="vi-fo-group-title">{{ $group->name }}</div>
+                                    @foreach($group->options as $option)
+                                        <div class="vi-fo-item">
+                                            <label class="vi-fo-item-label">
+                                                <input type="checkbox"
+                                                       name="selected_ids[]"
+                                                       value="{{ $option->id }}"
+                                                       {{ in_array($option->id, $selectedOptionIds) ? 'checked' : '' }}>
+                                                <span>{{ $option->label }}</span>
+                                            </label>
+                                            <button type="button"
+                                                     class="vi-fo-search-btn"
+                                                     title="Search this option in JSON"
+                                                     onclick="var q=this.getAttribute('data-query'),i=document.getElementById('viSearchInput');if(i){i.value=q;if(window.filterActiveTab)window.filterActiveTab();i.focus();}"
+                                                     data-query="{{ $option->label }}">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        </details>
+                    @endforeach
                 </form>
             </div>
 

@@ -390,7 +390,13 @@ class InventoryController extends Controller
             'photos', 'tags', 'factoryOptions', 'vinData',
         ]);
 
-        return view('dealer.pages.inventory.vin-inspector', compact('vehicle'));
+        return view('dealer.pages.inventory.vin-inspector',
+            array_merge(
+                compact('vehicle'),
+                $this->vdpFormData->getDropdowns(),
+                $this->vdpFormData->getFactoryOptionState($vehicle),
+            )
+        );
     }
 
     public function vinInspectorSave(Request $request, Vehicle $vehicle): RedirectResponse
@@ -465,6 +471,18 @@ class InventoryController extends Controller
                     $specUpdate
                 );
             }
+
+            // Factory Options
+            $starredIds = DB::table('factory_option_vehicle')
+                ->where('vehicle_id', $vehicle->id)
+                ->where('is_starred', true)
+                ->pluck('factory_option_id')
+                ->toArray();
+
+            $this->updateFactoryOptions->__invoke($vehicle, [
+                'selected_ids' => $data['selected_ids'] ?? [],
+                'starred_ids'  => $starredIds,
+            ]);
         });
 
         AuditLogger::info($request, 'Vehicle updated via VIN Inspector', ['vehicle_id' => $vehicle->id]);
