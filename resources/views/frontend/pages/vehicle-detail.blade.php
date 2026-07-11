@@ -705,11 +705,23 @@
                             <div class="row no-gutters px-3 pt-3 pt-sm-0 pb-0 pb-sm-3">
                                 @foreach($keyFeatures as $fo)
                                     <div class="col-sm-4 col-12 pt-0 px-0 px-sm-2 pt-sm-3">
+                                        @php
+                                            $featureIcon = $fo->option_key;
+                                            $featureIconPath = public_path('assets/frontend/img/features/' . $featureIcon . '.svg');
+
+                                            if (! file_exists($featureIconPath)) {
+                                                $labelIcon = \Illuminate\Support\Str::slug($fo->label, '_');
+                                                $labelIconPath = public_path('assets/frontend/img/features/' . $labelIcon . '.svg');
+
+                                                $featureIcon = file_exists($labelIconPath) ? $labelIcon : '_generic';
+                                            }
+                                        @endphp
+
                                         <div class="p-3 mb-2 mb-sm-0 bg-white border rounded text-nowrap">
                                             <div class="text-truncate d-flex align-items-center">
                                                 <img alt="{{ $fo->label }}" loading="lazy" width="18" height="18"
                                                     class="opacity-50 tile-img d-inline-block float-start me-2"
-                                                    src="{{ asset('assets/frontend/img/features/' . $fo->option_key . '.svg') }}"
+                                                    src="{{ asset('assets/frontend/img/features/' . $featureIcon . '.svg') }}"
                                                     onerror="this.style.display='none'">
                                                 {{ $fo->label }}
                                             </div>
