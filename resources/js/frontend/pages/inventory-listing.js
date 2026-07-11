@@ -205,138 +205,281 @@
     });
 
     // ─────────────────────────────────────────────────────────────────────────
-    // 9. PRICE SLIDER ─────────────────────────────────────────────────────────
+    // 9. PRICE / PAYMENT SLIDERS ─────────────────────────────────────────────
     // ─────────────────────────────────────────────────────────────────────────
+
+    // --- helpers ---
+    function fillTrack(trackId, minId, maxId) {
+        const track    = document.getElementById(trackId);
+        const inputMin = document.getElementById(minId);
+        const inputMax = document.getElementById(maxId);
+        if (! track || ! inputMin || ! inputMax) return null;
+
+        const min = Number(inputMin.min);
+        const max = Number(inputMin.max);
+        const range = max - min;
+        if (range <= 0) return null;
+
+        const low  = Math.min(Number(inputMin.value), Number(inputMax.value));
+        const high = Math.max(Number(inputMin.value), Number(inputMax.value));
+        const lowPct  = ((low - min) / range) * 100;
+        const highPct = ((high - min) / range) * 100;
+
+        track.style.background = `linear-gradient(to right,
+            #ccc 0%, #ccc ${lowPct}%,
+            #166B87 ${lowPct}%, #166B87 ${highPct}%,
+            #ccc ${highPct}%, #ccc 100%)`;
+
+        return { low, high, min, max, range };
+    }
+
+    function clampPair(inputMin, inputMax) {
+        const low  = Math.min(Number(inputMin.value), Number(inputMax.value));
+        const high = Math.max(Number(inputMin.value), Number(inputMax.value));
+        inputMin.value = low;
+        inputMax.value = high;
+    }
+
+    // --- price track fill + histogram ---
+    function updateTrackFill() {
+        const info = fillTrack('dual-range-track', 'price-range-min', 'price-range-max');
+        if (! info) return;
+
+        // Update histogram — each of 10 bars covers 10% of the range
+        const barCount = 10;
+        const barStep  = info.range / barCount;
+        document.querySelectorAll('.histogram-bar').forEach(bar => {
+            const idx      = parseInt(bar.dataset.barIdx, 10);
+            const barMin   = info.min + idx * barStep;
+            const barMax   = barMin + barStep;
+            const isActive = barMax > info.low && barMin < info.high;
+            bar.classList.toggle('in-range', isActive);
+        });
+    }
+
+    // --- payment track fill ---
+    function updatePaymentTrackFill() {
+        fillTrack('payment-range-track', 'payment-range-min', 'payment-range-max');
+    }
+
+    // --- sync hidden/display inputs ---
+    function syncPriceInputs() {
+        const inputMin  = document.getElementById('price-range-min');
+        const inputMax  = document.getElementById('price-range-max');
+        const minHidden = document.getElementById('minprice');
+        const maxHidden = document.getElementById('maxprice');
+        const minDisp   = document.querySelector('[name="price-display-min"]');
+        const maxDisp   = document.querySelector('[name="price-display-max"]');
+        if (! inputMin || ! inputMax) return;
+
+        const low  = Math.min(Number(inputMin.value), Number(inputMax.value));
+        const high = Math.max(Number(inputMin.value), Number(inputMax.value));
+
+        if (minHidden) minHidden.value = low;
+        if (maxHidden) maxHidden.value = high;
+        if (minDisp)   minDisp.value   = '$' + low.toLocaleString();
+        if (maxDisp)   maxDisp.value   = '$' + high.toLocaleString();
+    }
+
+    function syncPaymentInputs() {
+        const inputMin = document.getElementById('payment-range-min');
+        const inputMax = document.getElementById('payment-range-max');
+        const minDisp  = document.querySelector('[name="payment-display-min"]');
+        const maxDisp  = document.querySelector('[name="payment-display-max"]');
+        if (! inputMin || ! inputMax) return;
+
+        const low  = Math.min(Number(inputMin.value), Number(inputMax.value));
+        const high = Math.max(Number(inputMin.value), Number(inputMax.value));
+
+        if (minDisp) minDisp.value = '$' + low.toLocaleString();
+        if (maxDisp) maxDisp.value = '$' + high.toLocaleString();
+    }
+
+    // --- payment ↔ price conversion ---
+    function getSidebarRate() {
+        const el = document.getElementById('sidebar-rate');
+        return el ? Number(el.value) : 6.79;
+    }
+
+    function paymentToPrice(payment) {
+        const rate = getSidebarRate();
+        const monthlyRate = (rate / 100) / 12;
+        if (monthlyRate <= 0) return Math.round(payment * 60);
+        return Math.round(payment * (1 - Math.pow(1 + monthlyRate, -60)) / monthlyRate);
+    }
+
+    function priceToPayment(price) {
+        const rate = getSidebarRate();
+        const monthlyRate = (rate / 100) / 12;
+        if (monthlyRate <= 0) return Math.round(price / 60);
+        return Math.round(price * monthlyRate / (1 - Math.pow(1 + monthlyRate, -60)));
+    }
+
+    // --- payment slider → feed hidden price inputs + AJAX ---
+    function syncPaymentToPrice() {
+        const inputMin = document.getElementById('payment-range-min');
+        const inputMax = document.getElementById('payment-range-max');
+        const minHidden = document.getElementById('minprice');
+        const maxHidden = document.getElementById('maxprice');
+        if (! inputMin || ! inputMax) return;
+
+        const low  = Math.min(Number(inputMin.value), Number(inputMax.value));
+        const high = Math.max(Number(inputMin.value), Number(inputMax.value));
+
+        const priceLow  = paymentToPrice(low);
+        const priceHigh = paymentToPrice(high);
+
+        if (minHidden) minHidden.value = priceLow;
+        if (maxHidden) maxHidden.value = priceHigh;
+    }
+
+    function initPaymentSlider() {
+        const inputMin = document.getElementById('payment-range-min');
+        const inputMax = document.getElementById('payment-range-max');
+        if (! inputMin || ! inputMax) return;
+
+        function onInput() {
+            clampPair(inputMin, inputMax);
+            updatePaymentTrackFill();
+            syncPaymentInputs();
+        }
+
+        function onChange() {
+            clampPair(inputMin, inputMax);
+            updatePaymentTrackFill();
+            syncPaymentInputs();
+            syncPaymentToPrice();
+            fetchResults(collectParams());
+        }
+
+        inputMin.addEventListener('input', onInput);
+        inputMax.addEventListener('input', onInput);
+        inputMin.addEventListener('change', onChange);
+        inputMax.addEventListener('change', onChange);
+    }
+
+    // --- price slider (original) ---
     function initPriceSlider() {
-        const track     = document.querySelector('.slider-track');
-        const handleMin = document.getElementById('handle-min');
-        const handleMax = document.getElementById('handle-max');
-        if (! track || ! handleMin || ! handleMax) return;
+        const inputMin = document.getElementById('price-range-min');
+        const inputMax = document.getElementById('price-range-max');
+        if (! inputMin || ! inputMax) return;
 
-        const minValue = parseInt(handleMin.getAttribute('aria-valuemin'), 10);
-        const maxValue = parseInt(handleMax.getAttribute('aria-valuemax'), 10);
-        let trackRect  = track.getBoundingClientRect();
-
-        function updateHandlePosition(handle, value) {
-            const percent    = (value - minValue) / (maxValue - minValue);
-            handle.style.left = (percent * trackRect.width) + 'px';
-            handle.setAttribute('aria-valuenow', value);
+        function onInput() {
+            clampPair(inputMin, inputMax);
+            updateTrackFill();
+            syncPriceInputs();
         }
 
-        updateHandlePosition(handleMin, parseInt(handleMin.getAttribute('aria-valuenow'), 10));
-        updateHandlePosition(handleMax, parseInt(handleMax.getAttribute('aria-valuenow'), 10));
-
-        function handleDrag(handle, isMin) {
-            function onMouseMove(e) {
-                trackRect = track.getBoundingClientRect();
-                let x = Math.max(0, Math.min(e.clientX - trackRect.left, trackRect.width));
-                if (isMin) {
-                    const maxX = parseFloat(handleMax.style.left) || trackRect.width;
-                    if (x > maxX) x = maxX;
-                } else {
-                    const minX = parseFloat(handleMin.style.left) || 0;
-                    if (x < minX) x = minX;
-                }
-                const value = Math.round((x / trackRect.width) * (maxValue - minValue) + minValue);
-                handle.style.left = x + 'px';
-                handle.setAttribute('aria-valuenow', value);
-            }
-            function onMouseUp() {
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-                updatePriceValues();
-                fetchResults(collectParams());
-            }
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
+        function onChange() {
+            clampPair(inputMin, inputMax);
+            updateTrackFill();
+            syncPriceInputs();
+            fetchResults(collectParams());
         }
 
-        handleMin.addEventListener('mousedown', () => handleDrag(handleMin, true));
-        handleMax.addEventListener('mousedown', () => handleDrag(handleMax, false));
-
-        // Touch support
-        function handleTouch(handle, isMin) {
-            function onTouchMove(e) {
-                const touch = e.touches[0];
-                trackRect   = track.getBoundingClientRect();
-                let x = Math.max(0, Math.min(touch.clientX - trackRect.left, trackRect.width));
-                if (isMin) {
-                    const maxX = parseFloat(handleMax.style.left) || trackRect.width;
-                    if (x > maxX) x = maxX;
-                } else {
-                    const minX = parseFloat(handleMin.style.left) || 0;
-                    if (x < minX) x = minX;
-                }
-                const value = Math.round((x / trackRect.width) * (maxValue - minValue) + minValue);
-                handle.style.left = x + 'px';
-                handle.setAttribute('aria-valuenow', value);
-            }
-            function onTouchEnd() {
-                document.removeEventListener('touchmove', onTouchMove);
-                document.removeEventListener('touchend', onTouchEnd);
-                updatePriceValues();
-                fetchResults(collectParams());
-            }
-            document.addEventListener('touchmove', onTouchMove, { passive: true });
-            document.addEventListener('touchend', onTouchEnd);
-        }
-
-        handleMin.addEventListener('touchstart', () => handleTouch(handleMin, true), { passive: true });
-        handleMax.addEventListener('touchstart', () => handleTouch(handleMax, false), { passive: true });
+        inputMin.addEventListener('input', onInput);
+        inputMax.addEventListener('input', onInput);
+        inputMin.addEventListener('change', onChange);
+        inputMax.addEventListener('change', onChange);
     }
 
-    function updatePriceValues() {
-        const sliderTrack = document.querySelector('.price-financing-slider');
-        const handleMin   = document.getElementById('handle-min');
-        const handleMax   = document.getElementById('handle-max');
-        const minHidden   = document.getElementById('minprice');
-        const maxHidden   = document.getElementById('maxprice');
-        const minInput    = document.querySelector('[name="price-display-min"]');
-        const maxInput    = document.querySelector('[name="price-display-max"]');
-        if (! handleMin || ! handleMax) return;
-
-        const minVal = parseInt(handleMin.getAttribute('aria-valuemin'), 10);
-        const maxVal = parseInt(handleMin.getAttribute('aria-valuemax'), 10);
-        const minNow = parseInt(handleMin.getAttribute('aria-valuenow'), 10);
-        const maxNow = parseInt(handleMax.getAttribute('aria-valuenow'), 10);
-
-        if (minHidden) minHidden.value = minNow;
-        if (maxHidden) maxHidden.value = maxNow;
-        if (minInput)  minInput.value  = '$' + minNow.toLocaleString();
-        if (maxInput)  maxInput.value  = '$' + maxNow.toLocaleString();
-
-        if (sliderTrack) {
-            const minPct = ((minNow - minVal) / (maxVal - minVal)) * 100;
-            const maxPct = ((maxNow - minVal) / (maxVal - minVal)) * 100;
-            sliderTrack.style.background = `linear-gradient(to right,
-                #ccc 0%, #ccc ${minPct}%,
-                #166B87 ${minPct}%, #166B87 ${maxPct}%,
-                #ccc ${maxPct}%, #ccc 100%)`;
-        }
-    }
-
-    // Price input manual change
+    // --- display input manual edit (price tab) ---
     function bindPriceInputs() {
-        const minInput = document.querySelector('[name="price-display-min"]');
-        const maxInput = document.querySelector('[name="price-display-max"]');
-        const handleMin = document.getElementById('handle-min');
-        const handleMax = document.getElementById('handle-max');
+        const inputMin  = document.getElementById('price-range-min');
+        const inputMax  = document.getElementById('price-range-max');
+        const minDisp   = document.querySelector('[name="price-display-min"]');
+        const maxDisp   = document.querySelector('[name="price-display-max"]');
+        if (! inputMin || ! inputMax) return;
+
         const parsePrice = str => parseInt(str.replace(/[$,]/g, ''), 10);
 
-        minInput?.addEventListener('change', () => {
-            const val = parsePrice(minInput.value);
-            if (! isNaN(val)) {
-                handleMin?.setAttribute('aria-valuenow', val);
-                updatePriceValues();
-                fetchResults(collectParams());
-            }
+        minDisp?.addEventListener('change', () => {
+            const val = parsePrice(minDisp.value);
+            if (! isNaN(val)) { inputMin.value = val; clampAndFire(); }
         });
-        maxInput?.addEventListener('change', () => {
-            const val = parsePrice(maxInput.value);
-            if (! isNaN(val)) {
-                handleMax?.setAttribute('aria-valuenow', val);
-                updatePriceValues();
-                fetchResults(collectParams());
+        maxDisp?.addEventListener('change', () => {
+            const val = parsePrice(maxDisp.value);
+            if (! isNaN(val)) { inputMax.value = val; clampAndFire(); }
+        });
+
+        function clampAndFire() {
+            clampPair(inputMin, inputMax);
+            updateTrackFill();
+            syncPriceInputs();
+            fetchResults(collectParams());
+        }
+    }
+
+    // --- display input manual edit (payment tab) ---
+    function bindPaymentInputs() {
+        const inputMin = document.getElementById('payment-range-min');
+        const inputMax = document.getElementById('payment-range-max');
+        const minDisp  = document.querySelector('[name="payment-display-min"]');
+        const maxDisp  = document.querySelector('[name="payment-display-max"]');
+        if (! inputMin || ! inputMax) return;
+
+        const parseVal = str => parseInt(str.replace(/[$,]/g, ''), 10);
+
+        minDisp?.addEventListener('change', () => {
+            const val = parseVal(minDisp.value);
+            if (! isNaN(val)) { inputMin.value = val; clampAndFire(); }
+        });
+        maxDisp?.addEventListener('change', () => {
+            const val = parseVal(maxDisp.value);
+            if (! isNaN(val)) { inputMax.value = val; clampAndFire(); }
+        });
+
+        function clampAndFire() {
+            clampPair(inputMin, inputMax);
+            updatePaymentTrackFill();
+            syncPaymentInputs();
+            syncPaymentToPrice();
+            fetchResults(collectParams());
+        }
+    }
+
+    // --- Price / Payment tab toggle ---
+    function initPricePaymentToggle() {
+        const priceRadio   = document.getElementById('shop_price');
+        const paymentRadio = document.getElementById('shop_payment');
+        const pricePanel   = document.getElementById('tab-price');
+        const paymentPanel = document.getElementById('tab-payment');
+        if (! priceRadio || ! paymentRadio) return;
+
+        priceRadio.addEventListener('change', () => {
+            if (! priceRadio.checked) return;
+            pricePanel?.classList.remove('d-none');
+            paymentPanel?.classList.add('d-none');
+            updateTrackFill();
+            syncPriceInputs();
+        });
+
+        paymentRadio.addEventListener('change', () => {
+            if (! paymentRadio.checked) return;
+            paymentPanel?.classList.remove('d-none');
+            pricePanel?.classList.add('d-none');
+            updatePaymentTrackFill();
+            syncPaymentInputs();
+        });
+    }
+
+    // --- "Adjust Terms" link: feed correct price depending on active tab ---
+    function initSidebarGetEstimateLink() {
+        const link = document.querySelector('[data-sidebar-link]');
+        if (! link) return;
+        link.addEventListener('click', () => {
+            const priceRadio = document.getElementById('shop_price');
+            if (priceRadio?.checked) {
+                const maxInput = document.getElementById('price-range-max');
+                const minInput = document.getElementById('price-range-min');
+                if (maxInput) link.dataset.vehiclePrice = Math.max(Number(maxInput.value), Number(minInput?.value || 0));
+            } else {
+                const maxInput = document.getElementById('payment-range-max');
+                const minInput = document.getElementById('payment-range-min');
+                if (maxInput) {
+                    const maxPayment = Math.max(Number(maxInput.value), Number(minInput?.value || 0));
+                    link.dataset.vehiclePrice = paymentToPrice(maxPayment);
+                }
             }
         });
     }
@@ -571,8 +714,15 @@
         bindFilterInputs();
         bindPagination();
         initPriceSlider();
-        updatePriceValues();
+        syncPriceInputs();
+        updateTrackFill();
         bindPriceInputs();
+        initPaymentSlider();
+        syncPaymentInputs();
+        updatePaymentTrackFill();
+        bindPaymentInputs();
+        initPricePaymentToggle();
+        initSidebarGetEstimateLink();
         initSortDropdown();
         bindBadgeRemoval();
         updateBadges();

@@ -48,40 +48,56 @@
                 </div>
             </div>
 
-            {{-- Histogram Mockup --}}
-            <div class="histogram-container mb-2">
-                <div class="d-flex align-items-end justify-content-between h-40px px-1">
-                    <div class="bg-primary opacity-25" style="height: 20%; width: 8%;"></div>
-                    <div class="bg-primary opacity-25" style="height: 40%; width: 8%;"></div>
-                    <div class="bg-primary opacity-75" style="height: 80%; width: 8%;"></div>
-                    <div class="bg-primary opacity-75" style="height: 100%; width: 8%;"></div>
-                    <div class="bg-primary opacity-75" style="height: 70%; width: 8%;"></div>
-                    <div class="bg-primary opacity-75" style="height: 90%; width: 8%;"></div>
-                    <div class="bg-primary opacity-25" style="height: 30%; width: 8%;"></div>
-                    <div class="bg-primary opacity-25" style="height: 15%; width: 8%;"></div>
-                    <div class="bg-primary opacity-25" style="height: 25%; width: 8%;"></div>
-                    <div class="bg-primary opacity-25" style="height: 10%; width: 8%;"></div>
+            @php
+                $minPrice  = (int)($filterData['priceRange']->min_price ?? 0);
+                $maxPrice  = (int)($filterData['priceRange']->max_price ?? 100000);
+                $activeMin = request()->input('price.gt', $minPrice);
+                $activeMax = request()->input('price.lt', $maxPrice);
+
+                $sidebarDefaultRate = ($interestRates ?? collect())->first(function ($rate) {
+                    $termMatches = ($rate->min_term === null || 60 >= $rate->min_term)
+                        && ($rate->max_term === null || 60 <= $rate->max_term);
+                    $creditMatches = ($rate->min_credit_score === null || 740 >= $rate->min_credit_score)
+                        && ($rate->max_credit_score === null || 740 <= $rate->max_credit_score);
+                    return $termMatches && $creditMatches;
+                });
+                $sidebarRate = $sidebarDefaultRate ? (float) $sidebarDefaultRate->rate : 7.99;
+
+                $monthlyRate = ($sidebarRate / 100) / 12;
+                $minMonthly = $monthlyRate > 0
+                    ? round($minPrice * $monthlyRate / (1 - pow(1 + $monthlyRate, -60)), 0)
+                    : round($minPrice / 60, 0);
+                $maxMonthly = $monthlyRate > 0
+                    ? round($maxPrice * $monthlyRate / (1 - pow(1 + $monthlyRate, -60)), 0)
+                    : round($maxPrice / 60, 0);
+                $activeMinPayment = (int) request()->input('payment.gt', $minMonthly);
+                $activeMaxPayment = (int) request()->input('payment.lt', $maxMonthly);
+            @endphp
+
+            {{-- Histogram ─ bars update via JS based on slider position --}}
+            <div class="histogram-container mb-2" id="price-histogram">
+                <div class="d-flex align-items-end justify-content-between h-40px px-1" id="histogram-bars">
+                    <div class="histogram-bar" data-bar-idx="0" style="height: 20%;"></div>
+                    <div class="histogram-bar" data-bar-idx="1" style="height: 40%;"></div>
+                    <div class="histogram-bar" data-bar-idx="2" style="height: 80%;"></div>
+                    <div class="histogram-bar" data-bar-idx="3" style="height: 100%;"></div>
+                    <div class="histogram-bar" data-bar-idx="4" style="height: 70%;"></div>
+                    <div class="histogram-bar" data-bar-idx="5" style="height: 90%;"></div>
+                    <div class="histogram-bar" data-bar-idx="6" style="height: 30%;"></div>
+                    <div class="histogram-bar" data-bar-idx="7" style="height: 15%;"></div>
+                    <div class="histogram-bar" data-bar-idx="8" style="height: 25%;"></div>
+                    <div class="histogram-bar" data-bar-idx="9" style="height: 10%;"></div>
                 </div>
             </div>
 
-            <div class="opacity-100">
-                @php
-                    $minPrice  = (int)($filterData['priceRange']->min_price ?? 0);
-                    $maxPrice  = (int)($filterData['priceRange']->max_price ?? 100000);
-                    $activeMin = request()->input('price.gt', $minPrice);
-                    $activeMax = request()->input('price.lt', $maxPrice);
-                @endphp
-                <div class="slider-wrapper mt-0 mb-4">
-                    <div class="slider-track price-financing-slider">
-                        <div class="slider-handle" id="handle-min" tabindex="0"
-                            aria-valuemax="{{ $maxPrice }}" aria-valuemin="{{ $minPrice }}"
-                            aria-valuenow="{{ $activeMin }}" draggable="false" role="slider">
-                        </div>
-                        <div class="slider-handle slider-handle-top" id="handle-max" tabindex="0"
-                            aria-valuemax="{{ $maxPrice }}" aria-valuemin="{{ $minPrice }}"
-                            aria-valuenow="{{ $activeMax }}" draggable="false" role="slider">
-                        </div>
-                    </div>
+            {{-- ── Price tab ── --}}
+            <div class="price-tab-panel" id="tab-price">
+                <div class="dual-range-wrapper mt-0 mb-3">
+                    <div class="dual-range-track" id="dual-range-track"></div>
+                    <input type="range" class="dual-range-input" id="price-range-min"
+                        min="{{ $minPrice }}" max="{{ $maxPrice }}" value="{{ $activeMin }}" step="100">
+                    <input type="range" class="dual-range-input" id="price-range-max"
+                        min="{{ $minPrice }}" max="{{ $maxPrice }}" value="{{ $activeMax }}" step="100">
                 </div>
                 <div class="row g-2 mb-3">
                     <div class="col-6">
@@ -103,13 +119,46 @@
                 </div>
             </div>
 
+            {{-- ── Payment tab ── --}}
+            <div class="price-tab-panel d-none" id="tab-payment">
+                <div class="dual-range-wrapper mt-0 mb-3">
+                    <div class="dual-range-track" id="payment-range-track"></div>
+                    <input type="range" class="dual-range-input" id="payment-range-min"
+                        min="{{ $minMonthly }}" max="{{ $maxMonthly }}" value="{{ $activeMinPayment }}" step="10">
+                    <input type="range" class="dual-range-input" id="payment-range-max"
+                        min="{{ $minMonthly }}" max="{{ $maxMonthly }}" value="{{ $activeMaxPayment }}" step="10">
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <small class="text-muted d-block mb-1">Min /mo</small>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white border-end-0">$</span>
+                            <input type="text" class="form-control border-start-0 ps-0" name="payment-display-min"
+                                value="{{ number_format($activeMinPayment) }}" inputmode="numeric">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block mb-1">Max /mo</small>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white border-end-0">$</span>
+                            <input type="text" class="form-control border-start-0 ps-0" name="payment-display-max"
+                                value="{{ number_format($activeMaxPayment) }}" inputmode="numeric">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-light rounded p-3 mb-3 text-center border">
-                <div class="small fw-bold mb-1">60 months @ 7.99% APR</div>
-                <a href="javascript:void(0)" class="text-primary small text-decoration-none border-top d-block mt-2 pt-2">Adjust Terms</a>
+                <div class="small fw-bold mb-1">60 months @ {{ number_format($sidebarRate, 2) }}% APR</div>
+                <a href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#getEstimate"
+                    data-vehicle-title="Estimated Payment" data-vehicle-price="{{ $activeMax }}" data-vehicle-monthly="0"
+                    data-vehicle-rate="{{ $sidebarRate }}" data-vehicle-term="60" data-sidebar-link="1"
+                    class="text-primary small text-decoration-none border-top d-block mt-2 pt-2">Adjust Terms</a>
             </div>
 
             <input type="hidden" id="minprice" name="price[gt]" value="{{ $activeMin }}">
             <input type="hidden" id="maxprice" name="price[lt]" value="{{ $activeMax }}">
+            <input type="hidden" id="sidebar-rate" value="{{ $sidebarRate }}">
         </div>
 
         {{-- ── Make & Model ── --}}

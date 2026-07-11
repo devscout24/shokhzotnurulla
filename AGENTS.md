@@ -83,6 +83,18 @@ Multi-tenant dealership management platform. Laravel 12 (`^8.2` / Node 26 in `.n
 - **Click-to-fill**: Clicking a JSON value runs `fillBestMatch(val)` which fuzzy-matches field names (e.g. `engine_hp` → `max_horsepower`). Matches with score ≥ 0.5 fill the input and scroll to it.
 - **Loader overlay**: `#viLoader` shows a spinning loader during expensive operations (tab switch, search, initial highlight). Uses `requestAnimationFrame` + `setTimeout(fn, 0)` to let the browser paint the spinner before blocking syntax-highlighting work. `showLoader(label)` / `hideLoader()` helpers toggle the overlay and accept custom labels ("Switching tab…", "Searching…", "Loading…").
 
+## Frontend Inventory Listing
+
+- **Route**: `GET /inventory` → `FrontendController::inventory()`. Filter AJAX: `GET /inventory/filter` → `inventoryFilter()`. Type variants: `/{type}` / `/{type}/filter`.
+- **View**: `resources/views/frontend/pages/inventory-listing.blade.php` — extends `layouts.frontend.app`. Includes `frontend.partials.filter-sidebar` (left) and `frontend.partials.inventory-grid` (right).
+- **Sort dropdown**: Custom toggle (not Bootstrap JS) — `.show` class on `.dropdown` parent, not the button. `initSortDropdown()` in `resources/js/frontend/pages/inventory-listing.js:347+` handles open/close, checkmark, and label update. On item click → `window.location.href` with `?sort=` (full page reload, not AJAX). Sort values: `best_match`, `price_asc`, `price_desc`, `newest`, `mileage_asc`, `mileage_desc`, `year_desc`, `year_asc`, `make_asc`.
+- **Filter sidebar**: `resources/views/frontend/partials/filter-sidebar.blade.php` — card with collapsible `.filter-dropdown` sections. Each section has a `.filter-search` input that filters `.make-item` elements within its `.dropdown-content` by label text match (`bindFilterSearch()` in `inventory-listing.js`).
+- **Filter chips**: Server-rendered `.filter-chip` elements in `#filter-badges`. Click removal handled by `bindBadgeRemoval()` targeting `.badge-default, .filter-chip`. Unchecks the corresponding checkbox and re-fetches via AJAX.
+- **Clear All Filters**: `btn-outline-danger` button in card header, links to `request()->url()` (base URL without query params). Only shown when active filters exist.
+- **Interest rate display**: Sidebar price section shows dynamic APR from `$interestRates` using same matching logic as `get-estimate.blade.php` (60mo term, 740 credit score). "Adjust Terms" link opens `#getEstimate` offcanvas with `data-vehicle-*` attributes (price = `activeMax`, rate = matched rate, term = 60). Fallback: `6.79%`.
+- **AJAX filtering**: `fetchResults()` in `inventory-listing.js` sends GET to `/inventory/filter`, updates grid + pagination + heading, pushes browser history. Aborts previous in-flight request via `AbortController`. Filter form submit intercepted → always AJAX.
+- **`InventoryListingService`** (`app/Services/Inventory/InventoryListingService.php`): Invokable service. `buildQuery()` handles all filter params, `buildFilterData()` caches filter sidebar data per dealer + location + version. Sort handled via `match` on `$request->input('sort', 'best_match')`.
+
 ## Style
 
 - EditorConfig: 4-space indent, LF, UTF-8, final newline, trim trailing whitespace (except `.md`).
