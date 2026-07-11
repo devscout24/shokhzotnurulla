@@ -710,6 +710,42 @@
                         </div>
                     @endif
 
+                    {{-- ── Premium Options (grouped by category) ── --}}
+                    @if($groupedPremiumOptions->isNotEmpty())
+                        @foreach($groupedPremiumOptions as $category => $options)
+                            <div class="px-4 py-3 card-footer">
+                                <div class="collapse-header cursor-pointer d-flex align-items-center justify-content-between">
+                                    <h5 class="h5 my-0 fw-bold mb-0">{{ $category }}</h5>
+                                    <span class="text-primary d-inline-block collapse-icon">
+                                        <svg width="16" height="16" viewBox="0 0 448 512" fill="currentColor">
+                                            <path
+                                                d="M207.029 381.476l-184-184c-9.373-9.373-9.373-24.569 0-33.941l22.627-22.627c9.373-9.373 24.569-9.373 33.941 0L224 284.118l144.402-144.21c9.373-9.373 24.569-9.373 33.941 0l22.627 22.627c9.373 9.373 9.373 24.569 0 33.941l-184 184c-9.373 9.372-24.568 9.372-33.941-.001z" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="p-4 collapse-content bg-lighter border-top">
+                                <table class="table table-bordered table-sm mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 40%;">Name</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($options as $option)
+                                            <tr>
+                                                <td class="text-nowrap">{{ $option->name }}</td>
+                                                <td>{{ $option->description }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endforeach
+                    @endif
+
                     {{-- ── Factory Option Sections (dynamic, grouped by category) ── --}}
                     @foreach($groupedOptions as $categoryName => $options)
                         <div class="px-4 py-3 card-footer">

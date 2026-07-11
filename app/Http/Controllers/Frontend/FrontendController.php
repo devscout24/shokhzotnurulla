@@ -297,8 +297,9 @@ class FrontendController extends Controller
         $allPhotos      = $vehicle->photos;
         $mainPhoto      = $vehicle->primaryPhoto ?? $allPhotos->first();
         $thumbnails     = $allPhotos->where('id', '!=', $mainPhoto?->id)->take(4);
-        $groupedOptions = $this->vehicleDetail->groupedFactoryOptions($vehicle);
-        $faqs           = $this->vehicleDetail->buildFaqs($vehicle);
+        $groupedOptions        = $this->vehicleDetail->groupedFactoryOptions($vehicle);
+        $groupedPremiumOptions = $vehicle->premiumOptions->groupBy('category');
+        $faqs                  = $this->vehicleDetail->buildFaqs($vehicle);
         $related        = $this->vehicleDetail->relatedVehicles($vehicle, $dealerId);
 
         $this->attachPricing($related, $dealerId);
@@ -323,7 +324,7 @@ class FrontendController extends Controller
 
         return response(view('frontend.pages.vehicle-detail', compact(
             'vehicle', 'spec', 'allPhotos', 'mainPhoto', 'thumbnails',
-            'pricing', 'allSpecials', 'applicableFees', 'groupedOptions', 'faqs', 'related', 'vehicleTitle', 'seo', 'windowSticker',
+            'pricing', 'allSpecials', 'applicableFees', 'groupedOptions', 'groupedPremiumOptions', 'faqs', 'related', 'vehicleTitle', 'seo', 'windowSticker',
             'interestRates'
         )))->header('ETag', $etag);
     }
