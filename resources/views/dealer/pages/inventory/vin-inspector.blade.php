@@ -373,7 +373,7 @@
 
                 @php
                     $vinData = $vehicle->vinData;
-                    $jsonColumns = ['vehicle_databases', 'default', 'data_one', 'custom'];
+                    $jsonColumns = ['vehicle_databases', 'premium_vehicle_databases', 'default', 'data_one', 'custom'];
                     $availableCols = [];
                     if ($vinData) {
                         foreach ($jsonColumns as $col) {

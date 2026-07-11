@@ -156,6 +156,31 @@ class VinDecodeServiceV2
 
             DevLog::channel('vin-decode', '[VINDECODE] raw payload persisted to vehicle_vin_data');
 
+            // ── V2 API: Premium / enriched data ────────────────────────────────
+            try {
+                $v2Url = self::BASE_URL.'/v2/'.$vin;
+                DevLog::channel('vin-decode', '[VINDECODE] fetching V2 premium data', ['url' => $v2Url]);
+
+                $v2Response = Http::timeout(self::TIMEOUT)
+                    ->withHeaders($this->getDefaultHeaders())
+                    ->get($v2Url);
+
+                if ($v2Response->successful()) {
+                    VehicleVinData::where('vin', $vin)->update([
+                        'premium_vehicle_databases' => $v2Response->json(),
+                    ]);
+                    DevLog::channel('vin-decode', '[VINDECODE] V2 premium data persisted to premium_vehicle_databases');
+                } else {
+                    DevLog::warning('[VINDECODE] V2 API returned non-success', [
+                        'status' => $v2Response->status(),
+                    ]);
+                }
+            } catch (Exception $e) {
+                DevLog::warning('[VINDECODE] V2 API call failed', [
+                    'message' => $e->getMessage(),
+                ]);
+            }
+
             return $this->normalizeResponse($records);
 
         } catch (ConnectionException $e) {

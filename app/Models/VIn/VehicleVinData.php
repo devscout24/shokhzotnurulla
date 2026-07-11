@@ -12,6 +12,7 @@ class VehicleVinData extends Model
     protected $casts = [
         'default' => 'array',
         'vehicle_databases' => 'array',
+        'premium_vehicle_databases' => 'array',
         'data_one' => 'array',
         'custom' => 'array',
     ];
