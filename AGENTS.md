@@ -81,6 +81,7 @@ Multi-tenant dealership management platform. Laravel 12 (`^8.2` / Node 26 in `.n
 - **`rawCache`**: On first call, `getRawJson(col)` reads `pre.textContent` and caches it. Subsequent re-renders (search typing, tab switch) use the cached original to avoid line-number accumulation from reading highlighted DOM textContent.
 - **Regex note**: JSON string matching uses `"(?:[^"\\]|\\.)*"` instead of `"[^"]*"` to handle escaped quotes like `\"`. `syntaxLine` null-guards `JSON.parse` so a bad match doesn't crash the whole render.
 - **Click-to-fill**: Clicking a JSON value runs `fillBestMatch(val)` which fuzzy-matches field names (e.g. `engine_hp` → `max_horsepower`). Matches with score ≥ 0.5 fill the input and scroll to it.
+- **Loader overlay**: `#viLoader` shows a spinning loader during expensive operations (tab switch, search, initial highlight). Uses `requestAnimationFrame` + `setTimeout(fn, 0)` to let the browser paint the spinner before blocking syntax-highlighting work. `showLoader(label)` / `hideLoader()` helpers toggle the overlay and accept custom labels ("Switching tab…", "Searching…", "Loading…").
 
 ## Style
 

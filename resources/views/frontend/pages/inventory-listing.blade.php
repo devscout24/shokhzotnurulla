@@ -101,6 +101,7 @@
 
             </div>
         </div>
+
         <div class="mb-5 container-fluid px-lg-5">
             <div class="row mt-3">
 
@@ -131,7 +132,7 @@
                             {{ $type ? config("vehicle_types.{$type}.heading_label") : 'vehicles' }} for sale in Smyrna, TN
                         </h1>
                         <div class="dropdown">
-                            <button type="button" id="sortby" aria-expanded="false" data-cy="sortby" data-bs-toggle="dropdown"
+                            <button type="button" id="sortby" aria-expanded="false" data-cy="sortby"
                                 class="dropdown-toggle btn btn-sm d-flex align-items-center border rounded-pill px-3 text-dark">
                                 <span class="me-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"

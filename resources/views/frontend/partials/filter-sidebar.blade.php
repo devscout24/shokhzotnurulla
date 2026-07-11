@@ -8,13 +8,13 @@
     <div class="pt-3 pb-2 bg-white card-header border-bottom">
         <div class="card-title h6 font-weight-bold mb-3 d-flex justify-content-between align-items-center">
             <span>{{ $total }} matches</span>
-            @if(array_filter($filters ?? []))
-                <a href="javascript:void(0)" onclick="window.location.href = window.location.pathname"
-                    class="font-weight-normal text-12 cursor-pointer text-primary clear-filters-btn">
-                    Clear Filters
-                </a>
-            @endif
         </div>
+        @if(array_filter($filters ?? []))
+            <a href="{{ request()->url() }}"
+                class="btn btn-outline-danger btn-sm w-100 clear-filters-btn">
+                <i class="fa-solid fa-xmark me-1"></i> Clear All Filters
+            </a>
+        @endif
 
         {{-- Active filter badges --}}
         <div class="filter-badges d-flex flex-wrap" id="filter-badges">
@@ -37,7 +37,7 @@
         {{-- ── Price / Financing ── --}}
         <div class="price-financing card-footer border-0 pb-0">
             <div class="h6 font-weight-bold mb-3">Price & Financing</div>
-            
+
             <div class="mb-3">
                 <small class="text-muted mb-2 d-block">Shop by</small>
                 <div class="btn-group w-100 price-payment-toggle" role="group">
@@ -124,6 +124,9 @@
                 </span>
             </div>
             <div class="dropdown-content max-280">
+                <div class="filter-search-wrap px-2 pt-2 pb-1">
+                    <input type="text" class="filter-search form-control form-control-sm" placeholder="Search make…">
+                </div>
                 @foreach($filterData['makes'] as $make)
                     <div class="mt-2 make-item">
                         <div class="custom-control custom-checkbox">
@@ -216,7 +219,6 @@
         </div>
 
         {{-- ── Body Style ── --}}
-        @if($filterData['bodyStyles']->count())
         <div class="card-footer filter-dropdown">
             <div class="dropdown-toggle-btn cursor-pointer py-1">
                 Body Style
@@ -227,6 +229,9 @@
                 </span>
             </div>
             <div class="dropdown-content">
+                <div class="filter-search-wrap px-2 pt-2 pb-1">
+                    <input type="text" class="filter-search form-control form-control-sm" placeholder="Search body style…">
+                </div>
                 @foreach($filterData['bodyStyles'] as $style)
                     <div class="mt-2 make-item">
                         <div class="custom-control custom-checkbox">
@@ -242,7 +247,6 @@
                 @endforeach
             </div>
         </div>
-        @endif
 
         {{-- ── Features ── --}}
         @if($filterData['features']->count())
@@ -256,6 +260,9 @@
                 </span>
             </div>
             <div class="dropdown-content max-280">
+                <div class="filter-search-wrap px-2 pt-2 pb-1">
+                    <input type="text" class="filter-search form-control form-control-sm" placeholder="Search features…">
+                </div>
                 @foreach($filterData['features'] as $feature)
                     <div class="mt-2 make-item">
                         <div class="custom-control custom-checkbox">
@@ -285,6 +292,9 @@
                 </span>
             </div>
             <div class="dropdown-content">
+                <div class="filter-search-wrap px-2 pt-2 pb-1">
+                    <input type="text" class="filter-search form-control form-control-sm" placeholder="Search seating…">
+                </div>
                 @foreach($filterData['seating'] as $s)
                     <div class="mt-2 make-item">
                         <div class="custom-control custom-checkbox">
@@ -314,6 +324,9 @@
                 </span>
             </div>
             <div class="dropdown-content">
+                <div class="filter-search-wrap px-2 pt-2 pb-1">
+                    <input type="text" class="filter-search form-control form-control-sm" placeholder="Search exterior color…">
+                </div>
                 @foreach($filterData['colors'] as $color)
                     <div class="mt-2 make-item">
                         <div class="custom-control custom-checkbox">
@@ -344,6 +357,9 @@
                 </span>
             </div>
             <div class="dropdown-content">
+                <div class="filter-search-wrap px-2 pt-2 pb-1">
+                    <input type="text" class="filter-search form-control form-control-sm" placeholder="Search interior color…">
+                </div>
                 @foreach($filterData['interiorColors'] as $color)
                     <div class="mt-2 make-item">
                         <div class="custom-control custom-checkbox">
@@ -374,6 +390,9 @@
                 </span>
             </div>
             <div class="dropdown-content">
+                <div class="filter-search-wrap px-2 pt-2 pb-1">
+                    <input type="text" class="filter-search form-control form-control-sm" placeholder="Search fuel type…">
+                </div>
                 @foreach($filterData['fuelTypes'] as $f)
                     <div class="mt-2 make-item">
                         <div class="custom-control custom-checkbox">
@@ -403,6 +422,9 @@
                 </span>
             </div>
             <div class="dropdown-content">
+                <div class="filter-search-wrap px-2 pt-2 pb-1">
+                    <input type="text" class="filter-search form-control form-control-sm" placeholder="Search transmission…">
+                </div>
                 @foreach($filterData['transmissions'] as $t)
                     <div class="mt-2 make-item">
                         <div class="custom-control custom-checkbox">
@@ -432,6 +454,9 @@
                 </span>
             </div>
             <div class="dropdown-content">
+                <div class="filter-search-wrap px-2 pt-2 pb-1">
+                    <input type="text" class="filter-search form-control form-control-sm" placeholder="Search drivetrain…">
+                </div>
                 @foreach($filterData['drivetrains'] as $d)
                     <div class="mt-2 make-item">
                         <div class="custom-control custom-checkbox">
@@ -461,6 +486,9 @@
                 </span>
             </div>
             <div class="dropdown-content">
+                <div class="filter-search-wrap px-2 pt-2 pb-1">
+                    <input type="text" class="filter-search form-control form-control-sm" placeholder="Search engine…">
+                </div>
                 @foreach($filterData['engines'] as $engine)
                     <div class="mt-2 make-item">
                         <div class="custom-control custom-checkbox">

@@ -211,6 +211,7 @@ class InventoryListingService
             'mileage_desc' => $query->orderByDesc('mileage'),
             'year_desc'    => $query->orderByDesc('year'),
             'year_asc'     => $query->orderBy('year'),
+            'make_asc'     => $query->orderBy('make_id'),
             default        => $query->orderByDesc('featured')->orderByDesc('listed_at'),
         };
 

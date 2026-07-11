@@ -346,14 +346,31 @@
     // ─────────────────────────────────────────────────────────────────────────
     function initSortDropdown() {
         const sortBtn    = document.getElementById('sortby');
-        const sortByText = document.querySelector('[data-cy="sortby-selected"]');
+        const sortByText = document.querySelector('[data-cy="sortby-selected"]') || sortBtn?.querySelector('strong');
         if (! sortBtn) return;
 
+        const dropdown = sortBtn.closest('.dropdown');
+        if (! dropdown) return;
+
         const iconSpan = sortBtn.querySelector('span');
-        sortBtn.addEventListener('click', () => {
-            sortBtn.classList.toggle('show');
-            iconSpan?.classList.toggle('text-primary');
-            iconSpan?.classList.toggle('text-white');
+        sortBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const isOpen = dropdown.classList.contains('show');
+            // Close all other open dropdowns first
+            document.querySelectorAll('.dropdown.show').forEach(d => d.classList.remove('show'));
+            if (! isOpen) dropdown.classList.add('show');
+            iconSpan?.classList.toggle('text-primary', !isOpen);
+            iconSpan?.classList.toggle('text-white', isOpen);
+        });
+
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (! dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
+                iconSpan?.classList.add('text-primary');
+                iconSpan?.classList.remove('text-white');
+            }
         });
 
         // Sort items — map label to value
@@ -366,6 +383,7 @@
             'Miles: High to Low': 'mileage_desc',
             'Year: Newest':     'year_desc',
             'Year: Oldest':     'year_asc',
+            'Make: A-Z':        'make_asc',
         };
 
         function createCheckmark() {
@@ -381,37 +399,28 @@
         // Get current sort from URL
         const currentSort = new URLSearchParams(window.location.search).get('sort') || 'best_match';
 
-        document.querySelectorAll('.dropdown-item').forEach((item, index) => {
+        const items = dropdown.querySelectorAll('.dropdown-item');
+        items.forEach((item, index) => {
             const check     = createCheckmark();
             const itemLabel = item.textContent.trim();
             const itemValue = sortMap[itemLabel] || 'best_match';
             item.prepend(check);
+            item.style.cursor = 'pointer';
 
             // Mark current active sort
             if (itemValue === currentSort || (index === 0 && currentSort === 'best_match')) {
                 check.style.display    = 'inline-block';
+                item.classList.add('fw-bold', 'bg-lighter');
                 if (sortByText) sortByText.textContent = 'Sort by ' + itemLabel;
             }
 
-            item.addEventListener('click', () => {
-                document.querySelectorAll('.dropdown-item').forEach(i => {
-                    const m = i.querySelector('.checkmark');
-                    if (m) m.style.display = 'none';
-                });
-                check.style.display = 'inline-block';
-                if (sortByText) sortByText.textContent = 'Sort by ' + itemLabel;
-                sortBtn.classList.remove('show');
-                if (iconSpan) {
-                    iconSpan.classList.add('text-primary');
-                    iconSpan.classList.remove('text-white');
-                }
-
-                // Add sort to form params and fetch
-                const params = collectParams();
-                params.set('sort', itemValue);
-                // Remove page param on sort change
-                params.delete('page');
-                fetchResults(params);
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const url = new URL(window.location.href);
+                url.searchParams.set('sort', itemValue);
+                url.searchParams.delete('page');
+                window.location.href = url.toString();
             });
         });
     }
@@ -423,7 +432,7 @@
     // ─────────────────────────────────────────────────────────────────────────
     function bindBadgeRemoval() {
         document.addEventListener('click', function (e) {
-            const badge = e.target.closest('.badge-default');
+            const badge = e.target.closest('.badge-default, .filter-chip');
             if (! badge || ! form) return;
 
             const key = badge.dataset.filterKey;
@@ -531,6 +540,28 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // 14. FILTER SEARCH — type to filter checkbox options within a dropdown ───
+    // ─────────────────────────────────────────────────────────────────────────
+    function bindFilterSearch() {
+        document.querySelectorAll('.filter-search').forEach(function (input) {
+            input.addEventListener('input', function () {
+                const q = this.value.toLowerCase().trim();
+                const content = this.closest('.dropdown-content');
+                if (! content) return;
+
+                content.querySelectorAll('.make-item').forEach(function (item) {
+                    const label = item.querySelector('label');
+                    const text = label ? label.textContent.toLowerCase() : '';
+                    item.style.display = (! q || text.includes(q)) ? '' : 'none';
+                });
+            });
+
+            // Prevent dropdown toggle when clicking inside search input
+            input.addEventListener('click', function (e) { e.stopPropagation(); });
+        });
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // 13. INIT
     // ─────────────────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function () {
@@ -546,6 +577,7 @@
         bindBadgeRemoval();
         updateBadges();
         initImageSlider();
+        bindFilterSearch();
 
         // Prevent full form submit — always use AJAX
         form?.addEventListener('submit', function (e) {
