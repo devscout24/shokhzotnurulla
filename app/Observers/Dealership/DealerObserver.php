@@ -25,7 +25,7 @@ class DealerObserver
         if ($dealer->domain) {
             \App\Services\Website\WebResolver::clearCache($dealer->domain);
         }
-        if ($dealer->isDirty('domain')) {
+        if ($dealer->isDirty('domain') && $dealer->getOriginal('domain')) {
             \App\Services\Website\WebResolver::clearCache($dealer->getOriginal('domain'));
         }
     }
