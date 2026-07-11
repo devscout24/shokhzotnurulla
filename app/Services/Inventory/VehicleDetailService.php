@@ -57,13 +57,14 @@ final class VehicleDetailService
                     ->live()
                     ->orderByDesc('is_primary')
                     ->orderBy('sort_order'),
-                'features:id,name',
                 'factoryOptions' => fn($q) => $q
                     ->select([
                         'factory_options.id',
                         'factory_options.label',
+                        'factory_options.option_key',
                         'factory_options.category_id',
                     ])
+                    ->withPivot('is_starred')
                     ->with('category:id,name'),
                 'prices:vehicle_id,special_price,msrp',
                 'printables',

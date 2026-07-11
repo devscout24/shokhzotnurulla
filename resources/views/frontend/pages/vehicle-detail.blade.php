@@ -687,8 +687,14 @@
                         </a>
                     </div>
 
+                    @php
+                        $keyFeatures = $vehicle?->factoryOptions
+                            ?->filter(fn ($fo) => $fo->pivot->is_starred)
+                            ?->take(9);
+                    @endphp
+
                     {{-- ── Key Features ── --}}
-                    @if($vehicle?->features?->isNotEmpty())
+                    @if($keyFeatures?->isNotEmpty())
                         <div class="px-4 py-3 bg-lighter font-weight-bold card-footer">
                             <h2 class="text-small my-0 font-weight-bold">
                                 {{ $vehicleTitle }} Key Features
@@ -697,11 +703,15 @@
 
                         <div class="text-start p-0 bg-lighter card-footer">
                             <div class="row no-gutters px-3 pt-3 pt-sm-0 pb-0 pb-sm-3">
-                                @foreach($vehicle?->features?->take(9) as $vf)
+                                @foreach($keyFeatures as $fo)
                                     <div class="col-sm-4 col-12 pt-0 px-0 px-sm-2 pt-sm-3">
                                         <div class="p-3 mb-2 mb-sm-0 bg-white border rounded text-nowrap">
                                             <div class="text-truncate d-flex align-items-center">
-                                                {{ $vf?->name }}
+                                                <img alt="{{ $fo->label }}" loading="lazy" width="18" height="18"
+                                                    class="opacity-50 tile-img d-inline-block float-start me-2"
+                                                    src="{{ asset('assets/frontend/img/features/' . $fo->option_key . '.svg') }}"
+                                                    onerror="this.style.display='none'">
+                                                {{ $fo->label }}
                                             </div>
                                         </div>
                                     </div>
