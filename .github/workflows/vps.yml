@@ -29,6 +29,8 @@ jobs:
           composer install --no-dev --optimize-autoloader
 
           # install node packages
+          npm ci
+          npm run build
 
       - name: 📂 Rsync Deployment
         uses: Burnett01/rsync-deployments@7.0.0
