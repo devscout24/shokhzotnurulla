@@ -86,13 +86,14 @@
                                 alt="{{ $vehicle->display_title }}" loading="lazy">
                         @endforelse
 
-                        <div id="has-more-photos" class="sc-dba2d435-0 QeHlJ" bis_skin_checked="1" onclick="event.stopPropagation()">
+                        <div id="has-more-photos" class="sc-dba2d435-0 QeHlJ" bis_skin_checked="1">
                                 <div class="w-75 mx-auto mt-n4" bis_skin_checked="1">
-                                    <button type="button" class="w-100 text-white border-white btn btn-default btn-lg">
+                                    <a href="{{ route('frontend.inventory.show', $vehicle->slug) }}"
+                                        class="w-100 text-white border-white btn btn-default btn-lg d-block text-decoration-none">
                                         View all {{ $totalCount }} photos
-                                    </button>
+                                    </a>
                                     <a role="button" tabindex="0" target="_self" title="Apply online"
-                                        class="mt-4 w-100 btn btn-primary btn-lg"
+                                        class="mt-4 w-100 btn btn-primary btn-lg d-block"
                                         href="{{ route('frontend.inventory.show', $vehicle->slug) }}">
                                         Apply online
                                     </a>
