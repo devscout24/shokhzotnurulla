@@ -85,6 +85,14 @@
         .vi-fo-item-label span { line-height:1.3; }
         .vi-fo-search-btn { background:none; border:none; color:#4a4a5a; cursor:pointer; padding:2px 4px; font-size:11px; border-radius:3px; flex-shrink:0; line-height:1; }
         .vi-fo-search-btn:hover { color:#6b9aff; background:#1a1a2e; }
+
+        /* ── loader overlay ── */
+        .vi-loader { position:absolute; inset:0; z-index:100; display:none; align-items:center; justify-content:center; background:rgba(18,18,28,0.85); backdrop-filter:blur(2px); }
+        .vi-loader.show { display:flex; }
+        .vi-loader-inner { text-align:center; }
+        .vi-loader-spinner { width:28px; height:28px; border:3px solid #2d2d3a; border-top-color:#4f8cff; border-radius:50%; animation:vi-spin 0.6s linear infinite; margin:0 auto 8px; }
+        .vi-loader-label { font-size:11px; color:#8a8a9a; text-transform:uppercase; letter-spacing:0.5px; }
+        @keyframes vi-spin { to { transform:rotate(360deg); } }
     </style>
 @endpush
 
@@ -94,7 +102,14 @@
 
         @include('dealer.partials.inventory-topbar')
 
-        <div class="vi-layout">
+        <div class="vi-layout" style="position:relative;">
+
+            <div class="vi-loader" id="viLoader">
+                <div class="vi-loader-inner">
+                    <div class="vi-loader-spinner"></div>
+                    <div class="vi-loader-label">Loading…</div>
+                </div>
+            </div>
 
             {{-- ═══════ LEFT: Editable Vehicle Fields ═══════ --}}
             <div class="vi-left">
@@ -355,7 +370,7 @@
                                             <button type="button"
                                                      class="vi-fo-search-btn"
                                                      title="Search this option in JSON"
-                                                     onclick="var q=this.getAttribute('data-query'),i=document.getElementById('viSearchInput');if(i){i.value=q;if(window.filterActiveTab)window.filterActiveTab();i.focus();}"
+                                                     onclick="try{var q=this.getAttribute('data-query'),i=document.getElementById('viSearchInput');if(i){i.value=q;window.filterActiveTab();i.focus();}}catch(e){}"
                                                      data-query="{{ $option->label }}">
                                                 <i class="bi bi-search"></i>
                                             </button>
@@ -390,14 +405,14 @@
                     {{-- Tabs --}}
                     <div class="vi-tabs" id="viTabs">
                         @foreach ($availableCols as $i => $col)
-                            <div class="vi-tab {{ $i === 0 ? 'active' : '' }}" data-tab="{{ $col }}" onclick="switchTab('{{ $col }}')">{{ $col }}</div>
+                            <div class="vi-tab {{ $i === 0 ? 'active' : '' }}" data-tab="{{ $col }}" onclick="try{switchTab(this.getAttribute('data-tab'))}catch(e){}">{{ $col }}</div>
                         @endforeach
                     </div>
 
                     {{-- Search bar --}}
                     <div class="vi-search">
                         <div class="vi-search-row">
-                            <input type="text" id="viSearchInput" placeholder="Search…" oninput="filterActiveTab()" onkeydown="return searchKeydown(event)">
+                            <input type="text" id="viSearchInput" placeholder="Search…" oninput="try{clearTimeout(window._searchTimer);window._searchTimer=setTimeout(filterActiveTab,200)}catch(e){}" onkeydown="try{return searchKeydown(event)}catch(e){}">
                             <span class="vi-match-badge" id="viMatchBadge"></span>
                             <button class="vi-nav-btn" id="viPrevBtn" onclick="navMatch(-1)" title="Previous match (Shift+Enter)" style="display:none;background:none;border:1px solid #2d2d3a;border-radius:4px;color:#8a8a9a;padding:4px 8px;cursor:pointer;">&#x25B2;</button>
                             <button class="vi-nav-btn" id="viNextBtn" onclick="navMatch(1)" title="Next match (Enter)" style="display:none;background:none;border:1px solid #2d2d3a;border-radius:4px;color:#8a8a9a;padding:4px 8px;cursor:pointer;">&#x25BC;</button>
@@ -438,52 +453,28 @@
         }).join('');
     }
 
+    var RE_TOKEN = /("[^"]*"\s*:)|("(?:[^"\\]|\\.)*")|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)|(true|false)|(null)|(.)/g;
+
     function syntaxLine(line) {
-        var out = '';
-        var i = 0;
-        while (i < line.length) {
-            var keyMatch = line.slice(i).match(/^("[^"]*"\s*:)/);
-            if (keyMatch) {
-                out += '<span class="jv-key">' + esc(keyMatch[1]) + '</span>';
-                i += keyMatch[1].length;
-                continue;
+        return line.replace(RE_TOKEN, function(m, key, str, num, bool, nil, punc) {
+            if (key) return '<span class="jv-key">' + esc(key) + '</span>';
+            if (str) {
+                var d = str.slice(1, -1).replace(/\\(.)/g, '$1');
+                return '<span class="jv-str jv-clickable" data-val="' + escAttr(d) + '">' + esc(str) + '</span>';
             }
-            var strMatch = line.slice(i).match(/^("(?:[^"\\]|\\.)*")/);
-            if (strMatch) {
-                var decoded = '';
-                try { decoded = JSON.parse(strMatch[1]); } catch(e) { decoded = strMatch[1]; }
-                out += '<span class="jv-str jv-clickable" data-val="' + escAttr(decoded) + '">' + esc(strMatch[1]) + '</span>';
-                i += strMatch[1].length;
-                continue;
-            }
-            var numMatch = line.slice(i).match(/^(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/);
-            if (numMatch) {
-                out += '<span class="jv-num jv-clickable" data-val="' + numMatch[1] + '">' + numMatch[1] + '</span>';
-                i += numMatch[1].length;
-                continue;
-            }
-            var boolMatch = line.slice(i).match(/^(true|false)/);
-            if (boolMatch) {
-                out += '<span class="jv-bool jv-clickable" data-val="' + boolMatch[1] + '">' + boolMatch[1] + '</span>';
-                i += boolMatch[1].length;
-                continue;
-            }
-            var nullMatch = line.slice(i).match(/^(null)/);
-            if (nullMatch) {
-                out += '<span class="jv-null">' + nullMatch[1] + '</span>';
-                i += nullMatch[1].length;
-                continue;
-            }
-            out += '<span class="jv-punc">' + esc(line[i]) + '</span>';
-            i++;
-        }
-        return out;
+            if (num) return '<span class="jv-num jv-clickable" data-val="' + num + '">' + num + '</span>';
+            if (bool) return '<span class="jv-bool jv-clickable" data-val="' + bool + '">' + bool + '</span>';
+            if (nil) return '<span class="jv-null">' + nil + '</span>';
+            return '<span class="jv-punc">' + esc(punc) + '</span>';
+        });
     }
 
-    function esc(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s)); return d.innerHTML; }
-    function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    var escMap = {'&':'&amp;','"':'&quot;',"'":'&#39;','<':'&lt;','>':'&gt;'};
+    function esc(s) { return s.replace(/[&"'<>]/g, function(c) { return escMap[c]; }); }
+    function escAttr(s) { return String(s).replace(/[&"'<>]/g, function(c) { return escMap[c]; }); }
 
     var rawCache = {};
+    var hlCache = {};
 
     function getRawJson(col) {
         if (rawCache[col]) return rawCache[col];
@@ -491,6 +482,25 @@
         if (!pre) return '';
         rawCache[col] = pre.textContent;
         return rawCache[col];
+    }
+
+    function getHighlighted(col) {
+        if (hlCache[col]) return hlCache[col];
+        hlCache[col] = highlightJson(getRawJson(col));
+        return hlCache[col];
+    }
+
+    // ── Loader helpers ────────────────────────────────────────────────────────
+    function showLoader(label) {
+        var el = document.getElementById('viLoader');
+        if (!el) return;
+        var lbl = el.querySelector('.vi-loader-label');
+        if (lbl) lbl.textContent = label || 'Loading…';
+        el.classList.add('show');
+    }
+    function hideLoader() {
+        var el = document.getElementById('viLoader');
+        if (el) el.classList.remove('show');
     }
 
     // ── Tab switching ─────────────────────────────────────────────────────────
@@ -502,14 +512,21 @@
         document.querySelectorAll('.vi-json-pane').forEach(function(p) {
             p.classList.toggle('active', p.id === 'viPane' + col);
         });
-        var pre = document.getElementById('viPre' + col);
-        if (pre) {
-            pre.innerHTML = highlightJson(getRawJson(col));
-        }
         var input = document.getElementById('viSearchInput');
         if (input) { input.value = ''; input.focus(); }
         resetMatchNav();
+
+        showLoader('Switching tab…');
+        requestAnimationFrame(function() {
+            setTimeout(function() {
+                var pre = document.getElementById('viPre' + col);
+                if (pre) pre.innerHTML = getHighlighted(col);
+                hideLoader();
+            }, 0);
+        });
     };
+
+    var _searchTimer = null;
 
     // ── Search + match navigation ─────────────────────────────────────────────
     window.filterActiveTab = function() {
@@ -523,54 +540,67 @@
         if (!raw) return;
 
         if (!q) {
-            pre.innerHTML = highlightJson(raw);
-            resetMatchNav();
+            showLoader('Loading…');
+            requestAnimationFrame(function() {
+                setTimeout(function() {
+                    pre.innerHTML = getHighlighted(col);
+                    resetMatchNav();
+                    hideLoader();
+                }, 0);
+            });
             return;
         }
 
-        var lowerQ = q.toLowerCase();
-        var lines = raw.split('\n');
-        var matchElements = [];
-        var total = 0;
+        showLoader('Searching…');
+        requestAnimationFrame(function() {
+            setTimeout(function() {
+                var lowerQ = q.toLowerCase();
+                var lines = raw.split('\n');
+                var matchElements = [];
+                var total = 0;
 
-        var html = lines.map(function(line, idx) {
-            var num = '<span class="vi-line-num">' + (idx + 1) + '</span>';
-            var lower = line.toLowerCase();
-            var ci = lower.indexOf(lowerQ);
-            if (ci === -1) return num + syntaxLine(line) + '\n';
+                var html = lines.map(function(line, idx) {
+                    var num = '<span class="vi-line-num">' + (idx + 1) + '</span>';
+                    var lower = line.toLowerCase();
+                    var ci = lower.indexOf(lowerQ);
+                    if (ci === -1) return num + syntaxLine(line) + '\n';
 
-            total++;
-            var result = '';
-            var last = 0;
-            while (ci !== -1) {
-                result += syntaxLine(line.slice(last, ci));
-                var mid = line.slice(ci, ci + q.length);
-                var placeholder = '%%MATCH_' + (matchElements.length) + '%%';
-                result += placeholder;
-                matchElements.push({ matchText: mid, encoded: esc(mid), col: activeTab });
-                last = ci + q.length;
-                ci = lower.indexOf(lowerQ, last);
-            }
-            result += syntaxLine(line.slice(last));
-            return num + result + '\n';
-        }).join('');
+                    total++;
+                    var result = '';
+                    var last = 0;
+                    while (ci !== -1) {
+                        result += syntaxLine(line.slice(last, ci));
+                        var mid = line.slice(ci, ci + q.length);
+                        var placeholder = '%%MATCH_' + (matchElements.length) + '%%';
+                        result += placeholder;
+                        matchElements.push({ matchText: mid, encoded: esc(mid), col: activeTab });
+                        last = ci + q.length;
+                        ci = lower.indexOf(lowerQ, last);
+                    }
+                    result += syntaxLine(line.slice(last));
+                    return num + result + '\n';
+                }).join('');
 
-        // replace placeholders with actual spans
-        matchElements.forEach(function(m, i) {
-            html = html.replace('%%MATCH_' + i + '%%',
-                '<span class="jv-highlight" data-match-idx="' + i + '" data-val="' + escAttr(m.matchText) + '">' + m.encoded + '</span>');
+                // replace placeholders with actual spans
+                matchElements.forEach(function(m, i) {
+                    html = html.replace('%%MATCH_' + i + '%%',
+                        '<span class="jv-highlight" data-match-idx="' + i + '" data-val="' + escAttr(m.matchText) + '">' + m.encoded + '</span>');
+                });
+
+                pre.innerHTML = html;
+
+                viMatches = pre.querySelectorAll('.jv-highlight');
+                viMatchIdx = viMatches.length > 0 ? 0 : -1;
+                updateMatchUI(total);
+
+                // scroll to first match
+                if (viMatches.length > 0) {
+                    scrollToMatch(viMatches[0]);
+                }
+
+                hideLoader();
+            }, 0);
         });
-
-        pre.innerHTML = html;
-
-        viMatches = pre.querySelectorAll('.jv-highlight');
-        viMatchIdx = viMatches.length > 0 ? 0 : -1;
-        updateMatchUI(total);
-
-        // scroll to first match
-        if (viMatches.length > 0) {
-            scrollToMatch(viMatches[0]);
-        }
     };
 
     function resetMatchNav() {
@@ -682,10 +712,14 @@
     // ── Init ──────────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function() {
         if (activeTab) {
-            var pre = document.getElementById('viPre' + activeTab);
-            if (pre) {
-                pre.innerHTML = highlightJson(getRawJson(activeTab));
-            }
+            showLoader('Loading…');
+            requestAnimationFrame(function() {
+                setTimeout(function() {
+                    var pre = document.getElementById('viPre' + activeTab);
+                    if (pre) pre.innerHTML = getHighlighted(activeTab);
+                    hideLoader();
+                }, 0);
+            });
         }
 
         var form = document.getElementById('viForm');
