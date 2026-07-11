@@ -137,6 +137,12 @@ class InventoryListingService
         $query->when($request->input('price.gt'), fn(Builder $q, $v) => $q->where('list_price', '>=', (int) $v))
             ->when($request->input('price.lt'), fn(Builder $q, $v) => $q->where('list_price', '<=', (int) $v));
 
+        // ── GVWR (Weight) ───────────────────────────────────────────────────
+        $query->when($request->input('gvwr.gt'), fn(Builder $q, $v) => $q
+                ->whereHas('specs', fn(Builder $sq) => $sq->where('gvwr', '>=', (int) $v)))
+            ->when($request->input('gvwr.lt'), fn(Builder $q, $v) => $q
+                ->whereHas('specs', fn(Builder $sq) => $sq->where('gvwr', '<=', (int) $v)));
+
         // ── Body Style ────────────────────────────────────────────────────────
         if ($bodyStyles = $request->input('body_style')) {
             $query->whereHas('bodyStyle', fn(Builder $q) => $q->whereIn('name', (array) $bodyStyles));

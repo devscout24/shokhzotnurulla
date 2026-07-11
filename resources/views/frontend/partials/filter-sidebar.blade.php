@@ -161,6 +161,56 @@
             <input type="hidden" id="sidebar-rate" value="{{ $sidebarRate }}">
         </div>
 
+        {{-- ── Weight (GVWR) ── --}}
+        @php
+            $minGvwr    = 800;
+            $maxGvwr    = 2000;
+            $activeMinGvwr = (int) request()->input('gvwr.gt', 0);
+            $activeMaxGvwr = (int) request()->input('gvwr.lt', 0);
+            $hasGvwrFilter = $activeMinGvwr > 0 || $activeMaxGvwr > 0;
+        @endphp
+        <div class="card-footer filter-dropdown active">
+            <div class="dropdown-toggle-btn cursor-pointer py-1">
+                Weight (GVWR)
+                <span class="dropdown-icon float-end text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M3.204 5.5a.5.5 0 0 1 .708 0L8 9.586 12.088 5.5a.5.5 0 1 1 .707.707l-4.442 4.442a.5.5 0 0 1-.707 0L3.204 6.207a.5.5 0 0 1 0-.707z"/>
+                    </svg>
+                </span>
+            </div>
+            <div class="dropdown-content">
+                <div class="dual-range-wrapper mt-2 mb-3">
+                    <div class="dual-range-track" id="gvwr-range-track"></div>
+                    <input type="range" class="dual-range-input" id="gvwr-range-min"
+                        min="{{ $minGvwr }}" max="{{ $maxGvwr }}"
+                        value="{{ $hasGvwrFilter ? $activeMinGvwr : $minGvwr }}" step="100">
+                    <input type="range" class="dual-range-input" id="gvwr-range-max"
+                        min="{{ $minGvwr }}" max="{{ $maxGvwr }}"
+                        value="{{ $hasGvwrFilter ? $activeMaxGvwr : $maxGvwr }}" step="100">
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <small class="text-muted d-block mb-1">Min (lbs)</small>
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control" name="gvwr-display-min"
+                                value="{{ $hasGvwrFilter ? number_format($activeMinGvwr) : number_format($minGvwr) }}"
+                                inputmode="numeric">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block mb-1">Max (lbs)</small>
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control" name="gvwr-display-max"
+                                value="{{ $hasGvwrFilter ? number_format($activeMaxGvwr) : number_format($maxGvwr) }}"
+                                inputmode="numeric">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="mingvwr" name="gvwr[gt]" value="">
+            <input type="hidden" id="maxgvwr" name="gvwr[lt]" value="">
+        </div>
+
         {{-- ── Make & Model ── --}}
         @if($filterData['makes']->count())
         <div class="card-footer filter-dropdown">

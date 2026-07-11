@@ -485,6 +485,84 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // 9b. GVWR (WEIGHT) SLIDER ──────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function updateGvwrTrackFill() {
+        fillTrack('gvwr-range-track', 'gvwr-range-min', 'gvwr-range-max');
+    }
+
+    function syncGvwrInputs() {
+        const inputMin = document.getElementById('gvwr-range-min');
+        const inputMax = document.getElementById('gvwr-range-max');
+        const minHidden = document.getElementById('mingvwr');
+        const maxHidden = document.getElementById('maxgvwr');
+        const minDisp   = document.querySelector('[name="gvwr-display-min"]');
+        const maxDisp   = document.querySelector('[name="gvwr-display-max"]');
+        if (! inputMin || ! inputMax) return;
+
+        const low  = Math.min(Number(inputMin.value), Number(inputMax.value));
+        const high = Math.max(Number(inputMin.value), Number(inputMax.value));
+
+        // Only send hidden params when range is narrowed from full range
+        const isFullRange = (low === Number(inputMin.min) && high === Number(inputMin.max));
+        if (minHidden) minHidden.value = isFullRange ? '' : low;
+        if (maxHidden) maxHidden.value = isFullRange ? '' : high;
+        if (minDisp)   minDisp.value   = low.toLocaleString();
+        if (maxDisp)   maxDisp.value   = high.toLocaleString();
+    }
+
+    function initGvwrSlider() {
+        const inputMin = document.getElementById('gvwr-range-min');
+        const inputMax = document.getElementById('gvwr-range-max');
+        if (! inputMin || ! inputMax) return;
+
+        function onInput() {
+            clampPair(inputMin, inputMax);
+            updateGvwrTrackFill();
+            syncGvwrInputs();
+        }
+
+        function onChange() {
+            clampPair(inputMin, inputMax);
+            updateGvwrTrackFill();
+            syncGvwrInputs();
+            fetchResults(collectParams());
+        }
+
+        inputMin.addEventListener('input', onInput);
+        inputMax.addEventListener('input', onInput);
+        inputMin.addEventListener('change', onChange);
+        inputMax.addEventListener('change', onChange);
+    }
+
+    function bindGvwrInputs() {
+        const inputMin = document.getElementById('gvwr-range-min');
+        const inputMax = document.getElementById('gvwr-range-max');
+        const minDisp  = document.querySelector('[name="gvwr-display-min"]');
+        const maxDisp  = document.querySelector('[name="gvwr-display-max"]');
+        if (! inputMin || ! inputMax) return;
+
+        const parseVal = str => parseInt(str.replace(/,/g, ''), 10);
+
+        minDisp?.addEventListener('change', () => {
+            const val = parseVal(minDisp.value);
+            if (! isNaN(val)) { inputMin.value = val; clampAndFire(); }
+        });
+        maxDisp?.addEventListener('change', () => {
+            const val = parseVal(maxDisp.value);
+            if (! isNaN(val)) { inputMax.value = val; clampAndFire(); }
+        });
+
+        function clampAndFire() {
+            clampPair(inputMin, inputMax);
+            updateGvwrTrackFill();
+            syncGvwrInputs();
+            fetchResults(collectParams());
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // 10. SORT DROPDOWN ───────────────────────────────────────────────────────
     // ─────────────────────────────────────────────────────────────────────────
     function initSortDropdown() {
@@ -723,6 +801,10 @@
         bindPaymentInputs();
         initPricePaymentToggle();
         initSidebarGetEstimateLink();
+        initGvwrSlider();
+        syncGvwrInputs();
+        updateGvwrTrackFill();
+        bindGvwrInputs();
         initSortDropdown();
         bindBadgeRemoval();
         updateBadges();
