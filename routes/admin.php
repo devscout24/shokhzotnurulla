@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminEnvController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DataInsertController;
 use Illuminate\Support\Facades\Route;
@@ -8,6 +9,10 @@ Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth', 'verified', 'all.active', 'isAdmin', \App\Http\Middleware\EnsureTwoFactorAuthenticated::class])
     ->group(function () {
+
+        // Dealers CRUD
+        Route::resource('dealers', \App\Http\Controllers\Admin\DealerController::class);
+
 
         // ─── 2FA ──────────────────────────────────────────────────────────────────
         Route::prefix('2fa')->name('2fa.')->group(function () {
@@ -56,7 +61,6 @@ Route::prefix('admin')
         Route::get('dealers/search', [\App\Http\Controllers\Admin\DealerController::class, 'search'])
             ->name('dealers.search');
 
-        Route::resource('dealers', \App\Http\Controllers\Admin\DealerController::class);
         Route::patch('dealers/{dealer}/toggle-status', [\App\Http\Controllers\Admin\DealerController::class, 'toggleStatus'])
             ->name('dealers.toggle-status');
         Route::post('dealers/{dealer}/notify', [\App\Http\Controllers\Admin\DealerController::class, 'notify'])
@@ -100,10 +104,16 @@ Route::prefix('admin')
         Route::delete('restricted-sites/{id}', [\App\Http\Controllers\Admin\AdminRestrictedSiteController::class, 'destroy'])
             ->name('restricted-sites.destroy');
 
+        // Admin Restricted Credits
+        Route::get('restricted-credits', [AdminEnvController::class, 'index'])
+            ->name('restricted-credits.index');
+        Route::patch('restricted-credits', [AdminEnvController::class, 'update'])
+            ->name('restricted-credits.update');
+
     });
 
 
-    
+
 
 Route::prefix('admin')
     ->name('admin.')

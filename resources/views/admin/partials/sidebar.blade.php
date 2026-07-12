@@ -17,6 +17,12 @@
             <span>{{ __('Restricted Sites') }}</span>
         </div>
     </a>
+    <a class="sidebar-item-link" href="{{ route('admin.restricted-credits.index') }}">
+        <div class="sidebar-item {{ request()->routeIs('admin.restricted-credits.*') ? 'active' : '' }}">
+            <i class="bi bi-shield-lock"></i>
+            <span>{{ __('Restricted Credits') }}</span>
+        </div>
+    </a>
     {{-- <div style="margin: 20px 15px 10px; font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 0.5px;">Integrations</div> --}}
     {{-- <a class="sidebar-item-link" href="{{ route('admin.dealers.index') }}">
         <div class="sidebar-item">
