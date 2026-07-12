@@ -99,10 +99,21 @@
     function restoreDropdownState() {
         if (! form) return;
 
-        // Expand any section that has a checked checkbox
+        // Expand any section that has a checked checkbox or active select option
         form.querySelectorAll('.filter-dropdown').forEach(section => {
             const hasChecked = section.querySelector('input[type="checkbox"]:checked');
-            if (hasChecked) section.classList.add('active');
+            let hasSelected = false;
+            section.querySelectorAll('select').forEach(sel => {
+                if (sel.name.startsWith('mpghwy') || sel.name.startsWith('mpgcity')) {
+                    if (sel.value !== '') hasSelected = true;
+                }
+                if (sel.name.startsWith('mileage')) {
+                    if (sel.value !== '') hasSelected = true;
+                }
+                if (sel.name === 'year[gt]' && sel.value !== '0') hasSelected = true;
+                if (sel.name === 'year[lt]' && sel.value !== '5000') hasSelected = true;
+            });
+            if (hasChecked || hasSelected) section.classList.add('active');
         });
 
         // Expand Make & Model if a model-list has a checked item — show model list
@@ -675,6 +686,14 @@
                 }
             }
 
+            // Reset select dropdowns
+            const select = form.querySelector(`select[name="${key}"]`)
+                || form.querySelector(`select[name="${key}[gt]"]`)
+                || form.querySelector(`select[name="${key}[lt]"]`);
+            if (select) {
+                select.value = '';
+            }
+
             fetchResults(collectParams());
         });
     }
@@ -715,7 +734,15 @@
 
         let clearBtn = badgeContainerTitle.querySelector('.clear-filters-btn');
 
-        if (form.querySelectorAll('input[type="checkbox"]:checked').length > 0) {
+        const hasCheckboxes = form.querySelectorAll('input[type="checkbox"]:checked').length > 0;
+        let hasSelects = false;
+        form.querySelectorAll('select').forEach(sel => {
+            if (sel.value !== '' && sel.value !== '0' && sel.value !== '5000') {
+                hasSelects = true;
+            }
+        });
+
+        if (hasCheckboxes || hasSelects) {
 
             if (!clearBtn) {
                 const btn = document.createElement('a');
@@ -758,6 +785,40 @@
                 </span>`;
             badgeContainer.appendChild(badge);
         });
+
+        // Build badges from non-empty select elements (excluding default/empty values)
+        form.querySelectorAll('select').forEach(sel => {
+            const val = sel.value;
+            if (val !== '' && val !== '0' && val !== '5000') {
+                const name = sel.name.replace('[gt]', '').replace('[lt]', '');
+                let label = '';
+                
+                if (name === 'mileage') {
+                    label = sel.options[sel.selectedIndex]?.textContent.trim();
+                } else if (name === 'year') {
+                    const isMin = sel.name.includes('[gt]');
+                    label = (isMin ? 'From ' : 'To ') + val;
+                } else if (name === 'mpghwy' || name === 'mpgcity') {
+                    const type = name === 'mpghwy' ? 'Hwy' : 'City';
+                    label = `${type}: ${val}+ MPG`;
+                }
+
+                if (label) {
+                    const badge = document.createElement('div');
+                    badge.className = 'd-inline-block badge-default px-2 py-0 me-2 rounded border my-1 cursor-pointer';
+                    badge.dataset.filterKey = name;
+                    badge.dataset.filterVal = val;
+                    badge.innerHTML = `
+                        <span class="small">${label}</span>
+                        <span class="d-inline-block ms-2 float-end text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 16 16" fill="#166B87">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                            </svg>
+                        </span>`;
+                    badgeContainer.appendChild(badge);
+                }
+            }
+        });
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -779,6 +840,52 @@
 
             // Prevent dropdown toggle when clicking inside search input
             input.addEventListener('click', function (e) { e.stopPropagation(); });
+        });
+    }
+
+    // ── Fuel Economy Highway/City Toggle ──────────────────────────────────────
+    function initMpgToggle() {
+        const btnHwy = document.getElementById('btn-mpg-highway');
+        const btnCity = document.getElementById('btn-mpg-city');
+        const wrapHwy = document.getElementById('mpg-highway-select-wrap');
+        const wrapCity = document.getElementById('mpg-city-select-wrap');
+        if (! btnHwy || ! btnCity || ! wrapHwy || ! wrapCity) return;
+
+        const selectHwy = wrapHwy.querySelector('select');
+        const selectCity = wrapCity.querySelector('select');
+
+        btnHwy.addEventListener('click', function () {
+            if (! btnHwy.classList.contains('btn-primary')) {
+                btnHwy.classList.replace('btn-default', 'btn-primary');
+                btnCity.classList.replace('btn-primary', 'btn-default');
+                wrapHwy.classList.remove('d-none');
+                selectHwy.disabled = false;
+                wrapCity.classList.add('d-none');
+                selectCity.disabled = true;
+
+                // Clear city filter value when switching to highway
+                if (selectCity.value !== '') {
+                    selectCity.value = '';
+                    fetchResults(collectParams());
+                }
+            }
+        });
+
+        btnCity.addEventListener('click', function () {
+            if (! btnCity.classList.contains('btn-primary')) {
+                btnCity.classList.replace('btn-default', 'btn-primary');
+                btnHwy.classList.replace('btn-primary', 'btn-default');
+                wrapCity.classList.remove('d-none');
+                selectCity.disabled = false;
+                wrapHwy.classList.add('d-none');
+                selectHwy.disabled = true;
+
+                // Clear highway filter value when switching to city
+                if (selectHwy.value !== '') {
+                    selectHwy.value = '';
+                    fetchResults(collectParams());
+                }
+            }
         });
     }
 
@@ -805,6 +912,7 @@
         syncGvwrInputs();
         updateGvwrTrackFill();
         bindGvwrInputs();
+        initMpgToggle();
         initSortDropdown();
         bindBadgeRemoval();
         updateBadges();

@@ -102,17 +102,17 @@
                 <div class="row g-2 mb-3">
                     <div class="col-6">
                         <small class="text-muted d-block mb-1">Min</small>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-white border-end-0">$</span>
-                            <input type="text" class="form-control border-start-0 ps-0" name="price-display-min"
+                        <div class="price-input-wrap">
+                            <span class="price-input-prefix">$</span>
+                            <input type="text" class="form-control price-input-field" name="price-display-min"
                                 value="{{ number_format($activeMin) }}" inputmode="numeric">
                         </div>
                     </div>
                     <div class="col-6">
                         <small class="text-muted d-block mb-1">Max</small>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-white border-end-0">$</span>
-                            <input type="text" class="form-control border-start-0 ps-0" name="price-display-max"
+                        <div class="price-input-wrap">
+                            <span class="price-input-prefix">$</span>
+                            <input type="text" class="form-control price-input-field" name="price-display-max"
                                 value="{{ number_format($activeMax) }}" inputmode="numeric">
                         </div>
                     </div>
@@ -131,17 +131,17 @@
                 <div class="row g-2 mb-3">
                     <div class="col-6">
                         <small class="text-muted d-block mb-1">Min /mo</small>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-white border-end-0">$</span>
-                            <input type="text" class="form-control border-start-0 ps-0" name="payment-display-min"
+                        <div class="price-input-wrap">
+                            <span class="price-input-prefix">$</span>
+                            <input type="text" class="form-control price-input-field" name="payment-display-min"
                                 value="{{ number_format($activeMinPayment) }}" inputmode="numeric">
                         </div>
                     </div>
                     <div class="col-6">
                         <small class="text-muted d-block mb-1">Max /mo</small>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text bg-white border-end-0">$</span>
-                            <input type="text" class="form-control border-start-0 ps-0" name="payment-display-max"
+                        <div class="price-input-wrap">
+                            <span class="price-input-prefix">$</span>
+                            <input type="text" class="form-control price-input-field" name="payment-display-max"
                                 value="{{ number_format($activeMaxPayment) }}" inputmode="numeric">
                         </div>
                     </div>
@@ -313,6 +313,49 @@
                             </select>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ── Fuel Economy ── --}}
+        @php
+            $activeMpgHwy = request()->input('mpghwy.gt');
+            $activeMpgCity = request()->input('mpgcity.gt');
+            $isCityActive = !empty($activeMpgCity) && empty($activeMpgHwy);
+        @endphp
+        <div class="card-footer filter-dropdown">
+            <div class="dropdown-toggle-btn cursor-pointer py-1" data-cy="toggle-fueleconomy">
+                Fuel Economy
+                <span class="dropdown-icon float-end text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M3.204 5.5a.5.5 0 0 1 .708 0L8 9.586 12.088 5.5a.5.5 0 1 1 .707.707l-4.442 4.442a.5.5 0 0 1-.707 0L3.204 6.207a.5.5 0 0 1 0-.707z"/>
+                    </svg>
+                </span>
+            </div>
+            <div class="dropdown-content">
+                <div class="btn-group w-100 mt-3 mb-3" role="group">
+                    <button type="button" class="btn btn-sm {{ !$isCityActive ? 'btn-primary' : 'btn-default' }}" id="btn-mpg-highway">Highway</button>
+                    <button type="button" class="btn btn-sm {{ $isCityActive ? 'btn-primary' : 'btn-default' }}" id="btn-mpg-city">City</button>
+                </div>
+                <div class="mb-2 {{ $isCityActive ? 'd-none' : '' }}" id="mpg-highway-select-wrap">
+                    <select name="mpghwy[gt]" class="custom-select form-select" {{ $isCityActive ? 'disabled' : '' }}>
+                        <option value="">Any</option>
+                        <option value="20" {{ $activeMpgHwy == '20' ? 'selected' : '' }}>20+ MPG ({{ $filterData['mpgHighwayCounts'][20] ?? 0 }})</option>
+                        <option value="25" {{ $activeMpgHwy == '25' ? 'selected' : '' }}>25+ MPG ({{ $filterData['mpgHighwayCounts'][25] ?? 0 }})</option>
+                        <option value="30" {{ $activeMpgHwy == '30' ? 'selected' : '' }}>30+ MPG ({{ $filterData['mpgHighwayCounts'][30] ?? 0 }})</option>
+                        <option value="35" {{ $activeMpgHwy == '35' ? 'selected' : '' }}>35+ MPG ({{ $filterData['mpgHighwayCounts'][35] ?? 0 }})</option>
+                        <option value="40" {{ $activeMpgHwy == '40' ? 'selected' : '' }}>40+ MPG ({{ $filterData['mpgHighwayCounts'][40] ?? 0 }})</option>
+                    </select>
+                </div>
+                <div class="mb-2 {{ !$isCityActive ? 'd-none' : '' }}" id="mpg-city-select-wrap">
+                    <select name="mpgcity[gt]" class="custom-select form-select" {{ !$isCityActive ? 'disabled' : '' }}>
+                        <option value="">Any</option>
+                        <option value="20" {{ $activeMpgCity == '20' ? 'selected' : '' }}>20+ MPG ({{ $filterData['mpgCityCounts'][20] ?? 0 }})</option>
+                        <option value="25" {{ $activeMpgCity == '25' ? 'selected' : '' }}>25+ MPG ({{ $filterData['mpgCityCounts'][25] ?? 0 }})</option>
+                        <option value="30" {{ $activeMpgCity == '30' ? 'selected' : '' }}>30+ MPG ({{ $filterData['mpgCityCounts'][30] ?? 0 }})</option>
+                        <option value="35" {{ $activeMpgCity == '35' ? 'selected' : '' }}>35+ MPG ({{ $filterData['mpgCityCounts'][35] ?? 0 }})</option>
+                        <option value="40" {{ $activeMpgCity == '40' ? 'selected' : '' }}>40+ MPG ({{ $filterData['mpgCityCounts'][40] ?? 0 }})</option>
+                    </select>
                 </div>
             </div>
         </div>

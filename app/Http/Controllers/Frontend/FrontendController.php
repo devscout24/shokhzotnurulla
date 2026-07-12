@@ -575,6 +575,7 @@ class FrontendController extends Controller
             'exterior_color', 'interior_color',
             'transmission', 'drivetrain', 'fuel_type',
             'seating', 'engine', 'feature', 'search', 'sort',
+            'mpghwy', 'mpgcity',
         ]);
     }
 }

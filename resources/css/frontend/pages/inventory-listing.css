@@ -180,6 +180,52 @@ small {
 #price-range-min { z-index: 3; }
 #price-range-max { z-index: 2; }
 
+/* ── Price / Payment display inputs ── */
+.price-input-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background: #fff;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.price-input-wrap:focus-within {
+    border-color: #166b87;
+    box-shadow: 0 0 0 3px rgba(22, 107, 135, 0.12);
+}
+
+.price-input-prefix {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6c757d;
+    background: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    height: 34px;
+    user-select: none;
+}
+
+.price-input-field {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 4px 10px;
+    font-size: 13px;
+    height: 34px;
+    min-width: 0;
+    background: transparent;
+}
+
+.price-input-field:focus {
+    box-shadow: none !important;
+}
+
 
 .max-280 {
     overflow-y: auto;

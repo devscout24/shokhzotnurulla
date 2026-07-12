@@ -84,6 +84,14 @@ Multi-tenant dealership management platform. Laravel 12 (`^8.2` / Node 26 in `.n
 - **Click-to-fill**: Clicking a JSON value runs `fillBestMatch(val)` which fuzzy-matches field names (e.g. `engine_hp` → `max_horsepower`). Matches with score ≥ 0.5 fill the input and scroll to it.
 - **Loader overlay**: `#viLoader` shows a spinning loader during expensive operations (tab switch, search, initial highlight). Uses `requestAnimationFrame` + `setTimeout(fn, 0)` to let the browser paint the spinner before blocking syntax-highlighting work. `showLoader(label)` / `hideLoader()` helpers toggle the overlay and accept custom labels ("Switching tab…", "Searching…", "Loading…").
 
+## Admin Restricted Credits
+
+- **Route**: `GET admin/restricted-credits` → `AdminEnvController@index`. `PATCH admin/restricted-credits` → `AdminEnvController@update`.
+- **View**: `resources/views/admin/pages/restriced-credits.blade.php` (note: filename has typo `restriced` matching the existing convention).
+- **Purpose**: Platform-level env key management. Currently manages `VEHICLE_DATABASES_API_KEY` for the VIN Decode V2 service.
+- **Env write logic**: `AdminEnvController::updateEnvValue()` reads `.env`, regex-replaces the existing `KEY=value` line, or appends if missing. Also sets `$_ENV`, `putenv()`, and `config()` at runtime so the change takes effect without a server restart.
+- **View features**: Password input with eye-toggle visibility button, status badge (Configured / Not Configured), scoped page styles (all CSS inline via `@push('page-styles')`).
+
 ## Frontend Inventory Listing
 
 - **Route**: `GET /inventory` → `FrontendController::inventory()`. Filter AJAX: `GET /inventory/filter` → `inventoryFilter()`. Type variants: `/{type}` / `/{type}/filter`.

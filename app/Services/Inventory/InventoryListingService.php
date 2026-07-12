@@ -143,6 +143,12 @@ class InventoryListingService
             ->when($request->input('gvwr.lt'), fn(Builder $q, $v) => $q
                 ->whereHas('specs', fn(Builder $sq) => $sq->where('gvwr', '<=', (int) $v)));
 
+        // ── Fuel Economy ──────────────────────────────────────────────────────
+        $query->when($request->input('mpghwy.gt'), fn(Builder $q, $v) => $q
+                ->whereHas('specs', fn(Builder $sq) => $sq->where('mpg_highway', '>=', (int) $v)))
+            ->when($request->input('mpgcity.gt'), fn(Builder $q, $v) => $q
+                ->whereHas('specs', fn(Builder $sq) => $sq->where('mpg_city', '>=', (int) $v)));
+
         // ── Body Style ────────────────────────────────────────────────────────
         if ($bodyStyles = $request->input('body_style')) {
             $query->whereHas('bodyStyle', fn(Builder $q) => $q->whereIn('name', (array) $bodyStyles));
@@ -413,6 +419,39 @@ class InventoryListingService
             ->selectRaw('MIN(year) as min_year, MAX(year) as max_year')
             ->first();
 
+        // ── Fuel Economy Counts ───────────────────────────────────────────────
+        $mpgCounts = $base()
+            ->join('vehicle_specs', 'vehicles.id', '=', 'vehicle_specs.vehicle_id')
+            ->selectRaw("
+                SUM(CASE WHEN vehicle_specs.mpg_highway >= 20 THEN 1 ELSE 0 END) as hwy_20,
+                SUM(CASE WHEN vehicle_specs.mpg_highway >= 25 THEN 1 ELSE 0 END) as hwy_25,
+                SUM(CASE WHEN vehicle_specs.mpg_highway >= 30 THEN 1 ELSE 0 END) as hwy_30,
+                SUM(CASE WHEN vehicle_specs.mpg_highway >= 35 THEN 1 ELSE 0 END) as hwy_35,
+                SUM(CASE WHEN vehicle_specs.mpg_highway >= 40 THEN 1 ELSE 0 END) as hwy_40,
+                SUM(CASE WHEN vehicle_specs.mpg_city >= 20 THEN 1 ELSE 0 END) as city_20,
+                SUM(CASE WHEN vehicle_specs.mpg_city >= 25 THEN 1 ELSE 0 END) as city_25,
+                SUM(CASE WHEN vehicle_specs.mpg_city >= 30 THEN 1 ELSE 0 END) as city_30,
+                SUM(CASE WHEN vehicle_specs.mpg_city >= 35 THEN 1 ELSE 0 END) as city_35,
+                SUM(CASE WHEN vehicle_specs.mpg_city >= 40 THEN 1 ELSE 0 END) as city_40
+            ")
+            ->first();
+
+        $mpgHighwayCounts = [
+            20 => (int) ($mpgCounts?->hwy_20 ?? 0),
+            25 => (int) ($mpgCounts?->hwy_25 ?? 0),
+            30 => (int) ($mpgCounts?->hwy_30 ?? 0),
+            35 => (int) ($mpgCounts?->hwy_35 ?? 0),
+            40 => (int) ($mpgCounts?->hwy_40 ?? 0),
+        ];
+
+        $mpgCityCounts = [
+            20 => (int) ($mpgCounts?->city_20 ?? 0),
+            25 => (int) ($mpgCounts?->city_25 ?? 0),
+            30 => (int) ($mpgCounts?->city_30 ?? 0),
+            35 => (int) ($mpgCounts?->city_35 ?? 0),
+            40 => (int) ($mpgCounts?->city_40 ?? 0),
+        ];
+
         // ── Features (via Feature model — cleaner reverse relation) ───────────
         $features = Feature::whereHas('vehicles', function (Builder $q) use ($dealerId, $bodyTypeNames, $locationId) {
             $q->forDealer($dealerId)->active()->when($locationId, fn($q) => $q->where('location_id', $locationId));
@@ -434,7 +473,8 @@ class InventoryListingService
             'colors', 'interiorColors',
             'transmissions', 'drivetrains', 'fuelTypes',
             'engines', 'seating',
-            'features', 'priceRange', 'yearRange'
+            'features', 'priceRange', 'yearRange',
+            'mpgHighwayCounts', 'mpgCityCounts'
         );
     }
 }
