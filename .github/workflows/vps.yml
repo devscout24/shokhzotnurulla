@@ -38,7 +38,7 @@ jobs:
           # -avzr: archive, verbose, compress, recurse
           # --no-perms/owner/group: Let CloudPanel's Site User handle permissions on arrival
           switches: -avzr --delete --no-perms --no-owner --no-group --exclude-from='.deployignore'
-          rsh: -o ConnectTimeout=360
+          rsh: -o ConnectTimeout=480
           path: ./
           remote_path: /home/webgurus365-dealers/htdocs/dealers.webgurus365.com/
           remote_host: dealers.webgurus365.com
@@ -50,7 +50,7 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=360 -i private_key webgurus365-dealers@dealers.webgurus365.com << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=480 -i private_key webgurus365-dealers@dealers.webgurus365.com << 'EOF'
             cd /home/webgurus365-dealers/htdocs/dealers.webgurus365.com
 
             # Run Laravel optimizations

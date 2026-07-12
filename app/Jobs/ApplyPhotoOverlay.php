@@ -38,6 +38,16 @@ class ApplyPhotoOverlay implements ShouldQueue
 
     public function handle(): void
     {
+        try {
+            $this->photo->refresh();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return;
+        }
+
+        if (!$this->photo->is_primary) {
+            return;
+        }
+
         $vehicle = $this->photo->vehicle;
 
         if (!$vehicle) {

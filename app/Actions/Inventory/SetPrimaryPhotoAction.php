@@ -27,8 +27,15 @@ class SetPrimaryPhotoAction
                     Storage::disk($previousPrimary->disk)->delete($previousPrimary->path);
                 }
 
+                $dealer = $vehicle->dealer;
+                $dealerDomain = $dealer?->domain ?? $dealer?->staging_domain;
+                $originalUrl = $dealerDomain
+                    ? 'https://'.$dealerDomain.'/storage/'.$previousPrimary->original_path
+                    : Storage::disk($previousPrimary->disk)->url($previousPrimary->original_path);
+
                 $previousPrimary->update([
                     'path' => $previousPrimary->original_path,
+                    'url' => $originalUrl,
                 ]);
             }
 
