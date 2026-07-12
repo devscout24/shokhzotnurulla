@@ -10,31 +10,42 @@ class AdminEnvController extends Controller
     public function index()
     {
         $apiKey = config('services.vehicle_databases.api_key', env('VEHICLE_DATABASES_API_KEY', ''));
+        $googleTagId = config('services.google.tag_id', env('GOOGLE_TAG_ID', ''));
 
         return view('admin.pages.restriced-credits', [
             'apiKey' => $apiKey,
-            'isConfigured' => !empty($apiKey),
+            'isVehicleApiKeyConfigured' => !empty($apiKey),
+            'googleTagId' => $googleTagId,
+            'isGoogleTagConfigured' => !empty($googleTagId),
         ]);
     }
 
     public function update(Request $request)
     {
         $request->validate([
-            'vehicle_databases_api_key' => ['required', 'string', 'min:1'],
+            'vehicle_databases_api_key' => ['nullable', 'string', 'min:1'],
+            'google_tag_id' => ['nullable', 'string', 'min:1'],
         ]);
 
-        $value = $request->input('vehicle_databases_api_key');
 
+        $value = $request->input('vehicle_databases_api_key');
         $this->updateEnvValue('VEHICLE_DATABASES_API_KEY', $value);
+        config(['services.vehicle_databases.api_key' => $value]);
+
+        $value = $request->input('google_tag_id');
+        $this->updateEnvValue('GOOGLE_TAG_ID', $value);
+        config(['services.google.tag_id' => $value]);
+
 
         config(['services.vehicle_databases.api_key' => $value]);
+        config(['services.google.tag_id' => $value]);
 
         return redirect()
             ->route('admin.restricted-credits.index')
             ->with('success', 'VEHICLE_DATABASES_API_KEY has been updated successfully.');
     }
 
-    private function updateEnvValue(string $key, string $value): void
+    private function updateEnvValue(string $key, ?string $value): void
     {
         $envPath = base_path('.env');
 
