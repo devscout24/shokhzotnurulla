@@ -74,8 +74,9 @@ Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class, 'http-cache'])->
     Route::view('/get-approved', 'frontend.pages.get-approved')->name('get-approved');
     Route::view('/car-loan-calculator', 'frontend.pages.car-loan-calculator')->name('car-loan-calculator');
     Route::view('/schedule-service', 'frontend.pages.service')->name('service');
-    
+
     Route::view('/detailing', 'frontend.pages.detailing')->name('detailing');
+    Route::view('/3-month-3000-mile-certified-warranty', 'frontend.pages.300-warranty')->name('warranty');
 
     Route::get('/about-us', [FrontendController::class, 'aboutUs'])->name('about');
     Route::get('/contact-us', [FrontendController::class, 'contactUs'])->name('contact');
