@@ -69,6 +69,8 @@ class Dealer extends Model
         'banner_mobile_media_id',
         'video_url',
         'video_source',
+        'google_places_api_key',
+        'google_place_id',
         'status',
     ];
 

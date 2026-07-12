@@ -127,10 +127,10 @@
     <div class="d-block d-xl-none h-63" id="mobile-nav-spacer"></div>
 
     <main class="mt-3 mb-3 mb-sm-5 vdp_pre-owned
-                                make_{{ Str::slug($vehicle?->make?->name ?? '') }}
-                                {{ $vehicle?->bodyType?->name ? 'body_' . Str::slug($vehicle?->bodyType?->name) : '' }}
-                                {{ ($vehicle?->original_price && $vehicle?->list_price < $vehicle?->original_price) ? 'has-discount' : 'no-discount' }}
-                                container">
+                                    make_{{ Str::slug($vehicle?->make?->name ?? '') }}
+                                    {{ $vehicle?->bodyType?->name ? 'body_' . Str::slug($vehicle?->bodyType?->name) : '' }}
+                                    {{ ($vehicle?->original_price && $vehicle?->list_price < $vehicle?->original_price) ? 'has-discount' : 'no-discount' }}
+                                    container">
         <div class="row">
 
             {{-- ══════ LEFT COLUMN ══════ --}}
@@ -689,8 +689,8 @@
 
                     @php
                         $keyFeatures = $vehicle?->factoryOptions
-                            ?->filter(fn ($fo) => $fo->pivot->is_starred)
-                            ?->take(9);
+                                ?->filter(fn($fo) => $fo->pivot->is_starred)
+                                ?->take(9);
                     @endphp
 
                     {{-- ── Key Features ── --}}
@@ -709,7 +709,7 @@
                                             $featureIcon = $fo->option_key;
                                             $featureIconPath = public_path('assets/frontend/img/features/' . $featureIcon . '.svg');
 
-                                            if (! file_exists($featureIconPath)) {
+                                            if (!file_exists($featureIconPath)) {
                                                 $labelIcon = \Illuminate\Support\Str::slug($fo->label, '_');
                                                 $labelIconPath = public_path('assets/frontend/img/features/' . $labelIcon . '.svg');
 

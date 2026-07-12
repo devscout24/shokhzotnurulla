@@ -182,12 +182,49 @@
                             </div>
                         </div>
 
+                        {{-- Google Places API Key --}}
+                        <div class="ws-setting-row">
+                            <div class="ws-label-col">
+                                <div class="fw-semibold text-dark mb-1" style="font-size:13px;">Google Places API Key</div>
+                                <div class="text-muted" style="font-size:11.5px;">
+                                    Used to fetch Google reviews and ratings for this dealer.
+                                </div>
+                            </div>
+                            <div class="ws-input-col">
+                                <input type="text"
+                                       name="google_places_api_key"
+                                       id="google_places_api_key"
+                                       class="form-control form-control-sm"
+                                       placeholder="AIza..."
+                                       value="{{ old('google_places_api_key', $dealer->google_places_api_key) }}">
+                            </div>
+                        </div>
+
+                        {{-- Google Place ID --}}
+                        <div class="ws-setting-row">
+                            <div class="ws-label-col">
+                                <div class="fw-semibold text-dark mb-1" style="font-size:13px;">Google Place ID</div>
+                                <div class="text-muted" style="font-size:11.5px;">
+                                    The unique Place ID for this dealership on Google Maps (e.g. <code>ChIJ...</code>). Find yours at <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank">Place ID Finder</a>.
+                                </div>
+                            </div>
+                            <div class="ws-input-col">
+                                <input type="text"
+                                       name="google_place_id"
+                                       id="google_place_id"
+                                       class="form-control form-control-sm"
+                                       placeholder="ChIJ..."
+                                       value="{{ old('google_place_id', $dealer->google_place_id) }}">
+                            </div>
+                        </div>
+
                         {{-- Save --}}
                         <div class="px-3 py-3">
                             <button type="button" class="ws-btn-save" id="btnSaveGeneral">
                                 &#10003; Save
                             </button>
                         </div>
+
 
                     </div>{{-- end card --}}
 
@@ -505,6 +542,8 @@
         formData.append('corporate_address', document.querySelector('[name="corporate_address"]').value);
         formData.append('support_email', document.querySelector('[name="support_email"]').value);
         formData.append('abandoned_form_minutes', document.querySelector('[name="abandoned_form_minutes"]').value);
+        formData.append('google_places_api_key', document.getElementById('google_places_api_key').value);
+        formData.append('google_place_id', document.getElementById('google_place_id').value);
 
         const logoFile = document.getElementById('logoInput').files[0];
         const printLogoFile = document.getElementById('printLogoInput').files[0];
