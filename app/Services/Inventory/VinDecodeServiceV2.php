@@ -46,21 +46,30 @@ class VinDecodeServiceV2
         $vin = strtoupper(trim($vin));
         $cacheKey = 'vin_decode_v2:'.$vin.($modelYear ? ':'.$modelYear : '');
 
-        DevLog::debug('[VINDECODE] decode() called', [
+        DevLog::channel('vin-decode', '[VINDECODE] decode() called', [
             'vin' => substr($vin, 0, 8).'*****',
             'modelYear' => $modelYear,
             'cacheKey' => $cacheKey,
         ]);
 
         if (Cache::has($cacheKey)) {
-            DevLog::debug('[VINDECODE] cache HIT', ['cacheKey' => $cacheKey]);
+            $cached = Cache::get($cacheKey);
+            if (is_array($cached) && ($cached['success'] ?? false)) {
+                DevLog::channel('vin-decode', '[VINDECODE] cache HIT', ['cacheKey' => $cacheKey]);
+                return $cached;
+            }
+            Cache::forget($cacheKey);
         }
 
-        return Cache::remember($cacheKey, self::VIN_CACHE_TTL, function () use ($vin, $modelYear) {
-            DevLog::debug('[VINDECODE] cache MISS — fetching from API', ['vin' => substr($vin, 0, 8).'*****']);
+        DevLog::channel('vin-decode', '[VINDECODE] cache MISS — fetching from API', ['vin' => substr($vin, 0, 8).'*****']);
 
-            return $this->fetchAndNormalize($vin, $modelYear);
-        });
+        $result = $this->fetchAndNormalize($vin, $modelYear);
+
+        if (is_array($result) && ($result['success'] ?? false)) {
+            Cache::put($cacheKey, $result, self::VIN_CACHE_TTL);
+        }
+
+        return $result;
     }
 
     private function getDefaultHeaders(): array
@@ -184,7 +193,7 @@ class VinDecodeServiceV2
             return $this->normalizeResponse($records);
 
         } catch (ConnectionException $e) {
-            DevLog::error('[VINDECODE] ConnectionException', [
+            \Illuminate\Support\Facades\Log::channel('vin-decode')->error('[VINDECODE] ConnectionException', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile().':'.$e->getLine(),
             ]);
@@ -193,7 +202,7 @@ class VinDecodeServiceV2
                 'Could not connect to Vehicle Databases API. Check your internet connection and try again.'
             );
         } catch (Exception $e) {
-            DevLog::error('[VINDECODE] unexpected Exception', [
+            \Illuminate\Support\Facades\Log::channel('vin-decode')->error('[VINDECODE] unexpected Exception', [
                 'message' => $e->getMessage(),
                 'class' => get_class($e),
                 'file' => $e->getFile().':'.$e->getLine(),
