@@ -8,6 +8,33 @@
 
         'resources/css/frontend/pages/service.css',
     ])
+    <style>
+        .detailing-faq-container {
+            max-width: 800px !important;
+            margin: 0 auto !important;
+        }
+        .detailing-faq-container .accordion-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: #fff;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .detailing-faq-container .accordion-item .cursor-pointer {
+            background-color: #f9fafb;
+            transition: background-color 0.2s ease;
+        }
+        .detailing-faq-container .accordion-item .cursor-pointer:hover {
+            background-color: #f3f4f6;
+        }
+        .detailing-faq-container .accordion-collapse {
+            transition: all 0.3s ease;
+        }
+        .detailing-faq-container .accordion-collapse.collapse:not(.show) {
+            display: none;
+        }
+    </style>
 @endpush
 
 
@@ -314,17 +341,12 @@
                         <h2 class="" id="4tlMYaZHGR" style="text-align: center;">Frequently asked questions about car
                             detailing</h2>
                         <div class="sc-24764b04-0 dRafiy"></div>
-                        <div class="sc-1a7ba87f-0 eBFsoO cElement cContainer  container ">
+                        <div class="sc-1a7ba87f-0 eBFsoO cElement cContainer  container detailing-faq-container">
                             <div class="accordion">
                                 <div class="accordion-item">
                                     <div class="d-flex px-4 py-3 cursor-pointer border-bottom">
                                         <h4 class="h5 m-0">How often should I schedule a professional detail?</h4>
-                                        <span aria-hidden="true"
-                                            class="d-inline-block faIcon ofa-solid ofa-square-minus ms-auto h5 mb-0 text-primary">
-                                            <svg aria-hidden="true" focusable="false" height="16" width="16" fill="#166B87">
-                                                <use xlink:href="/solid.svg#square-minus"></use>
-                                            </svg>
-                                        </span>
+                                        <i class="fa-solid fa-square-minus ms-auto h5 mb-0 text-primary"></i>
                                     </div>
                                     <div class="accordion-collapse collapse show">
                                         <div class="accordion-body">
@@ -339,12 +361,7 @@
                                 <div class="accordion-item">
                                     <div class="d-flex px-4 py-3 cursor-pointer border-bottom">
                                         <h4 class="h5 m-0">How long will the process take?</h4>
-                                        <span aria-hidden="true"
-                                            class="d-inline-block faIcon ofa-solid ofa-square-plus ms-auto h5 mb-0 ">
-                                            <svg aria-hidden="true" focusable="false" height="16" width="16" fill="inherit">
-                                                <use xlink:href="/solid.svg#square-plus"></use>
-                                            </svg>
-                                        </span>
+                                        <i class="fa-solid fa-square-plus ms-auto h5 mb-0 text-muted"></i>
                                     </div>
                                     <div class="accordion-collapse collapse">
                                         <div class="accordion-body">
@@ -359,12 +376,7 @@
                                 <div class="accordion-item">
                                     <div class="d-flex px-4 py-3 cursor-pointer border-bottom">
                                         <h4 class="h5 m-0">Can detailing help with paint imperfections?</h4>
-                                        <span aria-hidden="true"
-                                            class="d-inline-block faIcon ofa-solid ofa-square-plus ms-auto h5 mb-0 ">
-                                            <svg aria-hidden="true" focusable="false" height="16" width="16" fill="inherit">
-                                                <use xlink:href="/solid.svg#square-plus"></use>
-                                            </svg>
-                                        </span>
+                                        <i class="fa-solid fa-square-plus ms-auto h5 mb-0 text-muted"></i>
                                     </div>
                                     <div class="accordion-collapse collapse">
                                         <div class="accordion-body">
@@ -379,12 +391,7 @@
                                 <div class="accordion-item">
                                     <div class="d-flex px-4 py-3 cursor-pointer border-bottom">
                                         <h4 class="h5 m-0">What is included in the interior detailing package?</h4>
-                                        <span aria-hidden="true"
-                                            class="d-inline-block faIcon ofa-solid ofa-square-plus ms-auto h5 mb-0 ">
-                                            <svg aria-hidden="true" focusable="false" height="16" width="16" fill="inherit">
-                                                <use xlink:href="/solid.svg#square-plus"></use>
-                                            </svg>
-                                        </span>
+                                        <i class="fa-solid fa-square-plus ms-auto h5 mb-0 text-muted"></i>
                                     </div>
                                     <div class="accordion-collapse collapse">
                                         <div class="accordion-body">
@@ -423,6 +430,44 @@
     var errorList   = document.getElementById('dt-error-list');
     var submitBtn   = form ? form.querySelector('[type="submit"]') : null;
     var csrf        = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+    // FAQ Accordion Toggle
+    var accordionItems = document.querySelectorAll('.detailing-faq-container .accordion-item');
+    accordionItems.forEach(function (item) {
+        var header = item.querySelector('.cursor-pointer');
+        var collapse = item.querySelector('.accordion-collapse');
+        if (header && collapse) {
+            header.addEventListener('click', function () {
+                var isOpen = collapse.classList.contains('show');
+
+                // Close other items
+                accordionItems.forEach(function (otherItem) {
+                    var otherCollapse = otherItem.querySelector('.accordion-collapse');
+                    var otherIcon = otherItem.querySelector('.fa-solid');
+                    if (otherCollapse && otherCollapse !== collapse) {
+                        otherCollapse.classList.remove('show');
+                        if (otherIcon) {
+                            otherIcon.className = 'fa-solid fa-square-plus ms-auto h5 mb-0 text-muted';
+                        }
+                    }
+                });
+
+                // Toggle current item
+                var icon = item.querySelector('.fa-solid');
+                if (isOpen) {
+                    collapse.classList.remove('show');
+                    if (icon) {
+                        icon.className = 'fa-solid fa-square-plus ms-auto h5 mb-0 text-muted';
+                    }
+                } else {
+                    collapse.classList.add('show');
+                    if (icon) {
+                        icon.className = 'fa-solid fa-square-minus ms-auto h5 mb-0 text-primary';
+                    }
+                }
+            });
+        }
+    });
 
     if (!form) return;
 
