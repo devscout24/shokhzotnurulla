@@ -19,7 +19,7 @@
     </a>
     <a class="sidebar-item-link" href="{{ route('admin.restricted-credits.index') }}">
         <div class="sidebar-item {{ request()->routeIs('admin.restricted-credits.*') ? 'active' : '' }}">
-            <i class="bi bi-shield-lock"></i>
+            <i class="bi bi-file-lock2"></i>
             <span>{{ __('Restricted Credits') }}</span>
         </div>
     </a>

@@ -36,6 +36,10 @@ return [
         ],
     ],
 
+    'google' => [
+        'tag_id'=> env('GOOGLE_TAG_ID'),
+    ],
+
     'vehicle_databases' => [
         'api_key' => env('VEHICLE_DATABASES_API_KEY'),
     ],
