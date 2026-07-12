@@ -172,7 +172,119 @@
                                     </div>
                                 </div>
                                 <div class="cElement cForm p-4 border rounded bg-white" style="min-height: 500px;">
-                                    <div data-cy="confirmation" class="py-4 px-0 text-center px-sm-4 border-bottom">
+                                    <form id="detailing-form" novalidate>
+                                        @csrf
+                                        <div id="dt-error-summary" class="hidden alert alert-danger mb-3">
+                                            <strong>Please fix the following errors:</strong>
+                                            <ul id="dt-error-list" class="mb-0 mt-2"></ul>
+                                        </div>
+
+                                        <div id="dt-form-body">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="mb-3 mb-md-4">
+                                                        <label for="dt-firstname" class="form-label mb-1">
+                                                            First Name <strong class="text-danger ps-1">*</strong>
+                                                        </label>
+                                                        <input type="text" id="dt-firstname" name="first_name"
+                                                            class="form-control" placeholder="First" minlength="2"
+                                                            maxlength="100" tabindex="1"
+                                                            data-cy="formcontrol-text-firstname">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="mb-3 mb-md-4">
+                                                        <label for="dt-lastname" class="form-label mb-1">
+                                                            Last Name <strong class="text-danger ps-1">*</strong>
+                                                        </label>
+                                                        <input type="text" id="dt-lastname" name="last_name"
+                                                            class="form-control" placeholder="Last" minlength="2"
+                                                            maxlength="100" tabindex="2"
+                                                            data-cy="formcontrol-text-lastname">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="mb-3 mb-md-4">
+                                                        <label for="dt-email" class="form-label mb-1">
+                                                            Email Address <strong class="text-danger ps-1">*</strong>
+                                                        </label>
+                                                        <input type="email" id="dt-email" name="email" class="form-control"
+                                                            placeholder="you@email.com" tabindex="3" aria-label="Your email"
+                                                            autocomplete="off" data-cy="formcontrol-email">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="mb-3 mb-md-4">
+                                                        <label for="dt-phone" class="form-label mb-1">
+                                                            Phone Number <strong class="text-danger ps-1">*</strong>
+                                                        </label>
+                                                        <input type="tel" id="dt-phone" name="phone" class="form-control"
+                                                            placeholder="(###) ###-####" tabindex="4" inputmode="numeric"
+                                                            data-cy="formcontrol-phone">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="mb-3 mb-md-4">
+                                                        <label for="dt-commpref" class="form-label mb-1">
+                                                            What is the best way to contact you?
+                                                            <strong class="text-danger ps-1">*</strong>
+                                                        </label>
+
+                                                        <div>
+                                                            <label class="custom-control custom-radio p-0">
+                                                                <input type="radio" name="commpref" value="email"
+                                                                    class="form-check-input"
+                                                                    data-cy="formcontrol-radio-commpref" checked>
+                                                                <span class="custom-control-label">Email</span>
+                                                            </label>
+                                                        </div>
+
+                                                        <div>
+                                                            <label class="custom-control custom-radio p-0">
+                                                                <input type="radio" name="commpref" value="text"
+                                                                    class="form-check-input"
+                                                                    data-cy="formcontrol-radio-commpref">
+                                                                <span class="custom-control-label">Text Message</span>
+                                                            </label>
+                                                        </div>
+
+                                                        <div>
+                                                            <label class="custom-control custom-radio p-0">
+                                                                <input type="radio" name="commpref" value="phone"
+                                                                    class="form-check-input"
+                                                                    data-cy="formcontrol-radio-commpref">
+                                                                <span class="custom-control-label">Phone Call</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="d-block">
+                                                        <div class="mb-3 mb-md-4">
+                                                            <label class="m-0 form-label mb-1" for="dt-comment">
+                                                                What questions can we answer for you?
+                                                            </label>
+                                                            <textarea data-cy="formcontrol-textarea" name="comment"
+                                                                placeholder="I'd like to schedule service" tabindex="5"
+                                                                id="dt-comment" class="form-control h-100 form-control"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mt-3">
+                                                    <button type="submit" class="w-100 btn btn-primary">
+                                                        Continue
+                                                        <span class="d-inline-block float-end">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd" d="M6.146 4.146a.5.5 0 0 1 .708 0L10.207 8l-3.353 3.854a.5.5 0 0 1-.708-.708L8.793 8 6.146 5.354a.5.5 0 0 1 0-.708z"/>
+                                                            </svg>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <div id="detailing-success" class="hidden py-4 px-0 text-center px-sm-4 border-bottom">
                                         <div class="my-1">
                                             <span aria-hidden="true"
                                                 class="d-inline-block faIcon ofa-regular ofa-circle-check h1">
@@ -188,8 +300,8 @@
                                             <p>Thank you for contacting Angel Motors Inc! We will get back to you as soon as
                                                 possible.</p>
                                         </div>
+                                        <div class="pt-4 pb-3 px-0 text-center" id="npsSurvey"> </div>
                                     </div>
-                                    <div class="pt-4 pb-3 px-0 text-center" id="npsSurvey"> </div>
                                 </div>
                             </div>
                         </div>
@@ -298,3 +410,77 @@
 
     @include('frontend.partials.dealership-info')
 @endsection
+
+@push('page-scripts')
+<script>
+(function () {
+    'use strict';
+
+    var form        = document.getElementById('detailing-form');
+    var formBody    = document.getElementById('dt-form-body');
+    var successDiv  = document.getElementById('detailing-success');
+    var errorSummary = document.getElementById('dt-error-summary');
+    var errorList   = document.getElementById('dt-error-list');
+    var submitBtn   = form ? form.querySelector('[type="submit"]') : null;
+    var csrf        = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+    if (!form) return;
+
+    function showError(message) {
+        errorSummary.classList.remove('hidden');
+        if (typeof message === 'object') {
+            errorList.innerHTML = '';
+            Object.values(message).forEach(function (msgs) {
+                (Array.isArray(msgs) ? msgs : [msgs]).forEach(function (msg) {
+                    var li = document.createElement('li');
+                    li.textContent = msg;
+                    errorList.appendChild(li);
+                });
+            });
+        } else {
+            errorList.innerHTML = '<li>' + message + '</li>';
+        }
+    }
+
+    function hideError() {
+        errorSummary.classList.add('hidden');
+        errorList.innerHTML = '';
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        hideError();
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting…';
+        }
+
+        var data = new FormData(form);
+
+        fetch('{{ route("frontend.forms.detailing") }}', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+            body: data,
+        })
+        .then(function (res) { return res.json().then(function (json) { return { status: res.status, json: json }; }); })
+        .then(function (res) {
+            if (res.status === 200 && res.json.success) {
+                formBody.classList.add('hidden');
+                successDiv.classList.remove('hidden');
+            } else if (res.status === 422 && res.json.errors) {
+                showError(res.json.errors);
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Continue'; }
+            } else {
+                showError('Something went wrong. Please try again.');
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Continue'; }
+            }
+        })
+        .catch(function () {
+            showError('Network error. Please check your connection and try again.');
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Continue'; }
+        });
+    });
+}());
+</script>
+@endpush

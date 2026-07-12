@@ -123,6 +123,7 @@ Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class, 'http-cache'])->
         Route::post('/schedule-test-drive', [FormEntryController::class, 'scheduleTestDrive'])->name('schedule-test-drive');
         Route::post('/contact-us', [FormEntryController::class, 'contactUs'])->name('contact-us');
         Route::post('/schedule-service', [FormEntryController::class, 'scheduleService'])->name('schedule-service');
+        Route::post('/detailing', [FormEntryController::class, 'detailing'])->name('detailing');
         Route::post('/trade-in/photos', [FormEntryController::class, 'uploadTradeInPhotos'])->name('trade-in.photos');
         Route::patch('/{formEntry}/nps', [FormEntryController::class, 'updateNps'])->name('nps');
         Route::post('/unlock-price', [FormEntryController::class, 'unlockPrice'])->name('unlock-price');

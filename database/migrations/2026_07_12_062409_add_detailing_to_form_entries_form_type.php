@@ -17,7 +17,8 @@ return new class extends Migration
                 'schedule_test_drive',
                 'contact_us',
                 'unlock_eprice',
-                'schedule_service'
+                'schedule_service',
+                'detailing'
             ) NOT NULL");
         }
     }
@@ -33,7 +34,8 @@ return new class extends Migration
                 'ask_question',
                 'schedule_test_drive',
                 'contact_us',
-                'unlock_eprice'
+                'unlock_eprice',
+                'schedule_service'
             ) NOT NULL");
         }
     }

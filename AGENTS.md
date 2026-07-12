@@ -125,3 +125,15 @@ Multi-tenant dealership management platform. Laravel 12 (`^8.2` / Node 26 in `.n
 - EditorConfig: 4-space indent, LF, UTF-8, final newline, trim trailing whitespace (except `.md`).
 - Laravel Pint for PHP CS.
 - Vite SCSS via `modern-compiler` API (suppressed deprecations: `legacy-js-api`, `import`, `global-builtin`, `color-functions`, `if-function`).
+
+## Detailing Page & Schedule Service Form
+
+- **Detailing Route**: `GET /detailing` named `frontend.detailing` -> `FrontendController@detailing`.
+- **Detailing View**: `resources/views/frontend/pages/detailing.blade.php`.
+- **Detailing Submit Route**: `POST /forms/detailing` named `frontend.forms.detailing` -> `FormEntryController@detailing`.
+- **Schedule Service Route**: `POST /forms/schedule-service` named `frontend.forms.schedule-service` -> `FormEntryController@scheduleService`.
+- **Schedule Service Request**: `StoreScheduleServiceRequest` extends `StoreSimpleFormRequest` to support additional vehicle specifications (`year`, `make`, `model`, `mileage`, `vin`, `warranty`, `services`, `preferreddate`, `vehicle`).
+- **Form type & ENUM**: Database migrations `add_schedule_service_to_form_entries_form_type` and `add_detailing_to_form_entries_form_type` alter the `form_type` column on the `form_entries` table to add the `schedule_service` and `detailing` enum values.
+- **Form Submission Logic**: Both forms have been converted to AJAX forms using `FormData`. They post to their respective endpoints, display a custom success confirmation section on successful response, and render error lists on validation failures.
+
+

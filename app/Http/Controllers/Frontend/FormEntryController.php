@@ -109,6 +109,14 @@ class FormEntryController extends Controller
         return response()->json(['success' => true, 'form_entry_id' => $entry->id]);
     }
 
+    public function detailing(StoreSimpleFormRequest $request): JsonResponse
+    {
+        $entry = ($this->storeSimple)($request, 'detailing', [
+            'comment' => $request->comment,
+        ]);
+        return response()->json(['success' => true, 'form_entry_id' => $entry->id]);
+    }
+
     public function updateNps(UpdateNpsRequest $request, FormEntry $formEntry): JsonResponse
     {
         $formEntry->update(['nps_rating' => $request->rating]);
