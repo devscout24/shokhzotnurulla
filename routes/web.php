@@ -72,16 +72,22 @@ Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class, 'http-cache'])->
 
     // Static pages
     Route::view('/get-approved', 'frontend.pages.get-approved')->name('get-approved');
-    Route::get('/print-deal', function () {
-        return view('frontend.pages.print-deals');
-    })->name('print-deal');
     Route::view('/car-loan-calculator', 'frontend.pages.car-loan-calculator')->name('car-loan-calculator');
     Route::view('/schedule-service', 'frontend.pages.service')->name('service');
+    
+    Route::view('/detailing', 'frontend.pages.detailing')->name('detailing');
+
     Route::get('/about-us', [FrontendController::class, 'aboutUs'])->name('about');
     Route::get('/contact-us', [FrontendController::class, 'contactUs'])->name('contact');
     Route::view('/privacy-policy', 'frontend.pages.privacy-policy')->name('privacy');
     Route::view('/terms-of-service', 'frontend.pages.terms-of-service')->name('terms');
     Route::view('/direction', 'frontend.pages.direction')->name('direction');
+
+
+    Route::get('/print-deal', function () {
+        return view('frontend.pages.print-deals');
+    })->name('print-deal');
+
 
     // Data endpoints
     Route::get('/data/makes/{make}/models', [FrontendController::class, 'makeModels'])->name('data.make-models');
@@ -116,6 +122,7 @@ Route::middleware([\App\Http\Middleware\LogWebsiteVisit::class, 'http-cache'])->
         Route::post('/ask-question', [FormEntryController::class, 'askQuestion'])->name('ask-question');
         Route::post('/schedule-test-drive', [FormEntryController::class, 'scheduleTestDrive'])->name('schedule-test-drive');
         Route::post('/contact-us', [FormEntryController::class, 'contactUs'])->name('contact-us');
+        Route::post('/schedule-service', [FormEntryController::class, 'scheduleService'])->name('schedule-service');
         Route::post('/trade-in/photos', [FormEntryController::class, 'uploadTradeInPhotos'])->name('trade-in.photos');
         Route::patch('/{formEntry}/nps', [FormEntryController::class, 'updateNps'])->name('nps');
         Route::post('/unlock-price', [FormEntryController::class, 'unlockPrice'])->name('unlock-price');

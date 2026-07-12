@@ -66,15 +66,24 @@
                             <h2 class="text-start" id="S_Dd-1zubD">Schedule service form</h2>
                         </div>
                         <div class="sc-1a7ba87f-0 cElement cContainer  container " id="connect">
-                            <div class="cElement cForm p-4 border rounded bg-white h-500">
-                                <div>
+                            <form id="schedule-service-form" class="cElement cForm p-4 border rounded bg-white h-500" novalidate>
+                                @csrf
+                                <div id="ss-success" class="hidden py-4 text-center">
+                                    <div class="h4 text-primary mb-2">&#10003; Appointment Request Received</div>
+                                    <p>Thank you! We will reach out shortly to confirm your service appointment.</p>
+                                </div>
+                                <div id="ss-error-summary" class="hidden alert alert-danger mb-3">
+                                    <strong>Please fix the following errors:</strong>
+                                    <ul id="ss-error-list" class="mb-0 mt-2"></ul>
+                                </div>
+                                <div id="ss-form-body">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="mb-3 mb-md-4">
-                                                <label for="firstname" class="form-label mb-1">
+                                                <label for="ss-firstname" class="form-label mb-1">
                                                     First Name <strong class="text-danger ps-1">*</strong>
                                                 </label>
-                                                <input type="text" id="firstname" name="firstname"
+                                                <input type="text" id="ss-firstname" name="first_name"
                                                     class="form-control" placeholder="First" minlength="2"
                                                     maxlength="100" tabindex="1"
                                                     data-cy="formcontrol-text-firstname">
@@ -82,10 +91,10 @@
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="mb-3 mb-md-4">
-                                                <label for="lastname" class="form-label mb-1">
+                                                <label for="ss-lastname" class="form-label mb-1">
                                                     Last Name <strong class="text-danger ps-1">*</strong>
                                                 </label>
-                                                <input type="text" id="lastname" name="lastname"
+                                                <input type="text" id="ss-lastname" name="last_name"
                                                     class="form-control" placeholder="Last" minlength="2"
                                                     maxlength="100" tabindex="2"
                                                     data-cy="formcontrol-text-lastname">
@@ -256,9 +265,9 @@
                                                 <label for="f18text" class="m-0 form-label mb-1">
                                                     VIN #
                                                 </label>
-                                                <input type="text" id="f18text" name="f18text"
+                                                <input type="text" id="ss-vin" name="vin"
                                                     class="form-control form-control" tabindex="12"
-                                                    data-cy="formcontrol-text-f18text">
+                                                    data-cy="formcontrol-text-vin">
                                             </div>
                                         </div>
 
@@ -294,49 +303,49 @@
                                                 </label>
 
                                                 <div class="custom-control p-0 custom-checkbox">
-                                                    <input class="form-check-input" type="checkbox" value=""
-                                                        id="checkDefault">
-                                                    <label class="custom-control-label" for="make_audi">
+                                                    <input class="form-check-input" type="checkbox" value="Oil Change"
+                                                        name="services[]" id="ss-svc-oil">
+                                                    <label class="custom-control-label" for="ss-svc-oil">
                                                         Oil Change
                                                     </label>
                                                 </div>
 
                                                 <div class="custom-control p-0 custom-checkbox">
-                                                    <input class="form-check-input" type="checkbox" value=""
-                                                        id="checkDefault">
-                                                    <label class="custom-control-label" for="make_audi">
+                                                    <input class="form-check-input" type="checkbox" value="Tire Rotation"
+                                                        name="services[]" id="ss-svc-tire-rot">
+                                                    <label class="custom-control-label" for="ss-svc-tire-rot">
                                                         Tire Rotation
                                                     </label>
                                                 </div>
 
                                                 <div class="custom-control p-0 custom-checkbox">
-                                                    <input class="form-check-input" type="checkbox" value=""
-                                                        id="checkDefault">
-                                                    <label class="custom-control-label" for="make_audi">
+                                                    <input class="form-check-input" type="checkbox" value="Coolant Flush"
+                                                        name="services[]" id="ss-svc-coolant">
+                                                    <label class="custom-control-label" for="ss-svc-coolant">
                                                         Coolant Flush
                                                     </label>
                                                 </div>
 
                                                 <div class="custom-control p-0 custom-checkbox">
-                                                    <input class="form-check-input" type="checkbox" value=""
-                                                        id="checkDefault">
-                                                    <label class="custom-control-label" for="make_audi">
+                                                    <input class="form-check-input" type="checkbox" value="Transmission Flush"
+                                                        name="services[]" id="ss-svc-trans">
+                                                    <label class="custom-control-label" for="ss-svc-trans">
                                                         Transmission Flush
                                                     </label>
                                                 </div>
 
                                                 <div class="custom-control p-0 custom-checkbox">
-                                                    <input class="form-check-input" type="checkbox" value=""
-                                                        id="checkDefault">
-                                                    <label class="custom-control-label" for="make_audi">
+                                                    <input class="form-check-input" type="checkbox" value="Tire Balance"
+                                                        name="services[]" id="ss-svc-tire-bal">
+                                                    <label class="custom-control-label" for="ss-svc-tire-bal">
                                                         Tire Balance
                                                     </label>
                                                 </div>
 
                                                 <div class="custom-control p-0 custom-checkbox">
-                                                    <input class="form-check-input" type="checkbox" value=""
-                                                        id="checkDefault">
-                                                    <label class="custom-control-label" for="make_audi">
+                                                    <input class="form-check-input" type="checkbox" value="Other"
+                                                        name="services[]" id="ss-svc-other">
+                                                    <label class="custom-control-label" for="ss-svc-other">
                                                         Other (please describe below)
                                                     </label>
                                                 </div>
@@ -386,8 +395,8 @@
                                             </button>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                </div>{{-- #ss-form-body --}}
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -588,3 +597,93 @@
     <!-- Dealership Info -->
     @include('frontend.partials.dealership-info')
 @endsection
+
+@push('page-scripts')
+<script>
+(function () {
+    'use strict';
+
+    var form        = document.getElementById('schedule-service-form');
+    var formBody    = document.getElementById('ss-form-body');
+    var successDiv  = document.getElementById('ss-success');
+    var errorSummary = document.getElementById('ss-error-summary');
+    var errorList   = document.getElementById('ss-error-list');
+    var submitBtn   = form ? form.querySelector('[type="submit"]') : null;
+    var csrf        = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+    if (!form) return;
+
+    // Warranty toggle buttons
+    var warrantyBtns = form.querySelectorAll('[data-cy="formcontrol-btntab"]');
+    warrantyBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            warrantyBtns.forEach(function (b) { b.classList.remove('btn-primary'); b.classList.add('btn-default'); });
+            btn.classList.remove('btn-default');
+            btn.classList.add('btn-primary');
+            var hiddenWarranty = form.querySelector('input[name="warranty"]');
+            if (hiddenWarranty) hiddenWarranty.value = btn.value;
+        });
+    });
+
+    function showError(message) {
+        errorSummary.classList.remove('hidden');
+        if (typeof message === 'object') {
+            errorList.innerHTML = '';
+            Object.values(message).forEach(function (msgs) {
+                (Array.isArray(msgs) ? msgs : [msgs]).forEach(function (msg) {
+                    var li = document.createElement('li');
+                    li.textContent = msg;
+                    errorList.appendChild(li);
+                });
+            });
+        } else {
+            errorList.innerHTML = '<li>' + message + '</li>';
+        }
+    }
+
+    function hideError() {
+        errorSummary.classList.add('hidden');
+        errorList.innerHTML = '';
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        hideError();
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting…';
+        }
+
+        var data = new FormData(form);
+        // Add referrer as vehicle field (schedule-service#connect)
+        if (!data.get('vehicle')) {
+            data.set('vehicle', 'schedule-service#connect');
+        }
+
+        fetch('{{ route("frontend.forms.schedule-service") }}', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+            body: data,
+        })
+        .then(function (res) { return res.json().then(function (json) { return { status: res.status, json: json }; }); })
+        .then(function (res) {
+            if (res.status === 200 && res.json.success) {
+                formBody.classList.add('hidden');
+                successDiv.classList.remove('hidden');
+            } else if (res.status === 422 && res.json.errors) {
+                showError(res.json.errors);
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Continue'; }
+            } else {
+                showError('Something went wrong. Please try again.');
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Continue'; }
+            }
+        })
+        .catch(function () {
+            showError('Network error. Please check your connection and try again.');
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Continue'; }
+        });
+    });
+}());
+</script>
+@endpush

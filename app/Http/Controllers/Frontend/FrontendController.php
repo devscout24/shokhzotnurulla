@@ -108,6 +108,24 @@ class FrontendController extends Controller
         ]))->header('ETag', $etag);
     }
 
+    // Detailing Page
+
+    public function detailing(Request $request): View {
+        $dealerId = $this->dealerResolver->resolve();
+
+        $dealerName = Dealer::where('id', $dealerId)->value('name');
+        $seo = [
+            'title'       => $dealerName . ' | Detailing Service in Smyrna, TN',
+            'description' => 'Professional detailing services at ' . $dealerName . ' in Smyrna, TN. Keep your car looking new with our expert care.',
+            'keywords'    => 'detailing service smyrna tn, car detailing, auto detailing',
+        ];
+
+        return view('frontend.pages.detailing', [
+            'dealerName' => $dealerName,
+            'seo'        => $seo,
+        ]);
+    }
+
     // ── All Inventory ─────────────────────────────────────────────────────────
 
     public function inventory(Request $request): View
@@ -578,4 +596,6 @@ class FrontendController extends Controller
             'mpghwy', 'mpgcity',
         ]);
     }
+
+
 }

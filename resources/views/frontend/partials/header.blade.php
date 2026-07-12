@@ -186,7 +186,7 @@
 
 
                     <div class="float-end py-2 px-3 border-end">
-                        <div class="dropdown h-100 d-flex align-items-center">
+                        <div class="dropdown h-25 d-flex align-items-center">
                             <a href="javascript:void(0)"
                                 class="text-decoration-none text-white dropdown-toggle d-flex align-items-center"
                                 id="hoursDropdown" data-bs-toggle="dropdown" aria-expanded="false"
@@ -248,8 +248,7 @@
                         <div class="py-1 px-3 float-end border-end d-flex align-items-center gap-2">
                             @foreach ($locationMenuData as $locationItem)
                                 @php $isActiveLoc = $activeLocationId === (int) $locationItem['id']; @endphp
-                                <form action="{{ route('frontend.switch-location') }}" method="POST"
-                                    class="d-inline m-0">
+                                <form action="{{ route('frontend.switch-location') }}" method="POST" class="d-inline m-0">
                                     @csrf
                                     <input type="hidden" name="location_id" value="{{ $locationItem['id'] }}">
                                     <button type="submit"
@@ -300,11 +299,10 @@
                         $dealer = app('currentDealer') ?? null;
                         $logoPath =
                             $dealer && $dealer->logo
-                                ? asset('assets/frontend/img/logos/' . $dealer->logo)
-                                : asset('assets/frontend/img/angel-motors-logo-top-dealer-logo.webp');
+                            ? asset('assets/frontend/img/logos/' . $dealer->logo)
+                            : asset('assets/frontend/img/angel-motors-logo-top-dealer-logo.webp');
                     @endphp
-                    <img src="{{ $logoPath }}"
-                        style="max-width: 325px; max-height: 65px; width: auto; height: auto;"
+                    <img src="{{ $logoPath }}" style="max-width: 325px; max-height: 65px; width: auto; height: auto;"
                         alt="{{ $dealer->company_name ?? 'Angel Motors Inc' }}">
                 </a>
                 <div class="ms-auto" id="header-nav">
@@ -352,12 +350,12 @@
 </header>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         function setupDropdown(id) {
             const toggle = document.getElementById(id);
             if (!toggle) return;
 
-            toggle.addEventListener('click', function(e) {
+            toggle.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -389,7 +387,7 @@
         setupDropdown('hoursDropdown');
         setupDropdown('favoritesHeader');
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!e.target.closest('.dropdown')) {
                 document.querySelectorAll('.dropdown-menu.show').forEach(m => {
                     m.classList.remove('show');
@@ -409,8 +407,8 @@
                 @php
                     $mobileLogoPath =
                         $dealer && $dealer->logo
-                            ? asset('assets/frontend/img/logos/' . $dealer->logo)
-                            : asset('assets/frontend/img/angel-motors-logo-top-dealer-logo.webp');
+                        ? asset('assets/frontend/img/logos/' . $dealer->logo)
+                        : asset('assets/frontend/img/angel-motors-logo-top-dealer-logo.webp');
                 @endphp
                 <img alt="{{ $dealer->company_name ?? 'Angel Motors Inc' }}" fetchpriority="high" loading="eager"
                     style="max-width: 145px; max-height: 50px; width: auto; height: auto;" decoding="async"

@@ -8,6 +8,7 @@ use App\Actions\Website\StoreTradeInAction;
 use App\Actions\Website\UploadFormEntryPhotosAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Website\StoreGetApprovedRequest;
+use App\Http\Requests\Website\StoreScheduleServiceRequest;
 use App\Http\Requests\Website\StoreScheduleTestDriveRequest;
 use App\Http\Requests\Website\StoreSimpleFormRequest;
 use App\Http\Requests\Website\StoreTradeInRequest;
@@ -73,6 +74,24 @@ class FormEntryController extends Controller
     public function scheduleTestDrive(StoreScheduleTestDriveRequest $request): JsonResponse
     {
         $entry = ($this->storeTestDrive)($request);
+        return response()->json(['success' => true, 'form_entry_id' => $entry->id]);
+    }
+
+    public function scheduleService(StoreScheduleServiceRequest $request): JsonResponse
+    {
+        $entry = ($this->storeSimple)($request, 'schedule_service', [
+            'vehicle'       => $request->vehicle,
+            'year'          => $request->year,
+            'make'          => $request->make,
+            'model'         => $request->model,
+            'mileage'       => $request->mileage,
+            'vin'           => $request->vin,
+            'warranty'      => $request->warranty,
+            'services'      => $request->services ?? [],
+            'comment'       => $request->comment,
+            'preferreddate' => $request->preferreddate,
+        ]);
+
         return response()->json(['success' => true, 'form_entry_id' => $entry->id]);
     }
 
