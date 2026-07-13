@@ -32,7 +32,7 @@ class WebsiteMediaController extends Controller
     {
         $dealerId = $request->user()->current_dealer_id;
 
-        $query = Media::forDealer($dealerId)->forActiveLocation()->latest();
+        $query = Media::forDealer($dealerId)->latest();
 
         if ($request->filled('search')) {
             $query->where('original_name', 'like', '%' . $request->search . '%');
