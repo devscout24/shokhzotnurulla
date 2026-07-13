@@ -66,6 +66,13 @@ class VinDecodeServiceV2
 
         $result = $this->fetchAndNormalize($vin, $modelYear);
 
+        if (! is_array($result) || ! ($result['success'] ?? false)) {
+            Log::error('[VINDECODE] decode FAILED', [
+                'vin' => $vin,
+                'message' => $result['message'] ?? '(none)',
+            ]);
+        }
+
         if (is_array($result) && ($result['success'] ?? false)) {
             Cache::put($cacheKey, $result, self::VIN_CACHE_TTL);
         }
@@ -89,6 +96,7 @@ class VinDecodeServiceV2
             ]);
         } else {
             Log::channel('vin-decode')->error('[VINDECODE] No API key found! Check VEHICLE_DATABASES_API_KEY env var or config/services.php');
+            Log::error('[VINDECODE] No API key found! Check VEHICLE_DATABASES_API_KEY env var or config/services.php');
         }
 
         return $headers;
@@ -107,7 +115,6 @@ class VinDecodeServiceV2
             'api_key_present' => $apiKeyPresent,
             'api_key_prefix' => $apiKeyPresent ? substr($apiKey, 0, 8).'****' : null,
             'timeout' => self::TIMEOUT,
-            'php_sapi' => php_sapi_name(),
         ]);
 
         $startTime = microtime(true);
@@ -125,23 +132,24 @@ class VinDecodeServiceV2
                 ->get($url);
 
             $elapsedMs = round((microtime(true) - $startTime) * 1000);
+            $responseBody = $response->body();
 
             Log::channel('vin-decode')->info('[VINDECODE] HTTP response received', [
                 'status' => $response->status(),
                 'elapsed_ms' => $elapsedMs,
-                'body_length' => strlen($response->body()),
+                'body_length' => strlen($responseBody),
                 'content_type' => $response->header('Content-Type'),
-                'headers' => $response->headers(),
             ]);
 
             if (! $response->successful()) {
-                $bodyPreview = substr($response->body(), 0, 1000);
-                Log::channel('vin-decode')->error('[VINDECODE] API returned non-success HTTP status', [
+                $context = [
                     'status' => $response->status(),
                     'elapsed_ms' => $elapsedMs,
-                    'body_preview' => $bodyPreview,
-                    'body_length' => strlen($response->body()),
-                ]);
+                    'url' => $url,
+                    'body' => $responseBody,
+                ];
+                Log::channel('vin-decode')->error('[VINDECODE] API returned non-success HTTP status', $context);
+                Log::error('[VINDECODE] API error', $context);
 
                 return $this->errorResponse(
                     'Vehicle Databases API is currently unavailable (HTTP '.$response->status().'). Please try again shortly.'
@@ -151,19 +159,21 @@ class VinDecodeServiceV2
             $body = $response->json();
 
             if (is_null($body)) {
-                Log::channel('vin-decode')->error('[VINDECODE] response->json() returned null — body may not be valid JSON', [
-                    'body_preview' => substr($response->body(), 0, 500),
-                ]);
+                $context = ['body' => $responseBody];
+                Log::channel('vin-decode')->error('[VINDECODE] response->json() returned null — body may not be valid JSON', $context);
+                Log::error('[VINDECODE] response->json() returned null', $context);
 
                 return $this->errorResponse('Invalid response from Vehicle Databases API. Please try again.');
             }
 
             if (($body['status'] ?? '') !== 'success') {
-                Log::channel('vin-decode')->error('[VINDECODE] API body status not success', [
+                $context = [
                     'api_status' => $body['status'] ?? '(missing)',
                     'message' => $body['message'] ?? '(none)',
                     'elapsed_ms' => $elapsedMs,
-                ]);
+                ];
+                Log::channel('vin-decode')->error('[VINDECODE] API body status not success', $context);
+                Log::error('[VINDECODE] API body status not success', $context);
 
                 return $this->errorResponse(
                     $body['message'] ?? 'Vehicle Databases API could not decode this VIN. Please verify the VIN and try again.'
@@ -253,25 +263,29 @@ class VinDecodeServiceV2
 
         } catch (ConnectionException $e) {
             $elapsedMs = round((microtime(true) - $startTime) * 1000);
-            Log::channel('vin-decode')->error('[VINDECODE] ConnectionException', [
+            $context = [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile().':'.$e->getLine(),
                 'elapsed_ms' => $elapsedMs,
                 'url' => $url,
-            ]);
+            ];
+            Log::channel('vin-decode')->error('[VINDECODE] ConnectionException', $context);
+            Log::error('[VINDECODE] ConnectionException', $context);
 
             return $this->errorResponse(
                 'Could not connect to Vehicle Databases API. Check your internet connection and try again.'
             );
         } catch (Exception $e) {
             $elapsedMs = round((microtime(true) - $startTime) * 1000);
-            Log::channel('vin-decode')->error('[VINDECODE] unexpected Exception', [
+            $context = [
                 'message' => $e->getMessage(),
                 'class' => get_class($e),
                 'file' => $e->getFile().':'.$e->getLine(),
-                'trace_first' => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
                 'elapsed_ms' => $elapsedMs,
-            ]);
+            ];
+            Log::channel('vin-decode')->error('[VINDECODE] unexpected Exception', $context);
+            Log::error('[VINDECODE] unexpected Exception', $context);
 
             return $this->errorResponse(
                 'An unexpected error occurred while decoding the VIN. Please try again.'
