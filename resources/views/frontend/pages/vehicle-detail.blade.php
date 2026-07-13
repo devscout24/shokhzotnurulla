@@ -690,7 +690,7 @@
                     @php
                         $keyFeatures = $vehicle?->factoryOptions
                                 ?->filter(fn($fo) => $fo->pivot->is_starred)
-                                ?->take(9);
+                                ?->take(12);
                     @endphp
 
                     {{-- ── Key Features ── --}}
