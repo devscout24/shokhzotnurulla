@@ -28,12 +28,6 @@ class ApplyPhotoOverlay implements ShouldQueue
     private const FONT_BOLD =
         'assets/Images/overlay/arialbd.ttf';
 
-    private const FONT_BOLD_ITALIC =
-        'assets/Images/overlay/arialbi.ttf';
-
-    private const FONT_ITALIC =
-        'assets/Images/overlay/ariali.ttf';
-
 
     public function __construct(
         public VehiclePhoto $photo,
@@ -113,12 +107,6 @@ class ApplyPhotoOverlay implements ShouldQueue
         $fontBold =
             public_path(self::FONT_BOLD);
 
-        $fontItalic =
-            public_path(self::FONT_ITALIC);
-
-        $fontBoldItalic =
-            public_path(self::FONT_BOLD_ITALIC);
-
 
 
         $logoPath =
@@ -128,9 +116,11 @@ class ApplyPhotoOverlay implements ShouldQueue
 
 
         $dealerName =
-            $dealer->name ??
-            $dealer->company_name ??
-            'DEALER';
+            strtoupper(
+                $dealer->name ??
+                $dealer->company_name ??
+                'DEALER'
+            );
 
 
 
@@ -231,31 +221,31 @@ class ApplyPhotoOverlay implements ShouldQueue
             $polygon->background('000000');
         });
 
-        // 4. Render Dealer Name (white bold-italic text on blue banner, centered)
+        // 4. Render Dealer Name (white text on blue banner)
         $dealerNameSize = 3.5 * $cqw;
         $image->text(
             $dealerName,
-            (int)($topLeftW / 2),
+            (int)(3.5 * $cqw),
             (int)(($blueBannerH / 2) + ($dealerNameSize * 0.35)),
-            function($font) use ($fontBoldItalic, $dealerNameSize) {
-                $font->file($fontBoldItalic);
+            function($font) use ($fontBold, $dealerNameSize) {
+                $font->file($fontBold);
                 $font->size($dealerNameSize);
                 $font->color('ffffff');
-                $font->align('center');
+                $font->align('left');
             }
         );
 
-        // 5. Render Spanish Sub-Text (white text on black banner, centered)
+        // 5. Render Spanish Sub-Text (white text on black banner)
         $subBannerSize = 1.4 * $cqw;
         $image->text(
             'HABLAMOS ESPAÑOL',
-            (int)($topLeftW / 2),
+            (int)(3.5 * $cqw),
             (int)($blueBannerH + ($blackSubBannerH / 2) + ($subBannerSize * 0.35)),
             function($font) use ($fontBold, $subBannerSize) {
                 $font->file($fontBold);
                 $font->size($subBannerSize);
                 $font->color('ffffff');
-                $font->align('center');
+                $font->align('left');
             }
         );
 
@@ -264,18 +254,15 @@ class ApplyPhotoOverlay implements ShouldQueue
             $logoManager = new ImageManager(new Driver());
             $logo = $logoManager->decode($logoPath);
 
-            $logoTargetH = (int)(10.5 * $cqw);
+            $logoTargetH = (int)(7.5 * $cqw);
             $logoScale = $logoTargetH / $logo->height();
             $logoW = (int)($logo->width() * $logoScale);
 
             $logo->resize($logoW, $logoTargetH);
 
-            // Center the logo in the right panel area (from topLeftW to imgW)
-            $rightPanelCenterX = (int)(($topLeftW + $imgW) / 2);
-
             $image->insert(
                 $logo,
-                (int)($rightPanelCenterX - ($logoW / 2)),
+                (int)($imgW - $logoW - 3.5 * $cqw),
                 (int)(($topRightH - $logoTargetH) / 2),
                 'top-left'
             );
@@ -306,32 +293,32 @@ class ApplyPhotoOverlay implements ShouldQueue
             $polygon->background('ffffff');
         });
 
-        // 3. Render CALL/TEXT label in white section
-        $lblSize = 2.0 * $cqw;
+        // 3. Render CALL/TEXT stacked label in white section
+        $lblSize = 1.3 * $cqw;
         $image->text('CALL', (int)(4.5 * $cqw), (int)($contactY + 2.8 * $cqw), function($font) use ($fontBold, $lblSize) {
             $font->file($fontBold);
             $font->size($lblSize);
             $font->color('0f1932');
             $font->align('center');
         });
-        $image->text('TEXT', (int)(4.5 * $cqw), (int)($contactY + 5.7 * $cqw), function($font) use ($fontBold, $lblSize) {
+        $image->text('TEXT', (int)(4.5 * $cqw), (int)($contactY + 5.3 * $cqw), function($font) use ($fontBold, $lblSize) {
             $font->file($fontBold);
             $font->size($lblSize);
             $font->color('0f1932');
             $font->align('center');
         });
 
-        // 4. Render Phone Number centered in white section
+        // 4. Render Phone Number in white section
         $phoneSize = 4.0 * $cqw;
         $image->text(
             $dealerPhone,
-            (int)(25 * $cqw),
+            (int)(9.5 * $cqw),
             (int)($contactY + ($bottomBarH / 2) + ($phoneSize * 0.32)),
             function($font) use ($fontBold, $phoneSize) {
                 $font->file($fontBold);
                 $font->size($phoneSize);
                 $font->color('3b698a');
-                $font->align('center');
+                $font->align('left');
             }
         );
 
