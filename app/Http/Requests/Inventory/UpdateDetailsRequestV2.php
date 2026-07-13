@@ -19,7 +19,7 @@ class UpdateDetailsRequestV2 extends FormRequest
         return [
             'stock_number' => [
                 'required', 'string', 'max:50',
-                "unique:vehicles,stock_number,{$vehicle->id},id,dealer_id,{$dealerId},deleted_at,NULL",
+                "unique:vehicles,stock_number,{$vehicle->id},id,dealer_id,{$dealerId}",
             ],
             'location_id' => [
                 'required', 'integer',
@@ -27,7 +27,7 @@ class UpdateDetailsRequestV2 extends FormRequest
             ],
             'vin' => [
                 'required', 'string', 'size:17',
-                "unique:vehicles,vin,{$vehicle->id},id,dealer_id,{$dealerId},deleted_at,NULL",
+                "unique:vehicles,vin,{$vehicle->id},id,dealer_id,{$dealerId}",
             ],
             'model_number' => ['nullable', 'string', 'max:50'],
             'year' => ['required', 'integer', 'min:1900', 'max:'.(date('Y') + 2)],

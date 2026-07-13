@@ -23,11 +23,11 @@ class StoreVehicleRequestV2 extends FormRequest
             ],
             'vin' => [
                 'nullable', 'string', 'size:17',
-                "unique:vehicles,vin,NULL,id,dealer_id,{$dealerId},deleted_at,NULL",
+                "unique:vehicles,vin,NULL,id,dealer_id,{$dealerId}",
             ],
             'stock_number' => [
                 'required', 'string', 'max:50',
-                "unique:vehicles,stock_number,NULL,id,dealer_id,{$dealerId},deleted_at,NULL",
+                "unique:vehicles,stock_number,NULL,id,dealer_id,{$dealerId}",
             ],
             'mileage' => ['required', 'integer', 'min:0', 'max:999999'],
             'year' => ['required', 'integer', 'min:1900', 'max:'.(date('Y') + 2)],

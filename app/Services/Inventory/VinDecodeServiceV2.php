@@ -2,7 +2,6 @@
 
 namespace App\Services\Inventory;
 
-use App\Helpers\DevLog;
 use App\Models\Catalog\BodyStyle;
 use App\Models\Catalog\BodyType;
 use App\Models\Catalog\Color;
@@ -16,6 +15,7 @@ use Exception;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class VinDecodeServiceV2
 {
@@ -46,22 +46,23 @@ class VinDecodeServiceV2
         $vin = strtoupper(trim($vin));
         $cacheKey = 'vin_decode_v2:'.$vin.($modelYear ? ':'.$modelYear : '');
 
-        DevLog::channel('vin-decode', '[VINDECODE] decode() called', [
-            'vin' => substr($vin, 0, 8).'*****',
-            'modelYear' => $modelYear,
-            'cacheKey' => $cacheKey,
+        Log::channel('vin-decode')->info('[VINDECODE] decode() called', [
+            'vin' => $vin,
+            'model_year' => $modelYear,
+            'cache_key' => $cacheKey,
         ]);
 
         if (Cache::has($cacheKey)) {
             $cached = Cache::get($cacheKey);
             if (is_array($cached) && ($cached['success'] ?? false)) {
-                DevLog::channel('vin-decode', '[VINDECODE] cache HIT', ['cacheKey' => $cacheKey]);
+                Log::channel('vin-decode')->info('[VINDECODE] cache HIT', ['cache_key' => $cacheKey]);
+
                 return $cached;
             }
             Cache::forget($cacheKey);
         }
 
-        DevLog::channel('vin-decode', '[VINDECODE] cache MISS — fetching from API', ['vin' => substr($vin, 0, 8).'*****']);
+        Log::channel('vin-decode')->info('[VINDECODE] cache MISS — fetching from API', ['vin' => $vin]);
 
         $result = $this->fetchAndNormalize($vin, $modelYear);
 
@@ -83,11 +84,11 @@ class VinDecodeServiceV2
         if ($apiKey) {
             $headers['x-Authkey'] = $apiKey;
 
-            DevLog::channel('vin-decode', '[VINDECODE] x-Authkey header set', [
+            Log::channel('vin-decode')->debug('[VINDECODE] x-Authkey header set', [
                 'key_prefix' => substr($apiKey, 0, 8).'****',
             ]);
         } else {
-            DevLog::warning('[VINDECODE] No API key found! Check VEHICLE_DATABASES_API_KEY env var or config/services.php');
+            Log::channel('vin-decode')->error('[VINDECODE] No API key found! Check VEHICLE_DATABASES_API_KEY env var or config/services.php');
         }
 
         return $headers;
@@ -96,32 +97,50 @@ class VinDecodeServiceV2
     private function fetchAndNormalize(string $vin, ?int $modelYear): array
     {
         $url = self::BASE_URL.'/'.$vin;
-        $apiKeyPresent = ! empty(config('services.vehicle_databases.api_key') ?? env('VEHICLE_DATABASES_API_KEY'));
+        $apiKey = config('services.vehicle_databases.api_key') ?? env('VEHICLE_DATABASES_API_KEY');
+        $apiKeyPresent = ! empty($apiKey);
 
-        DevLog::channel('vin-decode', '[VINDECODE] fetchAndNormalize()', [
-            'vin' => substr($vin, 0, 8).'*****',
-            'modelYear' => $modelYear,
-            'apiKeyPresent' => $apiKeyPresent,
+        Log::channel('vin-decode')->info('[VINDECODE] fetchAndNormalize START', [
+            'vin' => $vin,
+            'model_year' => $modelYear,
             'url' => $url,
+            'api_key_present' => $apiKeyPresent,
+            'api_key_prefix' => $apiKeyPresent ? substr($apiKey, 0, 8).'****' : null,
+            'timeout' => self::TIMEOUT,
+            'php_sapi' => php_sapi_name(),
         ]);
 
-        try {
+        $startTime = microtime(true);
 
-            DevLog::channel('vin-decode', '[VINDECODE] sending HTTP GET');
+        try {
+            $headers = $this->getDefaultHeaders();
+
+            Log::channel('vin-decode')->info('[VINDECODE] sending HTTP GET', [
+                'url' => $url,
+                'headers' => $headers,
+            ]);
 
             $response = Http::timeout(self::TIMEOUT)
-                ->withHeaders($this->getDefaultHeaders())
+                ->withHeaders($headers)
                 ->get($url);
 
-            DevLog::channel('vin-decode', '[VINDECODE] response received', [
+            $elapsedMs = round((microtime(true) - $startTime) * 1000);
+
+            Log::channel('vin-decode')->info('[VINDECODE] HTTP response received', [
                 'status' => $response->status(),
+                'elapsed_ms' => $elapsedMs,
                 'body_length' => strlen($response->body()),
+                'content_type' => $response->header('Content-Type'),
+                'headers' => $response->headers(),
             ]);
 
             if (! $response->successful()) {
-                DevLog::error('[VINDECODE] API returned non-success status', [
+                $bodyPreview = substr($response->body(), 0, 1000);
+                Log::channel('vin-decode')->error('[VINDECODE] API returned non-success HTTP status', [
                     'status' => $response->status(),
-                    'body' => $response->body(),
+                    'elapsed_ms' => $elapsedMs,
+                    'body_preview' => $bodyPreview,
+                    'body_length' => strlen($response->body()),
                 ]);
 
                 return $this->errorResponse(
@@ -131,10 +150,19 @@ class VinDecodeServiceV2
 
             $body = $response->json();
 
+            if (is_null($body)) {
+                Log::channel('vin-decode')->error('[VINDECODE] response->json() returned null — body may not be valid JSON', [
+                    'body_preview' => substr($response->body(), 0, 500),
+                ]);
+
+                return $this->errorResponse('Invalid response from Vehicle Databases API. Please try again.');
+            }
+
             if (($body['status'] ?? '') !== 'success') {
-                DevLog::error('[VINDECODE] API returned non-success status in body', [
+                Log::channel('vin-decode')->error('[VINDECODE] API body status not success', [
                     'api_status' => $body['status'] ?? '(missing)',
                     'message' => $body['message'] ?? '(none)',
+                    'elapsed_ms' => $elapsedMs,
                 ]);
 
                 return $this->errorResponse(
@@ -146,14 +174,18 @@ class VinDecodeServiceV2
             $trimKey = array_key_first($rawData);
             $records = $trimKey ? ($rawData[$trimKey] ?? []) : [];
 
-            DevLog::channel('vin-decode', '[VINDECODE] data parsed', [
-                'trimCount' => count($rawData),
-                'trimKey' => $trimKey,
-                'records' => ! empty($records) ? 'populated' : 'empty',
+            Log::channel('vin-decode')->info('[VINDECODE] data parsed', [
+                'trim_count' => count($rawData),
+                'trim_key' => $trimKey,
+                'records_populated' => ! empty($records),
+                'records_keys' => is_array($records) ? array_keys($records) : 'not_array',
             ]);
 
             if (empty($records)) {
-                DevLog::warning('[VINDECODE] empty records from API', ['vin' => substr($vin, 0, 8).'*****']);
+                Log::channel('vin-decode')->warning('[VINDECODE] empty records from API', [
+                    'vin' => $vin,
+                    'raw_data_keys' => array_keys($rawData),
+                ]);
 
                 return $this->errorResponse('No data returned from Vehicle Databases. Please verify the VIN and try again.');
             }
@@ -163,49 +195,82 @@ class VinDecodeServiceV2
                 ['vehicle_databases' => $body]
             );
 
-            DevLog::channel('vin-decode', '[VINDECODE] raw payload persisted to vehicle_vin_data');
+            Log::channel('vin-decode')->info('[VINDECODE] raw payload persisted to vehicle_vin_data');
 
             // ── V2 API: Premium / enriched data ────────────────────────────────
             try {
                 $v2Url = self::BASE_URL.'/v2/'.$vin;
-                DevLog::channel('vin-decode', '[VINDECODE] fetching V2 premium data', ['url' => $v2Url]);
+                Log::channel('vin-decode')->info('[VINDECODE] fetching V2 premium data', ['url' => $v2Url]);
 
+                $v2StartTime = microtime(true);
                 $v2Response = Http::timeout(self::TIMEOUT)
                     ->withHeaders($this->getDefaultHeaders())
                     ->get($v2Url);
+                $v2ElapsedMs = round((microtime(true) - $v2StartTime) * 1000);
+
+                Log::channel('vin-decode')->info('[VINDECODE] V2 response received', [
+                    'status' => $v2Response->status(),
+                    'elapsed_ms' => $v2ElapsedMs,
+                    'body_length' => strlen($v2Response->body()),
+                ]);
 
                 if ($v2Response->successful()) {
+                    $v2Json = $v2Response->json();
                     VehicleVinData::where('vin', $vin)->update([
-                        'premium_vehicle_databases' => $v2Response->json(),
+                        'premium_vehicle_databases' => $v2Json,
                     ]);
-                    DevLog::channel('vin-decode', '[VINDECODE] V2 premium data persisted to premium_vehicle_databases');
+                    Log::channel('vin-decode')->info('[VINDECODE] V2 premium data persisted');
                 } else {
-                    DevLog::warning('[VINDECODE] V2 API returned non-success', [
+                    Log::channel('vin-decode')->warning('[VINDECODE] V2 API returned non-success', [
                         'status' => $v2Response->status(),
+                        'body_preview' => substr($v2Response->body(), 0, 500),
                     ]);
                 }
             } catch (Exception $e) {
-                DevLog::warning('[VINDECODE] V2 API call failed', [
+                Log::channel('vin-decode')->warning('[VINDECODE] V2 API call failed (non-blocking)', [
                     'message' => $e->getMessage(),
+                    'class' => get_class($e),
+                    'file' => $e->getFile().':'.$e->getLine(),
                 ]);
             }
 
-            return $this->normalizeResponse($records);
+            Log::channel('vin-decode')->info('[VINDECODE] calling normalizeResponse()', [
+                'records_keys' => array_keys($records),
+            ]);
+
+            $result = $this->normalizeResponse($records);
+
+            $totalElapsedMs = round((microtime(true) - $startTime) * 1000);
+            Log::channel('vin-decode')->info('[VINDECODE] fetchAndNormalize COMPLETE', [
+                'success' => $result['success'] ?? false,
+                'partial' => $result['partial'] ?? false,
+                'total_elapsed_ms' => $totalElapsedMs,
+                'warnings_count' => count($result['warnings'] ?? []),
+                'data_keys' => array_keys($result['data'] ?? []),
+            ]);
+
+            return $result;
 
         } catch (ConnectionException $e) {
-            \Illuminate\Support\Facades\Log::channel('vin-decode')->error('[VINDECODE] ConnectionException', [
+            $elapsedMs = round((microtime(true) - $startTime) * 1000);
+            Log::channel('vin-decode')->error('[VINDECODE] ConnectionException', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile().':'.$e->getLine(),
+                'elapsed_ms' => $elapsedMs,
+                'url' => $url,
             ]);
 
             return $this->errorResponse(
                 'Could not connect to Vehicle Databases API. Check your internet connection and try again.'
             );
         } catch (Exception $e) {
-            \Illuminate\Support\Facades\Log::channel('vin-decode')->error('[VINDECODE] unexpected Exception', [
+            $elapsedMs = round((microtime(true) - $startTime) * 1000);
+            Log::channel('vin-decode')->error('[VINDECODE] unexpected Exception', [
                 'message' => $e->getMessage(),
                 'class' => get_class($e),
                 'file' => $e->getFile().':'.$e->getLine(),
+                'trace_first' => $e->getTraceAsString(),
+                'elapsed_ms' => $elapsedMs,
             ]);
 
             return $this->errorResponse(
@@ -257,7 +322,7 @@ class VinDecodeServiceV2
 
         $warnings = $this->buildWarnings($basic, $makeId, $makeModelId, $bodyTypeId);
 
-        DevLog::channel('vin-decode', '[VINDECODE] normalizeResponse resolutions', [
+        Log::channel('vin-decode')->info('[VINDECODE] normalizeResponse resolutions', [
             'make' => $basic['make'] ?? '(none)',
             'make_id' => $makeId,
             'model' => $basic['model'] ?? '(none)',

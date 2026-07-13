@@ -7,8 +7,11 @@ use App\Models\Inventory\Vehicle;
 use App\Models\Inventory\VehicleNote;
 use App\Models\Inventory\VehiclePrice;
 use App\Models\Inventory\VehicleSpec;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class CreateVehicleActionV2
 {
@@ -20,39 +23,60 @@ class CreateVehicleActionV2
     {
         $vehicle = DB::transaction(function () use ($dealer, $data) {
 
-            $vehicle = Vehicle::create([
-                'dealer_id' => $dealer->id,
-                'location_id' => $data['location_id'],
-                'ulid' => Str::ulid(),
-                'stock_number' => $data['stock_number'],
-                'mileage' => $data['mileage'],
-                'vin' => $data['vin'] ?? null,
-                'model_number' => $data['model_number'] ?? null,
-                'year' => $data['year'],
-                'make_id' => $data['make_id'],
-                'make_model_id' => $data['make_model_id'],
-                'trim' => $data['trim'] ?? null,
-                'body_type_id' => $data['body_type_id'],
-                'body_style_id' => $data['body_style_id'] ?? null,
-                'vehicle_condition' => $data['vehicle_condition'],
-                'is_certified' => $data['is_certified'] ?? false,
-                'is_commercial' => $data['is_commercial'] ?? false,
-                'location_status' => $data['location_status'] ?? 'lot',
-                'fuel_type_id' => $data['fuel_type_id'] ?? null,
-                'transmission_type_id' => $data['transmission_type_id'] ?? null,
-                'drivetrain_type_id' => $data['drivetrain_type_id'] ?? null,
-                'engine' => $data['engine_string'] ?? $data['engine'] ?? null,
-                'exterior_color_id' => $data['exterior_color_id'] ?? null,
-                'interior_color_id' => $data['interior_color_id'] ?? null,
-                'doors' => $data['doors'] ?? null,
-                'seating_capacity' => $data['seating_capacity'] ?? null,
-                'list_price' => $data['msrp'] ?? $data['list_price'] ?? null,
-                'original_price' => $data['msrp'] ?? $data['list_price'] ?? null,
-                'status' => 'draft',
-                'source' => 'manual',
-                'inventory_date' => $data['inventory_date'] ?? now()->toDateString(),
-                'listed_at' => now(),
-            ]);
+            try {
+                $vehicle = Vehicle::create([
+                    'dealer_id' => $dealer->id,
+                    'location_id' => $data['location_id'],
+                    'ulid' => Str::ulid(),
+                    'stock_number' => $data['stock_number'],
+                    'mileage' => $data['mileage'],
+                    'vin' => $data['vin'] ?? null,
+                    'model_number' => $data['model_number'] ?? null,
+                    'year' => $data['year'],
+                    'make_id' => $data['make_id'],
+                    'make_model_id' => $data['make_model_id'],
+                    'trim' => $data['trim'] ?? null,
+                    'body_type_id' => $data['body_type_id'],
+                    'body_style_id' => $data['body_style_id'] ?? null,
+                    'vehicle_condition' => $data['vehicle_condition'],
+                    'is_certified' => $data['is_certified'] ?? false,
+                    'is_commercial' => $data['is_commercial'] ?? false,
+                    'location_status' => $data['location_status'] ?? 'lot',
+                    'fuel_type_id' => $data['fuel_type_id'] ?? null,
+                    'transmission_type_id' => $data['transmission_type_id'] ?? null,
+                    'drivetrain_type_id' => $data['drivetrain_type_id'] ?? null,
+                    'engine' => $data['engine_string'] ?? $data['engine'] ?? null,
+                    'exterior_color_id' => $data['exterior_color_id'] ?? null,
+                    'interior_color_id' => $data['interior_color_id'] ?? null,
+                    'doors' => $data['doors'] ?? null,
+                    'seating_capacity' => $data['seating_capacity'] ?? null,
+                    'list_price' => $data['msrp'] ?? $data['list_price'] ?? null,
+                    'original_price' => $data['msrp'] ?? $data['list_price'] ?? null,
+                    'status' => 'draft',
+                    'source' => 'manual',
+                    'inventory_date' => $data['inventory_date'] ?? now()->toDateString(),
+                    'listed_at' => now(),
+                ]);
+            } catch (UniqueConstraintViolationException $e) {
+                $vin = $data['vin'] ?? '(none)';
+                $existing = Vehicle::where('dealer_id', $dealer->id)
+                    ->where('vin', $vin)
+                    ->withTrashed()
+                    ->first();
+
+                Log::channel('vin-decode')->error('[VINDECODE] Duplicate VIN insert blocked', [
+                    'dealer_id' => $dealer->id,
+                    'vin' => $vin,
+                    'existing_vehicle_id' => $existing?->id,
+                    'existing_deleted' => $existing?->trashed(),
+                    'existing_stock' => $existing?->stock_number,
+                ]);
+
+                throw ValidationException::withMessages([
+                    'vin' => 'A vehicle with this VIN already exists in your inventory'
+                        .($existing && $existing->trashed() ? '. It was previously deleted — restore it from the trash.' : '.'),
+                ]);
+            }
 
             VehiclePrice::create([
                 'vehicle_id' => $vehicle->id,
